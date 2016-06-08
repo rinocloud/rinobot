@@ -1,0 +1,42 @@
+<svg width="1439.9999999999998" height="675" xmlns="http://www.w3.org/2000/svg">
+ <!-- Generator: Sketch Beta 3.4 (15009) - http://www.bohemiancoding.com/sketch -->
+ <title>graph</title>
+ <desc>Created with Sketch Beta.</desc>
+ <defs>
+  <linearGradient id="linearGradient-1" y2="100%" x2="9.57939241%" y1="17.8090447%" x1="96.9276526%">
+   <stop offset="0%" stop-opacity="0.15" stop-color="#4CC7FF"/>
+   <stop offset="100%" stop-opacity="0.15" stop-color="#2595FF"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <text font-family="Arvo, sans-serif" transform="rotate(-90 56.039062500000064,287.43750000000006) " font-size="42" id="svg_1" y="296.666697" x="-53" xml:space="preserve">Intensity (counts/s)</text>
+  <text font-family="Arvo, sans-serif" font-size="42" id="svg_2" y="666.000223" x="702.66705" xml:space="preserve">Time (s)</text>
+  <g fill-rule="evenodd" fill="none" id="Page-1">
+   <g stroke="null" id="WINNER">
+    <g stroke="null" id="header">
+     <g stroke="null" id="backgroun">
+      <g stroke="null" id="graph">
+       <g stroke="null" id="svg_3">
+        <path stroke="null" fill="url(#linearGradient-1)" id="Path-539" d="m72.000025,549.770355c0,0 91.751849,-107.688882 175.292593,-103.407406c83.540735,4.281486 142.911106,67.559252 205.122215,67.559262c62.211109,0 129.2037,-107.474079 199.977772,-107.474079c70.774072,0 143.759263,98.229635 196.785186,79.907412c53.025924,-18.322223 137.196295,-138.103701 158.42592,-178.418514c21.229634,-40.314813 117.255555,-158.388885 240.074075,-184.699996c122.81851,-26.311111 172.899989,-79.375927 189.655549,-126.23704l0,620.088878l-1365.333309,0l0,-67.318517z"/>
+        <path stroke="#2595FF" stroke-width="3" id="Path-539" d="m72.000025,549.770355c0,0 91.751849,-107.688882 175.292593,-103.407406c83.540735,4.281486 142.911106,67.559252 205.122215,67.559262c62.211109,0 129.2037,-107.474079 199.977772,-107.474079c70.774072,0 143.759263,98.229635 196.785186,79.907412c53.025924,-18.322223 137.196295,-138.103701 158.42592,-178.418514c21.229634,-40.314813 117.255555,-158.388885 240.074075,-184.699996c122.81851,-26.311111 172.899989,-78.798154 189.655549,-126.23704"/>
+        <g stroke="#2595FF" stroke-width="2" id="graph-dots">
+         <circle stroke="null" r="7.585185" cy="445.47406" cx="237.925948" fill="#2A689A" id="Oval-60"/>
+         <circle stroke="null" r="7.585185" cy="512.792578" cx="455.05187" fill="#2E6F9D" id="Oval-60"/>
+         <circle stroke="null" r="7.585185" cy="405.651839" cx="647.525941" fill="#3275A2" id="Oval-60"/>
+         <circle stroke="null" r="7.585185" cy="489.088874" cx="836.207419" fill="#32749A" id="Oval-60"/>
+         <circle stroke="null" r="7.585185" cy="289.977767" cx="1018.25186" fill="#347FAA" id="Oval-60"/>
+         <circle stroke="null" r="7.585185" cy="114.570362" cx="1282.785189" fill="#34789C" id="Oval-60"/>
+        </g>
+       </g>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>
