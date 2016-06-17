@@ -1,6 +1,25 @@
 import webpack from 'webpack';
 import baseConfig from './webpack.config.base';
 
+var fs = require('fs')
+var nodeModules = [
+  {"chokidar": {"commonjs" : "chokidar"}},
+  {"formidable": {"commonjs" : "formidable"}},
+  {"colors": {"commonjs" : "colors"}},
+  {"electron-debug": {"commonjs" : "electron-debug"}}
+]
+
+fs.readdirSync('node_modules').forEach(function (module) {
+  if (module !== '.bin' && module !== 'querystring') {
+
+    var o = {}
+    o[module] = {"commonjs": module}
+
+    nodeModules.push(o)
+  }
+})
+
+
 export default {
   ...baseConfig,
 
@@ -9,6 +28,7 @@ export default {
   entry: './main.development',
 
   output: {
+    libraryTarget: "commonjs",
     path: __dirname,
     filename: './main.js'
   },
@@ -39,6 +59,7 @@ export default {
 
   externals: [
     ...baseConfig.externals,
+    ...nodeModules,
     'font-awesome',
     'source-map-support'
   ]

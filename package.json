@@ -76,7 +76,6 @@
     "eslint-plugin-import": "^1.8.1",
     "eslint-plugin-jsx-a11y": "^1.2.2",
     "eslint-plugin-react": "^5.1.1",
-    "evaporate": "git+https://github.com/TTLabs/EvaporateJS.git",
     "express": "^4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
     "fbjs-scripts": "^0.7.1",
@@ -97,6 +96,7 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
+    "evaporate": "git+https://github.com/TTLabs/EvaporateJS.git",
     "acorn": "^3.1.0",
     "ansi_up": "^1.3.0",
     "babel-preset-stage-0": "^6.5.0",
@@ -110,6 +110,7 @@
     "lodash": "^4.13.1",
     "mkdirp": "^0.5.1",
     "postcss": "^5.0.21",
+    "querystring": "^0.2.0",
     "react": "^15.1.0",
     "react-bootstrap": "^0.29.4",
     "react-dom": "^15.1.0",

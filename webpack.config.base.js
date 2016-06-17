@@ -2,17 +2,6 @@ var path = require('path');
 var fs = require('fs')
 var webpack = require('webpack')
 
-let nodeModules = ['chokidar']
-  // chokidar: 'commonjs chokidar;
-
-fs.readdirSync('node_modules')
-  .filter(function(x) {
-    return ['.bin'].indexOf(x) === -1;
-  })
-  .forEach(function(mod) {
-    nodeModules.push(mod);
-  });
-
 export default {
   module: {
     loaders: [{
@@ -39,7 +28,7 @@ export default {
   plugins: [
     new webpack.DefinePlugin({ "global.GENTLY": false })
   ],
-  externals: [
-    ...nodeModules
-  ]
+  externals:[]
+
+
 };

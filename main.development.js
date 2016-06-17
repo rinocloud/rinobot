@@ -6,7 +6,7 @@ let menu;
 let template;
 let mainWindow = null;
 
-global.mainProcessChokidar = mainProcessChokidar
+global.mainProcessChokidar = mainProcessChokidar.watcher
 
 require('electron-debug')();
 
