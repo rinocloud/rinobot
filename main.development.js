@@ -1,12 +1,14 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
 
+import * as mainProcessChokidar from 'rinobot/dist/watcher'
+
 let menu;
 let template;
 let mainWindow = null;
 
-if (process.env.NODE_ENV === 'development') {
-  require('electron-debug')(); // eslint-disable-line global-require
-}
+global.mainProcessChokidar = mainProcessChokidar
+
+require('electron-debug')();
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
@@ -30,9 +32,9 @@ app.on('ready', () => {
     mainWindow = null;
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.openDevTools();
-  }
+  mainWindow.openDevTools();
+
+  // if (process.env.NODE_ENV === 'development') {}
 
   if (process.platform === 'darwin') {
     template = [{

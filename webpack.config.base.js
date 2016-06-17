@@ -1,28 +1,28 @@
-import path from 'path';
-import fs from 'fs'
-import webpack from 'webpack'
+var path = require('path');
+var fs = require('fs')
+var webpack = require('webpack')
 
-let nodeModules = {
-  chokidar: 'commonjs chokidar'
-};
+let nodeModules = ['chokidar']
+  // chokidar: 'commonjs chokidar;
+
 fs.readdirSync('node_modules')
   .filter(function(x) {
     return ['.bin'].indexOf(x) === -1;
   })
   .forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
+    nodeModules.push(mod);
   });
 
 export default {
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loaders: ['babel-loader'],
-      exclude: /node_modules/
-    }, {
-      test: /\.json$/,
-      loader: 'json-loader'
-    }]
+      loaders: ['babel-loader?presets[]=es2015,presets[]=stage-0,presets[]=stage-2,presets[]=react'],
+      exclude: /node_modules/,
+    },
+    {test: /\.json$/,loader: 'json-loader'},
+    { test: /\.css$/, loader: "style-loader!css-loader" },
+  ]
   },
   node: {
     __dirname: true,
@@ -33,7 +33,7 @@ export default {
     libraryTarget: 'commonjs2'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['', '.js', '.jsx', '.cjsx', '.coffee'],
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },
   plugins: [
@@ -41,7 +41,5 @@ export default {
   ],
   externals: [
     ...nodeModules
-    // put your node 3rd party libraries which can't be built with webpack here
-    // (mysql, mongodb, and so on..)
   ]
 };

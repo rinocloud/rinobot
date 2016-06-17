@@ -1,12 +1,26 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import Loader from 'halogen/PulseLoader'
+import ansi_up from 'ansi_up'
 import { Link } from 'react-router'
-const { dialog } = require('electron').remote;
-import {Tab, Tabs} from 'react-bootstrap'
-
+import { connect } from 'react-redux'
 import * as watcherActions from '../actions/watcher'
+const { dialog } = require('electron').remote;
+
 
 export const Watcher = React.createClass({
+
+  componentDidMount(){
+    const { watcher, dispatch } = this.props
+
+    this.interval = setInterval(()=>{
+      dispatch(watcherActions.syncPathsWithChokidar())
+    }, 1000)
+  },
+
+  componentWillUnmount(){
+    clearInterval(this.interval)
+  },
+
   render() {
     const { watcher, dispatch } = this.props
 
@@ -29,79 +43,77 @@ export const Watcher = React.createClass({
       dispatch(watcherActions.setToken(null))
     }
 
-    let activityTitle = "Activity"
-    if (watcher.busy){
-      activityTitle = <span>{"Activity"}
-                        <i style={{marginTop: '-3px', marginLeft: '5px', fontSize: '0.8em'}} className='fa fa-spinner fa-spin'></i>
-                      </span>
+    const removeByIndex = (e, index) => {
+      e.preventDefault()
+      dispatch(watcherActions.stopWatching(index))
+    }
+
+    const clearLogs = (e, index) => {
+      e.preventDefault()
+      dispatch(watcherActions.clearLogs())
+    }
+
+    const toggleDevLog = (e) => {
+      e.preventDefault()
+      dispatch(watcherActions.toggleDevLog())
     }
 
     return (
-      <div className="lead">
-
+      <div>
         <div className="row">
           <h2>Rinocloud watcher</h2>
         </div>
 
-        <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-          <Tab eventKey={1} title="Watcher">
-            <div className="row m-a m-t">
-              <form className="form" onSubmit={onSubmitToken}>
-                  {watcher.token ?
-                    <div className="form-group">
-                      Token set: {watcher.token}
-                      <br/>
-                      <small><a href="#" onClick={clearToken}>clear</a></small>
-                    </div>
-                    :
-                    <div>
-                      <div className="form-group">
-                        <input className="form-control" ref={(c) => this._tokenInput = c} type="text"
-                        placeholder="Paste your Rinocloud token here"/>
-                      </div>
-                      <div className="form-group">
-                        <input className="btn btn-primary" type="submit" onClick={onSubmitToken} value="Set token"/>
-                      </div>
-                    </div>
-                  }
+        <div className="row">
+          <form className="form" onSubmit={chooseFolder}>
+            <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
+            <a href="#" className="m-l btn btn-sm btn-default" onClick={clearLogs}>Clear log</a>
 
-                {watcher.error}
-              </form>
-            </div>
+            <Link to="/documentation" className="pull-right btn btn-sm btn-default">Documentation</Link>
+            <a className="pull-right btn btn-sm text-muted" href="#" onClick={toggleDevLog}>toggle verbose log</a>
+            {watcher.error}
+          </form>
+        </div>
 
-            <hr/>
+        <hr/>
 
-            <div className="row m-a">
-              <form className="form" onSubmit={chooseFolder}>
-                <div className="form-group">
-                  Choose folders to watch
-                </div>
-                <a href="#" className="btn btn-primary" onClick={chooseFolder}>Choose folder</a>
-                {watcher.error}
-              </form>
-            </div>
+        <div className="row">
+          {watcher.paths.length > 0 ?
+           'Currently watching'
+           :
+           <div>
+            <p>Not watching anything. {'  '}
+            <Link to="/documentation">
+              Check out the docs to get started.
+            </Link></p>
+           </div>
+          }
+          <ul>
+            {watcher.paths.map((path, index)=>{
+              return <li key={"path_" + index}>
+                {path}{'  '}<a onClick={(e) => {removeByIndex(e, index)}} href="#">remove</a>
+              </li>
+            })}
+          </ul>
+        </div>
 
-            <hr/>
+        <hr/>
 
-            <div className="row m-a">
-              <p className="lead">
-                Currently watching:
-              </p>
-              <ul>
-                {watcher.paths.map((path, index)=>{
-                  return <li key={"path_" + index}><small>{path}</small></li>
-                })}
-              </ul>
-            </div>
-
-          </Tab>
-          <Tab eventKey={2} title={activityTitle}>
-          <pre className="m-t" style={{backgroundColor: 'white'}}>
-            {watcher.logs.map((log)=> log + '\n')}
-          </pre>
-          </Tab>
-        </Tabs>
-
+        <div className="row m-t">
+          {watcher.logs.length === 0 ?
+            <pre style={{backgroundColor: 'white'}}>
+              No activity yet...
+            </pre>
+            :
+            <pre style={{backgroundColor: 'white'}}>
+              {watcher.showDevLogs ?
+                watcher.dev_logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)
+              :
+                watcher.logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)
+              }
+            </pre>
+          }
+        </div>
       </div>
     );
   }

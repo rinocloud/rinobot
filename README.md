@@ -1,4 +1,6 @@
-# electron-react-boilerplate
+# Rinobot
+
+This is the interface for the command line program [rinobot.js](https://github.com/rinocloud/rinobot/)
 
 ## Install
 

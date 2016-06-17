@@ -1,0 +1,22 @@
+{
+    "finished": true,
+    "completedRules": [
+        "rinocloud-upload"
+    ],
+    "id": 8064,
+    "type": "file",
+    "number_of_comments": 0,
+    "share_code": null,
+    "owner": "eoin",
+    "metadata": {},
+    "created_on": "2016-06-17T15:52:30.528497Z",
+    "updated_on": "2016-06-17T15:52:31.347177Z",
+    "shared": false,
+    "name": "a.txt (1).png",
+    "tags": null,
+    "notes": null,
+    "size": 21389,
+    "metadata_size": 39,
+    "project": 14,
+    "parent": null
+}

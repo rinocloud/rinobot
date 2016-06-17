@@ -9,31 +9,9 @@ const defaultState = {
   error: null,
   paths: [],
   logs: [],
-  busy: false,
-  /*
-    Rules allow users to create custom pipeline and upload logic
-
-    example where we parse the file and upload the result:
-      {
-        match: "*.sp",
-        process: "python parse.py {filepath} {extraMetadata}",
-        upload: true, //defaults to true
-        variables:[{
-          extraMetadata: "some value"
-        }]
-      }
-
-    example where we dont upload to rinocloud but copy to another location
-      {
-        match: "*.txt",
-        process: "cp {filepath} {otherLocation}",
-        upload: false,
-        variables:[{
-          otherLocation: "C:\\somewhere\else\"
-        }]
-      }
-  */
-  rules: []
+  dev_logs: [],
+  showDevLogs: false,
+  busy: false
 }
 
 /* Reduce */
@@ -54,6 +32,17 @@ export default handleActions({
     logs: _.flatten([...state.logs, action.payload])
   }),
 
+  WATCHER_ADD_DEV_LOGS: (state, action) => ({
+    ...state,
+    dev_logs: _.flatten([...state.dev_logs, action.payload])
+  }),
+
+  WATCHER_CLEAR_LOGS: (state, action) => ({
+    ...state,
+    logs: [],
+    dev_logs: []
+  }),
+
   WATCHER_START_BUSY: (state, action) => ({
     ...state,
     busy: true
@@ -64,5 +53,17 @@ export default handleActions({
     busy: false
   }),
 
+  WATCHER_TOGGLE_SHOW_DEV_LOGS: (state, action) => ({
+    ...state,
+    showDevLogs: !state.showDevLogs
+  }),
+
+  WATCHER_REMOVE_BY_INDEX: (state, action) => ({
+    ...state,
+    paths: [
+      ...state.paths.slice(0, action.payload),
+      ...state.paths.slice(action.payload + 1)
+    ]
+  })
 
 }, defaultState)
