@@ -1,0 +1,9 @@
+apiToken: 123
+
+ignore:
+  - "*.py"
+
+tasks:
+  - match: "*.txt"
+    command: rinocloud-upload
+    on: add

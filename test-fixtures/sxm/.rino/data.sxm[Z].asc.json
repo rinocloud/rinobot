@@ -1,0 +1,63 @@
+{
+    "finished": true,
+    "completedTasks": {
+        "python": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm/data.sxm[Z].asc",
+            "filename": "data.sxm[Z].asc",
+            "relPath": "data.sxm[Z].asc",
+            "command": "python",
+            "args": "plot-sxm.py {{filepath}}",
+            "cwd": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "test/sxm",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc",
+            "on": "all"
+        },
+        "rinocloud-upload": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm/data.sxm[Z].asc",
+            "filename": "data.sxm[Z].asc",
+            "relPath": "data.sxm[Z].asc",
+            "command": "rinocloud-upload",
+            "args": [],
+            "cwd": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "test/sxm",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc",
+            "on": "add"
+        }
+    },
+    "response": {
+        "id": 8557,
+        "type": "file",
+        "number_of_comments": 0,
+        "share_code": null,
+        "owner": "eoin",
+        "metadata": {},
+        "created_on": "2016-06-24T14:33:37.976365Z",
+        "updated_on": "2016-06-24T14:33:40.772845Z",
+        "shared": false,
+        "name": "data.sxm[Z].asc",
+        "tags": null,
+        "notes": null,
+        "size": 852593,
+        "metadata_size": 39,
+        "project": 14,
+        "parent": 8555
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "finished": true,
+    "completedTasks": {
+        "rinocloud-upload": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm/data.sxm[Z].asc.png",
+            "filename": "data.sxm[Z].asc.png",
+            "relPath": "data.sxm[Z].asc.png",
+            "command": "rinocloud-upload",
+            "args": [],
+            "cwd": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "test/sxm",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc.png",
+            "on": "add"
+        }
+    },
+    "response": {
+        "id": 8558,
+        "type": "file",
+        "number_of_comments": 0,
+        "share_code": null,
+        "owner": "eoin",
+        "metadata": {},
+        "created_on": "2016-06-24T14:33:41.966944Z",
+        "updated_on": "2016-06-24T14:33:43.642549Z",
+        "shared": false,
+        "name": "data.sxm[Z].asc.png",
+        "tags": null,
+        "notes": null,
+        "size": 10921,
+        "metadata_size": 39,
+        "project": 14,
+        "parent": 8555
+    }
+}
