@@ -1,7 +1,7 @@
 /* eslint strict: 0, no-shadow: 0, no-unused-vars: 0, no-console: 0 */
 'use strict';
 
-require('babel-polyfill');
+// require('babel-polyfill');
 const os = require('os');
 const webpack = require('webpack');
 const electronCfg = require('./webpack.config.electron.js');
@@ -29,14 +29,18 @@ const DEFAULT_OPTS = {
     '^/release($|/)',
     '^/main.development.js'
   ]
-  // .concat(
-  //   devDeps.map(name => `/node_modules/${name}($|/)`)
-  // )
-  // .concat(
-  //   deps
-  //     .filter(name => !electronCfg.externals.includes(name))
-  //     .map(name => `/node_modules/${name}($|/)`)
-  // )
+  .concat(
+    devDeps.map(function(name){
+      return `/node_modules/${name}($|/)`
+    })
+  )
+  .concat(
+    deps
+      .filter(function(name){
+        return !electronCfg.externals.includes(name)
+      })
+      .map(name => `/node_modules/${name}($|/)`)
+  )
 };
 
 const icon = argv.icon || argv.i || 'app/app';

@@ -39,10 +39,10 @@ const createPipeline = (action, dispatch, event, path, stats) => {
     watchPath: action[0],
     event,
     path,
-    on_log: (pipeline, msg)=>{ dispatch(addLogs([`${pipeline.relPath}: ${msg}`])) },
+    on_log: (pipeline, msg)=>{ dispatch(addLogs([`${pipeline.relPath}: ${msg}`.blue])) },
     on_complete: (pipeline)=>{ dispatch(addLogs([`${pipeline.relPath}: complete`.green])) },
     on_error: (pipeline, error)=>{ dispatch(addLogs([`${pipeline.relPath}: ${error}`.red])) },
-    on_ignore: (pipeline, msg)=>{ dispatch(addLogs([`${pipeline.relPath}: ${msg}`])) },
+    on_ignore: (pipeline, msg)=>{ dispatch(addDevLogs([`${pipeline.relPath}: ${msg}`])) },
   })
 }
 

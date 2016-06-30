@@ -4,12 +4,12 @@
         "python": {
             "aborted": false,
             "ignored": false,
-            "path": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm/data.sxm",
+            "path": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm\\data.sxm",
             "filename": "data.sxm",
             "relPath": "data.sxm",
             "command": "python",
             "args": "parse-sxm.py {{filepath}} 1",
-            "cwd": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm",
+            "cwd": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm",
             "event": "add",
             "uploadTo": "test/sxm",
             "api": {
@@ -24,12 +24,12 @@
         "rinocloud-upload": {
             "aborted": false,
             "ignored": false,
-            "path": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm/data.sxm",
+            "path": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm\\data.sxm",
             "filename": "data.sxm",
             "relPath": "data.sxm",
             "command": "rinocloud-upload",
             "args": [],
-            "cwd": "/Users/eoinmurray/Documents/Dropbox/rino/code/rinobot/test-fixtures/sxm",
+            "cwd": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm",
             "event": "add",
             "uploadTo": "test/sxm",
             "api": {
@@ -43,14 +43,14 @@
         }
     },
     "response": {
-        "id": 8556,
+        "id": 8662,
         "type": "file",
         "number_of_comments": 0,
         "share_code": null,
         "owner": "eoin",
         "metadata": {},
-        "created_on": "2016-06-24T14:33:28.925849Z",
-        "updated_on": "2016-06-24T14:33:35.559300Z",
+        "created_on": "2016-06-26T16:47:32.105642Z",
+        "updated_on": "2016-06-26T16:47:38.716672Z",
         "shared": false,
         "name": "data.sxm",
         "tags": null,
@@ -58,6 +58,6 @@
         "size": 6293061,
         "metadata_size": 39,
         "project": 14,
-        "parent": 8555
+        "parent": 8661
     }
 }

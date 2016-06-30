@@ -60,8 +60,8 @@ export const Watcher = React.createClass({
 
     return (
       <div>
-        <div className="row">
-          <h2>Rinocloud watcher</h2>
+        <div className="header">
+          <p>Rinocloud watcher beta</p>
         </div>
 
         <div className="row">
@@ -70,12 +70,12 @@ export const Watcher = React.createClass({
             <a href="#" className="m-l btn btn-sm btn-default" onClick={clearLogs}>Clear log</a>
 
             <Link to="/documentation" className="pull-right btn btn-sm btn-default">Documentation</Link>
-            <a className="pull-right btn btn-sm text-muted" href="#" onClick={toggleDevLog}>toggle verbose log</a>
+            <a className="pull-right btn btn-sm text-muted" href="#" onClick={toggleDevLog}>
+              {watcher.showDevLogs ? 'hide logs' : 'show logs'}
+            </a>
             {watcher.error}
           </form>
         </div>
-
-        <hr/>
 
         <div className="row">
           {watcher.paths.length > 0 ?
@@ -97,21 +97,16 @@ export const Watcher = React.createClass({
           </ul>
         </div>
 
-        <hr/>
-
         <div className="row m-t">
-          {watcher.logs.length === 0 ?
+          <div className="row m-t m-b m-l-0">
+            Latest action: <span dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(watcher.lastLog)}}></span>
+          </div>
+          {watcher.showDevLogs ?
             <pre style={{backgroundColor: 'white'}}>
-              No activity yet...
+              {watcher.dev_logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)}
             </pre>
-            :
-            <pre style={{backgroundColor: 'white'}}>
-              {watcher.showDevLogs ?
-                watcher.dev_logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)
-              :
-                watcher.logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)
-              }
-            </pre>
+          :
+            ''
           }
         </div>
       </div>

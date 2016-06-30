@@ -2,8 +2,6 @@ import { app, BrowserWindow, Menu, shell } from 'electron';
 
 import * as mainProcessChokidar from 'rinobot/dist/watcher'
 
-console.log(mainProcessChokidar)
-
 let menu;
 let template;
 let mainWindow = null;

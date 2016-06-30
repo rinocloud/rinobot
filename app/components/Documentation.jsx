@@ -7,7 +7,8 @@ export default React.createClass({
     return (
       <div>
         <div className="row m-b-lg p-b-lg">
-          <h2>Rinocloud watcher documentation</h2>
+          <h2>Rinocloud watcher beta</h2>
+          <h2>Documentation</h2>
           <Link to="/" className="pull-right btn btn-sm btn-default">Back to watcher</Link>
 
           <div className="row">
@@ -109,7 +110,7 @@ export default React.createClass({
 
               <p>
                 Rinocloud makes some default variables available
-
+              </p>
                 <ul>
                   <li>
                     <code>{'{{'}filename{'}}'} </code> - the name of the file
@@ -121,8 +122,6 @@ export default React.createClass({
                     <code>{'{{'}path{'}}'} </code> - relative path to the file from the watched directory. Use this to pass the filename to processing programs
                   </li>
                 </ul>
-              </p>
-
             </div>
           </div>
         </div>

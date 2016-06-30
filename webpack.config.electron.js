@@ -6,18 +6,17 @@ var nodeModules = [
   {"chokidar": {"commonjs" : "chokidar"}},
   {"formidable": {"commonjs" : "formidable"}},
   {"colors": {"commonjs" : "colors"}},
-  {"electron-debug": {"commonjs" : "electron-debug"}}
+  {"electron-debug": {"commonjs" : "electron-debug"}},
+  {"graceful-fs": {"commonjs": "graceful-fs"}}
 ]
 
-fs.readdirSync('node_modules').forEach(function (module) {
-  if (module !== '.bin' && module !== 'querystring') {
-
-    var o = {}
-    o[module] = {"commonjs": module}
-
-    nodeModules.push(o)
-  }
-})
+// fs.readdirSync('node_modules').forEach(function (module) {
+//   if (module !== '.bin' && module !== 'querystring') {
+//     var o = {}
+//     o[module] = {"commonjs": module}
+//     nodeModules.push(o)
+//   }
+// })
 
 
 export default {
@@ -61,6 +60,11 @@ export default {
     ...baseConfig.externals,
     ...nodeModules,
     'font-awesome',
-    'source-map-support'
+    'source-map-support',
+    'chokidar',
+    'formidable',
+    'colors',
+    'graceful-fs',
+    'electron-debug'
   ]
 };

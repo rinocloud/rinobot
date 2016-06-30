@@ -9,9 +9,9 @@ export default class App extends Component {
 
     return <div>
         <div className="stage" id="stage">
-          <div className="row m-a-0">
-            <div className="main-container col-sm-12">
-              <div className="row main">
+          <div className="">
+            <div className="">
+              <div className="">
                 {this.props.children}
                 {/*{
                   (() => {

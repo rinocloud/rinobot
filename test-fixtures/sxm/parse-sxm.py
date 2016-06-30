@@ -4,8 +4,6 @@ import numpy as np
 from numpy import ndarray
 import re
 import os
-from clint.textui import puts, colored
-
 DEBUG = False
 
 
@@ -231,16 +229,13 @@ def process(path, length=1):
     p = re.compile(r'.*.sxm')
 
     if re.search(p, path):
-        puts(colored.blue('created file: %s' % path))
         nf = load(path)
 
-        puts(colored.green('\t- data parsed'))
         for i, element in enumerate(nf.data):
             print i, length
             if i >= length:
                 break
 
-            puts(colored.blue('\t - processing row %d' % i))
             printable = print_to_asc(i, path, element)
             with open(path + '[%s].asc' % element.info["data_info"][i]["Name"], 'wt') as fp:
                 fp.write(printable)

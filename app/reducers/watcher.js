@@ -9,6 +9,7 @@ const defaultState = {
   error: null,
   paths: [],
   logs: [],
+  lastLog: 'nothing yet',
   dev_logs: [],
   showDevLogs: false,
   busy: false
@@ -29,7 +30,9 @@ export default handleActions({
 
   WATCHER_ADD_LOGS: (state, action) => ({
     ...state,
-    logs: _.flatten([...state.logs, action.payload])
+    logs: _.flatten([...state.logs, action.payload]),
+    dev_logs: _.flatten([...state.dev_logs, action.payload]),
+    lastLog: action.payload[action.payload.length - 1]
   }),
 
   WATCHER_ADD_DEV_LOGS: (state, action) => ({
