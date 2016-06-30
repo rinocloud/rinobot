@@ -38,76 +38,19 @@ export const Watcher = React.createClass({
       }
     }
 
-    const clearToken = (e) => {
-      e.preventDefault()
-      dispatch(watcherActions.setToken(null))
-    }
-
     const removeByIndex = (e, index) => {
       e.preventDefault()
       dispatch(watcherActions.stopWatching(index))
     }
 
-    const clearLogs = (e, index) => {
-      e.preventDefault()
-      dispatch(watcherActions.clearLogs())
-    }
-
-    const toggleDevLog = (e) => {
-      e.preventDefault()
-      dispatch(watcherActions.toggleDevLog())
-    }
-
     return (
-      <div>
+      <div className="">
         <div className="header">
           <p>Rinocloud watcher beta</p>
         </div>
 
-        <div className="row">
-          <form className="form" onSubmit={chooseFolder}>
-            <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
-            <a href="#" className="m-l btn btn-sm btn-default" onClick={clearLogs}>Clear log</a>
-
-            <Link to="/documentation" className="pull-right btn btn-sm btn-default">Documentation</Link>
-            <a className="pull-right btn btn-sm text-muted" href="#" onClick={toggleDevLog}>
-              {watcher.showDevLogs ? 'hide logs' : 'show logs'}
-            </a>
-            {watcher.error}
-          </form>
-        </div>
-
-        <div className="row">
-          {watcher.paths.length > 0 ?
-           'Currently watching'
-           :
-           <div>
-            <p>Not watching anything. {'  '}
-            <Link to="/documentation">
-              Check out the docs to get started.
-            </Link></p>
-           </div>
-          }
-          <ul>
-            {watcher.paths.map((path, index)=>{
-              return <li key={"path_" + index}>
-                {path}{'  '}<a onClick={(e) => {removeByIndex(e, index)}} href="#">remove</a>
-              </li>
-            })}
-          </ul>
-        </div>
-
-        <div className="row m-t">
-          <div className="row m-t m-b m-l-0">
-            Latest action: <span dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(watcher.lastLog)}}></span>
-          </div>
-          {watcher.showDevLogs ?
-            <pre style={{backgroundColor: 'white'}}>
-              {watcher.dev_logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)}
-            </pre>
-          :
-            ''
-          }
+        <div className="main m-t">
+          <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
         </div>
       </div>
     );
