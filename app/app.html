@@ -3,15 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Rinocloud watcher</title>
-    <link href="./css/font-awesome.css" rel="stylesheet">
-    <link href="./css/toolkit-startup.css" rel="stylesheet">
-    <link href="./css/application-startup.css" rel="stylesheet">
-    <link href="./css/offline.css" rel="stylesheet"/>
-    <link href="./css/overrides.css" rel="stylesheet">
-    <link href="./css/project-custom.css" rel="stylesheet">
-    <link href="./css/rinocloud-icons.css" rel="stylesheet">
-    <link href="./css/github.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./css/toolkit-startup.css">
+    <link rel="stylesheet" type="text/css" href="./css/application-startup.css">
+    <link rel="stylesheet" type="text/css" href="./css/rinocloud-icons.css">
+    <link rel="stylesheet" type="text/css" href="./css/github.css">
+
+    <script>
+      (function() {
+          if (!process.env.HOT) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '../dist/style.css';
+            document.write(link.outerHTML);
+          }
+      }());
+    </script>
   </head>
+
+
   <body>
     <div id="root"></div>
     <script>

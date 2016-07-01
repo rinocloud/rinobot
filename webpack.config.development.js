@@ -38,7 +38,13 @@ const config = {
           'style-loader',
           'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
         ]
+      },
+
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)\?*.*$/,
+        loader: 'url-loader?limit=100000'
       }
+
     ]
   },
 
@@ -47,10 +53,7 @@ const config = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
-      __DEV__: true,
-      'process.env': {
-        NODE_ENV: JSON.stringify('development')
-      }
+      'process.env.NODE_ENV': JSON.stringify('development')
     })
   ],
 

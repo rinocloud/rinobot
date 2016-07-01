@@ -10,34 +10,25 @@ var nodeModules = [
   {"graceful-fs": {"commonjs": "graceful-fs"}}
 ]
 
-// fs.readdirSync('node_modules').forEach(function (module) {
-//   if (module !== '.bin' && module !== 'querystring') {
-//     var o = {}
-//     o[module] = {"commonjs": module}
-//     nodeModules.push(o)
-//   }
-// })
-
-
 export default {
   ...baseConfig,
 
   devtool: 'source-map',
 
-  entry: './main.development',
+  entry: ['babel-polyfill', './main.development'],
 
   output: {
-    libraryTarget: "commonjs",
+    ...baseConfig.output,
     path: __dirname,
     filename: './main.js'
   },
 
   plugins: [
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compressor: {
-    //     warnings: false
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false
+      }
+    }),
     new webpack.BannerPlugin(
       'require("source-map-support").install();',
       { raw: true, entryOnly: false }

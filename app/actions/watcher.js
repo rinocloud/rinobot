@@ -12,14 +12,14 @@ colors.enabled = true
 colors.mode = 'browser'
 
 // Define non-async actions
-export const addPaths = createAction('WATCHER_ADD_PATHS')
-export const addLogs = createAction('WATCHER_ADD_LOGS')
+export const toggleDevLog = createAction('WATCHER_TOGGLE_SHOW_DEV_LOGS')
+export const removeByIndex = createAction('WATCHER_REMOVE_BY_INDEX')
 export const addDevLogs = createAction('WATCHER_ADD_DEV_LOGS')
 export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
 export const startBusy = createAction('WATCHER_START_BUSY')
 export const stopBusy = createAction('WATCHER_STOP_BUSY')
-export const removeByIndex = createAction('WATCHER_REMOVE_BY_INDEX')
-export const toggleDevLog = createAction('WATCHER_TOGGLE_SHOW_DEV_LOGS')
+export const addPaths = createAction('WATCHER_ADD_PATHS')
+export const addLogs = createAction('WATCHER_ADD_LOGS')
 
 // Define async actions
 export const syncPathsWithChokidar = () => {
@@ -35,7 +35,9 @@ export const stopWatching = (action) => {
 }
 
 export const constructFolderView = (relativePath) => {
-  
+  return (dispatch, getState)=>{
+
+  }
 }
 
 const processEvent = (action, dispatch, event, path, stats) => {

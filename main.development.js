@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 
 import * as mainProcessChokidar from 'rinobot/dist/watcher'
 
@@ -8,17 +9,19 @@ let mainWindow = null;
 
 global.mainProcessChokidar = mainProcessChokidar
 
-require('electron-debug')();
+if (process.env.NODE_ENV === 'development') {
+  require('electron-debug')(); // eslint-disable-line global-require
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('ready', () => {
+const setUpWindow = () => {
   mainWindow = new BrowserWindow({
     show: false,
-    width: 512,
-    height: 512
+    width: 1024,
+    height: 768
   });
 
   mainWindow.loadURL(`file://${__dirname}/app/app.html`);
@@ -32,9 +35,19 @@ app.on('ready', () => {
     mainWindow = null;
   });
 
-  mainWindow.openDevTools();
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.openDevTools();
+    mainWindow.webContents.on('context-menu', (e, props) => {
+      const { x, y } = props;
 
-  // if (process.env.NODE_ENV === 'development') {}
+      Menu.buildFromTemplate([{
+        label: 'Inspect element',
+        click() {
+          mainWindow.inspectElement(x, y);
+        }
+      }]).popup(mainWindow);
+    });
+  }
 
   if (process.platform === 'darwin') {
     template = [{
@@ -235,4 +248,18 @@ app.on('ready', () => {
     menu = Menu.buildFromTemplate(template);
     mainWindow.setMenu(menu);
   }
+
+}
+
+app.on('ready', () => {
+  installExtension(REACT_DEVELOPER_TOOLS)
+  .then((name) => {
+    console.log(`Added extension ${name}`)
+    installExtension(REDUX_DEVTOOLS)
+    .then((name) => {
+      console.log(`Added extension ${name}`)
+      setUpWindow()
+    })
+  })
+  .catch((err) => {console.log('An error occurred: ', err)})
 });

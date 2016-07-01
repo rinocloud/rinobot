@@ -1,4 +1,6 @@
 
+
+
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
@@ -7,6 +9,7 @@ html {
 }
 body {
   margin: 0;
+  background-color: green;
 }
 article,
 aside,
