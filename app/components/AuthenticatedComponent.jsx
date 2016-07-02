@@ -25,18 +25,27 @@ export function requireAuthentication(Component) {
     }
 
     render () {
-      const {dispatch} = this.props
+      const {dispatch, auth} = this.props
 
-      console.log('AuthenticatedComponent', this.props.auth.access_token)
+      const onClickLogout = (e) => {
+        e.preventDefault()
+        dispatch(authActions.logout())
+      }
+
       return (
         <div>
-            <a href="#" onClick={e => {
-              e.preventDefault()
-              dispatch(authActions.logout())
-            }}>
-            Logout
-            </a>
-            {this.props.auth.access_token
+            <div className="header">
+              <div>
+                <i className="icon-brand"></i>
+                <a href="#" className="pull-right" onClick={onClickLogout}>{auth.isAuthenticating ?
+                  <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
+                  :
+                  <span>Logout</span>
+                }</a>
+              </div>
+              {auth.statusText}
+            </div>
+            {auth.access_token
                 ? <Component {...this.props}/>
                 : null
             }

@@ -675,10 +675,18 @@ img.loading{
 }
 
 .header{
-  background-color: #813296;
+  background-color: #9C27B0;
   width: 100%;
   margin: 0;
   color: #fafafa;
   padding: 20px;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
+}
+
+.header a{
+  color: #fefefe;
+}
+
+.icon-brand{
+  font-size: 1.3em;
 }

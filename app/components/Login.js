@@ -20,25 +20,44 @@ export const Login = React.createClass({
   render() {
     const {dispatch, auth} = this.props
 
-    return (
-      <div className="container">
-        <div className="col-sm-6 col-sm-offset-3">
+    const onClickForgot = (e) => {
 
-          <h1 className="text-center">
-            Login
-          </h1>
+    }
+
+    const onClickSignup = (e) => {
+
+    }
+
+    return (
+      <div>
+
+
+          <div className="header">
+            <div>
+              <i className="icon-brand"></i>
+              <a href="#" className="pull-right" onClick={onClickSignup}>
+                Don't have a Rinocloud account? Sign up.
+              </a>
+            </div>
+          </div>
+
+          <div className="col-sm-4 col-sm-offset-4 m-t">
+
+          <h2 className="">
+            Login to Rinocloud
+          </h2>
 
           <form className="m-t" onSubmit={this.handleSubmit}>
 
             <div className="form-group">
-              <input className="form-control" placeholder="email" ref={(c) => this._email = c} type="email"/>
+              <input className="form-control input-" placeholder="email" ref={(c) => this._email = c} type="email"/>
             </div>
 
             <div className="form-group">
-              <input className="form-control" placeholder="password" ref={(c) => this._password = c} type="password"/>
+              <input className="form-control input-" placeholder="password" ref={(c) => this._password = c} type="password"/>
             </div>
 
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-success btn-" type="submit">
               {auth.isAuthenticating ?
               <span>Login <i className="fa fa-spinner fa-spin"></i></span>
               :
@@ -46,6 +65,8 @@ export const Login = React.createClass({
             }
             </button>
             <div className="m-t">{auth.statusText}</div>
+
+            <a href="#" onClick={onClickForgot}>Forgot password?</a>
 
           </form>
 

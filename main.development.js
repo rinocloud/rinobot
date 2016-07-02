@@ -9,6 +9,7 @@ let template;
 let mainWindow = null;
 
 
+
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')(); // eslint-disable-line global-require
 }
@@ -34,6 +35,8 @@ const installExtensions = async () => {
     }
   }
 };
+
+app.dock.show()
 
 app.on('ready', async () => {
   await installExtensions();
@@ -71,9 +74,9 @@ app.on('ready', async () => {
 
   if (process.platform === 'darwin') {
     template = [{
-      label: 'Electron',
+      label: 'Rinobot',
       submenu: [{
-        label: 'About ElectronReact',
+        label: 'About Rinobot',
         selector: 'orderFrontStandardAboutPanel:'
       }, {
         type: 'separator'
@@ -83,7 +86,7 @@ app.on('ready', async () => {
       }, {
         type: 'separator'
       }, {
-        label: 'Hide ElectronReact',
+        label: 'Hide Rinobot',
         accelerator: 'Command+H',
         selector: 'hide:'
       }, {
