@@ -1,27 +1,47 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer';
 
 import * as mainProcessChokidar from 'rinobot/dist/watcher'
+global.mainProcessChokidar = mainProcessChokidar
+
 
 let menu;
 let template;
 let mainWindow = null;
 
-global.mainProcessChokidar = mainProcessChokidar
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')(); // eslint-disable-line global-require
 }
 
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-const setUpWindow = () => {
+
+const installExtensions = async () => {
+  if (process.env.NODE_ENV === 'development') {
+    const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
+    const extensions = [
+      'REACT_DEVELOPER_TOOLS',
+      'REDUX_DEVTOOLS'
+    ];
+    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+    for (const name of extensions) {
+      try {
+        await installer.default(installer[name], forceDownload);
+      } catch (e) {} // eslint-disable-line
+    }
+  }
+};
+
+app.on('ready', async () => {
+  await installExtensions();
+
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
-    height: 768
+    height: 728
   });
 
   mainWindow.loadURL(`file://${__dirname}/app/app.html`);
@@ -248,18 +268,4 @@ const setUpWindow = () => {
     menu = Menu.buildFromTemplate(template);
     mainWindow.setMenu(menu);
   }
-
-}
-
-app.on('ready', () => {
-  installExtension(REACT_DEVELOPER_TOOLS)
-  .then((name) => {
-    console.log(`Added extension ${name}`)
-    installExtension(REDUX_DEVTOOLS)
-    .then((name) => {
-      console.log(`Added extension ${name}`)
-      setUpWindow()
-    })
-  })
-  .catch((err) => {console.log('An error occurred: ', err)})
 });

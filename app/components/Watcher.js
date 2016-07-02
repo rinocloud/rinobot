@@ -61,6 +61,14 @@ export const Watcher = React.createClass({
     return (
       <div>
         <div className="header">
+          <h1>Rinobot beta</h1>
+        </div>
+      </div>
+    )
+
+    return (
+      <div>
+        <div className="header">
           <p>Rinocloud watcher beta</p>
         </div>
 

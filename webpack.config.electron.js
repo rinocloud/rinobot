@@ -1,7 +1,6 @@
 import webpack from 'webpack';
 import baseConfig from './webpack.config.base';
 
-var fs = require('fs')
 var nodeModules = [
   {"chokidar": {"commonjs" : "chokidar"}},
   {"formidable": {"commonjs" : "formidable"}},

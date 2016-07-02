@@ -17,12 +17,6 @@ const defaultState = {
 
 /* Reduce */
 export default handleActions({
-  WATCHER_SET_TOKEN: (state, action) => ({
-    ...state,
-    token: action.payload ? (action.payload.length > 0 ? action.payload : null) : null,
-    error: action.payload ? (action.payload.length == 0 ? "Token is too short" : null): null,
-  }),
-
   WATCHER_ADD_PATHS: (state, action) => ({
     ...state,
     paths: _.flatten([...state.paths, action.payload])

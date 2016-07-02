@@ -1,14 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import { browserHistory } from 'react-router';
+import { connect } from 'react-redux'
 
-export default class App extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired
-  };
-
+export default React.createClass({
   render() {
-
     return  <div>
               {this.props.children}
             </div>
   }
-}
+})
