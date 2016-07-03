@@ -22,8 +22,6 @@ export const persistAuth = (action) => {
 
 export const clearPersistantAuth = (action) => {
   return (dispatch, getState) => {
-
-
     fs.unlink(constants.authFilePath, function(err){
       if (err) dispatch(setError(err.message))
     })
@@ -55,6 +53,31 @@ export const logout = (action) => {
   }
 }
 
+export const getToken = (action) => {
+  return (dispatch, getState) => {
+    request
+      .post('https://rinocloud.com/api/1/users/token/')
+      .set('Authorization', `Bearer ${res1.body.access_token}`)
+      .end((err, res2)=>{
+
+        dispatch(toggleAuthenticating())
+        if(err) return dispatch(setError(err.message))
+
+        dispatch(setAuth({
+          ...action.payload.body,
+          ...res2.body,
+          email: action.email
+        }))
+
+        setTimeout(function(){
+          dispatch(push(action.next))
+          dispatch(persistAuth(action.email))
+        }.bind(this), 50)
+
+      })
+  }
+}
+
 export const login = (action) => {
   return (dispatch, getState) => {
 
@@ -73,26 +96,7 @@ export const login = (action) => {
       .end((err, res1)=>{
         if(err) return dispatch(setError(res.body.error_description))
 
-        request
-          .post('https://rinocloud.com/api/1/users/token/')
-          .set('Authorization', `Bearer ${res1.body.access_token}`)
-          .end((err, res2)=>{
-
-            dispatch(toggleAuthenticating())
-            if(err) return dispatch(setError(err.message))
-
-            dispatch(setAuth({
-              ...res1.body,
-              ...res2.body,
-              email: action.email
-            }))
-
-            setTimeout(function(){
-              dispatch(push(action.next))
-              dispatch(persistAuth(action.email))
-            }.bind(this), 50)
-
-          })
+        dispatch(getToken(res1))
       })
   }
 }

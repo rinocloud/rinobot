@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import { push } from 'react-router-redux'
+import { Link } from 'react-router'
 import * as authActions from '../actions/auth'
 
 
@@ -36,7 +37,12 @@ export function requireAuthentication(Component) {
         <div>
             <div className="header">
               <div>
-                <i className="icon-brand"></i>
+                <Link to="/"><i className="icon-brand"></i></Link>
+                <Link to="/" className="m-l btn btn-sm">Watch folders</Link>
+                <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link>
+                <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link>
+                <Link to="/documentation" className="m-l btn btn-sm">Docs</Link>
+
                 <a href="#" className="pull-right" onClick={onClickLogout}>{auth.isAuthenticating ?
                   <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
                   :

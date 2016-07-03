@@ -3,12 +3,11 @@ import { app, BrowserWindow, Menu, shell } from 'electron';
 import * as mainProcessChokidar from 'rinobot/dist/watcher'
 global.mainProcessChokidar = mainProcessChokidar
 
-
 let menu;
 let template;
 let mainWindow = null;
 
-
+app.setName('rinobot')
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')(); // eslint-disable-line global-require

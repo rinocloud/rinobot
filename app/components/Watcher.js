@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import * as watcherActions from '../actions/watcher'
 const { dialog } = require('electron').remote;
+const {shell} = require('electron');
 
 
 export const Watcher = React.createClass({
@@ -48,6 +49,11 @@ export const Watcher = React.createClass({
       dispatch(watcherActions.stopWatching(index))
     }
 
+    const openFolder = (e, path) => {
+      e.preventDefault()
+      shell.showItemInFolder(path)
+    }
+
     const clearLogs = (e, index) => {
       e.preventDefault()
       dispatch(watcherActions.clearLogs())
@@ -59,63 +65,27 @@ export const Watcher = React.createClass({
     }
 
     return (
-      <div>
-        <div className="">
-          <h1>Rinobot beta</h1>
-        </div>
-      </div>
-    )
-
-    return (
-      <div>
-        <div className="header">
-          <p>Rinocloud watcher beta</p>
-        </div>
-
+      <div className="container m-t">
         <div className="row">
-          <form className="form" onSubmit={chooseFolder}>
-            <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
-            <a href="#" className="m-l btn btn-sm btn-default" onClick={clearLogs}>Clear log</a>
-
-            <Link to="/documentation" className="pull-right btn btn-sm btn-default">Documentation</Link>
-            <a className="pull-right btn btn-sm text-muted" href="#" onClick={toggleDevLog}>
-              {watcher.showDevLogs ? 'hide logs' : 'show logs'}
-            </a>
-            {watcher.error}
-          </form>
+          <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
         </div>
 
-        <div className="row">
-          {watcher.paths.length > 0 ?
-           'Currently watching'
-           :
-           <div>
-            <p>Not watching anything. {'  '}
-            <Link to="/documentation">
-              Check out the docs to get started.
-            </Link></p>
-           </div>
-          }
-          <ul>
-            {watcher.paths.map((path, index)=>{
-              return <li key={"path_" + index}>
-                {path}{'  '}<a onClick={(e) => {removeByIndex(e, index)}} href="#">remove</a>
-              </li>
-            })}
-          </ul>
-        </div>
+        {watcher.paths.map((path, index)=>{
+          return (
+            <div className="m-t" key={"path_" + index}>
+              <div className="row">
+                <a href="#" onClick={(e) => {openFolder(e, path)}}>{path}</a>
+              </div>
+              <div className="row">
+                <a className="btn btn-xs btn-default" onClick={(e) => {removeByIndex(e, index)}} href="#">remove</a>{'   '}
+
+              </div>
+            </div>
+          )
+        })}
 
         <div className="row m-t">
-          <div className="row m-t m-b m-l-0">
-            Latest action: <span dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(watcher.lastLog)}}></span>
-          </div>
-          {watcher.showDevLogs ?
-            <pre style={{backgroundColor: 'white'}}>
-              {watcher.dev_logs.map((log, i)=> <span key={i} dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(log + '\n')}}></span>)}
-            </pre>
-          :
-            ''
-          }
+          Latest action: <span dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(watcher.lastLog)}}></span>
         </div>
       </div>
     );

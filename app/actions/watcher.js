@@ -19,6 +19,7 @@ export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
 export const startBusy = createAction('WATCHER_START_BUSY')
 export const stopBusy = createAction('WATCHER_STOP_BUSY')
 export const addPaths = createAction('WATCHER_ADD_PATHS')
+export const addPipeline = createAction('WATCHER_ADD_PIPELINE')
 export const addLogs = createAction('WATCHER_ADD_LOGS')
 
 // Define async actions
@@ -53,6 +54,8 @@ const processEvent = (action, dispatch, event, path, stats) => {
     on_error: (pipeline, error)=>{ dispatch(addLogs([`${pipeline.relPath}: ${error}`.red])) },
     on_ignore: (pipeline, msg)=>{ dispatch(addDevLogs([`${pipeline.relPath}: ${msg}`])) },
   })
+
+  dispatch(addPipeline(p))
 }
 
 export const startWatching = (action) => {

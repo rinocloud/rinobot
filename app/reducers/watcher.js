@@ -8,6 +8,7 @@ const defaultState = {
   token : null,
   error: null,
   paths: [],
+  pipelines: [],
   logs: [],
   lastLog: 'nothing yet',
   dev_logs: [],
@@ -20,6 +21,11 @@ export default handleActions({
   WATCHER_ADD_PATHS: (state, action) => ({
     ...state,
     paths: _.flatten([...state.paths, action.payload])
+  }),
+
+  WATCHER_ADD_PIPELINE: (state, action) => ({
+    ...state,
+    pipelines: _.flatten([...state.pipelines, action.payload])
   }),
 
   WATCHER_ADD_LOGS: (state, action) => ({
