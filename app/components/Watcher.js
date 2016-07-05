@@ -1,97 +1,85 @@
-import React from 'react'
-import Loader from 'halogen/PulseLoader'
-import ansi_up from 'ansi_up'
-import { Link } from 'react-router'
+import React, { PropTypes } from 'react'
+import { WatcherDirsList } from './WatcherDirsList'
 import { connect } from 'react-redux'
 import * as watcherActions from '../actions/watcher'
 const { dialog } = require('electron').remote;
-const {shell} = require('electron');
 
 
-export const Watcher = React.createClass({
+export class Watcher extends React.Component {
 
-  componentDidMount(){
-    const { watcher, dispatch } = this.props
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    watcher: PropTypes.object.isRequired,
+    watcher: PropTypes.object.isRequired
+  }
 
-    this.interval = setInterval(()=>{
-      dispatch(watcherActions.syncPathsWithChokidar())
-    }, 1000)
-  },
+  constructor(props) {
+    super(props)
+    this.chooseFolder = this.chooseFolder.bind(this)
+    this.handleRemoveDirClick = this.handleRemoveDirClick.bind(this)
+    this.handleToggleStartClick = this.handleToggleStartClick.bind(this)
+    this.handleToggleConfigClick = this.handleToggleConfigClick.bind(this)
+    this.handleSetConfig = this.handleSetConfig.bind(this)
+  }
 
-  componentWillUnmount(){
-    clearInterval(this.interval)
-  },
+  chooseFolder(e) {
+    const { dispatch } = this.props
+    e.preventDefault()
+    const paths = dialog.showOpenDialog({ properties: ['openDirectory', 'multiSelections'] })
+    if (paths) {
+      dispatch(watcherActions.addDir(paths[0]))
+    }
+  }
+
+  handleRemoveDirClick(index) {
+    const { dispatch } = this.props
+    dispatch(watcherActions.removeDir(index))
+  }
+
+  handleToggleStartClick(turnOn, index) {
+    const { dispatch } = this.props
+    if (turnOn === true) {
+      dispatch(watcherActions.startDir(index))
+    } else {
+      dispatch(watcherActions.stopDir(index))
+    }
+  }
+
+  handleToggleConfigClick(index) {
+    const { dispatch } = this.props
+    dispatch(watcherActions.toggleConfigOpen(index))
+  }
+
+  handleSetConfig(index, config) {
+    console.log(index, config)
+  }
 
   render() {
-    const { watcher, dispatch } = this.props
-
-    const onSubmitToken = (e) => {
-      e.preventDefault()
-      const token = this._tokenInput.value
-      dispatch(watcherActions.setToken(token))
-    }
-
-    const chooseFolder = (e) => {
-      e.preventDefault()
-      const paths = dialog.showOpenDialog({properties: ['openDirectory', 'multiSelections']})
-      if (paths){
-        dispatch(watcherActions.startWatching(paths))
-      }
-    }
-
-    const clearToken = (e) => {
-      e.preventDefault()
-      dispatch(watcherActions.setToken(null))
-    }
-
-    const removeByIndex = (e, index) => {
-      e.preventDefault()
-      dispatch(watcherActions.stopWatching(index))
-    }
-
-    const openFolder = (e, path) => {
-      e.preventDefault()
-      shell.showItemInFolder(path)
-    }
-
-    const clearLogs = (e, index) => {
-      e.preventDefault()
-      dispatch(watcherActions.clearLogs())
-    }
-
-    const toggleDevLog = (e) => {
-      e.preventDefault()
-      dispatch(watcherActions.toggleDevLog())
-    }
+    const { watcher, plugins } = this.props
 
     return (
       <div className="container m-t">
         <div className="row">
-          <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>Choose folder</a>
+          <a href="#" className="btn btn-sm btn-primary" onClick={this.chooseFolder}>
+            Choose folder
+          </a>
         </div>
 
-        {watcher.paths.map((path, index)=>{
-          return (
-            <div className="m-t" key={"path_" + index}>
-              <div className="row">
-                <a href="#" onClick={(e) => {openFolder(e, path)}}>{path}</a>
-              </div>
-              <div className="row">
-                <a className="btn btn-xs btn-default" onClick={(e) => {removeByIndex(e, index)}} href="#">remove</a>{'   '}
-
-              </div>
-            </div>
-          )
-        })}
-
-        <div className="row m-t">
-          Latest action: <span dangerouslySetInnerHTML={{__html: ansi_up.ansi_to_html(watcher.lastLog)}}></span>
-        </div>
+        <WatcherDirsList
+          dirs={watcher.dirs}
+          installedPackages={plugins.installedPackages}
+          onRemoveDirClick={this.handleRemoveDirClick}
+          onStartClick={this.handleToggleStartClick.bind(this, true)}
+          onStopClick={this.handleToggleStartClick.bind(this, false)}
+          onToggleConfigClick={this.handleToggleConfigClick}
+          onSetConfig={this.handleSetConfig}
+        />
       </div>
     );
   }
-})
+}
 
-export default connect((state)=>({
-  watcher: state.watcher
-}))(Watcher);
+export default connect((state) => ({
+  watcher: state.watcher,
+  plugins: state.plugins,
+}))(Watcher)

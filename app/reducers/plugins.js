@@ -1,28 +1,47 @@
 import { handleActions } from 'redux-actions';
+import constants from '../constants'
+import cloneDeep from 'lodash/cloneDeep'
+import flatten from 'lodash/flatten'
 import filter from 'lodash/filter'
-import map from 'lodash/map'
+import pick from 'lodash/pick'
 import find from 'lodash/find'
+import map from 'lodash/map'
+import pt from 'path'
+
 
 const defaultState = {
-  results: [],
-  totalCount: 0,
-  statusText: null,
+  searchResults: [],
+  installedPackages: [],
   isSearching: false,
+  statusText: null,
 }
 
-const createPluginItem = function(state, item, i){
+const createPluginItem = function (state, item) {
   let isInstalled = false
-  if (find(state.results, {'name': item.name})) {
+  let isLocal = false
+  let copy = cloneDeep(item)
+
+  let path = pt.join(constants.packagesDir, copy.name)
+  if (find(state.installedPackages, { name: copy.name })) {
     isInstalled = true
   }
 
-  if (item.hasOwnProperty('isInstalled')){
-    isInstalled = item.isInstalled
+  if (copy.hasOwnProperty('isInstalled')) {
+    isInstalled = copy.isInstalled
+  }
+
+  if (copy.hasOwnProperty('archive_url')) {
+    copy = pick(copy, ['archive_url', 'name', 'id', 'full_name', 'html_url', 'description']);
+  } else {
+    path = copy.name
+    isLocal = true
   }
 
   return {
-    ...item,
+    ...copy,
     isInstalled,
+    isLocal,
+    path,
     isInstalling: false,
   }
 }
@@ -32,64 +51,72 @@ export default handleActions({
 
   PLUGINS_TOGGLE_IS_INSTALLING: (state, action) => ({
     ...state,
-    results: [
-      ...state.results.slice(0, action.payload),
+    searchResults: [
+      ...state.searchResults.slice(0, action.payload),
       {
-        ...state.results[action.payload],
-        isInstalling: !state.results[action.payload].isInstalling
+        ...state.searchResults[action.payload],
+        isInstalling: !state.searchResults[action.payload].isInstalling
       },
-      ...state.results.slice(action.payload + 1)
+      ...state.searchResults.slice(action.payload + 1)
     ]
   }),
 
-  PLUGIN_INSTALLED_PACKAGE: (state, action) => ({
+  PLUGIN_TOGGLE_IS_INSTALLED: (state, action) => ({
     ...state,
-    results: [
-      ...state.results.slice(0, action.payload),
+    searchResults: [
+      ...state.searchResults.slice(0, action.payload),
       {
-        ...state.results[action.payload],
-        isInstalled: true
+        ...state.searchResults[action.payload],
+        isInstalled: !state.searchResults.isInstalled
       },
-      ...state.results.slice(action.payload + 1)
+      ...state.searchResults.slice(action.payload + 1)
     ]
   }),
 
-  PLUGIN_UNINSTALLED_PACKAGE: (state, action) => ({
-    ...state,
-    results: [
-      ...state.results.slice(0, action.payload),
-      {
-        ...state.results[action.payload],
-        isInstalled: false
-      },
-      ...state.results.slice(action.payload + 1)
-    ]
-  }),
-
-  PLUGIN_REMOVE_PACKAGE: (state, action) => ({
-    ...state,
-    results: [
-      ...state.results.slice(0, action.payload),
-      ...state.results.slice(action.payload + 1)
-    ]
-  }),
-
-
-  PLUGINS_TOGGLE_IS_SEARCHING: (state, action) => ({
+  PLUGINS_TOGGLE_IS_SEARCHING: (state) => ({
     ...state,
     isSearching: !state.isSearching,
   }),
 
-  PLUGINS_SET_RESULTS: (state, action) => ({
+  PLUGINS_SET_SEARCH_RESULTS: (state, action) => ({
     ...state,
-    results: filter(map(action.payload.items, createPluginItem.bind(null, state)), (o)=>{return o.name != "rinobot.js"}),
-    totalCount: action.payload.total_count,
+    searchResults: filter(
+              map(action.payload.items, createPluginItem.bind(null, state)),
+              o => o.name !== 'rinobot.js'),
     statusText: null
   }),
 
   PLUGINS_SET_ERROR: (state, action) => ({
     ...state,
     statusText: action.payload
-  })
+  }),
+
+  PLUGIN_SET_INSTALLED_PACKAGE: (state, action) => ({
+    ...state,
+    installedPackages: filter(
+                        map(action.payload, createPluginItem.bind(null, state)),
+                        o => o.name !== 'rinobot.js'),
+    statusText: null
+  }),
+
+  PLUGIN_ADD_INSTALLED_PACKAGE: (state, action) => ({
+    ...state,
+    installedPackages: flatten([
+      ...state.installedPackages,
+      filter(
+        map(action.payload, createPluginItem.bind(null, state)),
+        o => o.name !== 'rinobot.js'),
+    ]),
+    statusText: null
+  }),
+
+  PLUGIN_REMOVE_INSTALLED_PACKAGE: (state, action) => ({
+    ...state,
+    installedPackages: [
+      ...state.installedPackages.slice(0, action.payload),
+      ...state.installedPackages.slice(action.payload + 1)
+    ],
+    statusText: null
+  }),
 
 }, defaultState)

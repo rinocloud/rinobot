@@ -1,0 +1,73 @@
+import { createAction } from 'redux-actions'
+import pt from 'path'
+import colors from 'colors'
+import {Pipeline} from 'rinobot/dist/pipeline'
+
+// We require the watcher chokidar bindings from the main electron process it goes
+// crazy if we require from within a window
+var mainProcessChokidar = require('electron').remote.getGlobal('mainProcessChokidar')
+mainProcessChokidar.close()
+
+colors.enabled = true
+colors.mode = 'browser'
+
+// Define non-async actions
+export const toggleDevLog = createAction('WATCHER_TOGGLE_SHOW_DEV_LOGS')
+export const removeByIndex = createAction('WATCHER_REMOVE_BY_INDEX')
+export const addDevLogs = createAction('WATCHER_ADD_DEV_LOGS')
+export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
+export const startBusy = createAction('WATCHER_START_BUSY')
+export const stopBusy = createAction('WATCHER_STOP_BUSY')
+export const addPaths = createAction('WATCHER_ADD_PATHS')
+export const addPipeline = createAction('WATCHER_ADD_PIPELINE')
+export const addLogs = createAction('WATCHER_ADD_LOGS')
+
+// Define async actions
+export const syncPathsWithChokidar = () => {
+  return (dispatch, getState) => {}
+}
+
+export const stopWatching = (action) => {
+  // stops watching a directory
+  return (dispatch, getState) => {
+    dispatch(removeByIndex(action))
+    mainProcessChokidar.close()
+  }
+}
+
+export const constructFolderView = (relativePath) => {
+  return (dispatch, getState)=>{
+
+  }
+}
+
+const processEvent = (action, dispatch, event, path, stats) => {
+
+  dispatch(constructFolderView(pt.relative(action[0], path)))
+
+  const p = new Pipeline({
+    watchPath: action[0],
+    event,
+    path,
+    on_log: (pipeline, msg)=>{ dispatch(addLogs([`${pipeline.relPath}: ${msg}`.blue])) },
+    on_complete: (pipeline)=>{ dispatch(addLogs([`${pipeline.relPath}: complete`.green])) },
+    on_error: (pipeline, error)=>{ dispatch(addLogs([`${pipeline.relPath}: ${error}`.red])) },
+    on_ignore: (pipeline, msg)=>{ dispatch(addDevLogs([`${pipeline.relPath}: ${msg}`])) },
+  })
+
+  dispatch(addPipeline(p))
+}
+
+export const startWatching = (action) => {
+  return (dispatch, getState) => {
+    const w = mainProcessChokidar.getChokidar()
+      .watch(action, {ignored: /[\/\\].*.rino/, ignoreInitial:false, usePolling: true})
+      .on('all', processEvent.bind(null, action, dispatch))
+      .on('ready', ()=>{
+        dispatch(addLogs([`Started watching ${action}`.green]))
+      }
+    )
+    dispatch(addPaths(action))
+    mainProcessChokidar.addWatch(w)
+  }
+}

@@ -1,33 +1,62 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {PluginResultList} from './PluginResultList'
+const { dialog } = require('electron').remote;
+
+import { PluginResultList } from './PluginResultList'
 import * as pluginsActions from '../actions/plugins'
 
-export const Plugins = React.createClass({
 
-  componentDidMount(){
-    const {dispatch, plugins} = this.props
+export class Plugins extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    plugins: PropTypes.object.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    this.handleDownloadClick = this.handleDownloadClick.bind(this)
+    this.handleChooseFolder = this.handleChooseFolder.bind(this)
+    this.handleSearchClick = this.handleSearchClick.bind(this)
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props
     dispatch(pluginsActions.doSearch(''))
-  },
+  }
 
-  handleSearchClick(e){
-    const {dispatch, plugins} = this.props
-    e.preventDefault()
-    dispatch(pluginsActions.doSearch(this._input.value))
-  },
-
-  onClickDownload(plugin, i){
-    const {dispatch, plugins} = this.props
+  handleDownloadClick(plugin, i) {
+    const { dispatch } = this.props
     dispatch(pluginsActions.downloadPackage(plugin, i))
-  },
+  }
+
+  handleChooseFolder(e) {
+    const { dispatch } = this.props
+    e.preventDefault()
+    const path = dialog.showOpenDialog({ properties: ['openDirectory'] })
+    if (path) {
+      dispatch(pluginsActions.installLocalPackage(path[0]))
+    }
+  }
+
+  handleSearchClick(e) {
+    const { dispatch } = this.props
+    e.preventDefault()
+    dispatch(pluginsActions.doSearch(this.$input.value))
+  }
 
   render() {
-    const {dispatch, plugins} = this.props
+    const { plugins } = this.props
 
     return (
       <div className="container">
         <div className="row m-t">
-          <input type="text" className="form-control" ref={(c)=>{this._input =c}} placeholder="Search for rinobot plugins"/>
+          <input
+            type="text"
+            className="form-control"
+            ref={(c) => { this.$input = c }}
+            placeholder="Search for rinobot plugins"
+          />
           <a href="#" className="m-t btn btn-primary" onClick={this.handleSearchClick}>
             {plugins.isSearching ?
               <span>Searching <i className="fa fa-spinner fa-spin"></i></span>
@@ -35,17 +64,27 @@ export const Plugins = React.createClass({
               'Search'
             }
           </a>
+
+          <a href="#" className="m-t m-l btn btn-default" onClick={this.handleChooseFolder}>
+            Install from directory
+          </a>
+
+          <div className="row m-l-0 m-r-0">
             {plugins.statusText}
+          </div>
         </div>
 
         <div className="row m-t">
-          <PluginResultList plugins={plugins} onClickDownload={this.onClickDownload}/>
+          <PluginResultList
+            pluginsList={plugins.searchResults}
+            onClickDownload={this.handleDownloadClick}
+          />
         </div>
       </div>
-    );
+    )
   }
-})
+}
 
-export default connect((state)=>({
+export default connect((state) => ({
   plugins: state.plugins
-}))(Plugins);
+}))(Plugins)

@@ -1,5 +1,5 @@
 import pt from 'path';
-var remote = require('electron').remote
+const remote = require('electron').remote
 
 export default {
   oauth2: {
@@ -8,5 +8,6 @@ export default {
   },
   authFilePath: pt.join(remote.app.getPath('userData'), 'auth.json'),
   packagesFilePath: pt.join(remote.app.getPath('userData'), 'packages.json'),
+  watcherFilePath: pt.join(remote.app.getPath('userData'), 'watcher.json'),
   packagesDir: pt.join(remote.app.getPath('userData'), 'packages'),
 }

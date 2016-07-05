@@ -1,73 +1,75 @@
-import { createAction } from 'redux-actions'
+import fs from 'fs'
 import pt from 'path'
-import colors from 'colors'
-import {Pipeline} from 'rinobot/dist/pipeline'
+import yaml from 'js-yaml'
+import omit from 'lodash/omit'
+import constants from '../constants'
+import { createAction } from 'redux-actions'
 
-// We require the watcher chokidar bindings from the main electron process it goes
-// crazy if we require from within a window
-var mainProcessChokidar = require('electron').remote.getGlobal('mainProcessChokidar')
-mainProcessChokidar.close()
-
-colors.enabled = true
-colors.mode = 'browser'
-
-// Define non-async actions
-export const toggleDevLog = createAction('WATCHER_TOGGLE_SHOW_DEV_LOGS')
-export const removeByIndex = createAction('WATCHER_REMOVE_BY_INDEX')
-export const addDevLogs = createAction('WATCHER_ADD_DEV_LOGS')
-export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
-export const startBusy = createAction('WATCHER_START_BUSY')
-export const stopBusy = createAction('WATCHER_STOP_BUSY')
-export const addPaths = createAction('WATCHER_ADD_PATHS')
-export const addPipeline = createAction('WATCHER_ADD_PIPELINE')
-export const addLogs = createAction('WATCHER_ADD_LOGS')
-
-// Define async actions
-export const syncPathsWithChokidar = () => {
-  return (dispatch, getState) => {}
+const defaultConfig = {
+  uploadTo: '',
+  base: 'https://rinocloud.com',
+  metadataExtensions: ['.toml', '.json', '.yaml', '.yml'],
+  ignore: ['*.json', '*.yaml', '*.toml', '*.rino', 'rino.yaml', 'rino.json', '.rino/*', '*~']
 }
 
-export const stopWatching = (action) => {
-  // stops watching a directory
-  return (dispatch, getState) => {
-    dispatch(removeByIndex(action))
-    mainProcessChokidar.close()
+export const getConfig = (watchPath) => {
+  /*
+    Get the config file from the directory being watched
+    returns null if the rino.yaml file doesnt exist
+  */
+  let userOptions = {}
+  try {
+    userOptions = yaml.safeLoad(fs.readFileSync(pt.join(watchPath, 'rino.yaml'), 'utf8'))
+    userOptions.ignore = userOptions.ignore || []
+  } catch (e) {
+    return null
   }
-}
 
-export const constructFolderView = (relativePath) => {
-  return (dispatch, getState)=>{
-
+  // if we get some userOptions then extend the defaultConfig
+  const options = {
+    ...defaultConfig,
+    ignore: [
+      ...defaultConfig.ignore,
+      ...userOptions.ignore
+    ],
+    ...omit(userOptions, 'rules', 'ignore'),
+    rules: userOptions.rules || []
   }
+  return options
 }
 
-const processEvent = (action, dispatch, event, path, stats) => {
+export const setError = createAction('WATCHER_SET_ERROR')
+export const _addDir = createAction('WATCHER_ADD_DIR')
+export const setDirs = createAction('WATCHER_SET_DIRS')
+export const _removeDir = createAction('WATCHER_REMOVE_DIR')
+export const startDir = createAction('WATCHER_START_DIR')
+export const stopDir = createAction('WATCHER_STOP_DIR')
+export const toggleConfigOpen = createAction('WATCHER_TOGGLE_CONFIG_OPEN')
 
-  dispatch(constructFolderView(pt.relative(action[0], path)))
+export const readLocalDirs = () => (dispatch) => {
+  let pluginsJSON = null
+  try {
+    pluginsJSON = JSON.parse(fs.readFileSync(constants.watcherFilePath))
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+  }
+  if (pluginsJSON) dispatch(setDirs(pluginsJSON))
+}
 
-  const p = new Pipeline({
-    watchPath: action[0],
-    event,
-    path,
-    on_log: (pipeline, msg)=>{ dispatch(addLogs([`${pipeline.relPath}: ${msg}`.blue])) },
-    on_complete: (pipeline)=>{ dispatch(addLogs([`${pipeline.relPath}: complete`.green])) },
-    on_error: (pipeline, error)=>{ dispatch(addLogs([`${pipeline.relPath}: ${error}`.red])) },
-    on_ignore: (pipeline, msg)=>{ dispatch(addDevLogs([`${pipeline.relPath}: ${msg}`])) },
+export const persistDirs = () => (dispatch, getState) => {
+  const str = JSON.stringify(getState().watcher.dirs, null, 3)
+  fs.writeFile(constants.watcherFilePath, str, 'utf-8', (err) => {
+    if (err) dispatch(setError(err.message))
   })
-
-  dispatch(addPipeline(p))
 }
 
-export const startWatching = (action) => {
-  return (dispatch, getState) => {
-    const w = mainProcessChokidar.getChokidar()
-      .watch(action, {ignored: /[\/\\].*.rino/, ignoreInitial:false, usePolling: true})
-      .on('all', processEvent.bind(null, action, dispatch))
-      .on('ready', ()=>{
-        dispatch(addLogs([`Started watching ${action}`.green]))
-      }
-    )
-    dispatch(addPaths(action))
-    mainProcessChokidar.addWatch(w)
-  }
+export const addDir = (path) => (dispatch) => {
+  const config = getConfig(path)
+  dispatch(_addDir({ path, config }))
+  dispatch(persistDirs())
+}
+
+export const removeDir = (path) => (dispatch) => {
+  dispatch(_removeDir(path))
+  dispatch(persistDirs())
 }

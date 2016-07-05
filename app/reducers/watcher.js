@@ -1,72 +1,86 @@
 import { handleActions } from 'redux-actions';
+import map from 'lodash/map'
 
-import _ from 'underscore'
-
-/* Default state */
 const defaultState = {
-  // this is the users Rinocloud api token
-  token : null,
   error: null,
-  paths: [],
-  pipelines: [],
-  logs: [],
-  lastLog: 'nothing yet',
-  dev_logs: [],
-  showDevLogs: false,
-  busy: false
+  dirs: [],
+  statusText: null
 }
 
-/* Reduce */
+const defaultDirState = {
+  isStarted: false,
+  configOpen: false
+}
+
+const createDir = (dir) => ({
+  path: dir.path,
+  isStarted: false,
+  configOpen: false,
+  config: dir.config || null,
+})
+
 export default handleActions({
-  WATCHER_ADD_PATHS: (state, action) => ({
+
+  WATCHER_SET_ERROR: (state, action) => ({
     ...state,
-    paths: _.flatten([...state.paths, action.payload])
+    statusText: action.payload
   }),
 
-  WATCHER_ADD_PIPELINE: (state, action) => ({
+  WATCHER_SET_DIRS: (state, action) => ({
     ...state,
-    pipelines: _.flatten([...state.pipelines, action.payload])
+    dirs: map(action.payload, (o) => ({
+      ...o,
+      ...defaultDirState
+    }))
   }),
 
-  WATCHER_ADD_LOGS: (state, action) => ({
+  WATCHER_ADD_DIR: (state, action) => ({
     ...state,
-    logs: _.flatten([...state.logs, action.payload]),
-    dev_logs: _.flatten([...state.dev_logs, action.payload]),
-    lastLog: action.payload[action.payload.length - 1]
+    dirs: [...state.dirs, createDir(action.payload)]
   }),
 
-  WATCHER_ADD_DEV_LOGS: (state, action) => ({
+  WATCHER_REMOVE_DIR: (state, action) => ({
     ...state,
-    dev_logs: _.flatten([...state.dev_logs, action.payload])
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      ...state.dirs.slice(action.payload + 1)
+    ],
   }),
 
-  WATCHER_CLEAR_LOGS: (state, action) => ({
+  WATCHER_START_DIR: (state, action) => ({
     ...state,
-    logs: [],
-    dev_logs: []
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        isStarted: true
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
   }),
 
-  WATCHER_START_BUSY: (state, action) => ({
+  WATCHER_STOP_DIR: (state, action) => ({
     ...state,
-    busy: true
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        isStarted: false
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
   }),
 
-  WATCHER_STOP_BUSY: (state, action) => ({
+  WATCHER_TOGGLE_CONFIG_OPEN: (state, action) => ({
     ...state,
-    busy: false
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        configOpen: !state.dirs[action.payload].configOpen
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
   }),
-
-  WATCHER_TOGGLE_SHOW_DEV_LOGS: (state, action) => ({
-    ...state,
-    showDevLogs: !state.showDevLogs
-  }),
-
-  WATCHER_REMOVE_BY_INDEX: (state, action) => ({
-    ...state,
-    paths: [
-      ...state.paths.slice(0, action.payload),
-      ...state.paths.slice(action.payload + 1)
-    ]
-  })
 
 }, defaultState)
