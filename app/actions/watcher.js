@@ -32,8 +32,8 @@ export const getConfig = (watchPath) => {
       ...defaultConfig.ignore,
       ...userOptions.ignore
     ],
-    ...omit(userOptions, 'rules', 'ignore'),
-    rules: userOptions.rules || []
+    ...omit(userOptions, 'tasks', 'ignore'),
+    tasks: userOptions.tasks || []
   }
   return options
 }
@@ -41,6 +41,7 @@ export const getConfig = (watchPath) => {
 export const setError = createAction('WATCHER_SET_ERROR')
 export const _addDir = createAction('WATCHER_ADD_DIR')
 export const setDirs = createAction('WATCHER_SET_DIRS')
+export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
 export const startDir = createAction('WATCHER_START_DIR')
 export const stopDir = createAction('WATCHER_STOP_DIR')
@@ -72,4 +73,8 @@ export const addDir = (path) => (dispatch) => {
 export const removeDir = (path) => (dispatch) => {
   dispatch(_removeDir(path))
   dispatch(persistDirs())
+}
+
+export const setConfig = (index, config) => (dispatch) => {
+  dispatch(_setConfig({index, config}))
 }

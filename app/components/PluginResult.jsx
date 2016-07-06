@@ -43,38 +43,37 @@ export class PluginResult extends React.Component {
     else cls += ' btn-primary'
 
     return (
-      <div>
+      <div className="p-a bordered m-t">
         <div className="row">
-          <a href="#" onClick={this.openPluginHomepage}>{plugin.name}</a>{'   '}
+          <div className="col-sm-12 lead m-b-0">
+            <p><a href="#" onClick={this.openPluginHomepage}>{plugin.name}</a>{'   '}
 
-          {this.props.onClickDownload ?
-            <a href="#" className={cls} onClick={onClickDownload}>{
-              plugin.isInstalling ?
-                <span>Installing <i className="fa fa-spin fa-spinner"></i></span>
+            {this.props.onClickDownload ?
+              <a href="#" className={cls} onClick={onClickDownload}>{
+                plugin.isInstalling ?
+                  <span>Installing <i className="fa fa-spin fa-spinner"></i></span>
+                :
+                plugin.isInstalled ? 'Update' : 'Install'
+              }</a>
               :
-              plugin.isInstalled ? 'Update' : 'Install'
-            }</a>
-            :
-            ''
-           }
+              ''
+             }
 
-          {this.props.onClickUninstall ?
-            <a
-              href="#"
-              className="m-l btn btn-xs btn-danger"
-              onClick={onClickUninstall}
-            >
-                Uninstall
-            </a>
-           :
-           null
-          }
-
+            {this.props.onClickUninstall ?
+              <a
+                href="#"
+                className="m-l btn btn-xs btn-danger"
+                onClick={onClickUninstall}
+              >
+                  Uninstall
+              </a>
+             :
+             null
+            }
+            </p>
+            <p>{plugin.description}</p>
+          </div>
         </div>
-        <div className="row">
-          {plugin.description}
-        </div>
-        <hr />
       </div>
     );
   }

@@ -11,7 +11,11 @@ import pt from 'path'
 
 const defaultState = {
   searchResults: [],
-  installedPackages: [],
+  installedPackages: [
+    { name: 'upload' },
+    { name: 'copy' },
+    { name: 'custom' },
+  ],
   isSearching: false,
   statusText: null,
 }
@@ -93,9 +97,12 @@ export default handleActions({
 
   PLUGIN_SET_INSTALLED_PACKAGE: (state, action) => ({
     ...state,
-    installedPackages: filter(
-                        map(action.payload, createPluginItem.bind(null, state)),
-                        o => o.name !== 'rinobot.js'),
+    installedPackages: flatten([
+      ...defaultState.installedPackages,
+      filter(
+        map(action.payload, createPluginItem.bind(null, state)),
+        o => o.name !== 'rinobot.js')
+    ]),
     statusText: null
   }),
 

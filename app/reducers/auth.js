@@ -3,8 +3,9 @@ import { handleActions } from 'redux-actions';
 const defaultState = {
 
   // we will query the token to see if the use is authenticated
-
   email: null,
+  username: null,
+  project: null,
   token: null,
   access_token: null,
   refresh_token: null,
@@ -21,25 +22,25 @@ const defaultState = {
 /* Reduce */
 export default handleActions({
 
-  AUTH_TOGGLE_AUTHENTICATING: (state, action) => ({
+  AUTH_TOGGLE_AUTHENTICATING: (state) => ({
     ...state,
     isAuthenticating: !state.isAuthenticating
   }),
 
-  AUTH_SET_AUTH: (state, action) => {
-    return {
-      ...state,
-      email: action.payload.email,
-      token: action.payload.token,
-      access_token: action.payload.access_token,
-      refresh_token: action.payload.refresh_token,
-      scope: action.payload.scope,
-      expires_in: action.payload.expires_in,
-      token_type: action.payload.token_type,
-    }
-  },
+  AUTH_SET_AUTH: (state, action) => ({
+    ...state,
+    email: action.payload.email,
+    username: action.payload.username,
+    project: action.payload.project,
+    token: action.payload.token,
+    access_token: action.payload.access_token,
+    refresh_token: action.payload.refresh_token,
+    scope: action.payload.scope,
+    expires_in: action.payload.expires_in,
+    token_type: action.payload.token_type,
+  }),
 
-  AUTH_UNSET_AUTH: (state, action) => ({
+  AUTH_UNSET_AUTH: (state) => ({
     ...state,
     access_token: null,
     refresh_token: null,
@@ -49,8 +50,8 @@ export default handleActions({
   }),
 
   AUTH_SET_ERROR: (state, action) => ({
-      ...state,
-      statusText: action.payload
+    ...state,
+    statusText: action.payload
   })
 
 }, defaultState)

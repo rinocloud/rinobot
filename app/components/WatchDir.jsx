@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { ConfigureTasks } from './ConfigureTasks'
+import { ConfigurePipeline } from './ConfigurePipeline'
+const { shell } = require('electron')
 
 
 export class WatchDir extends React.Component {
@@ -37,59 +38,66 @@ export class WatchDir extends React.Component {
       this.props.onToggleConfigClick()
     }
 
+    const openPluginHomepage = (e) => {
+      e.preventDefault()
+      shell.showItemInFolder(dir.path)
+    }
+
     return (
-      <div className="m-t row">
+      <div className="p-a bordered m-t">
         <div className="row">
-          {dir.path}
+          <div className="col-sm-12 lead">
+            <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
+          </div>
         </div>
         <div className="row">
-          {dir.isStarted ?
-            <a
-              href="#"
-              className="btn btn-xs btn-danger"
-              onClick={onStopClick}
-            >
-              stop
-            </a>
-             :
-            <a
-              href="#"
-              className="btn btn-xs btn-success"
-              onClick={onStartClick}
-            >
-              start
-            </a>
-          }
+          <div className="col-sm-12">
+            {dir.isStarted ?
+              <a
+                href="#"
+                className="btn btn-sm btn-danger"
+                onClick={onStopClick}
+              >
+                stop
+              </a>
+               :
+              <a
+                href="#"
+                className="btn btn-sm btn-success"
+                onClick={onStartClick}
+              >
+                start
+              </a>
+            }
 
-          <a
-            href="#"
-            className="m-l btn btn-xs btn-default"
-            onClick={onRemoveDirClick}
-          >
-            remove
-          </a>
-          <a
-            href="#"
-            className="m-l btn btn-xs btn-default"
-            onClick={onToggleConfigClick}
-          >
-            setup
+            <a
+              href="#"
+              className="m-l btn btn-sm btn-default"
+              onClick={onRemoveDirClick}
+            >
+              remove
+            </a>
+            <a
+              href="#"
+              className="m-l btn btn-sm btn-default"
+              onClick={onToggleConfigClick}
+            >
             {dir.configOpen ?
-              <i className="fa fa-chevron-down"></i> :
-              <i className="fa fa-chevron-right"></i>}
+              'save settings' :
+              'setup'
+              }
 
-          </a>
+            </a>
+          </div>
         </div>
 
         {dir.configOpen ?
-          <ConfigureTasks
+          <ConfigurePipeline
             dir={dir}
             onSetConfig={this.props.onSetConfig}
             installedPackages={installedPackages}
           />
          : ''}
-
-        <hr />
       </div>
 
     )

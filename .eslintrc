@@ -15,7 +15,8 @@
     "react/prefer-stateless-function": 0,
     "semi": 0,
     "func-names": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "no-console": 0
   },
   "plugins": [
     "import",

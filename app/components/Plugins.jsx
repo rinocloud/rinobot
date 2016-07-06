@@ -51,34 +51,40 @@ export class Plugins extends React.Component {
     return (
       <div className="container">
         <div className="row m-t">
-          <input
-            type="text"
-            className="form-control"
-            ref={(c) => { this.$input = c }}
-            placeholder="Search for rinobot plugins"
-          />
-          <a href="#" className="m-t btn btn-primary" onClick={this.handleSearchClick}>
-            {plugins.isSearching ?
-              <span>Searching <i className="fa fa-spinner fa-spin"></i></span>
-              :
-              'Search'
-            }
-          </a>
+          <div className="col-sm-12">
+            <input
+              type="text"
+              className="form-control"
+              ref={(c) => { this.$input = c }}
+              placeholder="Search for rinobot plugins"
+            />
+            <a href="#" className="m-t btn btn-primary" onClick={this.handleSearchClick}>
+              {plugins.isSearching ?
+                <span>Searching <i className="fa fa-spinner fa-spin"></i></span>
+                :
+                'Search'
+              }
+            </a>
 
-          <a href="#" className="m-t m-l btn btn-default" onClick={this.handleChooseFolder}>
-            Install from directory
-          </a>
+            <a href="#" className="m-t m-l btn btn-default" onClick={this.handleChooseFolder}>
+              Install from directory
+            </a>
+          </div>
+        </div>
 
-          <div className="row m-l-0 m-r-0">
+        <div className="row">
+          <div className="col-sm-12">
             {plugins.statusText}
           </div>
         </div>
 
         <div className="row m-t">
-          <PluginResultList
-            pluginsList={plugins.searchResults}
-            onClickDownload={this.handleDownloadClick}
-          />
+          <div className="col-sm-12">
+            <PluginResultList
+              pluginsList={plugins.searchResults}
+              onClickDownload={this.handleDownloadClick}
+            />
+          </div>
         </div>
       </div>
     )

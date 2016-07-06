@@ -31,10 +31,12 @@ export class InstalledPlugins extends React.Component {
     return (
       <div className="container">
         <div className="row m-t">
-          <PluginResultList
-            pluginsList={plugins.installedPackages}
-            onClickUninstall={this.handleUninstallClick}
-          />
+          <div className="col-sm-12">
+            <PluginResultList
+              pluginsList={plugins.installedPackages}
+              onClickUninstall={this.handleUninstallClick}
+            />
+          </div>
         </div>
       </div>
     );

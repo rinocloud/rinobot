@@ -10,7 +10,7 @@ export class Watcher extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     watcher: PropTypes.object.isRequired,
-    watcher: PropTypes.object.isRequired
+    plugins: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -51,18 +51,21 @@ export class Watcher extends React.Component {
   }
 
   handleSetConfig(index, config) {
-    console.log(index, config)
+    const { dispatch } = this.props
+    dispatch(watcherActions.setConfig(index, config))
   }
 
   render() {
     const { watcher, plugins } = this.props
 
     return (
-      <div className="container m-t">
-        <div className="row">
-          <a href="#" className="btn btn-sm btn-primary" onClick={this.chooseFolder}>
-            Choose folder
-          </a>
+      <div className="container">
+        <div className="row m-t">
+          <div className="col-sm-12">
+            <a href="#" className="btn btn-sm btn-primary" onClick={this.chooseFolder}>
+              Choose folder
+            </a>
+          </div>
         </div>
 
         <WatcherDirsList

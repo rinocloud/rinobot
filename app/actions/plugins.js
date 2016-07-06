@@ -50,8 +50,8 @@ export const downloadPackage = (plugin, index) => (dispatch) => {
   request.get(tarballUrl)
     .then((res) => {
       res
-        .pipe(zlib.Unzip())
-        .pipe(tar.Extract({ path: dest, strip: 1 }))
+        .pipe(zlib.Unzip()) // eslint-disable-line
+        .pipe(tar.Extract({ path: dest, strip: 1 })) // eslint-disable-line
         .on('end', () => {
           dispatch(toggleInstalled(index))
           dispatch(toggleIsInstalling(index))
