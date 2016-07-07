@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
-import map from 'lodash/map'
 
 export class ConfigurePipeline extends React.Component {
 
@@ -20,28 +19,13 @@ export class ConfigurePipeline extends React.Component {
     this.handleAddMetadata = this.handleAddMetadata.bind(this)
     this.handleFormDataChange = this.handleFormDataChange.bind(this)
 
-    /*
-      need to handle the mapping from command to plugin
-    */
-
-    let meta = [
-      { field: '', value: '' }
-    ]
-
-    if (props.dir.config.metadata) {
-      meta = map(props.dir.config.metadata, (value, field) => ({ field, value }))
-    }
-
     this.state = {
-      formData: {
-        ...props.dir.config,
-        metadata: meta,
-      },
+      formData: props.dir.config
     }
   }
 
   handleFormDataChange() {
-    console.log(this.state.formData)
+    this.props.onSetConfig(this.state.formData)
   }
 
   handleUploadToChange(e) {
@@ -84,7 +68,8 @@ export class ConfigurePipeline extends React.Component {
     }
   }
 
-  handleAddTask() {
+  handleAddTask(e) {
+    e.preventDefault()
     const tasks = this.state.formData.tasks
     this.setState({
       formData: {
@@ -97,7 +82,8 @@ export class ConfigurePipeline extends React.Component {
     })
   }
 
-  handleAddMetadata() {
+  handleAddMetadata(e) {
+    e.preventDefault()
     const metadata = this.state.formData.metadata
     this.setState({
       formData: {
@@ -115,7 +101,7 @@ export class ConfigurePipeline extends React.Component {
     const { formData } = this.state
 
     return (
-      <div className="m-t">
+      <div className="m-t configForm">
         <div className="row">
           <div className="col-sm-8">
             <form className="form form-horizontal">
@@ -143,13 +129,16 @@ export class ConfigurePipeline extends React.Component {
                 </div>
 
                 {formData.tasks.map((o, i) =>
-                  <TaskForm
-                    key={`task${i}`}
-                    object={o}
-                    installedPackages={installedPackages}
-                    onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
-                    onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
-                  />
+                  <div>
+                    <TaskForm
+                      key={`task${i}`}
+                      task={o}
+                      installedPackages={installedPackages}
+                      onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
+                      onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
+                    />
+                    {i !== formData.tasks.length - 1 ? <hr /> : ''}
+                  </div>
                 )}
               </div>
 
@@ -169,6 +158,7 @@ export class ConfigurePipeline extends React.Component {
                     onRemove={() => this.handleRemoveArrayObject('metadata')(i)}
                   />
                 )}
+
               </div>
             </form>
           </div>

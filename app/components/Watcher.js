@@ -46,7 +46,13 @@ export class Watcher extends React.Component {
   }
 
   handleToggleConfigClick(index) {
-    const { dispatch } = this.props
+    const { dispatch, watcher } = this.props
+
+    if (watcher.dirs[index].configOpen) {
+      // then its closing and we should persist the configOpen
+      dispatch(watcherActions.persistConfig(index))
+    }
+
     dispatch(watcherActions.toggleConfigOpen(index))
   }
 

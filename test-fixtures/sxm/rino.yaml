@@ -1,27 +1,4 @@
-
-uploadTo: "test/sxm"
-
-metadata:
-  location: 'test/alpha'
-  value: 'something'
-
+uploadTo: '2016-07-07'
 tasks:
-  - match: "*.sxm"
-    command: "python"
-    args: "parse-sxm.py {{filepath}} 1"
-
-  - match: "*.asc"
-    command: "python"
-    args: "plot-sxm.py {{filepath}}"
-
-  - match: "*.sxm"
-    command: "rinocloud-upload"
-    on: "add"
-
-  - match: "*.asc"
-    command: "rinocloud-upload"
-    on: "add"
-
-  - match: "*.asc.png"
-    command: "rinocloud-upload"
-    on: "add"
+  - match: '*'
+    plugin: upload

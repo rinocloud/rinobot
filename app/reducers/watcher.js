@@ -8,18 +8,27 @@ const defaultState = {
   statusText: null
 }
 
-const defaultDirState = {
-  isStarted: false,
-  configOpen: false
-}
-
 const createDir = (dir) => ({
+  ...dir,
   path: dir.path,
   isStarted: false,
   configOpen: false,
   isCustomPlugin: false,
-  config: dir.config || null,
+  config: createConfig(dir.config)
 })
+
+const createConfig = (config) => {
+  const newConfig = {
+    uploadTo: moment().format('YYYY-MM-DD'),
+    metadata: [],
+    tasks: [{
+      match: '*',
+      plugin: 'upload'
+    }],
+    ...config,
+  }
+  return newConfig
+}
 
 export default handleActions({
 
@@ -30,10 +39,7 @@ export default handleActions({
 
   WATCHER_SET_DIRS: (state, action) => ({
     ...state,
-    dirs: map(action.payload, (o) => ({
-      ...o,
-      ...defaultDirState
-    }))
+    dirs: map(action.payload, createDir)
   }),
 
   WATCHER_ADD_DIR: (state, action) => ({
@@ -91,13 +97,7 @@ export default handleActions({
       ...state.dirs.slice(0, action.payload.index),
       {
         ...state.dirs[action.payload.index],
-        config: {
-          tasks: [
-            { match: '*', plugin: 'upload' }
-          ],
-          uploadTo: moment().format('YYYY-MM-DD'),
-          ...action.payload.config,
-        }
+        config: createConfig(action.payload.config)
       },
       ...state.dirs.slice(action.payload.index + 1)
     ],

@@ -2,6 +2,10 @@ import fs from 'fs'
 import pt from 'path'
 import yaml from 'js-yaml'
 import omit from 'lodash/omit'
+import map from 'lodash/map'
+import each from 'lodash/each'
+import isEmpty from 'lodash/isEmpty'
+import cloneDeep from 'lodash/cloneDeep'
 import constants from '../constants'
 import { createAction } from 'redux-actions'
 
@@ -54,11 +58,14 @@ export const readLocalDirs = () => (dispatch) => {
   } catch (err) {
     if (err.code !== 'ENOENT') throw err
   }
+
   if (pluginsJSON) dispatch(setDirs(pluginsJSON))
 }
 
 export const persistDirs = () => (dispatch, getState) => {
-  const str = JSON.stringify(getState().watcher.dirs, null, 3)
+  const data = map(getState().watcher.dirs, o => omit(o, 'config'))
+
+  const str = JSON.stringify(data, null, 3)
   fs.writeFile(constants.watcherFilePath, str, 'utf-8', (err) => {
     if (err) dispatch(setError(err.message))
   })
@@ -76,5 +83,22 @@ export const removeDir = (path) => (dispatch) => {
 }
 
 export const setConfig = (index, config) => (dispatch) => {
-  dispatch(_setConfig({index, config}))
+  dispatch(_setConfig({ index, config }))
+}
+
+export const persistConfig = (index) => (dispatch, getState) => {
+  const dir = getState().watcher.dirs[index]
+  let config = cloneDeep(dir.config)
+  const metadata = {}
+  each(config.metadata, o => {
+    metadata[o.field] = o.value
+  })
+  config.metadata = metadata
+
+  if (isEmpty(config.metadata)) config = omit(config, 'metadata')
+
+  const str = yaml.dump(config)
+  fs.writeFile(pt.join(dir.path, 'rino.yaml'), str, 'utf-8', (err) => {
+    if (err) dispatch(setError(err.message))
+  })
 }

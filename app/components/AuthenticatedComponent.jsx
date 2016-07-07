@@ -41,7 +41,7 @@ export function requireAuthentication(Component) {
 
       return (
         <div>
-          <div className="container m-t">
+          <div className="container m-t-lg">
             <div>
               <Link to="/"><i className="icon-brand"></i></Link>
               <Link to="/" className="m-l btn btn-sm">Watch folders</Link>

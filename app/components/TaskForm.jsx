@@ -9,12 +9,11 @@ export class TaskForm extends React.Component {
   }
 
   handleChangeMatch(field) {
-    const { object, onChange } = this.props //eslint-disable-line
-
+    const { task, onChange } = this.props //eslint-disable-line
     return function (e) {
       e.preventDefault()
       const state = {
-        ...object,
+        ...task,
         [field]: e.target.value
       }
       onChange(state)
@@ -28,7 +27,8 @@ export class TaskForm extends React.Component {
   }
 
   render() {
-    const { object, installedPackages } = this.props //eslint-disable-line
+    const { task, installedPackages } = this.props //eslint-disable-line
+
     return (
       <div>
         <div className="form-group">
@@ -36,8 +36,8 @@ export class TaskForm extends React.Component {
           <div className="col-sm-6">
             <input
               type="text"
-              style={{fontFamily: 'monospace'}}
-              value={object.match || ''}
+              style={{ fontFamily: 'monospace' }}
+              value={task.match || ''}
               className="form-control input-sm"
               onChange={this.handleChangeMatch('match')}
             />
@@ -54,20 +54,20 @@ export class TaskForm extends React.Component {
           <div className="col-sm-6">
             <select className="form-control input-sm" onChange={this.handleChangeMatch('plugin')}>
               {installedPackages.map((p, j) =>
-                <option key={`op${j}`}>{p.name}</option>
+                <option key={`op${j}`} defaultValue={p.name}>{p.name}</option>
               )}
             </select>
           </div>
         </div>
 
-        {object.plugin === 'custom' ?
+        {task.plugin === 'custom' ?
           <div>
             <div className="form-group">
               <label className="col-sm-2">command</label>
               <div className="col-sm-6">
                 <input
                   type="text"
-                  value={object.command || ''}
+                  value={task.command || ''}
                   className="form-control input-sm"
                   onChange={this.handleChangeMatch('command')}
                 />
@@ -78,7 +78,7 @@ export class TaskForm extends React.Component {
               <div className="col-sm-6">
                 <input
                   type="text"
-                  value={object.args || ''}
+                  value={task.args || ''}
                   className="form-control input-sm"
                   onChange={this.handleChangeMatch('args')}
                 />
@@ -89,7 +89,7 @@ export class TaskForm extends React.Component {
               <div className="col-sm-6">
                 <input
                   type="text"
-                  value={object.on || ''}
+                  value={task.on || ''}
                   className="form-control input-sm"
                   onChange={this.handleChangeMatch('on')}
                 />
