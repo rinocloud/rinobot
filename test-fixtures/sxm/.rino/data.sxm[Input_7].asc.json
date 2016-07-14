@@ -1,0 +1,65 @@
+{
+    "finished": true,
+    "completedTasks": {
+        "python": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm/data.sxm[Input_7].asc",
+            "filename": "data.sxm[Input_7].asc",
+            "relPath": "data.sxm[Input_7].asc",
+            "command": "python",
+            "args": "plot-sxm.py {{filepath}}",
+            "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "rinobotv2-test",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc",
+            "on": "all"
+        },
+        "rinocloud-upload": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm/data.sxm[Input_7].asc",
+            "filename": "data.sxm[Input_7].asc",
+            "relPath": "data.sxm[Input_7].asc",
+            "command": "rinocloud-upload",
+            "args": [],
+            "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "rinobotv2-test",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc",
+            "on": "add"
+        }
+    },
+    "response": {
+        "id": 10715,
+        "type": "file",
+        "number_of_comments": 0,
+        "share_code": null,
+        "owner": "eoin",
+        "metadata": {
+            "x": "y"
+        },
+        "created_on": "2016-07-14T16:43:43.092368Z",
+        "updated_on": "2016-07-14T16:43:45.390319Z",
+        "shared": false,
+        "name": "data.sxm[Input_7].asc",
+        "tags": null,
+        "notes": null,
+        "size": 852589,
+        "metadata_size": 47,
+        "project": 14,
+        "parent": 10684
+    }
+}

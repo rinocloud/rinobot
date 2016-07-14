@@ -7,7 +7,12 @@ import each from 'lodash/each'
 import isEmpty from 'lodash/isEmpty'
 import cloneDeep from 'lodash/cloneDeep'
 import constants from '../constants'
+import rimraf from 'rimraf'
 import { createAction } from 'redux-actions'
+import { Pipeline } from '../rinobot.js/src/pipeline'
+
+const mainProcessChokidar = require('electron').remote.getGlobal('mainProcessChokidar')
+mainProcessChokidar.close()
 
 const defaultConfig = {
   uploadTo: '',
@@ -43,13 +48,25 @@ export const getConfig = (watchPath) => {
 }
 
 export const setError = createAction('WATCHER_SET_ERROR')
-export const _addDir = createAction('WATCHER_ADD_DIR')
 export const setDirs = createAction('WATCHER_SET_DIRS')
+export const _addDir = createAction('WATCHER_ADD_DIR')
+export const addLogs = createAction('WATCHER_ADD_LOGS')
+export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
 export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
-export const startDir = createAction('WATCHER_START_DIR')
-export const stopDir = createAction('WATCHER_STOP_DIR')
+export const _startDir = createAction('WATCHER_START_DIR')
+export const _stopDir = createAction('WATCHER_STOP_DIR')
 export const toggleConfigOpen = createAction('WATCHER_TOGGLE_CONFIG_OPEN')
+export const toggleLogsOpen = createAction('WATCHER_TOGGLE_LOGS_OPEN')
+
+export const persistDirs = () => (dispatch, getState) => {
+  const data = map(getState().watcher.dirs, o => omit(o, 'config'))
+
+  const str = JSON.stringify(data, null, 3)
+  fs.writeFile(constants.watcherFilePath, str, 'utf-8', (err) => {
+    if (err) dispatch(setError(err.message))
+  })
+}
 
 export const readLocalDirs = () => (dispatch) => {
   let pluginsJSON = null
@@ -62,43 +79,105 @@ export const readLocalDirs = () => (dispatch) => {
   if (pluginsJSON) dispatch(setDirs(pluginsJSON))
 }
 
-export const persistDirs = () => (dispatch, getState) => {
-  const data = map(getState().watcher.dirs, o => omit(o, 'config'))
+export const persistConfig = (index) => (dispatch, getState) => {
+  const dir = getState().watcher.dirs[index]
+  let config = cloneDeep(dir.config)
+  const metadata = {}
 
-  const str = JSON.stringify(data, null, 3)
-  fs.writeFile(constants.watcherFilePath, str, 'utf-8', (err) => {
+  each(config.metadata, o => {
+    metadata[o.field] = o.value
+  })
+
+  config.metadata = metadata
+
+  if (isEmpty(config.metadata)) {
+    config = omit(config, 'metadata')
+  }
+
+  config.apiToken = getState().auth.token
+  config = omit(config, 'base', 'metadataExtensions', 'ignore')
+
+  const str = yaml.dump(config)
+  fs.writeFile(pt.join(dir.path, 'rino.yaml'), str, 'utf-8', (err) => {
     if (err) dispatch(setError(err.message))
   })
 }
 
-export const addDir = (path) => (dispatch) => {
-  const config = getConfig(path)
-  dispatch(_addDir({ path, config }))
-  dispatch(persistDirs())
-}
-
-export const removeDir = (path) => (dispatch) => {
-  dispatch(_removeDir(path))
-  dispatch(persistDirs())
+export const readLocalConfig = (index) => (dispatch, getState) => {
+  const config = getConfig(getState().watcher.dirs[index].path)
+  dispatch(_setConfig({ index, config }))
 }
 
 export const setConfig = (index, config) => (dispatch) => {
   dispatch(_setConfig({ index, config }))
 }
 
-export const persistConfig = (index) => (dispatch, getState) => {
+export const addDir = (path) => (dispatch, getState) => {
+  const config = getConfig(path)
+  dispatch(_addDir({ path, config }))
+  dispatch(persistDirs())
+  dispatch(persistConfig(getState().watcher.dirs.length - 1))
+}
+
+export const removeDir = (index) => (dispatch, getState) => {
+  if (getState().watcher.dirs[index].isStarted) {
+    mainProcessChokidar.closeByIndex(index)
+  }
+  dispatch(_removeDir(index))
+  dispatch(persistDirs())
+}
+
+export const startDir = (index) => (dispatch, getState) => {
+  dispatch(_startDir(index))
   const dir = getState().watcher.dirs[index]
-  let config = cloneDeep(dir.config)
-  const metadata = {}
-  each(config.metadata, o => {
-    metadata[o.field] = o.value
-  })
-  config.metadata = metadata
+  const log = (msg) => {
+    dispatch(addLogs({ index, logs: [msg] }))
+  }
 
-  if (isEmpty(config.metadata)) config = omit(config, 'metadata')
+  const w = mainProcessChokidar.getChokidar()
+    .watch(dir.path, {
+      ignored: ['**.rino/**', '**/.rino'],
+      ignoreInitial: false,
+      usePolling: true
+    })
+    .on('all', (event, path) => {
+      const p = new Pipeline({
+        watchPath: dir.path,
+        event,
+        path,
+        on_log: (pipeline, msg) => {
+          log(`${pipeline.relPath}: ${msg}`)
+        },
+        on_complete: (pipeline) => {
+          if (!pipeline.ignored) {
+            log(`${pipeline.relPath}: complete`)
+          }
+        },
+        on_error: (pipeline, error) => {
+          log(`${pipeline.relPath}: ${error.message}`)
+        },
+        // on_ignore: (pipeline, msg) => {
+        //   log(`${pipeline.relPath}: ${msg}`)
+        // },
+      })
+    })
+    .on('ready', () => {
+      log(`Started watching ${dir.path}`)
+    })
+  mainProcessChokidar.addWatch(w)
 
-  const str = yaml.dump(config)
-  fs.writeFile(pt.join(dir.path, 'rino.yaml'), str, 'utf-8', (err) => {
-    if (err) dispatch(setError(err.message))
+  console.log(mainProcessChokidar.watchers)
+}
+
+export const stopDir = (index) => (dispatch) => {
+  dispatch(_stopDir(index))
+  dispatch(clearLogs(index))
+  mainProcessChokidar.closeByIndex(index)
+}
+
+export const removeDotRino = (index) => (dispatch, getState) => {
+  const dir = getState().watcher.dirs[index]
+  rimraf(`${dir.path}/.rino/`, (err) => {
+    if (err) throw err;
   })
 }

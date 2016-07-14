@@ -4,14 +4,14 @@
         "python": {
             "aborted": false,
             "ignored": false,
-            "path": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm\\data.sxm[Z].asc",
+            "path": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm/data.sxm[Z].asc",
             "filename": "data.sxm[Z].asc",
             "relPath": "data.sxm[Z].asc",
             "command": "python",
             "args": "plot-sxm.py {{filepath}}",
-            "cwd": "\\\\vmware-host\\Shared Folders\\Documents\\Dropbox\\rino\\code\\rinobot\\test-fixtures\\sxm",
+            "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
             "event": "change",
-            "uploadTo": "test/sxm",
+            "uploadTo": "rinobotv2-test",
             "api": {
                 "config": {
                     "base": "https://rinocloud.com",

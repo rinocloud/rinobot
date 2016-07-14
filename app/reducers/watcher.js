@@ -1,6 +1,10 @@
-import { handleActions } from 'redux-actions';
+import isPlainObject from 'lodash/isPlainObject'
+import cloneDeep from 'lodash/cloneDeep'
+import flatten from 'lodash/flatten'
+import omit from 'lodash/omit'
 import map from 'lodash/map'
 import moment from 'moment'
+import { handleActions } from 'redux-actions'
 
 const defaultState = {
   error: null,
@@ -13,19 +17,36 @@ const createDir = (dir) => ({
   path: dir.path,
   isStarted: false,
   configOpen: false,
+  logsOpen: true,
   isCustomPlugin: false,
+  lastLog: null,
+  logs: [],
   config: createConfig(dir.config)
 })
 
 const createConfig = (config) => {
+  let metadata = []
+  let copy = {}
+
+  if (config) {
+    copy = cloneDeep(config)
+    if (isPlainObject(copy.metadata)) {
+      // metadata is a plain object when we read it from the rino.yaml file
+      // we map it to an array like metadata = [{field: 'x', value: 'y'}]
+      // this is so that we can allow the user to edit the field, value pairs
+      // its almost impossible to let the user edit it if its just an object
+      metadata = map(copy.metadata, (value, field) => ({ field, value }))
+      copy = omit(copy, 'metadata')
+    }
+  }
+
   const newConfig = {
     uploadTo: moment().format('YYYY-MM-DD'),
-    metadata: [],
     tasks: [{
       match: '*',
-      plugin: 'upload'
     }],
-    ...config,
+    metadata,
+    ...copy,
   }
   return newConfig
 }
@@ -100,6 +121,50 @@ export default handleActions({
         config: createConfig(action.payload.config)
       },
       ...state.dirs.slice(action.payload.index + 1)
+    ],
+  }),
+
+  WATCHER_ADD_LOGS: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload.index),
+      {
+        ...state.dirs[action.payload.index],
+        logs: flatten([
+          ...state.dirs[action.payload.index].logs,
+          ...action.payload.logs
+        ])
+          .reverse()
+          .slice(0, 99)
+          .reverse(),
+        lastLog: action.payload.logs[action.payload.logs.length - 1]
+      },
+      ...state.dirs.slice(action.payload.index + 1)
+    ],
+  }),
+
+  WATCHER_CLEAR_LOGS: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        logs: [],
+        lastLog: null
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
+  }),
+
+  WATCHER_TOGGLE_LOGS_OPEN: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        logsOpen: !state.dirs[action.payload].logsOpen
+      },
+      ...state.dirs.slice(action.payload + 1)
     ],
   }),
 

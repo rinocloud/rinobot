@@ -1,11 +1,24 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import * as authActions from '../actions/auth.js'
+import { Link } from 'react-router'
+const { shell } = require('electron')
 
 
-export const Login = React.createClass({
-  handleSubmit(e){
+export class Login extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleSubmit(e) {
     e.preventDefault()
     const { dispatch } = this.props
     const next = this.props.location.query.next || '/';
@@ -13,70 +26,67 @@ export const Login = React.createClass({
     dispatch(authActions.login({
       email: this._email.value,
       password: this._password.value,
-      next: next
+      next
     }))
-  },
+  }
 
   render() {
-    const {dispatch, auth} = this.props
-
-    const onClickForgot = (e) => {
-
-    }
-
-    const onClickSignup = (e) => {
-
+    const { auth } = this.props
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
     }
 
     return (
       <div>
-
-
-          <div className="header">
-            <div>
-              <i className="icon-brand"></i>
-              <a href="#" className="pull-right" onClick={onClickSignup}>
-                Don't have a Rinocloud account? Sign up.
-              </a>
-            </div>
+        <div className="container m-t-lg">
+          <div>
+            <Link to="/"><i className="icon-brand"></i></Link>
+            <a href="https://rinocloud.com/accounts/signup/" className="pull-right" onClick={openExternal}>
+              Don't have a Rinocloud account? Sign up.
+            </a>
           </div>
+        </div>
 
-          <div className="col-sm-4 col-sm-offset-4 m-t">
-
+        <div className="col-sm-4 col-sm-offset-4 m-t">
           <h2 className="">
             Login to Rinocloud
           </h2>
-
           <form className="m-t" onSubmit={this.handleSubmit}>
-
             <div className="form-group">
-              <input className="form-control input-" placeholder="email" ref={(c) => this._email = c} type="email"/>
+              <input
+                className="form-control"
+                placeholder="email"
+                ref={(c) => { this._email = c }}
+                type="email"
+              />
             </div>
 
             <div className="form-group">
-              <input className="form-control input-" placeholder="password" ref={(c) => this._password = c} type="password"/>
+              <input
+                className="form-control"
+                placeholder="password"
+                ref={(c) => { this._password = c }}
+                type="password"
+              />
             </div>
 
             <button className="btn btn-success btn-" type="submit">
               {auth.isAuthenticating ?
-              <span>Login <i className="fa fa-spinner fa-spin"></i></span>
+                <span>Login <i className="fa fa-spinner fa-spin"></i></span>
               :
-              <span>Login <i className="fa fa-arrow-right"></i></span>
-            }
+                <span>Login <i className="fa fa-arrow-right"></i></span>
+              }
             </button>
             <div className="m-t">{auth.statusText}</div>
-
-            <a href="#" onClick={onClickForgot}>Forgot password?</a>
-
+            <a href="https://rinocloud.com/accounts/password/reset/" onClick={openExternal}>Forgot password?</a>
           </form>
-
         </div>
-
       </div>
     )
   }
-})
+}
 
-export default connect((state)=>({
+export default connect((state) => ({
   auth: state.auth
 }))(Login)

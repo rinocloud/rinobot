@@ -1,0 +1,39 @@
+{
+    "finished": false,
+    "completedTasks": {},
+    "metadata": {
+        "x": "y",
+        "uploadTo": "rinobotv2-test",
+        "tasks": [
+            {
+                "match": "*.sxm",
+                "command": "python",
+                "args": "parse-sxm.py {{filepath}}"
+            },
+            {
+                "match": "*.asc",
+                "command": "python",
+                "args": "plot-sxm.py {{filepath}}"
+            },
+            {
+                "match": "*.sxm",
+                "command": "rinocloud-upload",
+                "on": "add"
+            },
+            {
+                "match": "*.asc",
+                "command": "rinocloud-upload",
+                "on": "add"
+            },
+            {
+                "match": "*.asc.png",
+                "command": "rinocloud-upload",
+                "on": "add"
+            }
+        ],
+        "metadata": {
+            "x": "y"
+        },
+        "apiToken": "8186755009251ef0bbb273fbc86d7b9caa228374"
+    }
+}

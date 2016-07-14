@@ -1,0 +1,6 @@
+[submodule "app/rinobot.js"]
+	path = app/rinobot.js
+	url = https://github.com/rinocloud/rinobot.js.git
+[submodule "app/rinocloud-javascript"]
+	path = app/rinocloud-javascript
+	url = https://github.com/rinocloud/rinocloud-javascript.git

@@ -14,6 +14,11 @@ export function requireAuthentication(Component) {
       location: PropTypes.object.isRequired,
     }
 
+    constructor(props) {
+      super(props)
+      this.checkAuth = this.checkAuth.bind(this)
+    }
+
     componentWillMount() {
       this.checkAuth(this.props.auth.access_token)
     }
@@ -45,8 +50,8 @@ export function requireAuthentication(Component) {
             <div>
               <Link to="/"><i className="icon-brand"></i></Link>
               <Link to="/" className="m-l btn btn-sm">Watch folders</Link>
-              <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link>
-              <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link>
+              {/* <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link> */}
+              {/* <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link> */}
               <a href="#" className="pull-right" onClick={onClickLogout}>{auth.isAuthenticating ?
                 <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
                 :

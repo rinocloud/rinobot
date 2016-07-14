@@ -129,7 +129,7 @@ export class ConfigurePipeline extends React.Component {
                 </div>
 
                 {formData.tasks.map((o, i) =>
-                  <div>
+                  <div key={`taskdiv${i}`}>
                     <TaskForm
                       key={`task${i}`}
                       task={o}

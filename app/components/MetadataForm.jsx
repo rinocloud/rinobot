@@ -4,20 +4,20 @@ export class MetadataForm extends React.Component {
 
   constructor(props) {
     super(props)
-    this.handleChangeMatch = this.handleChangeMatch.bind(this)
+    this.handleChange = this.handleChange.bind(this)
     this.handleRemoveClick = this.handleRemoveClick.bind(this)
   }
 
-  handleChangeMatch(field) {
+  handleChange(field) {
     const { object, onChange } = this.props //eslint-disable-line
 
     return function (e) {
       e.preventDefault()
-      const state = {
+      const newState = {
         ...object,
         [field]: e.target.value
       }
-      onChange(state)
+      onChange(newState)
     }
   }
 
@@ -37,7 +37,7 @@ export class MetadataForm extends React.Component {
             placeholder="field name"
             value={object.field || ''}
             className="form-control input-sm"
-            onChange={this.handleChangeMatch('field')}
+            onChange={this.handleChange('field')}
           />
         </div>
         <div className="col-sm-4">
@@ -46,7 +46,7 @@ export class MetadataForm extends React.Component {
             placeholder="field value"
             value={object.value || ''}
             className="form-control input-sm"
-            onChange={this.handleChangeMatch('value')}
+            onChange={this.handleChange('value')}
           />
         </div>
         <div className="col-sm-2">

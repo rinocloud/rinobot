@@ -19,7 +19,9 @@ export class Watcher extends React.Component {
     this.handleRemoveDirClick = this.handleRemoveDirClick.bind(this)
     this.handleToggleStartClick = this.handleToggleStartClick.bind(this)
     this.handleToggleConfigClick = this.handleToggleConfigClick.bind(this)
+    this.handleToggleLogsClick = this.handleToggleLogsClick.bind(this)
     this.handleSetConfig = this.handleSetConfig.bind(this)
+    this.removeDotRino = this.removeDotRino.bind(this)
   }
 
   chooseFolder(e) {
@@ -31,6 +33,11 @@ export class Watcher extends React.Component {
     }
   }
 
+  removeDotRino(index) {
+    const { dispatch } = this.props
+    dispatch(watcherActions.removeDotRino(index))
+  }
+
   handleRemoveDirClick(index) {
     const { dispatch } = this.props
     dispatch(watcherActions.removeDir(index))
@@ -38,6 +45,7 @@ export class Watcher extends React.Component {
 
   handleToggleStartClick(turnOn, index) {
     const { dispatch } = this.props
+    dispatch(watcherActions.readLocalConfig(index))
     if (turnOn === true) {
       dispatch(watcherActions.startDir(index))
     } else {
@@ -47,13 +55,17 @@ export class Watcher extends React.Component {
 
   handleToggleConfigClick(index) {
     const { dispatch, watcher } = this.props
-
     if (watcher.dirs[index].configOpen) {
       // then its closing and we should persist the configOpen
       dispatch(watcherActions.persistConfig(index))
     }
-
+    dispatch(watcherActions.readLocalConfig(index))
     dispatch(watcherActions.toggleConfigOpen(index))
+  }
+
+  handleToggleLogsClick(index) {
+    const { dispatch } = this.props
+    dispatch(watcherActions.toggleLogsOpen(index))
   }
 
   handleSetConfig(index, config) {
@@ -72,6 +84,13 @@ export class Watcher extends React.Component {
               Choose folder
             </a>
           </div>
+          {watcher.dirs.length ? '' :
+            <p className="m-t col-sm-6">
+              This is where you can choose directories to watch for file changes.
+              Just click on 'Choose folder'.
+            </p>
+          }
+
         </div>
 
         <WatcherDirsList
@@ -81,6 +100,8 @@ export class Watcher extends React.Component {
           onStartClick={this.handleToggleStartClick.bind(this, true)}
           onStopClick={this.handleToggleStartClick.bind(this, false)}
           onToggleConfigClick={this.handleToggleConfigClick}
+          onToggleLogsClick={this.handleToggleLogsClick}
+          removeDotRino={this.removeDotRino}
           onSetConfig={this.handleSetConfig}
         />
       </div>

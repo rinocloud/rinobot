@@ -245,9 +245,4 @@ def process(path, length=1):
 
 if __name__ == "__main__":
     import sys
-
-    length = 1
-    if len(sys.argv) < 2:
-        length = 10000
-
-    process(sys.argv[1], length)
+    process(sys.argv[1], 1000)

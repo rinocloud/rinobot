@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { ConfigurePipeline } from './ConfigurePipeline'
+import { LogScroll } from './LogScroll'
 const { shell } = require('electron')
 
 
@@ -11,6 +12,8 @@ export class WatchDir extends React.Component {
     onStopClick: PropTypes.func.isRequired,
     onRemoveDirClick: PropTypes.func.isRequired,
     onToggleConfigClick: PropTypes.func.isRequired,
+    onToggleLogsClick: PropTypes.func.isRequired,
+    removeDotRino: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
     installedPackages: PropTypes.array.isRequired
   }
@@ -38,9 +41,19 @@ export class WatchDir extends React.Component {
       this.props.onToggleConfigClick()
     }
 
+    const onToggleLogsClick = (e) => {
+      e.preventDefault()
+      this.props.onToggleLogsClick()
+    }
+
     const openPluginHomepage = (e) => {
       e.preventDefault()
       shell.showItemInFolder(dir.path)
+    }
+
+    const removeDotRino = (e) => {
+      e.preventDefault()
+      this.props.removeDotRino()
     }
 
     return (
@@ -86,8 +99,31 @@ export class WatchDir extends React.Component {
               'save settings' :
               'setup'
               }
-
             </a>
+
+            {dir.isStarted ?
+              <a
+                href="#"
+                className="m-l btn btn-sm btn-default"
+                onClick={onToggleLogsClick}
+              >
+              {dir.logsOpen ?
+                'close logs' :
+                'open logs'
+                }
+              </a>
+            : null}
+
+            {process.env.NODE_ENV === 'development' ?
+              <a
+                href="#"
+                className="m-l btn btn-sm btn-danger pull-right"
+                onClick={removeDotRino}
+              >
+                x
+              </a>
+            : null}
+
           </div>
         </div>
 
@@ -97,7 +133,25 @@ export class WatchDir extends React.Component {
             onSetConfig={this.props.onSetConfig}
             installedPackages={installedPackages}
           />
-         : ''}
+        :
+        ''}
+
+        {dir.isStarted ?
+          <div className="m-t configForm">
+            <div className="row">
+              <div className="col-sm-12">
+                <span
+                  style={{ minHeight: '20px' }}
+                  dangerouslySetInnerHTML={{ __html: dir.lastLog }}
+                />
+                {dir.logsOpen ?
+                  <LogScroll logs={dir.logs} />
+                : null
+                }
+              </div>
+            </div>
+          </div>
+        : ''}
       </div>
 
     )

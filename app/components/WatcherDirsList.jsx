@@ -9,7 +9,9 @@ export class WatcherDirsList extends React.Component {
     onStopClick: PropTypes.func.isRequired,
     onRemoveDirClick: PropTypes.func.isRequired,
     onToggleConfigClick: PropTypes.func.isRequired,
+    onToggleLogsClick: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
+    removeDotRino: PropTypes.func.isRequired,
     installedPackages: PropTypes.array.isRequired
   }
 
@@ -26,7 +28,9 @@ export class WatcherDirsList extends React.Component {
             onStartClick={() => this.props.onStartClick(index)}
             onRemoveDirClick={() => this.props.onRemoveDirClick(index)}
             onToggleConfigClick={() => this.props.onToggleConfigClick(index)}
+            onToggleLogsClick={() => this.props.onToggleLogsClick(index)}
             onSetConfig={(config) => this.props.onSetConfig(index, config)}
+            removeDotRino={(config) => this.props.removeDotRino(index)}
             installedPackages={installedPackages}
           />
       )}
