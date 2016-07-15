@@ -11,7 +11,7 @@
             "args": "plot-sxm.py {{filepath}}",
             "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
             "event": "change",
-            "uploadTo": "rinobotv2-test",
+            "uploadTo": "sxm",
             "api": {
                 "config": {
                     "base": "https://rinocloud.com",

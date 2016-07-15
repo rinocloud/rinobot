@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { WatchDir } from './WatchDir'
 
-export class WatcherDirsList extends React.Component {
+class WatcherDirsList extends React.Component {
 
   static propTypes = {
     dirs: PropTypes.array.isRequired,
@@ -30,10 +30,12 @@ export class WatcherDirsList extends React.Component {
             onToggleConfigClick={() => this.props.onToggleConfigClick(index)}
             onToggleLogsClick={() => this.props.onToggleLogsClick(index)}
             onSetConfig={(config) => this.props.onSetConfig(index, config)}
-            removeDotRino={(config) => this.props.removeDotRino(index)}
+            removeDotRino={() => this.props.removeDotRino(index)}
             installedPackages={installedPackages}
           />
       )}
       </div>)
   }
 }
+
+export { WatcherDirsList }

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 
 
-export class LogScroll extends React.Component {
+class LogScroll extends React.Component {
   static propTypes = {
     logs: PropTypes.array.isRequired,
   }
@@ -35,3 +35,5 @@ export class LogScroll extends React.Component {
     )
   }
 }
+
+export { LogScroll }

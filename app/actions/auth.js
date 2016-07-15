@@ -1,15 +1,13 @@
-import request from 'superagent'
-import constants from '../constants'
 import { createAction } from 'redux-actions'
 import { push } from 'react-router-redux'
-
-import fs from 'fs';
+import constants from '../constants'
+import request from 'superagent'
+import fs from 'fs'
 
 export const toggleAuthenticating = createAction('AUTH_TOGGLE_AUTHENTICATING')
 export const unsetAuth = createAction('AUTH_UNSET_AUTH')
 export const setAuth = createAction('AUTH_SET_AUTH')
 export const setError = createAction('AUTH_SET_ERROR')
-
 
 export const persistAuth = () => (dispatch, getState) => {
   const str = JSON.stringify(getState().auth)
@@ -18,6 +16,14 @@ export const persistAuth = () => (dispatch, getState) => {
   })
 }
 
+export const readLocalAuth = () => (dispatch) => {
+  try {
+    const authJSON = JSON.parse(fs.readFileSync(constants.authFilePath, 'utf-8'))
+    dispatch(setAuth(authJSON))
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+  }
+}
 
 export const clearPersistantAuth = () => (dispatch) => {
   fs.unlink(constants.authFilePath, (err) => {
@@ -25,11 +31,9 @@ export const clearPersistantAuth = () => (dispatch) => {
   })
 }
 
-
 export const logout = () => (dispatch, getState) => {
   dispatch(setError(''))
   dispatch(toggleAuthenticating())
-
   request
     .post('https://rinocloud.com/o/revoke_token/')
     .type('form')
@@ -44,25 +48,6 @@ export const logout = () => (dispatch, getState) => {
       setTimeout(() => {
         dispatch(push('/'))
         dispatch(clearPersistantAuth())
-      }, 50)
-    })
-}
-
-export const getToken = (action) => (dispatch) => {
-  request
-    .post('https://rinocloud.com/api/1/users/details/')
-    .set('Authorization', `Bearer ${action.body.access_token}`)
-    .end((err, res2) => {
-      dispatch(toggleAuthenticating())
-      if (err) return dispatch(setError(err.message))
-      dispatch(setAuth({
-        ...action.body,
-        ...res2.body,
-        email: action.email
-      }))
-      setTimeout(() => {
-        dispatch(push(action.next))
-        dispatch(persistAuth(action.email))
       }, 50)
     })
 }
@@ -89,5 +74,24 @@ export const login = (action) => (dispatch) => {
         ...res1,
         ...action
       }))
+    })
+}
+
+export const getToken = (action) => (dispatch) => {
+  request
+    .post('https://rinocloud.com/api/1/users/details/')
+    .set('Authorization', `Bearer ${action.body.access_token}`)
+    .end((err, res2) => {
+      dispatch(toggleAuthenticating())
+      if (err) return dispatch(setError(err.message))
+      dispatch(setAuth({
+        ...action.body,
+        ...res2.body,
+        email: action.email
+      }))
+      setTimeout(() => {
+        dispatch(push(action.next))
+        dispatch(persistAuth(action.email))
+      }, 50)
     })
 }

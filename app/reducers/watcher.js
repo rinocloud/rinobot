@@ -19,6 +19,7 @@ const createDir = (dir) => ({
   configOpen: false,
   logsOpen: true,
   isCustomPlugin: false,
+  isBusy: false,
   lastLog: null,
   logs: [],
   config: createConfig(dir.config)
@@ -44,6 +45,8 @@ const createConfig = (config) => {
     uploadTo: moment().format('YYYY-MM-DD'),
     tasks: [{
       match: '*',
+      command: 'upload',
+      on: 'add'
     }],
     metadata,
     ...copy,
@@ -163,6 +166,30 @@ export default handleActions({
       {
         ...state.dirs[action.payload],
         logsOpen: !state.dirs[action.payload].logsOpen
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
+  }),
+
+  WATCHER_SET_BUSY: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        isBusy: true
+      },
+      ...state.dirs.slice(action.payload + 1)
+    ],
+  }),
+
+  WATCHER_UNSET_BUSY: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload),
+      {
+        ...state.dirs[action.payload],
+        isBusy: false
       },
       ...state.dirs.slice(action.payload + 1)
     ],

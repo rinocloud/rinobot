@@ -9,34 +9,34 @@ let mainWindow = null
 
 app.setName('rinobot')
 
-if (process.env.NODE_ENV === 'development') {
-  require('electron-debug')() // eslint-disable-line global-require
-}
+// if (process.env.NODE_ENV === 'development') {
+//   require('electron-debug')() // eslint-disable-line global-require
+// }
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
-const installExtensions = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    const installer = require('electron-devtools-installer') // eslint-disable-line global-require
-    const extensions = [
-      'REACT_DEVELOPER_TOOLS',
-      'REDUX_DEVTOOLS'
-    ]
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS
-    for (const name of extensions) {
-      try {
-        await installer.default(installer[name], forceDownload)
-      } catch (e) {} // eslint-disable-line
-    }
-  }
-}
+// const installExtensions = async () => {
+//   if (process.env.NODE_ENV === 'development') {
+//     const installer = require('electron-devtools-installer') // eslint-disable-line global-require
+//     const extensions = [
+//       'REACT_DEVELOPER_TOOLS',
+//       'REDUX_DEVTOOLS'
+//     ]
+//     const forceDownload = !!process.env.UPGRADE_EXTENSIONS
+//     for (const name of extensions) {
+//       try {
+//         await installer.default(installer[name], forceDownload)
+//       } catch (e) {} // eslint-disable-line
+//     }
+//   }
+// }
 
 app.dock.show()
 
 app.on('ready', async () => {
-  await installExtensions()
+  // await installExtensions()
 
   mainWindow = new BrowserWindow({
     show: false,

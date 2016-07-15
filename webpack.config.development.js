@@ -4,26 +4,20 @@ import baseConfig from './webpack.config.base';
 
 const config = {
   ...baseConfig,
-
   debug: true,
-
   devtool: 'cheap-module-eval-source-map',
-
   entry: [
     'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
     './app/index'
   ],
-
   output: {
     ...baseConfig.output,
     publicPath: 'http://localhost:3000/dist/'
   },
-
   module: {
     ...baseConfig.module,
     loaders: [
       ...baseConfig.module.loaders,
-
       {
         test: /\.global\.css$/,
         loaders: [
@@ -31,7 +25,6 @@ const config = {
           'css-loader?sourceMap'
         ]
       },
-
       {
         test: /^((?!\.global).)*\.css$/,
         loaders: [
@@ -39,15 +32,12 @@ const config = {
           'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
         ]
       },
-
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)\?*.*$/,
         loader: 'url-loader?limit=100000'
       }
-
     ]
   },
-
   plugins: [
     ...baseConfig.plugins,
     new webpack.HotModuleReplacementPlugin(),
@@ -57,7 +47,6 @@ const config = {
       'process.env.NODE_ENV': JSON.stringify('development')
     })
   ],
-
   target: 'electron-renderer'
 };
 

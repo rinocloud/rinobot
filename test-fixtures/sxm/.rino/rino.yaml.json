@@ -3,7 +3,7 @@
     "completedTasks": {},
     "metadata": {
         "x": "y",
-        "uploadTo": "rinobotv2-test",
+        "uploadTo": "sxm",
         "tasks": [
             {
                 "match": "*.sxm",

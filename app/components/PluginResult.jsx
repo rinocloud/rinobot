@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 const { shell } = require('electron')
 
-export class PluginResult extends React.Component {
+class PluginResult extends React.Component {
 
   static propTypes = {
     plugin: PropTypes.object.isRequired,
@@ -78,3 +78,5 @@ export class PluginResult extends React.Component {
     );
   }
 }
+
+export { PluginResult }

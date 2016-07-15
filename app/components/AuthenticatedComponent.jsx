@@ -48,15 +48,19 @@ export function requireAuthentication(Component) {
         <div>
           <div className="container m-t-lg">
             <div>
-              <Link to="/"><i className="icon-brand"></i></Link>
-              <Link to="/" className="m-l btn btn-sm">Watch folders</Link>
+              <Link className="brand-link p-a-0" to="/">
+                <i className="icon-brand"></i>
+              </Link>
+              {/* <Link to="/" className="m-l btn btn-sm">Watch folders</Link>*/}
               {/* <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link> */}
               {/* <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link> */}
-              <a href="#" className="pull-right" onClick={onClickLogout}>{auth.isAuthenticating ?
-                <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
-                :
-                <span>Logout</span>
-              }</a>
+              <a href="#" className="pull-right" onClick={onClickLogout}>
+                {auth.isAuthenticating ?
+                  <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
+                  :
+                  <span>Logout {auth.username}</span>
+                }
+              </a>
             </div>
             {auth.statusText}
           </div>

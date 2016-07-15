@@ -10,8 +10,8 @@
             "command": "python",
             "args": "plot-sxm.py {{filepath}}",
             "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
-            "event": "change",
-            "uploadTo": "rinobotv2-test",
+            "event": "add",
+            "uploadTo": "sxm",
             "api": {
                 "config": {
                     "base": "https://rinocloud.com",
@@ -20,6 +20,46 @@
             },
             "match": "*.asc",
             "on": "all"
+        },
+        "rinocloud-upload": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm/data.sxm[Input_5].asc",
+            "filename": "data.sxm[Input_5].asc",
+            "relPath": "data.sxm[Input_5].asc",
+            "command": "rinocloud-upload",
+            "args": [],
+            "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
+            "event": "add",
+            "uploadTo": "sxm",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "*.asc",
+            "on": "add"
         }
+    },
+    "response": {
+        "id": 10880,
+        "type": "file",
+        "number_of_comments": 0,
+        "share_code": null,
+        "owner": "eoin",
+        "metadata": {
+            "x": "y"
+        },
+        "created_on": "2016-07-14T21:50:42.767307Z",
+        "updated_on": "2016-07-14T21:50:47.412118Z",
+        "shared": false,
+        "name": "data.sxm[Input_5].asc",
+        "tags": null,
+        "notes": null,
+        "size": 819821,
+        "metadata_size": 47,
+        "project": 14,
+        "parent": 10760
     }
 }

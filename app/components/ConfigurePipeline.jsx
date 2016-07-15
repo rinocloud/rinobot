@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
 
-export class ConfigurePipeline extends React.Component {
+class ConfigurePipeline extends React.Component {
 
   static propTypes = {
     dir: PropTypes.object.isRequired,
@@ -166,5 +166,6 @@ export class ConfigurePipeline extends React.Component {
       </div>
     )
   }
-
 }
+
+export { ConfigurePipeline }

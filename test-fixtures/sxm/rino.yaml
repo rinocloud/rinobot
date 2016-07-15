@@ -1,4 +1,4 @@
-uploadTo: rinobotv2-test
+uploadTo: sxm
 tasks:
   - match: '*.sxm'
     command: python

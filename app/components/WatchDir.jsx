@@ -4,7 +4,7 @@ import { LogScroll } from './LogScroll'
 const { shell } = require('electron')
 
 
-export class WatchDir extends React.Component {
+class WatchDir extends React.Component {
 
   static propTypes = {
     dir: PropTypes.object.isRequired,
@@ -85,39 +85,58 @@ export class WatchDir extends React.Component {
 
             <a
               href="#"
-              className="m-l btn btn-sm btn-default"
+              className="m-l-sm btn btn-sm btn-danger"
               onClick={onRemoveDirClick}
             >
-              remove
+              <span><i className="fa fa-remove"></i> remove</span>
             </a>
             <a
               href="#"
-              className="m-l btn btn-sm btn-default"
+              className="m-l-sm btn btn-sm btn-default"
               onClick={onToggleConfigClick}
             >
             {dir.configOpen ?
-              'save settings' :
-              'setup'
+              <span><i className="fa fa-save"></i> save</span>
+              :
+              <span><i className="fa fa-cogs"></i> setup</span>
               }
             </a>
 
             {dir.isStarted ?
               <a
                 href="#"
-                className="m-l btn btn-sm btn-default"
+                className="m-l-sm btn btn-sm btn-default"
                 onClick={onToggleLogsClick}
               >
               {dir.logsOpen ?
-                'close logs' :
-                'open logs'
+                <span><i className="fa fa-compress"></i> open logs</span>
+                :
+                <span><i className="fa fa-expand"></i> close logs</span>
                 }
               </a>
+            : null}
+
+            {dir.isStarted ?
+              <span>
+                {dir.isBusy ?
+                  <div className="loader">
+                    <div className="loader-inner ball-clip-rotate-multiple">
+                      <div />
+                      <div />
+                    </div>
+                  </div>
+                :
+                  <div className="loader">
+                    <span><i className="fa fa-check"></i></span>
+                  </div>
+                }
+              </span>
             : null}
 
             {process.env.NODE_ENV === 'development' ?
               <a
                 href="#"
-                className="m-l btn btn-sm btn-danger pull-right"
+                className="m-l-sm btn btn-sm btn-danger pull-right"
                 onClick={removeDotRino}
               >
                 x
@@ -157,3 +176,5 @@ export class WatchDir extends React.Component {
     )
   }
 }
+
+export { WatchDir }

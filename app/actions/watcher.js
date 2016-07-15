@@ -49,15 +49,17 @@ export const getConfig = (watchPath) => {
 
 export const setError = createAction('WATCHER_SET_ERROR')
 export const setDirs = createAction('WATCHER_SET_DIRS')
-export const _addDir = createAction('WATCHER_ADD_DIR')
-export const addLogs = createAction('WATCHER_ADD_LOGS')
 export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
+export const toggleConfigOpen = createAction('WATCHER_TOGGLE_CONFIG_OPEN')
+export const setBusy = createAction('WATCHER_SET_BUSY')
+export const unsetBusy = createAction('WATCHER_UNSET_BUSY')
+export const toggleLogsOpen = createAction('WATCHER_TOGGLE_LOGS_OPEN')
+export const _addDir = createAction('WATCHER_ADD_DIR')
+export const _addLogs = createAction('WATCHER_ADD_LOGS')
 export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
 export const _startDir = createAction('WATCHER_START_DIR')
 export const _stopDir = createAction('WATCHER_STOP_DIR')
-export const toggleConfigOpen = createAction('WATCHER_TOGGLE_CONFIG_OPEN')
-export const toggleLogsOpen = createAction('WATCHER_TOGGLE_LOGS_OPEN')
 
 export const persistDirs = () => (dispatch, getState) => {
   const data = map(getState().watcher.dirs, o => omit(o, 'config'))
@@ -147,26 +149,28 @@ export const startDir = (index) => (dispatch, getState) => {
         path,
         on_log: (pipeline, msg) => {
           log(`${pipeline.relPath}: ${msg}`)
+          dispatch(setBusy(index))
         },
         on_complete: (pipeline) => {
           if (!pipeline.ignored) {
             log(`${pipeline.relPath}: complete`)
           }
+          dispatch(unsetBusy(index))
         },
         on_error: (pipeline, error) => {
           log(`${pipeline.relPath}: ${error.message}`)
+          dispatch(unsetBusy(index))
         },
         // on_ignore: (pipeline, msg) => {
         //   log(`${pipeline.relPath}: ${msg}`)
         // },
       })
     })
-    .on('ready', () => {
-      log(`Started watching ${dir.path}`)
-    })
+    .on('ready', () => {})
+  log(`Started watching ${dir.path}`)
   mainProcessChokidar.addWatch(w)
 
-  console.log(mainProcessChokidar.watchers)
+  console.log(w.getWatched())
 }
 
 export const stopDir = (index) => (dispatch) => {
@@ -180,4 +184,8 @@ export const removeDotRino = (index) => (dispatch, getState) => {
   rimraf(`${dir.path}/.rino/`, (err) => {
     if (err) throw err;
   })
+}
+
+export const addLogs = (action) => (dispatch) => {
+  dispatch(_addLogs(action))
 }

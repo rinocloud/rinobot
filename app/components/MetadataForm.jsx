@@ -1,6 +1,6 @@
 import React from 'react'
 
-export class MetadataForm extends React.Component {
+class MetadataForm extends React.Component {
 
   constructor(props) {
     super(props)
@@ -58,3 +58,5 @@ export class MetadataForm extends React.Component {
     )
   }
 }
+
+export { MetadataForm }

@@ -13,8 +13,7 @@ const logger = createLogger({
 const router = routerMiddleware(hashHistory);
 
 const enhancer = compose(
-  applyMiddleware(thunk, router, logger),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  applyMiddleware(thunk, router, logger)
 );
 
 export default function configureStore(initialState) {

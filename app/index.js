@@ -20,16 +20,9 @@ if (!fs.existsSync(constants.packagesDir)) {
   fs.mkdirSync(constants.packagesDir)
 }
 
-try {
-  const authJSON = JSON.parse(fs.readFileSync(constants.authFilePath, 'utf-8'))
-  store.dispatch(authActions.setAuth(authJSON))
-} catch (err) {
-  if (err.code !== 'ENOENT') throw err
-}
-
+store.dispatch(authActions.readLocalAuth())
 store.dispatch(pluginsActions.readLocalPlugins())
 store.dispatch(watcherActions.readLocalDirs())
-
 
 render(
   <Provider store={store}>

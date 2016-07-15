@@ -45,4 +45,4 @@ export class InstalledPlugins extends React.Component {
 
 export default connect((state) => ({
   plugins: state.plugins
-}))(InstalledPlugins);
+}))(InstalledPlugins)

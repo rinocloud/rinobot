@@ -11,7 +11,7 @@
             "args": [],
             "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test-fixtures/sxm",
             "event": "add",
-            "uploadTo": "rinobotv2-test",
+            "uploadTo": "sxm",
             "api": {
                 "config": {
                     "base": "https://rinocloud.com",
@@ -23,7 +23,7 @@
         }
     },
     "response": {
-        "id": 10700,
+        "id": 10863,
         "type": "file",
         "number_of_comments": 0,
         "share_code": null,
@@ -31,8 +31,8 @@
         "metadata": {
             "x": "y"
         },
-        "created_on": "2016-07-14T16:42:26.173172Z",
-        "updated_on": "2016-07-14T16:42:28.044009Z",
+        "created_on": "2016-07-14T21:45:04.806151Z",
+        "updated_on": "2016-07-14T21:45:08.062038Z",
         "shared": false,
         "name": "data.sxm[Z].asc.png",
         "tags": null,
@@ -40,6 +40,6 @@
         "size": 10987,
         "metadata_size": 47,
         "project": 14,
-        "parent": 10684
+        "parent": 10760
     }
 }
