@@ -13,9 +13,23 @@ git clone https://github.com/rinocloud/rinobot.git
 And then install dependencies.
 
 ```bash
-$ cd rinobot && npm run setup
+>>> cd rinobot
+>>> npm install
+>>> git submodule update --init --recursive
 ```
 
+Then install the npm modules for both submodules
+
+```bash
+>>> cd app/rinobot.js
+>>> npm install
+>>> cd ..
+```
+```bash
+>>> cd app/rinocloud-javascript
+>>> npm install
+>>> cd ..
+```
 
 ## Run
 
@@ -68,11 +82,9 @@ We use [webpack-target-electron-renderer](https://github.com/chentsulin/webpack-
 
 > Note: webpack >= 1.12.15 has built-in support for `electron-main` and `electron-renderer` targets.
 
-
 ## Maintainers
 
 - [Eoin Murray](https://github.com/eoinmurray)
-
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
