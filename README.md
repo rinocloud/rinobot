@@ -13,21 +13,29 @@ git clone https://github.com/rinocloud/rinobot.git
 And then install dependencies.
 
 ```bash
-$ ./scripts/install.sh
+>>> sh ./scripts/install.sh
 ```
 
-Then install the npm modules for both submodules
+Or just go into `./scripts/install.sh` and run each command
 
-```bash
->>> cd app/rinobot.js
->>> npm install
->>> cd ..
+## Install errors
+
+If you get something like the following
+
+```
+> cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyf                                                                     ill ./main.development
+
+fs.js:634
+  return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+                 ^
+Error: ENOENT: no such file or directory, open 'C:\Users\eoin\Documents\projects\rinobot\node_modules\electron-prebuilt\path.txt'
 ```
 
-```bash
->>> cd app/rinocloud-javascript
+Try running
+
+```
+>>> cd node_modules/electron-prebuilt
 >>> npm install
->>> cd ..
 ```
 
 ## Run
