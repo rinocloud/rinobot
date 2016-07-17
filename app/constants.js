@@ -1,5 +1,5 @@
 import pt from 'path';
-const remote = require('electron').remote
+import { remote } from 'electron'
 
 export default {
   oauth2: {

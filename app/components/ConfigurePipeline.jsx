@@ -101,15 +101,14 @@ class ConfigurePipeline extends React.Component {
     const { formData } = this.state
 
     return (
-      <div className="m-t configForm">
+      <div className="m-t p-t configForm">
         <div className="row">
-          <div className="col-sm-8">
+          <div className="col-sm-12">
             <form className="form form-horizontal">
-
-              <div className="p-l">
+              <div>
+                <label className="lead pull-left">upload to</label>
                 <div className="form-group">
-                  <label className="col-sm-2">upload to</label>
-                  <div className="col-sm-6">
+                  <div className="col-sm-4">
                     <input
                       type="text"
                       value={formData.uploadTo}
@@ -120,16 +119,16 @@ class ConfigurePipeline extends React.Component {
                 </div>
               </div>
 
-              <div className="p-a bordered">
+              <div>
                 <div className="lead">
                   Tasks
-                  <button className="m-l btn btn-xs btn-default" onClick={this.handleAddTask}>
-                    add task
+                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddTask}>
+                    <i className="fa fa-plus"></i>
                   </button>
                 </div>
 
                 {formData.tasks.map((o, i) =>
-                  <div key={`taskdiv${i}`}>
+                  <div className="p-l" key={`taskdiv${i}`}>
                     <TaskForm
                       key={`task${i}`}
                       task={o}
@@ -142,21 +141,23 @@ class ConfigurePipeline extends React.Component {
                 )}
               </div>
 
-              <div className="p-a bordered m-t">
+              <div className="m-t p-t">
                 <div className="lead">
                   Additional metadata
-                  <button className="m-l btn btn-xs btn-default" onClick={this.handleAddMetadata}>
-                    add metadata
+                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddMetadata}>
+                    <i className="fa fa-plus"></i>
                   </button>
                 </div>
 
                 {formData.metadata.map((o, i) =>
-                  <MetadataForm
-                    key={`meta${i}`}
-                    object={o}
-                    onChange={(obj) => this.handleChangeArrayObject('metadata')(i, obj)}
-                    onRemove={() => this.handleRemoveArrayObject('metadata')(i)}
-                  />
+                  <div className="p-l" key={`metadiv${i}`}>
+                    <MetadataForm
+                      key={`meta${i}`}
+                      object={o}
+                      onChange={(obj) => this.handleChangeArrayObject('metadata')(i, obj)}
+                      onRemove={() => this.handleRemoveArrayObject('metadata')(i)}
+                    />
+                  </div>
                 )}
 
               </div>

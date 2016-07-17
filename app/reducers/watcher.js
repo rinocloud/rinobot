@@ -45,8 +45,7 @@ const createConfig = (config) => {
     uploadTo: moment().format('YYYY-MM-DD'),
     tasks: [{
       match: '*',
-      command: 'upload',
-      on: 'add'
+      command: 'upload'
     }],
     metadata,
     ...copy,

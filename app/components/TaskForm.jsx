@@ -6,6 +6,10 @@ class TaskForm extends React.Component {
     super(props)
     this.handleChangeMatch = this.handleChangeMatch.bind(this)
     this.handleRemoveClick = this.handleRemoveClick.bind(this)
+
+    this.state = {
+      extraArgs: true
+    }
   }
 
   handleChangeMatch(field) {
@@ -30,73 +34,48 @@ class TaskForm extends React.Component {
     const { task, installedPackages } = this.props //eslint-disable-line
 
     return (
-      <div>
-        <div className="form-group">
-          <label className="col-sm-2">pattern</label>
-          <div className="col-sm-6">
-            <input
-              type="text"
-              style={{ fontFamily: 'monospace' }}
-              value={task.match || ''}
-              className="form-control input-sm"
-              onChange={this.handleChangeMatch('match')}
-            />
-          </div>
-          <div className="col-sm-2">
-            <button className="btn btn-danger" onClick={this.handleRemoveClick}>
-              x
-            </button>
-          </div>
+      <div className="form-group">
+        <div className="col-sm-3">
+          <small>files to match (* for everything)</small>
+          <input
+            type="text"
+            style={{ fontFamily: 'monospace' }}
+            value={task.match || ''}
+            className="form-control input-sm"
+            onChange={this.handleChangeMatch('match')}
+          />
         </div>
 
-        {/* <div className="form-group">
-          <label className="col-sm-2">plugin</label>
-          <div className="col-sm-6">
-            <select className="form-control input-sm" onChange={this.handleChangeMatch('plugin')}>
-              {installedPackages.map((p, j) =>
-                <option key={`op${j}`} defaultValue={p.name}>{p.name}</option>
-              )}
-            </select>
-          </div>
-        </div>*/}
-
-        {/* {task.plugin === 'custom' ?*/}
-        <div>
-          <div className="form-group">
-            <label className="col-sm-2">command</label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-                value={task.command || ''}
-                className="form-control input-sm"
-                onChange={this.handleChangeMatch('command')}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-sm-2">args</label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-                value={task.args || ''}
-                className="form-control input-sm"
-                onChange={this.handleChangeMatch('args')}
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="col-sm-2">on</label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-                value={task.on || ''}
-                className="form-control input-sm"
-                onChange={this.handleChangeMatch('on')}
-              />
-            </div>
-          </div>
+        <div className="col-sm-3">
+          <small>command to run</small>
+          <input
+            type="text"
+            value={task.command || ''}
+            className="form-control input-sm"
+            onChange={this.handleChangeMatch('command')}
+          />
         </div>
-        {/* : null}*/}
+
+        <div className="col-sm-1">
+          <button
+            className="task-remove-button btn btn-xs btn-danger"
+            onClick={this.handleRemoveClick}
+          >
+            <i className="fa fa-remove"></i>
+          </button>
+        </div>
+
+        <div className="col-sm-4">
+          <small>command arguments (optional)</small>
+          <input
+            type="text"
+            placeholder=""
+            value={task.args || ''}
+            className="form-control input-sm"
+            onChange={this.handleChangeMatch('args')}
+          />
+        </div>
+
       </div>
     )
   }

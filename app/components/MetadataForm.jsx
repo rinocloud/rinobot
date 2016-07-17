@@ -31,7 +31,7 @@ class MetadataForm extends React.Component {
     const { object } = this.props //eslint-disable-line
     return (
       <div className="form-group">
-        <div className="col-sm-4">
+        <div className="col-sm-3">
           <input
             type="text"
             placeholder="field name"
@@ -40,7 +40,7 @@ class MetadataForm extends React.Component {
             onChange={this.handleChange('field')}
           />
         </div>
-        <div className="col-sm-4">
+        <div className="col-sm-3">
           <input
             type="text"
             placeholder="field value"
@@ -49,9 +49,12 @@ class MetadataForm extends React.Component {
             onChange={this.handleChange('value')}
           />
         </div>
-        <div className="col-sm-2">
-          <button className="btn btn-danger" onClick={this.handleRemoveClick}>
-            x
+        <div className="col-sm-1">
+          <button
+            className="metadata-remove-button btn btn-xs btn-danger"
+            onClick={this.handleRemoveClick}
+          >
+            <i className="fa fa-remove"></i>
           </button>
         </div>
       </div>

@@ -1,6 +1,0 @@
-uploadTo: '2016-07-15'
-tasks:
-  - match: '*'
-    command: upload
-    'on': add
-apiToken: 8186755009251ef0bbb273fbc86d7b9caa228374

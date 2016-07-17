@@ -109,9 +109,9 @@ class WatchDir extends React.Component {
                 onClick={onToggleLogsClick}
               >
               {dir.logsOpen ?
-                <span><i className="fa fa-compress"></i> open logs</span>
+                <span><i className="fa fa-compress"></i> close logs</span>
                 :
-                <span><i className="fa fa-expand"></i> close logs</span>
+                <span><i className="fa fa-expand"></i> open logs</span>
                 }
               </a>
             : null}
@@ -127,7 +127,7 @@ class WatchDir extends React.Component {
                   </div>
                 :
                   <div className="loader">
-                    <span><i className="fa fa-check"></i></span>
+                    <span><i className="fa fa-check"></i> up-to-date</span>
                   </div>
                 }
               </span>

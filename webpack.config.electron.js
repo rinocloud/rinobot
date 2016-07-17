@@ -1,31 +1,22 @@
-import webpack from 'webpack';
-import baseConfig from './webpack.config.base';
-
-const nodeModules = [
-  { chokidar: { commonjs: 'chokidar' } },
-  { formidable: { commonjs: 'formidable' } },
-  { colors: { commonjs: 'colors' } },
-  { 'electron-debug': { commonjs: 'electron-debug' } },
-  { 'graceful-fs': { commonjs: 'graceful-fs ' } }
-]
+import webpack from 'webpack'
 
 export default {
-  ...baseConfig,
+  target: 'electron-main',
   devtool: 'source-map',
-  entry: ['babel-polyfill', './main.development'],
+  entry: ['babel-polyfill', './index.dev'],
   output: {
-    ...baseConfig.output,
+    libraryTarget: 'commonjs2',
     path: __dirname,
-    filename: './main.js'
+    filename: './index.js'
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compressor: {
+    //     warnings: false
+    //   }
+    // }),
     new webpack.BannerPlugin(
-      'require("source-map-support").install();',
+      'require("source-map-support").install()',
       { raw: true, entryOnly: false }
     ),
     new webpack.DefinePlugin({
@@ -34,20 +25,26 @@ export default {
       }
     })
   ],
-  target: 'electron-main',
+  module: {
+    loaders: [{
+      test: /\.jsx?$/,
+      loaders: ['babel-loader'],
+      exclude: /node_modules/
+    }, {
+      test: /\.json$/,
+      loader: 'json-loader'
+    }]
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json'],
+    packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
+  },
   node: {
     __dirname: false,
     __filename: false
   },
   externals: [
-    ...baseConfig.externals,
-    ...nodeModules,
     'font-awesome',
-    'source-map-support',
-    'chokidar',
-    'formidable',
-    'colors',
-    'graceful-fs',
-    'electron-debug'
+    'source-map-support'
   ]
-};
+}

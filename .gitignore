@@ -4,6 +4,7 @@ pids
 *.pid
 *.seed
 test-fixtures/
+test/test-fixtures/
 lib-cov
 coverage
 .grunt
@@ -12,6 +13,6 @@ build/Release
 node_modules
 .DS_Store
 dist
-release
+release/
 main.js
 main.js.map

@@ -809,3 +809,11 @@ img.loading{
 .brand-link:hover{
   text-decoration: none!important;
 }
+
+.task-remove-button {
+  margin-top: 22px;
+}
+
+.metadata-remove-button {
+  margin-top: 4px;
+}
