@@ -42,6 +42,7 @@
     "chokidar": "^1.6.0",
     "electron-prebuilt": "^1.2.7",
     "source-map-support": "^0.4.2",
+    "uid2": "0.0.3",
     "webpack": "^1.13.1"
   },
   "devEngines": {

@@ -13,6 +13,12 @@ import * as pluginsActions from './actions/plugins.js'
 import * as watcherActions from './actions/watcher.js'
 import './app.global.css'
 
+import rpc from './rpc'
+
+rpc.on('ready', () => {
+  rpc.emit('init')
+})
+
 const store = configureStore()
 const history = syncHistoryWithStore(hashHistory, store)
 

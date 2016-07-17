@@ -1,12 +1,10 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import createMenu from './menu'
-
-import * as mainProcessChokidar from './app/rinobot.js/src/watcher'
-global.mainProcessChokidar = mainProcessChokidar
-
-let mainWindow = null
+import createRPC from './rpc'
+import createBot from './bot'
 
 app.setName('rinobot')
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
@@ -16,32 +14,35 @@ if (process.platform === 'darwin') {
 }
 
 app.on('ready', async () => {
-  mainWindow = new BrowserWindow({
+  let win = new BrowserWindow({
     show: false,
     width: 1024,
     height: 728,
     titleBarStyle: 'hidden'
   })
 
-  mainWindow.loadURL(`file://${__dirname}/app/app.html`)
+  win.loadURL(`file://${__dirname}/app/app.html`)
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.show()
-    mainWindow.focus()
+  const rpc = createRPC(win)
+  createBot(rpc)
+
+  rpc.on('init', () => {
+    win.show()
+    win.focus()
   })
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  win.on('closed', () => {
+    win = null
   })
 
-  mainWindow.webContents.on('context-menu', (e, props) => {
+  win.webContents.on('context-menu', (e, props) => {
     Menu.buildFromTemplate([{
       label: 'Inspect element',
-      click() { mainWindow.inspectElement(props.x, props.y) }
-    }]).popup(mainWindow)
+      click() { win.inspectElement(props.x, props.y) }
+    }]).popup(win)
   })
 
-  const template = createMenu(app, mainWindow)
+  const template = createMenu(app, win)
   const menu = Menu.buildFromTemplate(template)
-  mainWindow.setMenu(menu)
+  win.setMenu(menu)
 })

@@ -1,15 +1,13 @@
 import fs from 'fs'
 import pt from 'path'
 import _ from 'lodash'
+import rpc from '../rpc'
 import yaml from 'js-yaml'
 import rimraf from 'rimraf'
 import { remote } from 'electron'
 import constants from '../constants'
 import { createAction } from 'redux-actions'
 import { Pipeline } from '../rinobot.js/src/pipeline'
-
-const chokidar = remote.getGlobal('mainProcessChokidar')
-chokidar.close()
 
 const defaultConfig = {
   uploadTo: '',
@@ -120,7 +118,7 @@ export const addDir = (path) => (dispatch, getState) => {
 
 export const removeDir = (index) => (dispatch, getState) => {
   if (getState().watcher.dirs[index].isStarted) {
-    chokidar.closeByIndex(index)
+    rpc.emit('unwatch', getState().watcher.dirs[index].path)
   }
   dispatch(_removeDir(index))
   dispatch(persistDirs())
@@ -129,75 +127,13 @@ export const removeDir = (index) => (dispatch, getState) => {
 export const startDir = (index) => (dispatch, getState) => {
   dispatch(_startDir(index))
   const dir = getState().watcher.dirs[index]
-  const log = (msg) => {
-    dispatch(addLogs({ index, logs: [msg] }))
-  }
-  //
-  // let i = 0;
-  //
-  // const timer = setInterval(() => {
-  //   log(`${i} message`)
-  //   dispatch(setBusy(index))
-  //   i++
-  //   if (i >= 10000) clearInterval(timer)
-  // })
-  //
-  // return
-
-  const paths = []
-
-  const start = performance.now()
-  log('Starting indexing')
-
-  const w = chokidar.getChokidar()
-    .watch(dir.path, {
-      ignored: ['**.rino/**', '**/.rino'],
-      ignoreInitial: false,
-      usePolling: true
-    })
-    .on('add', (path) => {
-      const p = new Pipeline({ // eslint-disable-line
-        watchPath: dir.path,
-        event: 'add',
-        path,
-        on_log: (pipeline, msg) => {
-          setTimeout(() => {
-            log(`${pipeline.relPath}: ${msg}`)
-            dispatch(setBusy(index))
-          })
-        },
-        on_complete: (pipeline) => {
-          setTimeout(() => {
-            if (!pipeline.ignored) {
-              log(`${pipeline.relPath}: complete`)
-            }
-            dispatch(unsetBusy(index))
-          })
-        },
-        on_error: (pipeline, error) => {
-          setTimeout(() => {
-            log(`${pipeline.relPath}: ${error.message}`)
-            setTimeout(() => {
-              dispatch(unsetBusy(index))
-            }, 1000)
-          })
-        },
-      })
-
-      paths.push(path)
-    })
-    .on('ready', () => {
-      const end = performance.now()
-      const time = end - start;
-      log(`Indexed ${Object.keys(w.getWatched()).length} directories in: ${time.toFixed(2)} ms`);
-    })
-  chokidar.addWatch(w)
+  rpc.emit('watch', dir.path)
 }
 
-export const stopDir = (index) => (dispatch) => {
+export const stopDir = (index) => (dispatch, getState) => {
   dispatch(_stopDir(index))
   dispatch(clearLogs(index))
-  chokidar.closeByIndex(index)
+  rpc.emit('unwatch', getState().watcher.dirs[index].path)
 }
 
 export const removeDotRino = (index) => (dispatch, getState) => {
