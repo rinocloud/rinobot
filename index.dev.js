@@ -11,7 +11,9 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
-app.dock.show()
+if (process.platform === 'darwin') {
+  app.dock.show()
+}
 
 app.on('ready', async () => {
   mainWindow = new BrowserWindow({
