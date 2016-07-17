@@ -85,6 +85,8 @@ We use [webpack-target-electron-renderer](https://github.com/chentsulin/webpack-
 ## Maintainers
 
 - [Eoin Murray](https://github.com/eoinmurray)
+- [Helena domo](https://github.com/helenadm)
+- [Gediminas Juska](https://github.com/gedj)
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
