@@ -4,57 +4,26 @@ import _ from 'lodash'
 import rpc from '../rpc'
 import yaml from 'js-yaml'
 import rimraf from 'rimraf'
-import { remote } from 'electron'
 import constants from '../constants'
 import { createAction } from 'redux-actions'
-import { Pipeline } from '../rinobot.js/src/pipeline'
-
-const defaultConfig = {
-  uploadTo: '',
-  base: 'https://rinocloud.com',
-  metadataExtensions: ['.toml', '.json', '.yaml', '.yml'],
-  ignore: ['*.json', '*.yaml', '*.toml', '*.rino', 'rino.yaml', 'rino.json', '.rino/*', '*~']
-}
-
-export const getConfig = (watchPath) => {
-  /*
-    Get the config file from the directory being watched
-    returns null if the rino.yaml file doesnt exist
-  */
-  let userOptions = {}
-  try {
-    userOptions = yaml.safeLoad(fs.readFileSync(pt.join(watchPath, 'rino.yaml'), 'utf8'))
-    userOptions.ignore = userOptions.ignore || []
-  } catch (e) {
-    return null
-  }
-
-  // if we get some userOptions then extend the defaultConfig
-  const options = {
-    ...defaultConfig,
-    ignore: [
-      ...defaultConfig.ignore,
-      ...userOptions.ignore
-    ],
-    ..._.omit(userOptions, 'tasks', 'ignore'),
-    tasks: userOptions.tasks || []
-  }
-  return options
-}
+import { getConfig } from './utils'
 
 export const setError = createAction('WATCHER_SET_ERROR')
 export const setDirs = createAction('WATCHER_SET_DIRS')
 export const clearLogs = createAction('WATCHER_CLEAR_LOGS')
 export const toggleConfigOpen = createAction('WATCHER_TOGGLE_CONFIG_OPEN')
 export const setBusy = createAction('WATCHER_SET_BUSY')
-export const unsetBusy = createAction('WATCHER_UNSET_BUSY')
+export const unsetBusy = createAction('WATCHER_UNSET_BUSY', {}, () => ({ throttle: 1000 }))
 export const toggleLogsOpen = createAction('WATCHER_TOGGLE_LOGS_OPEN')
+export const setTotalFiles = createAction('SET_TOTAL_FILES')
+export const setProcessedFiles = createAction('SET_PROCESSED_FILES')
 export const _addDir = createAction('WATCHER_ADD_DIR')
-export const _addLogs = createAction('WATCHER_ADD_LOGS')
+export const _addLogs = createAction('WATCHER_ADD_LOGS', {}, () => ({ throttle: 200 }))
 export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
 export const _startDir = createAction('WATCHER_START_DIR')
 export const _stopDir = createAction('WATCHER_STOP_DIR')
+
 
 export const persistDirs = () => (dispatch, getState) => {
   const data = _.map(getState().watcher.dirs, o => _.omit(o, 'config'))
@@ -64,6 +33,7 @@ export const persistDirs = () => (dispatch, getState) => {
     if (err) dispatch(setError(err.message))
   })
 }
+
 
 export const readLocalDirs = () => (dispatch) => {
   let pluginsJSON = null
@@ -76,38 +46,37 @@ export const readLocalDirs = () => (dispatch) => {
   if (pluginsJSON) dispatch(setDirs(pluginsJSON))
 }
 
+
 export const persistConfig = (index) => (dispatch, getState) => {
   const dir = getState().watcher.dirs[index]
   let config = _.cloneDeep(dir.config)
   const metadata = {}
-
   _.each(config.metadata, o => {
     metadata[o.field] = o.value
   })
-
   config.metadata = metadata
-
   if (_.isEmpty(config.metadata)) {
     config = _.omit(config, 'metadata')
   }
-
   config.apiToken = getState().auth.token
   config = _.omit(config, 'base', 'metadataExtensions', 'ignore')
-
   const str = yaml.dump(config)
   fs.writeFile(pt.join(dir.path, 'rino.yaml'), str, 'utf-8', (err) => {
     if (err) dispatch(setError(err.message))
   })
 }
 
+
 export const readLocalConfig = (index) => (dispatch, getState) => {
   const config = getConfig(getState().watcher.dirs[index].path)
   dispatch(_setConfig({ index, config }))
 }
 
+
 export const setConfig = (index, config) => (dispatch) => {
   dispatch(_setConfig({ index, config }))
 }
+
 
 export const addDir = (path) => (dispatch, getState) => {
   const config = getConfig(path)
@@ -115,6 +84,7 @@ export const addDir = (path) => (dispatch, getState) => {
   dispatch(persistDirs())
   dispatch(persistConfig(getState().watcher.dirs.length - 1))
 }
+
 
 export const removeDir = (index) => (dispatch, getState) => {
   if (getState().watcher.dirs[index].isStarted) {
@@ -124,17 +94,20 @@ export const removeDir = (index) => (dispatch, getState) => {
   dispatch(persistDirs())
 }
 
+
 export const startDir = (index) => (dispatch, getState) => {
   dispatch(_startDir(index))
   const dir = getState().watcher.dirs[index]
-  rpc.emit('watch', dir.path)
+  rpc.emit('watch', { path: dir.path, index })
 }
 
-export const stopDir = (index) => (dispatch, getState) => {
+
+export const stopDir = (index) => (dispatch) => {
   dispatch(_stopDir(index))
   dispatch(clearLogs(index))
-  rpc.emit('unwatch', getState().watcher.dirs[index].path)
+  rpc.emit('unwatch', { index })
 }
+
 
 export const removeDotRino = (index) => (dispatch, getState) => {
   const dir = getState().watcher.dirs[index]
@@ -143,6 +116,50 @@ export const removeDotRino = (index) => (dispatch, getState) => {
   })
 }
 
+
 export const addLogs = (action) => (dispatch) => {
   dispatch(_addLogs(action))
+}
+
+
+export const watcherStarted = ({ index }) => (dispatch, getState) => {
+  const dir = getState().watcher.dirs[index]
+  dispatch(addLogs({ index, logs: [`Indexing ${dir.path}`] }))
+}
+
+
+export const watcherReady = ({ index, delta }) => (dispatch, getState) => {
+  const dir = getState().watcher.dirs[index]
+  dispatch(addLogs({ index, logs: [
+    `Finished indexing in ${delta} ms`,
+    `Watching ${dir.path}`,
+  ] }))
+}
+
+
+export const pipelineComplete = ({ index, pipePath }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(unsetBusy(index))
+  dispatch(addLogs({ index, logs: [
+    `${pipePath}: Finished pipeline`,
+  ] }))
+}
+
+
+export const pipelineLog = ({ index, log, pipePath }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(setBusy(index))
+  dispatch(addLogs({ index, logs: [
+    `${pipePath}: ${log}`,
+  ] }))
+}
+
+
+export const pipelineError = ({ index, error, pipePath }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(unsetBusy(index))
+  dispatch(addLogs({ index, logs: [
+    `${pipePath}: ${error.message}`,
+  ] }))
+}
+
+export const pipelineStarted = ({ index }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(setBusy(index))
 }

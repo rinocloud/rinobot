@@ -2,11 +2,8 @@
 import mkdirp from 'mkdirp'
 import rimraf from 'rimraf'
 import fs from 'fs-extra'
-import chai from 'chai'
 import _ from 'lodash'
 import pt from 'path'
-
-const should = chai.should()
 const rmAfter = false
 
 function getFixturePath(subPath) {
@@ -18,30 +15,8 @@ function getFixturePath(subPath) {
   )
 }
 
-function existsSync(filename) {
-  if (!filename) return false
-  try {
-    fs.accessSync(filename);
-    return true;
-  } catch (ex) {
-    return false;
-  }
-}
-
-function copy(name, o) {
-  /* copies from the template directory to the test directory */
-  const i = pt.join(templatesDir, name)
-  fs.copySync(i, o)
-}
-
-const defaultOnComplete = function (pipe) { console.log(`\t\t${pipe.relPath} complete`) }
-const defaultOnLog = function (pipe, msg) { console.log(`\t\t${pipe.relPath} ${msg}`) }
-const defaultOnError = function (pipe, err) { console.log(`\t\t${pipe.relPath} ${err.message}`) }
-const defaultOnIgnore = function (pipe, msg) { console.log(`\t\t${pipe.relPath} ignored: ${msg}`) }
-
 let fixturesPath = getFixturePath('')
 let subdir = 0
-const templatesDir = pt.join(__dirname, 'templates')
 let testCount = 1
 const mochaIt = it
 
@@ -116,10 +91,9 @@ describe('performance testing', () => {
     makeFiles()
   })
 
-  afterEach(function () {
-  })
+  afterEach(function () {}) // eslint-disable-line
 
-  it('should close immediately', function (done) {
+  it('should close immediately', function (done) { // eslint-disable-line
     done()
   })
 })

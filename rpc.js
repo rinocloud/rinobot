@@ -12,6 +12,7 @@ class Server {
     genUid(10, (err, uid) => {
       if (this.destroyed) return;
       if (err) return this.emitter.emit('error', err);
+
       this.id = uid;
       ipcMain.on(uid, this.ipcListener);
       // we intentionally subscribe to `on` instead of `once`

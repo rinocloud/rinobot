@@ -1,7 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import createMenu from './menu'
 import createRPC from './rpc'
-import createBot from './bot'
+import createBot from './bot.js'
 
 app.setName('rinobot')
 
@@ -21,12 +21,18 @@ app.on('ready', async () => {
     titleBarStyle: 'hidden'
   })
 
+  process.on('uncaughtException', (error) => {
+    console.log(error)
+    app.quit()
+    win = null
+  })
+
   win.loadURL(`file://${__dirname}/app/app.html`)
 
   const rpc = createRPC(win)
-  createBot(rpc)
 
   rpc.on('init', () => {
+    createBot(rpc)
     win.show()
     win.focus()
   })

@@ -159,12 +159,13 @@ class WatchDir extends React.Component {
           <div className="m-t configForm">
             <div className="row">
               <div className="col-sm-12">
+                <p>{dir.processedFiles}/{dir.totalFiles} files processed</p>
                 <span
                   style={{ minHeight: '20px' }}
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
                 />
                 {dir.logsOpen ?
-                  <LogScroll logs={dir.logs} />
+                  null // <LogScroll logs={dir.logs} />
                 : null
                 }
               </div>

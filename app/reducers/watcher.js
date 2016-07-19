@@ -20,6 +20,8 @@ const createDir = (dir) => ({
   logsOpen: true,
   isCustomPlugin: false,
   isBusy: false,
+  totalFiles: 0,
+  processedFiles: 0,
   lastLog: null,
   logs: [],
   config: createConfig(dir.config)
@@ -191,6 +193,30 @@ export default handleActions({
         isBusy: false
       },
       ...state.dirs.slice(action.payload + 1)
+    ],
+  }),
+
+  SET_TOTAL_FILES: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload.index),
+      {
+        ...state.dirs[action.payload.index],
+        totalFiles: action.payload.numFiles
+      },
+      ...state.dirs.slice(action.payload.index + 1)
+    ],
+  }),
+
+  SET_PROCESSED_FILES: (state, action) => ({
+    ...state,
+    dirs: [
+      ...state.dirs.slice(0, action.payload.index),
+      {
+        ...state.dirs[action.payload.index],
+        processedFiles: action.payload.numFiles
+      },
+      ...state.dirs.slice(action.payload.index + 1)
     ],
   }),
 

@@ -1,34 +1,55 @@
-
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { Router, hashHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
+import rpc from './rpc'
 import routes from './routes'
+import * as actions from './actions/index'
+import * as watcherActions from './actions/watcher'
 import configureStore from './store/configureStore'
-import fs from 'fs'
-import constants from './constants'
-import * as authActions from './actions/auth.js'
-import * as pluginsActions from './actions/plugins.js'
-import * as watcherActions from './actions/watcher.js'
 import './app.global.css'
 
-import rpc from './rpc'
+const store = configureStore()
+const history = syncHistoryWithStore(hashHistory, store)
+
+store.dispatch(actions.startup())
 
 rpc.on('ready', () => {
   rpc.emit('init')
 })
 
-const store = configureStore()
-const history = syncHistoryWithStore(hashHistory, store)
+rpc.on('watcher started', (payload) => {
+  store.dispatch(watcherActions.watcherStarted(payload))
+})
 
-if (!fs.existsSync(constants.packagesDir)) {
-  fs.mkdirSync(constants.packagesDir)
-}
+rpc.on('watcher ready', (payload) => {
+  store.dispatch(watcherActions.watcherReady(payload))
+})
 
-store.dispatch(authActions.readLocalAuth())
-store.dispatch(pluginsActions.readLocalPlugins())
-store.dispatch(watcherActions.readLocalDirs())
+rpc.on('watcher set total files', (payload) => {
+  store.dispatch(watcherActions.setTotalFiles(payload))
+})
+
+rpc.on('watcher set processed files', (payload) => {
+  store.dispatch(watcherActions.setProcessedFiles(payload))
+})
+
+rpc.on('pipeline started', (payload) => {
+  store.dispatch(watcherActions.pipelineStarted(payload))
+})
+
+rpc.on('pipeline complete', (payload) => {
+  store.dispatch(watcherActions.pipelineComplete(payload))
+})
+
+rpc.on('pipeline log', (payload) => {
+  store.dispatch(watcherActions.pipelineLog(payload))
+})
+
+rpc.on('pipeline error', (payload) => {
+  store.dispatch(watcherActions.pipelineError(payload))
+})
 
 render(
   <Provider store={store}>
