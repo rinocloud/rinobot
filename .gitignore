@@ -6,6 +6,10 @@ pids
 test-fixtures/
 test/test-fixtures/
 lib-cov
+fork.js
+fork.js.map
+index.js
+index.js.map
 coverage
 .grunt
 .lock-wscript

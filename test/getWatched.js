@@ -5,9 +5,9 @@ var _ = require('lodash')
 var pt = require('path')
 
 var count = function(_watched){
-  var numFiles = _.reduce(_watched, function(result, value, key){
-    var f =_.reduce(value, function(r, v, k){
-      return _watched.hasOwnProperty(pt.join(key, v)) ? r + 1 : r + 0
+  var numFiles = _.reduce(_watched, function(result, relPaths, basePath){
+    var f =_.reduce(value, function(res, relPath, k){
+      return _watched.hasOwnProperty(pt.join(key, relPath)) ? res + 1 : res + 0
     }, 0)
     return result + value.length - f
   }, 0)

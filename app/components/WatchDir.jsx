@@ -120,10 +120,7 @@ class WatchDir extends React.Component {
               <span>
                 {dir.isBusy ?
                   <div className="loader">
-                    <div className="loader-inner ball-clip-rotate-multiple">
-                      <div />
-                      <div />
-                    </div>
+                    <span><i className="fa fa-spinner fa-spin"></i></span>
                   </div>
                 :
                   <div className="loader">
@@ -165,7 +162,7 @@ class WatchDir extends React.Component {
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
                 />
                 {dir.logsOpen ?
-                  null // <LogScroll logs={dir.logs} />
+                  <LogScroll logs={dir.logs} />
                 : null
                 }
               </div>

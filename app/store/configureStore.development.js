@@ -1,15 +1,34 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import createDebounce from 'redux-debounced'
+import createGather from './redux-gather/src'
+import createLogger from 'redux-logger'
+import createDebounce from 'redux-debounce'
 import createThrottle from 'redux-throttle'
 import { hashHistory } from 'react-router'
+
+
 import { routerMiddleware } from 'react-router-redux'
 import rootReducer from '../reducers'
 
-const throttle = createThrottle(200, { leading: true, trailing: true })
-const debouncer = createDebounce()
 const router = routerMiddleware(hashHistory)
-const enhancer = compose(applyMiddleware(thunk, router, debouncer, throttle))
+const gather = createGather()
+const throttle = createThrottle()
+const logger = createLogger({
+  collapsed: true
+})
+const debounce = createDebounce({
+  wait: 200,
+  trailing: true,
+  leading: false
+})
+const enhancer = compose(applyMiddleware(
+  thunk,
+  gather,
+  debounce,
+  throttle,
+  router,
+  // logger
+))
 
 export default function configureStore(initialState) {
   const store = createStore(rootReducer, initialState, enhancer)

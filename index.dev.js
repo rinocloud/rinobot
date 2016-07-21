@@ -23,22 +23,25 @@ app.on('ready', async () => {
 
   process.on('uncaughtException', (error) => {
     console.log(error)
-    app.quit()
-    win = null
+    console.log(error.stack)
+    // app.quit()
+    // win = null
   })
 
   win.loadURL(`file://${__dirname}/app/app.html`)
 
   const rpc = createRPC(win)
+  const bot = createBot(rpc)
 
   rpc.on('init', () => {
-    createBot(rpc)
     win.show()
     win.focus()
   })
 
   win.on('closed', () => {
+    console.log('closing')
     win = null
+    bot.kill()
   })
 
   win.webContents.on('context-menu', (e, props) => {

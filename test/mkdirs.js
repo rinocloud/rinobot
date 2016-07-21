@@ -49,4 +49,7 @@ tasks:
 
 fs.writeFileSync(pt.join(baseDir, 'rino.yaml'), config, 'utf-8')
 
-console.log(`Mapped ${maxDepth} deep`)
+module.exports = {
+  makeFiles: makeFiles,
+  maxDepth: maxDepth 
+}

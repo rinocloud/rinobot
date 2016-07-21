@@ -10,11 +10,6 @@ export default {
     filename: './index.js'
   },
   plugins: [
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compressor: {
-    //     warnings: false
-    //   }
-    // }),
     new webpack.BannerPlugin(
       'require("source-map-support").install()',
       { raw: true, entryOnly: false }
@@ -44,6 +39,7 @@ export default {
     __filename: false
   },
   externals: [
+    'chokidar',
     'font-awesome',
     'source-map-support'
   ]

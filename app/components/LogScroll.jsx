@@ -15,7 +15,7 @@ class LogScroll extends React.Component {
   }
 
   scroll() {
-    this._element.scrollTop = this._element.scrollHeight
+    // this._element.scrollTop = this._element.scrollHeight
   }
 
   render() {

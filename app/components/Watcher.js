@@ -76,6 +76,8 @@ export class Watcher extends React.Component {
   render() {
     const { watcher, plugins } = this.props
 
+    console.log('render()')
+
     return (
       <div className="container">
         <div className="row m-t">
