@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import createGather from './redux-gather/src'
+import createGather from './gather-middleware'
 import createLogger from 'redux-logger'
 import createDebounce from 'redux-debounce'
 import createThrottle from 'redux-throttle'

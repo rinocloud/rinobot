@@ -1,11 +1,22 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import { requireAuthentication } from './components/AuthenticatedComponent'
-import App from './containers/App'
+
 import Login from './components/Login'
 import Watcher from './components/Watcher'
 import Plugins from './components/Plugins'
 import InstalledPlugins from './components/InstalledPlugins'
+
+var App = React.createClass({
+  render() {
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    )
+  }
+})
+
 
 export default (
   <Route path="/" component={App}>
