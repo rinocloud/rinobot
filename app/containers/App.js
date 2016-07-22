@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react';
-import { browserHistory } from 'react-router';
-import { connect } from 'react-redux'
+import React from 'react';
 
 export default React.createClass({
   render() {
-    return  <div>
-              {this.props.children}
-            </div>
+    return (
+      <div>
+        {this.props.children}
+      </div>
+    )
   }
 })

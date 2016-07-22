@@ -1,58 +1,31 @@
 import { fork } from 'child_process'
-import ipcCreator from 'ipc-event-emitter'
+import forkRpcCreator from './rpc-fork'
 
-
-const bot = (rpc) => {
+const Bot = (rpc) => {
   const child = fork('./fork.js')
-  const ipc = ipcCreator(child)
 
-  ipc.on('ready', () => {
-    console.log('ipc ready')
+  console.log('creating new fork')
+  const forkRpc = forkRpcCreator(child)
+
+  forkRpc.on('ready', () => {
+    console.log('forkRpc ready')
   })
 
-  if (rpc) {
-    rpc.on('watch', (args) => {
-      ipc.emit('watch', args)
-    })
-    rpc.on('unwatch', (args) => {
-      ipc.emit('unwatch', args)
-    })
-
-    ipc.on('watcher ready', (args) => {
-      rpc.emit('watcher ready', args)
-    })
-
-    ipc.on('watcher started', (args) => {
-      rpc.emit('watcher started', args)
-    })
-
-    ipc.on('watcher set total files', (args) => {
-      rpc.emit('watcher set total files', args)
-    })
-
-    ipc.on('watcher set processed files', (args) => {
-      rpc.emit('watcher set processed files', args)
-    })
-
-    ipc.on('pipeline started', (args) => {
-      rpc.emit('pipeline started', args)
-    })
-
-    ipc.on('pipeline complete', (args) => {
-      rpc.emit('pipeline complete', args)
-    })
-
-    ipc.on('pipeline error', (args) => {
-      rpc.emit('pipeline error', args)
-    })
-
-    ipc.on('pipeline log', (args) => {
-      rpc.emit('pipeline log', args)
-    })
+  if (rpc) { // sometimes I test from cli, in that case there's no rpc defined
+    rpc.on('watch', args => forkRpc.emit('watch', args))
+    rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
+    forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
+    forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
+    forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))
+    forkRpc.on('watcher set processed files', args => rpc.emit('watcher set processed files', args))
+    forkRpc.on('pipeline started', args => rpc.emit('pipeline started', args))
+    forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))
+    forkRpc.on('pipeline error', args => rpc.emit('pipeline error', args))
+    forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
   }
 
-  ipc.emit('start')
-  return ipc
+  forkRpc.emit('start')
+  return child
 }
 
-export default bot
+export default Bot

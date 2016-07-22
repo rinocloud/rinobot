@@ -1,7 +1,10 @@
+/*
+  This is the rpc between the main electron process and the renderer process
+*/
+
 const { EventEmitter } = require('events')
 const { ipcMain } = require('electron')
 const genUid = require('uid2')
-
 
 class Server {
   constructor(win) {
