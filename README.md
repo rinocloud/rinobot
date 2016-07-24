@@ -18,6 +18,15 @@ And then install dependencies.
 
 Or just go into `./scripts/install.sh` and run each command
 
+## Run
+
+Run these two commands __simultaneously__ in different console tabs.
+
+```bash
+$ npm run dev # builds the html based UI and also the rinobot child process, hot reloads
+$ npm run start-hot # starts the electron window
+```
+
 ## Install errors
 
 If you get something like the following
@@ -36,15 +45,6 @@ Try running
 ```
 >>> cd node_modules/electron-prebuilt
 >>> npm install
-```
-
-## Run
-
-Run this two commands __simultaneously__ in different console tabs.
-
-```bash
-$ cd app && npm run hot-server
-$ npm run start-hot
 ```
 
 ## Packaging
@@ -73,8 +73,3 @@ should work.
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
-
-## Performance tests.
-
-1. Echo'ing 1000 files: It doesn't crash, but it isn't smooth.
-2. Going to draw 10,000 logs.

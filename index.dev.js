@@ -24,8 +24,6 @@ app.on('ready', async () => {
   process.on('uncaughtException', (error) => {
     console.log(error)
     console.log(error.stack)
-    // app.quit()
-    // win = null
   })
 
   win.loadURL(`file://${__dirname}/app/app.html`)
