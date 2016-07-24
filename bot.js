@@ -3,17 +3,22 @@ import forkRpcCreator from './rpc-fork'
 
 const Bot = (rpc) => {
   const child = fork('./fork.js')
-
-  console.log('creating new fork')
   const forkRpc = forkRpcCreator(child)
 
-  forkRpc.on('ready', () => {
-    console.log('forkRpc ready')
+  child.on('close', (code) => {
+    rpc.emit('child closed', code)
+    forkRpc.destroy()
+  })
+
+  child.on('error', (error) => {
+    rpc.emit('watcher error', { name: error.name, message: error.message, stack: error.stack })
   })
 
   if (rpc) { // sometimes I test from cli, in that case there's no rpc defined
     rpc.on('watch', args => forkRpc.emit('watch', args))
     rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
+    forkRpc.on('ready', () => rpc.emit('child process ready'))
+    forkRpc.on('error', error => rpc.emit('watcher error', error))
     forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
     forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
     forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))

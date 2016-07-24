@@ -27,7 +27,7 @@ const enhancer = compose(applyMiddleware(
   debounce,
   throttle,
   router,
-  // logger
+  logger
 ))
 
 export default function configureStore(initialState) {

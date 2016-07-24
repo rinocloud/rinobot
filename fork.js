@@ -8015,157 +8015,166 @@ module.exports =
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var watchers = {};
-	var processedFiles = {};
-	var timer = void 0;
-	var logs = {};
-	var timers = {};
-	var last = {};
-	var time = 1000;
-	var forkRpc = (0, _rpcFork2.default)(process);
+	var fork = function fork(forkRpc) {
+	  var watchers = {};
+	  var processedFiles = {};
+	  var timer = void 0;
+	  var logs = {};
+	  var timers = {};
+	  var last = {};
+	  var time = 1000;
 	
-	var processFile = function processFile(index, path, watchPath, event) {
-	  // eslint-disable-line
-	  var pipeline = new _pipeline.Pipeline({
-	    watchPath: watchPath,
-	    path: path,
-	    on_complete: function on_complete(pipe) {
-	      processedFiles[index].push(path);
-	      setProcessedFiles(index, processedFiles[index].length);
-	      pipelineComplete(index, pipe);
-	    },
-	    on_log: pipelineLog.bind(null, index),
-	    on_error: function on_error(pipe, error) {
-	      processedFiles[index].push(path);
-	      setProcessedFiles(index, processedFiles[index].length);
-	      pipelineError(index, pipe, error);
-	    }
-	  });
+	  var processFile = function processFile(index, path, watchPath, event) {
+	    // eslint-disable-line
+	    var pipeline = new _pipeline.Pipeline({
+	      watchPath: watchPath,
+	      path: path,
+	      on_complete: function on_complete(pipe) {
+	        processedFiles[index].push(path);
+	        setProcessedFiles(index, processedFiles[index].length);
+	        pipelineComplete(index, pipe);
+	      },
+	      on_log: pipelineLog.bind(null, index),
+	      on_error: function on_error(pipe, error) {
+	        processedFiles[index].push(path);
+	        setProcessedFiles(index, processedFiles[index].length);
+	        pipelineError(index, pipe, error);
+	      }
+	    });
 	
-	  pipeline.ready(function () {
-	    if (!pipeline.ignored) {
-	      pipelineStarted(index);
-	      pipeline.run();
-	    } else {
-	      processedFiles[index].push(path);
-	      setProcessedFiles(index, processedFiles[index].length);
-	    }
-	  });
-	};
-	
-	var addAfterTimeout = function addAfterTimeout(watcher, index, watchPath, event) {
-	  clearTimeout(timer);
-	  timer = setTimeout(add(watcher, index, watchPath, event), 200);
-	};
-	
-	var add = function add(watcher, index, watchPath, event) {
-	  return function () {
-	    var numFiles = (0, _utils.countWatched)(watcher.getWatched());
-	    setTotalFiles(index, numFiles);
-	
-	    var allFiles = (0, _utils.flattenWatched)(watcher.getWatched());
-	    _lodash2.default.each(allFiles, function (file) {
-	      if (!processedFiles[index].includes(file)) {
-	        processFile(index, file, watchPath, event);
+	    pipeline.ready(function () {
+	      if (!pipeline.ignored) {
+	        pipelineStarted(index);
+	        pipeline.run();
+	      } else {
+	        processedFiles[index].push(path);
+	        setProcessedFiles(index, processedFiles[index].length);
 	      }
 	    });
 	  };
-	};
 	
-	var ready = function ready(watcher, index, t0) {
-	  var t1 = new Date();
-	  watcherReady(index, t1 - t0);
-	
-	  var numFiles = (0, _utils.countWatched)(watcher.getWatched());
-	  setTotalFiles(index, numFiles);
-	  setProcessedFiles(index, 0);
-	};
-	
-	var startWatcher = function startWatcher(_ref) {
-	  var path = _ref.path;
-	  var index = _ref.index;
-	
-	  if (!_lodash2.default.has(processedFiles, index)) processedFiles[index] = [];
-	  if (!_lodash2.default.has(logs, index)) logs[index] = [];
-	
-	  watcherStarted(index);
-	  var t0 = new Date();
-	  var watcher = _chokidar2.default.watch(path, {
-	    ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./'],
-	    ignoreInitial: false,
-	    usePolling: true
-	  }).on('add', function () {
-	    addAfterTimeout(this, index, path, 'add');
-	  }).on('ready', function () {
-	    ready(this, index, t0);
-	  });
-	  watchers[index] = watcher;
-	};
-	
-	var stopWatcher = function stopWatcher(_ref2) {
-	  var index = _ref2.index;
-	
-	  watchers[index].close();
-	  processedFiles[index] = [];
-	};
-	
-	forkRpc.on('watch', startWatcher);
-	forkRpc.on('unwatch', stopWatcher);
-	
-	var watcherReady = function watcherReady(args) {
-	  return forkRpc.emit('watcher ready', args);
-	};
-	var watcherStarted = function watcherStarted(args) {
-	  return forkRpc.emit('watcher started', args);
-	};
-	
-	var setTotalFiles = _lodash2.default.throttle(function (index, numFiles) {
-	  if (!watchers[index].closed) forkRpc.emit('watcher set total files', { index: index, numFiles: numFiles });
-	}, 200);
-	
-	var setProcessedFiles = _lodash2.default.throttle(function (index, numFiles) {
-	  if (!watchers[index].closed) forkRpc.emit('watcher set processed files', { index: index, numFiles: numFiles });
-	}, 200);
-	
-	var pipelineStarted = _lodash2.default.throttle(function (index) {
-	  if (!watchers[index].closed) forkRpc.emit('pipeline started', { index: index });
-	}, 200);
-	
-	var pipelineComplete = _lodash2.default.throttle(function (index, pipe) {
-	  if (!watchers[index].closed) forkRpc.emit('pipeline complete', { index: index, pipePath: pipe.relPath });
-	}, 200);
-	
-	var pipelineError = _lodash2.default.throttle(function (index, pipe, error) {
-	  if (!watchers[index].closed) {
-	    forkRpc.emit('pipeline error', { index: index, error: error, pipePath: pipe.relPath });
-	  }
-	}, 200);
-	
-	var pipelineLog = function pipelineLog(index, pipe, log) {
-	  var task = function task() {
-	    if (logs[index].length === 0) return;
-	    if (!watchers[index].closed) forkRpc.emit('pipeline log', { index: index, logs: logs[index] });
-	    logs[index] = [];
+	  var addAfterTimeout = function addAfterTimeout(watcher, index, watchPath, event) {
+	    clearTimeout(timer);
+	    timer = setTimeout(add(watcher, index, watchPath, event), 200);
 	  };
 	
-	  if (!_lodash2.default.has(logs, index)) {
-	    logs[index] = [];
-	  }
-	  if (timers[index]) {
-	    clearTimeout(timers[index]);
-	  }
+	  var add = function add(watcher, index, watchPath, event) {
+	    return function () {
+	      var numFiles = (0, _utils.countWatched)(watcher.getWatched());
+	      setTotalFiles(index, numFiles);
 	
-	  logs[index].push(log);
-	  var now = new Date().getTime();
-	  if (last[index] && now < last[index] + time) {
-	    timers[index] = setTimeout(task, time);
-	  } else {
-	    last[index] = now;
-	    task();
-	  }
+	      var allFiles = (0, _utils.flattenWatched)(watcher.getWatched());
+	      _lodash2.default.each(allFiles, function (file) {
+	        if (!processedFiles[index].includes(file)) {
+	          processFile(index, file, watchPath, event);
+	        }
+	      });
+	    };
+	  };
+	
+	  var ready = function ready(watcher, index, t0) {
+	    var t1 = new Date();
+	    watcherReady(index, t1 - t0);
+	
+	    var numFiles = (0, _utils.countWatched)(watcher.getWatched());
+	    setTotalFiles(index, numFiles);
+	    setProcessedFiles(index, 0);
+	  };
+	
+	  var startWatcher = function startWatcher(_ref) {
+	    var path = _ref.path;
+	    var index = _ref.index;
+	
+	    if (!_lodash2.default.has(processedFiles, index)) processedFiles[index] = [];
+	    if (!_lodash2.default.has(logs, index)) logs[index] = [];
+	
+	    watcherStarted(index);
+	    var t0 = new Date();
+	    var watcher = _chokidar2.default.watch(path, {
+	      ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./'],
+	      ignoreInitial: false,
+	      usePolling: true
+	    }).on('add', function () {
+	      addAfterTimeout(this, index, path, 'add');
+	    }).on('ready', function () {
+	      ready(this, index, t0);
+	    });
+	    watchers[index] = watcher;
+	  };
+	
+	  var stopWatcher = function stopWatcher(_ref2) {
+	    var index = _ref2.index;
+	
+	    watchers[index].close();
+	    processedFiles[index] = [];
+	  };
+	
+	  forkRpc.on('watch', startWatcher);
+	  forkRpc.on('unwatch', stopWatcher);
+	
+	  var watcherReady = function watcherReady(args) {
+	    return forkRpc.emit('watcher ready', args);
+	  };
+	  var watcherStarted = function watcherStarted(args) {
+	    return forkRpc.emit('watcher started', args);
+	  };
+	
+	  var setTotalFiles = _lodash2.default.throttle(function (index, numFiles) {
+	    if (!watchers[index].closed) forkRpc.emit('watcher set total files', { index: index, numFiles: numFiles });
+	  }, 200);
+	
+	  var setProcessedFiles = _lodash2.default.throttle(function (index, numFiles) {
+	    if (!watchers[index].closed) forkRpc.emit('watcher set processed files', { index: index, numFiles: numFiles });
+	  }, 200);
+	
+	  var pipelineStarted = _lodash2.default.throttle(function (index) {
+	    if (!watchers[index].closed) forkRpc.emit('pipeline started', { index: index });
+	  }, 200);
+	
+	  var pipelineComplete = _lodash2.default.throttle(function (index, pipe) {
+	    if (!watchers[index].closed) forkRpc.emit('pipeline complete', { index: index, pipePath: pipe.relPath }); // eslint-disable-line
+	  }, 200);
+	
+	  var pipelineError = _lodash2.default.throttle(function (index, pipe, error) {
+	    if (!watchers[index].closed) {
+	      forkRpc.emit('pipeline error', { index: index, error: error, pipePath: pipe.relPath });
+	    }
+	  }, 200);
+	
+	  var pipelineLog = function pipelineLog(index, pipe, log) {
+	    var task = function task() {
+	      if (logs[index].length === 0) return;
+	      if (!watchers[index].closed) forkRpc.emit('pipeline log', { index: index, logs: logs[index] });
+	      logs[index] = [];
+	    };
+	
+	    if (!_lodash2.default.has(logs, index)) {
+	      logs[index] = [];
+	    }
+	    if (timers[index]) {
+	      clearTimeout(timers[index]);
+	    }
+	
+	    logs[index].push(log);
+	    var now = new Date().getTime();
+	    if (last[index] && now < last[index] + time) {
+	      timers[index] = setTimeout(task, time);
+	    } else {
+	      last[index] = now;
+	      task();
+	    }
+	  };
+	
+	  forkRpc.emit('ready');
 	};
 	
-	forkRpc.emit('ready');
+	var forkRpc = (0, _rpcFork2.default)(process);
+	
+	try {
+	  fork(forkRpc);
+	} catch (error) {
+	  forkRpc.emit('error', { name: error.name, message: error.message, stack: error.stack });
+	}
 
 /***/ },
 /* 298 */
@@ -19843,6 +19852,17 @@ module.exports =
 	    key: 'once',
 	    value: function once(ev, fn) {
 	      this.emitter.once(ev, fn);
+	    }
+	  }, {
+	    key: 'removeAllListeners',
+	    value: function removeAllListeners() {
+	      this.emitter.removeAllListeners();
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.removeAllListeners();
+	      this.destroyed = true;
 	    }
 	  }]);
 

@@ -18,14 +18,12 @@ export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
 export const _startDir = createAction('WATCHER_START_DIR')
 export const _stopDir = createAction('WATCHER_STOP_DIR')
-export const setBusy = createAction('WATCHER_SET_BUSY')
-// , {}, () => ({
-//   throttle: { time: 2000 }
-// }))
-export const unsetBusy = createAction('WATCHER_UNSET_BUSY')
-// , {}, () => ({
-//   gather: { time: 2000 }
-// }))
+export const setBusy = createAction('WATCHER_SET_BUSY', {}, () => ({
+  throttle: { time: 2000 }
+}))
+export const unsetBusy = createAction('WATCHER_UNSET_BUSY', {}, () => ({
+  gather: { time: 2000 }
+}))
 export const setTotalFiles = createAction('SET_TOTAL_FILES')
 // , {}, () => ({
 //   gather: { time: 1000, type: 'throttle' }
@@ -139,6 +137,7 @@ export const addLogs = (action) => (dispatch) => {
 
 export const watcherStarted = ({ index }) => (dispatch, getState) => {
   const dir = getState().watcher.dirs[index]
+  dispatch(setTotalFiles({ index, numFiles: 0 }))
   dispatch(addLogs({ index, logs: [`Indexing ${dir.path}`] }))
 }
 
@@ -163,7 +162,7 @@ export const pipelineComplete = ({ index, pipePath }) => (dispatch, getState) =>
 export const pipelineLog = ({ index, logs, pipePath }) => (dispatch, getState) => { // eslint-disable-line
   const dir = getState().watcher.dirs[index]
   if (!dir.isBusy) { dispatch(setBusy(index)) }
-  dispatch(addLogs({ index, logs: logs }))
+  dispatch(addLogs({ index, logs }))
 }
 
 

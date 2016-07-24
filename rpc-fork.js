@@ -27,6 +27,16 @@ export class IPC {
   once(ev, fn) {
     this.emitter.once(ev, fn)
   }
+
+  removeAllListeners() {
+    this.emitter.removeAllListeners()
+  }
+
+  destroy() {
+    this.removeAllListeners()
+    this.destroyed = true
+  }
+
 }
 
 export default function (_process) {

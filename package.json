@@ -40,7 +40,6 @@
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
     "mocha": "^2.5.3",
-    "source-map-support": "^0.4.2",
     "webpack-node-externals": "^1.2.0"
   },
   "dependencies": {

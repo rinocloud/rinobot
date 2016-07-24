@@ -14,6 +14,8 @@ try {
 var currentDepth = 1
 var baseDir = pt.join(__dirname, 'test-fixtures')
 
+mkdirp.sync(baseDir)
+
 var makeFiles = function(index = 1){
   if (currentDepth > maxDepth) return
   var n = _.reduce(_.range(1, index + 1), function(i, j){
@@ -51,5 +53,5 @@ fs.writeFileSync(pt.join(baseDir, 'rino.yaml'), config, 'utf-8')
 
 module.exports = {
   makeFiles: makeFiles,
-  maxDepth: maxDepth 
+  maxDepth: maxDepth
 }
