@@ -1,0 +1,43 @@
+{
+  "name": "rinocloud-javascript",
+  "version": "0.0.2",
+  "description": "Rinocloud application to watch folders",
+  "scripts": {
+    "build": "webpack --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rinocloud/watcher.git"
+  },
+  "main": "./dist/api.js",
+  "keywords": [
+    "rinocloud"
+  ],
+  "author": "Rinocloud",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/rinocloud/watcher/issues"
+  },
+  "homepage": "https://github.com/rinocloud/watcher#readme",
+  "dependencies": {
+    "evaporate": "git+https://github.com/TTLabs/EvaporateJS.git",
+    "lodash": "^4.13.1",
+    "superagent": "^1.8.3",
+    "superagent-promise-plugin": "^3.2.0",
+    "superagent-queue": "0.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.6.5",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-core": "^6.9.1",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "es6-promise": "^3.2.1",
+    "eslint": "^2.4.0",
+    "eslint-config-airbnb": "^6.1.0",
+    "eslint-plugin-react": "^4.2.2",
+    "jsdom": "^9.2.1",
+    "webpack": "^1.12.6",
+    "webpack-bundle-tracker": "0.0.8"
+  }
+}

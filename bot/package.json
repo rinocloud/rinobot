@@ -1,0 +1,51 @@
+{
+  "name": "rinobot",
+  "version": "0.3.21",
+  "main": "./dist/index.js",
+  "bin": {
+    "rinobot": "./dist/cli.js"
+  },
+  "license": "MIT",
+  "repository": "rinocloud/watcher",
+  "scripts": {
+    "build": "webpack --progress --colors; echo '#!/usr/bin/env node' | cat - ./dist/cli.js > /tmp/out && mv /tmp/out ./dist/cli.js",
+    "test": "mocha --compilers js:babel-register"
+  },
+  "dependencies": {
+    "async": "^2.0.0-rc.5",
+    "chokidar": "^1.4.2",
+    "colors": "^1.1.2",
+    "evaporate": "git+https://github.com/TTLabs/EvaporateJS.git",
+    "fs-extra": "^0.30.0",
+    "globule": "^1.0.0",
+    "js-yaml": "^3.6.1",
+    "lodash": "^4.13.1",
+    "mkdirp": "^0.5.1",
+    "optimist": "^0.6.1",
+    "progress": "^1.1.8",
+    "queue": "^4.0.0",
+    "raven": "^0.11.0",
+    "rinocloud-javascript": "0.0.3",
+    "superagent": "^1.8.3",
+    "superagent-promise-plugin": "^3.2.0",
+    "superagent-queue": "0.0.3",
+    "swig": "^1.4.2",
+    "yargs": "^4.7.1"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.9.1",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
+    "babel-watch": "^2.0.2",
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.5.3",
+    "rimraf": "^2.5.2",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0",
+    "webpack": "^1.13.1"
+  }
+}

@@ -1,0 +1,13 @@
+apiToken: 8186755009251ef0bbb273fbc86d7b9caa228374
+
+ignore:
+  - "*.py"
+
+tasks:
+  - match: "*.log"
+    command: "python"
+    args: "parse.py {{filepath}}"
+
+  - match: "*.log"
+    command: "rinocloud-upload"
+    on: add
