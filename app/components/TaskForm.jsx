@@ -50,6 +50,7 @@ class TaskForm extends React.Component {
           <small>command to run</small>
           <input
             type="text"
+            style={{ fontFamily: 'monospace' }}
             value={task.command || ''}
             className="form-control input-sm"
             onChange={this.handleChangeMatch('command')}
@@ -70,6 +71,7 @@ class TaskForm extends React.Component {
           <input
             type="text"
             placeholder=""
+            style={{ fontFamily: 'monospace' }}
             value={task.args || ''}
             className="form-control input-sm"
             onChange={this.handleChangeMatch('args')}

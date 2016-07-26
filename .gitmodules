@@ -1,9 +1,0 @@
-[submodule "bot"]
-	path = bot
-	url = http://github.com/rinocloud/rinobot.js
-[submodule "api"]
-	path = api
-	url = http://github.com/rinocloud/rinocloud-javascript
-[submodule "app/store/redux-gather"]
-	path = app/store/redux-gather
-	url = git://github.com/rinocloud/redux-gather.git

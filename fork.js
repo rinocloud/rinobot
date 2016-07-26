@@ -8105,10 +8105,9 @@ module.exports =
 	  var stopWatcher = function stopWatcher(_ref2) {
 	    var index = _ref2.index;
 	
-	    watchers[index].close();
+	    if (watchers[index]) watchers[index].close();
 	    processedFiles[index] = [];
 	  };
-	
 	  forkRpc.on('watch', startWatcher);
 	  forkRpc.on('unwatch', stopWatcher);
 	

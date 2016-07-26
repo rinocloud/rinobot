@@ -86,10 +86,9 @@ const fork = (forkRpc) => {
   }
 
   const stopWatcher = function stopWatcher({ index }) {
-    watchers[index].close()
+    if (watchers[index]) watchers[index].close()
     processedFiles[index] = []
   }
-
   forkRpc.on('watch', startWatcher)
   forkRpc.on('unwatch', stopWatcher)
 
