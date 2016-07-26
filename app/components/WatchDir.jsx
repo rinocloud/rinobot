@@ -82,14 +82,6 @@ class WatchDir extends React.Component {
                 start
               </a>
             }
-
-            <a
-              href="#"
-              className="m-l-sm btn btn-sm btn-danger"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-remove"></i> remove</span>
-            </a>
             <a
               href="#"
               className="m-l-sm btn btn-sm btn-default"
@@ -101,35 +93,6 @@ class WatchDir extends React.Component {
               <span><i className="fa fa-cogs"></i> setup</span>
               }
             </a>
-
-            {dir.isStarted ?
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                onClick={onToggleLogsClick}
-              >
-              {dir.logsOpen ?
-                <span><i className="fa fa-compress"></i> close logs</span>
-                :
-                <span><i className="fa fa-expand"></i> open logs</span>
-                }
-              </a>
-            : null}
-
-            {dir.isStarted ?
-              <span>
-                {dir.isBusy ?
-                  <div className="loader">
-                    <span><i className="fa fa-spinner fa-spin"></i></span>
-                  </div>
-                :
-                  <div className="loader">
-                    <span><i className="fa fa-check"></i> up-to-date</span>
-                  </div>
-                }
-              </span>
-            : null}
-
             {process.env.NODE_ENV === 'development' ?
               <a
                 href="#"
@@ -139,6 +102,14 @@ class WatchDir extends React.Component {
                 x
               </a>
             : null}
+            <a
+              href="#"
+              className="m-l-sm btn btn-sm btn-danger pull-right"
+              onClick={onRemoveDirClick}
+            >
+              <span><i className="fa fa-remove"></i> remove</span>
+            </a>
+
 
           </div>
         </div>
@@ -156,11 +127,32 @@ class WatchDir extends React.Component {
           <div className="m-t configForm">
             <div className="row">
               <div className="col-sm-12">
-                <p>{dir.processedFiles}/{dir.totalFiles} files processed</p>
+                {dir.isBusy ?
+                  <i className="fa fa-spinner fa-spin"></i>
+                :
+                  <i className="fa fa-check"></i>
+                }
+                {'  '}
+                {dir.processedFiles}/{dir.totalFiles} files processed
+              </div>
+              <div className="col-sm-12">
                 <span
                   style={{ minHeight: '20px' }}
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
                 />
+                {dir.isStarted ?
+                  <a
+                    href="#"
+                    className="text-muted m-l-sm pull-right"
+                    onClick={onToggleLogsClick}
+                  >
+                  {dir.logsOpen ?
+                    <span className="text-muted"><i className="fa fa-compress"></i> close logs</span> // eslint-disable-line
+                    :
+                    <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
+                    }
+                  </a>
+                : null}
                 {dir.logsOpen ?
                   <LogScroll logs={dir.logs} />
                 : null

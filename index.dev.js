@@ -16,8 +16,8 @@ if (process.platform === 'darwin') {
 app.on('ready', async () => {
   let win = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1024 * 0.75 + 10,
+    height: 728 * 0.75,
     titleBarStyle: 'hidden'
   })
 
@@ -29,7 +29,7 @@ app.on('ready', async () => {
   win.loadURL(`file://${__dirname}/app/app.html`)
 
   const rpc = createRPC(win)
-  const bot = createBot(rpc)
+  const bot = createBot(rpc) // eslint-disable-line
 
   rpc.on('init', () => {
     win.show()
@@ -37,9 +37,8 @@ app.on('ready', async () => {
   })
 
   win.on('closed', () => {
-    console.log('closing')
     win = null
-    bot.kill()
+    app.quit()
   })
 
   win.webContents.on('context-menu', (e, props) => {

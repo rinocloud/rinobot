@@ -101,7 +101,7 @@ class ConfigurePipeline extends React.Component {
     const { formData } = this.state
 
     return (
-      <div className="m-t p-t configForm">
+      <div className="m-t configForm">
         <div className="row">
           <div className="col-sm-12">
             <form className="form form-horizontal">
@@ -141,7 +141,7 @@ class ConfigurePipeline extends React.Component {
                 )}
               </div>
 
-              <div className="m-t p-t">
+              <div className="m-t">
                 <div className="lead">
                   Additional metadata
                   <button className="m-l btn btn-xs btn-success" onClick={this.handleAddMetadata}>

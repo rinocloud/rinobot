@@ -38,20 +38,19 @@ export class Login extends React.Component {
     }
 
     return (
-      <div>
+      <div className="">
         <div className="container m-t-lg">
           <div>
-            <Link to="/"><i className="icon-brand"></i></Link>
             <a href="https://rinocloud.com/accounts/signup/" className="pull-right" onClick={openExternal}>
               Don't have a Rinocloud account? Sign up.
             </a>
           </div>
         </div>
 
-        <div className="col-sm-4 col-sm-offset-4 m-t">
-          <h2 className="">
+        <div className="col-sm-6 col-sm-offset-3 m-t">
+          <h3 className="">
             Login to Rinocloud
-          </h2>
+          </h3>
           <form className="m-t" onSubmit={this.handleSubmit}>
             <div className="form-group">
               <input

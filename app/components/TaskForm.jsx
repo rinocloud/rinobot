@@ -36,7 +36,7 @@ class TaskForm extends React.Component {
     return (
       <div className="form-group">
         <div className="col-sm-3">
-          <small>files to match (* for everything)</small>
+          <small>files to match</small>
           <input
             type="text"
             style={{ fontFamily: 'monospace' }}

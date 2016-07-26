@@ -1,10 +1,10 @@
+import { handleActions } from 'redux-actions'
 import isPlainObject from 'lodash/isPlainObject'
 import cloneDeep from 'lodash/cloneDeep'
 import flatten from 'lodash/flatten'
 import omit from 'lodash/omit'
 import map from 'lodash/map'
 import moment from 'moment'
-import { handleActions } from 'redux-actions'
 
 const defaultState = {
   error: null,
@@ -98,7 +98,9 @@ export default handleActions({
       ...state.dirs.slice(0, action.payload),
       {
         ...state.dirs[action.payload],
-        isStarted: false
+        isStarted: false,
+        totalFiles: 0,
+        processedFiles: 0
       },
       ...state.dirs.slice(action.payload + 1)
     ],

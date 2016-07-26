@@ -6,7 +6,10 @@ const Bot = (rpc) => {
   const forkRpc = forkRpcCreator(child)
 
   child.on('close', (code) => {
-    rpc.emit('child closed', code)
+    rpc.emit('watcher error', {
+      name: 'child closed',
+      message: `child exited with code ${code}`
+    })
     forkRpc.destroy()
   })
 

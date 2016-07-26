@@ -46,28 +46,26 @@ export function requireAuthentication(Component) {
 
       return (
         <div>
-          <div className="container m-t-lg">
-            <div>
-              <Link className="brand-link p-a-0" to="/">
-                <i className="icon-brand"></i>
-              </Link>
-              {/* <Link to="/" className="m-l btn btn-sm">Watch folders</Link>*/}
-              {/* <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link> */}
-              {/* <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link> */}
-              <a href="#" className="pull-right" onClick={onClickLogout}>
-                {auth.isAuthenticating ?
-                  <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
-                  :
-                  <span>Logout {auth.username}</span>
-                }
-              </a>
-            </div>
-            {auth.statusText}
-          </div>
+          <div className="container m-t">
+            {/* <Link className="brand-link p-a-0" to="/"> */}
+            {/* <i className="icon-brand"></i> */}
+            {/* </Link> */}
+            {/* <Link to="/" className="m-l btn btn-sm">Watch folders</Link> */}
+            {/* <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link> */}
+            {/* <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link> */}
+            <a href="#" className="pull-right" onClick={onClickLogout}>
+              {auth.isAuthenticating ?
+                <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
+                :
+                <span>Logout {auth.username}</span>
+              }
+            </a>
+          {auth.statusText}
           {auth.access_token
               ? <Component {...this.props} />
               : null
           }
+          </div>
         </div>
       )
     }

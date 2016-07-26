@@ -18,25 +18,11 @@ export const _setConfig = createAction('WATCHER_SET_CONFIG')
 export const _removeDir = createAction('WATCHER_REMOVE_DIR')
 export const _startDir = createAction('WATCHER_START_DIR')
 export const _stopDir = createAction('WATCHER_STOP_DIR')
-export const setBusy = createAction('WATCHER_SET_BUSY', {}, () => ({
-  throttle: { time: 2000 }
-}))
-export const unsetBusy = createAction('WATCHER_UNSET_BUSY', {}, () => ({
-  gather: { time: 2000 }
-}))
-export const setTotalFiles = createAction('SET_TOTAL_FILES')
-// , {}, () => ({
-//   gather: { time: 1000, type: 'throttle' }
-// }))
-export const setProcessedFiles = createAction('SET_PROCESSED_FILES')
-// , {}, () => ({
-//   gather: { time: 1000, type: 'throttle' }
-// }))
+export const setBusy = createAction('WATCHER_SET_BUSY', {}, () => ({ throttle: { time: 100 } }))
+export const unsetBusy = createAction('WATCHER_UNSET_BUSY', {}, () => ({ gather: { time: 1000 } }))
+export const _setTotalFiles = createAction('SET_TOTAL_FILES')
+export const _setProcessedFiles = createAction('SET_PROCESSED_FILES')
 export const _addLogs = createAction('WATCHER_ADD_LOGS')
-// , {}, () => ({
-//   gather: { time: 1000, key: 'logs', type: 'throttle' }
-// }))
-
 
 export const persistDirs = () => (dispatch, getState) => {
   const data = _.map(getState().watcher.dirs, o => _.omit(o, 'config'))
@@ -151,17 +137,28 @@ export const watcherReady = ({ index, delta }) => (dispatch, getState) => {
 }
 
 
+export const setTotalFiles = ({ index, numFiles }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(setBusy(index))
+  dispatch(_setTotalFiles({ index, numFiles }))
+}
+
+export const setProcessedFiles = ({ index, numFiles }) => (dispatch, getState) => { // eslint-disable-line
+  dispatch(unsetBusy(index))
+  dispatch(_setProcessedFiles({ index, numFiles }))
+}
+
+
 export const pipelineComplete = ({ index, pipePath }) => (dispatch, getState) => { // eslint-disable-line
   dispatch(unsetBusy(index))
-  dispatch(addLogs({ index, logs: [
-    `${pipePath}: Finished pipeline`,
-  ] }))
 }
 
 
 export const pipelineLog = ({ index, logs, pipePath }) => (dispatch, getState) => { // eslint-disable-line
   const dir = getState().watcher.dirs[index]
-  if (!dir.isBusy) { dispatch(setBusy(index)) }
+  if (!dir.isBusy) {
+    dispatch(setBusy(index))
+    dispatch(unsetBusy(index))
+  }
   dispatch(addLogs({ index, logs }))
 }
 

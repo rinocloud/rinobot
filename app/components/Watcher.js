@@ -77,7 +77,7 @@ export class Watcher extends React.Component {
     const { watcher, plugins } = this.props
 
     return (
-      <div className="container">
+      <div className="">
         <div className="row m-t">
           <div className="col-sm-12">
             <a href="#" className="btn btn-sm btn-primary" onClick={this.chooseFolder}>
@@ -90,7 +90,6 @@ export class Watcher extends React.Component {
               Just click on 'Choose folder'.
             </p>
           }
-
         </div>
 
         <WatcherDirsList

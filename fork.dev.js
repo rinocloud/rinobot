@@ -12,6 +12,7 @@ const fork = (forkRpc) => {
   const timers = {}
   const last = {}
   const time = 1000
+  const smallTime = 200
 
   const processFile = function processFile(index, path, watchPath, event) { // eslint-disable-line
     const pipeline = new Pipeline({
@@ -61,9 +62,6 @@ const fork = (forkRpc) => {
   const ready = (watcher, index, t0) => {
     const t1 = new Date()
     watcherReady(index, t1 - t0)
-
-    const numFiles = countWatched(watcher.getWatched())
-    setTotalFiles(index, numFiles)
     setProcessedFiles(index, 0)
   }
 
@@ -72,9 +70,11 @@ const fork = (forkRpc) => {
     if (!_.has(logs, index)) logs[index] = []
 
     watcherStarted(index)
+    // setProcessedFiles(index, 0)
+
     const t0 = new Date()
     const watcher = chokidar.watch(path, {
-      ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./'],
+      ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./', '.DS_Store'],
       ignoreInitial: false,
       usePolling: true
     }).on('add', function () {
@@ -93,30 +93,30 @@ const fork = (forkRpc) => {
   forkRpc.on('watch', startWatcher)
   forkRpc.on('unwatch', stopWatcher)
 
-  const watcherReady = (args) => forkRpc.emit('watcher ready', args)
-  const watcherStarted = (args) => forkRpc.emit('watcher started', args)
+  const watcherReady = (index, delta) => forkRpc.emit('watcher ready', { index, delta })
+  const watcherStarted = (index) => forkRpc.emit('watcher started', { index })
 
   const setTotalFiles = _.throttle((index, numFiles) => {
     if (!watchers[index].closed) forkRpc.emit('watcher set total files', { index, numFiles })
-  }, 200)
+  }, smallTime)
 
   const setProcessedFiles = _.throttle((index, numFiles) => {
     if (!watchers[index].closed) forkRpc.emit('watcher set processed files', { index, numFiles })
-  }, 200)
+  }, smallTime)
 
   const pipelineStarted = _.throttle((index) => {
     if (!watchers[index].closed) forkRpc.emit('pipeline started', { index })
-  }, 200)
+  }, smallTime)
 
   const pipelineComplete = _.throttle((index, pipe) => {
     if (!watchers[index].closed) forkRpc.emit('pipeline complete', { index, pipePath: pipe.relPath }) // eslint-disable-line
-  }, 200)
+  }, time)
 
   const pipelineError = _.throttle((index, pipe, error) => {
     if (!watchers[index].closed) {
       forkRpc.emit('pipeline error', { index, error, pipePath: pipe.relPath })
     }
-  }, 200)
+  }, smallTime)
 
   const pipelineLog = function pipelineLog(index, pipe, log) {
     const task = () => {
@@ -144,7 +144,6 @@ const fork = (forkRpc) => {
 
   forkRpc.emit('ready')
 }
-
 
 const forkRpc = rpc(process)
 

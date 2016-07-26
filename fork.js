@@ -8023,6 +8023,7 @@ module.exports =
 	  var timers = {};
 	  var last = {};
 	  var time = 1000;
+	  var smallTime = 200;
 	
 	  var processFile = function processFile(index, path, watchPath, event) {
 	    // eslint-disable-line
@@ -8075,9 +8076,6 @@ module.exports =
 	  var ready = function ready(watcher, index, t0) {
 	    var t1 = new Date();
 	    watcherReady(index, t1 - t0);
-	
-	    var numFiles = (0, _utils.countWatched)(watcher.getWatched());
-	    setTotalFiles(index, numFiles);
 	    setProcessedFiles(index, 0);
 	  };
 	
@@ -8089,9 +8087,11 @@ module.exports =
 	    if (!_lodash2.default.has(logs, index)) logs[index] = [];
 	
 	    watcherStarted(index);
+	    // setProcessedFiles(index, 0)
+	
 	    var t0 = new Date();
 	    var watcher = _chokidar2.default.watch(path, {
-	      ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./'],
+	      ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./', '.DS_Store'],
 	      ignoreInitial: false,
 	      usePolling: true
 	    }).on('add', function () {
@@ -8112,34 +8112,34 @@ module.exports =
 	  forkRpc.on('watch', startWatcher);
 	  forkRpc.on('unwatch', stopWatcher);
 	
-	  var watcherReady = function watcherReady(args) {
-	    return forkRpc.emit('watcher ready', args);
+	  var watcherReady = function watcherReady(index, delta) {
+	    return forkRpc.emit('watcher ready', { index: index, delta: delta });
 	  };
-	  var watcherStarted = function watcherStarted(args) {
-	    return forkRpc.emit('watcher started', args);
+	  var watcherStarted = function watcherStarted(index) {
+	    return forkRpc.emit('watcher started', { index: index });
 	  };
 	
 	  var setTotalFiles = _lodash2.default.throttle(function (index, numFiles) {
 	    if (!watchers[index].closed) forkRpc.emit('watcher set total files', { index: index, numFiles: numFiles });
-	  }, 200);
+	  }, smallTime);
 	
 	  var setProcessedFiles = _lodash2.default.throttle(function (index, numFiles) {
 	    if (!watchers[index].closed) forkRpc.emit('watcher set processed files', { index: index, numFiles: numFiles });
-	  }, 200);
+	  }, smallTime);
 	
 	  var pipelineStarted = _lodash2.default.throttle(function (index) {
 	    if (!watchers[index].closed) forkRpc.emit('pipeline started', { index: index });
-	  }, 200);
+	  }, smallTime);
 	
 	  var pipelineComplete = _lodash2.default.throttle(function (index, pipe) {
 	    if (!watchers[index].closed) forkRpc.emit('pipeline complete', { index: index, pipePath: pipe.relPath }); // eslint-disable-line
-	  }, 200);
+	  }, time);
 	
 	  var pipelineError = _lodash2.default.throttle(function (index, pipe, error) {
 	    if (!watchers[index].closed) {
 	      forkRpc.emit('pipeline error', { index: index, error: error, pipePath: pipe.relPath });
 	    }
-	  }, 200);
+	  }, smallTime);
 	
 	  var pipelineLog = function pipelineLog(index, pipe, log) {
 	    var task = function task() {
@@ -98276,11 +98276,7 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var countWatched = exports.countWatched = function countWatched(_watched) {
-	  return _lodash2.default.reduce(_watched, function (result, value, key) {
-	    return result + value.length - _lodash2.default.reduce(value, function (r, v) {
-	      return _lodash2.default.has(_path2.default.join(key, v)) ? r + 1 : r + 0;
-	    }, 0);
-	  }, 0);
+	  return flattenWatched(_watched).length;
 	};
 	
 	var flattenWatched = exports.flattenWatched = function flattenWatched(_watched) {
