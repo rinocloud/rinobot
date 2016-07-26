@@ -1,7 +1,7 @@
 'use strict'
 
 var chokidar = require('chokidar')
-var rinobot = require('../src/index')
+var rinobot = require('../index')
 
 var chai = require('chai')
 var expect = chai.expect

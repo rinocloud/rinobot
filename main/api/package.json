@@ -1,0 +1,13 @@
+{
+  "name": "rinobot-javascript",
+  "version": "0.0.3",
+  "license": "MIT",
+  "description": "Automate data tasks",
+  "dependencies": {
+    "evaporate": "git+https://github.com/TTLabs/EvaporateJS.git",
+    "lodash": "^4.13.1",
+    "superagent": "^1.8.3",
+    "superagent-promise-plugin": "^3.2.0",
+    "superagent-queue": "0.0.3"
+  }
+}

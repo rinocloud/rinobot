@@ -4,11 +4,11 @@ import nodeExternals from 'webpack-node-externals'
 export default {
   target: 'node',
   devtool: 'source-map',
-  entry: ['babel-polyfill', './fork.dev'],
+  entry: ['babel-polyfill', './main/fork.dev'],
   output: {
     libraryTarget: 'commonjs2',
     path: __dirname,
-    filename: './fork.js'
+    filename: './main/fork.js'
   },
   plugins: [
     new webpack.BannerPlugin(

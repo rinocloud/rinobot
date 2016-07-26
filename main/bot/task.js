@@ -7,7 +7,6 @@ import map from 'lodash/map'
 import fs from 'fs-extra'
 import { spawn } from 'child_process'
 
-
 export class Task {
   /*
   const task = new Task(options)

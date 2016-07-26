@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 # this should install everything
-
-git submodule update --init --recursive
-
 # in the root electron folder
 npm install
 

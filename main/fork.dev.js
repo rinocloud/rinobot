@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import rpc from './rpc-fork'
 import chokidar from 'chokidar'
-import { Pipeline } from './bot/src/pipeline'
-import { countWatched, flattenWatched } from './bot/src/utils'
+import { Pipeline } from './bot/pipeline'
+import { countWatched, flattenWatched } from './bot/utils'
 
 const fork = (forkRpc) => {
   const watchers = {}

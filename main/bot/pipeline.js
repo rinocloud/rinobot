@@ -6,7 +6,7 @@ import series from 'async/series'
 import mkdirp from 'mkdirp'
 import globule from 'globule'
 import getConfig from './config'
-import * as api from '../../api/src/api'
+import * as api from '../api/api'
 import * as scheduler from './scheduler'
 import { Task } from './task'
 
