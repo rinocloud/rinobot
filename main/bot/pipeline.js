@@ -38,6 +38,7 @@ export class Pipeline {
     this.ignored = false
     this.reason = null
     this.retry = options.retry || false
+    this.packagesDir = options.packagesDir || null
     this.timeout = 1
     this.setUpLogging(options)
 
@@ -297,6 +298,7 @@ export class Pipeline {
       self.attemptMetadataParse(() => {
         const opts = {
           api: self.api,
+          packagesDir: self.packagesDir,
           metadata: self.metadata,
           uploadTo: self.uploadTo,
           relPath: self.relPath,

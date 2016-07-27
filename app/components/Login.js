@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import * as authActions from '../actions/auth.js'
-import { Link } from 'react-router'
 const { shell } = require('electron')
 
 

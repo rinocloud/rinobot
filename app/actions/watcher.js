@@ -97,7 +97,7 @@ export const removeDir = (index) => (dispatch, getState) => {
 export const startDir = (index) => (dispatch, getState) => {
   dispatch(_startDir(index))
   const dir = getState().watcher.dirs[index]
-  rpc.emit('watch', { path: dir.path, index })
+  rpc.emit('watch', { path: dir.path, packagesDir: constants.packagesDir, index })
 }
 
 
@@ -164,10 +164,18 @@ export const pipelineLog = ({ index, logs, pipePath }) => (dispatch, getState) =
 
 
 export const pipelineError = ({ index, error, pipePath }) => (dispatch, getState) => { // eslint-disable-line
+  console.log(error)
   dispatch(unsetBusy(index))
-  dispatch(addLogs({ index, logs: [
-    `${pipePath}: ${error.message}`,
-  ] }))
+
+  if (_.isObject(error)) {
+    dispatch(addLogs({ index, logs: [
+      `${pipePath}: error: ${error.code} ${error.message || ''}`,
+    ] }))
+  } else {
+    dispatch(addLogs({ index, logs: [
+      `${pipePath}: error: ${error}`,
+    ] }))
+  }
 }
 
 export const pipelineStarted = ({ index }) => (dispatch, getState) => { // eslint-disable-line

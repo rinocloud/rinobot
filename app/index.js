@@ -19,6 +19,7 @@ rpc.on('ready', () => {
   rpc.emit('init')
 })
 
+rpc.on('error', error => store.dispatch(watcherActions.setError(error)))
 rpc.on('watcher error', error => store.dispatch(watcherActions.setError(error)))
 rpc.on('child closed', error => store.dispatch(watcherActions.setError(error)))
 rpc.on('watcher started', args => store.dispatch(watcherActions.watcherStarted(args)))

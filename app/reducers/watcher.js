@@ -9,7 +9,6 @@ import moment from 'moment'
 const defaultState = {
   error: null,
   dirs: [],
-  statusText: null
 }
 
 const createDir = (dir) => ({
@@ -59,7 +58,7 @@ export default handleActions({
 
   WATCHER_SET_ERROR: (state, action) => ({
     ...state,
-    statusText: action.payload
+    error: action.payload
   }),
 
   WATCHER_SET_DIRS: (state, action) => ({

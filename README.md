@@ -32,7 +32,7 @@ $ npm run start-hot # starts the electron window
 If you get something like the following
 
 ```
-> cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyf                                                                     ill ./main.development
+> cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./main.development
 
 fs.js:634
   return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);

@@ -74,22 +74,31 @@ export class Watcher extends React.Component {
   }
 
   render() {
-    const { watcher, plugins } = this.props
+    const { watcher, plugins, dispatch } = this.props
+
+    const chooseFolder = (e) => {
+      e.preventDefault()
+      const paths = dialog.showOpenDialog({ properties: ['openDirectory', 'multiSelections'] })
+      if (paths) {
+        dispatch(watcherActions.addDir(paths[0]))
+      }
+    }
 
     return (
       <div className="">
         <div className="row m-t">
           <div className="col-sm-12">
-            <a href="#" className="btn btn-sm btn-primary" onClick={this.chooseFolder}>
+            <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>
               Choose folder
             </a>
+
+            {watcher.dirs.length ? '' :
+              <p className="m-t col-sm-6">
+                This is where you can choose directories to watch for file changes.
+                Just click on 'Choose folder'.
+              </p>
+            }
           </div>
-          {watcher.dirs.length ? '' :
-            <p className="m-t col-sm-6">
-              This is where you can choose directories to watch for file changes.
-              Just click on 'Choose folder'.
-            </p>
-          }
         </div>
 
         <WatcherDirsList
@@ -103,7 +112,16 @@ export class Watcher extends React.Component {
           removeDotRino={this.removeDotRino}
           onSetConfig={this.handleSetConfig}
         />
+
+        {watcher.error ?
+          <div className="alert alert-danger m-t">
+            {watcher.error}
+          </div>
+        : null}
+
       </div>
+
+
     );
   }
 }

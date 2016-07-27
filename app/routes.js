@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { Route, IndexRoute } from 'react-router'
-import { requireAuthentication } from './components/AuthenticatedComponent'
 
 import Login from './components/Login'
 import Watcher from './components/Watcher'
 import Plugins from './components/Plugins'
-import InstalledPlugins from './components/InstalledPlugins'
+import InstalledPackages from './components/InstalledPackages'
+import { requireAuthentication } from './components/AuthenticatedComponent'
 
-var App = React.createClass({
+class App extends React.Component {
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+  }
+
   render() {
     return (
       <div>
@@ -15,14 +19,13 @@ var App = React.createClass({
       </div>
     )
   }
-})
-
+}
 
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={requireAuthentication(Watcher)} />
-    <Route path="/installed_plugins" component={requireAuthentication(InstalledPlugins)} />
+    <Route path="/installed_packages" component={requireAuthentication(InstalledPackages)} />
     <Route path="/plugins" component={requireAuthentication(Plugins)} />
     <Route path="/login" component={Login} />
   </Route>
-);
+)

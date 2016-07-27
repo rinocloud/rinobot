@@ -38,6 +38,7 @@ export class Task {
     this.relPath = options.relPath
     this.command = options.command
     this.args = options.args || []
+    this.packagesDir = options.packagesDir || ''
     this.cwd = options.cwd
     this.uploadTo = options.uploadTo || ''
     this.api = options.api || ''
@@ -63,11 +64,12 @@ export class Task {
                 this.command === 'copy') {
       this.copy()
     } else if ( this.command === 'python' ) {
-      this.python()
+      this.setUpScript(() => this.python())
     } else if ( this.command === 'matlab' ) {
+      this.setUpScript(() => this.matlab())
       this.matlab()
     } else if ( this.command === 'Rscript' ) {
-      this.rscript()
+      this.setUpScript(() => this.rscript())
     } else {
       this.processCommandLineTask()
     }
@@ -112,6 +114,49 @@ export class Task {
     return this.on_complete()
   }
 
+  setUpScript(cb){
+    this.codePath = false
+    return fs.access(pt.join(this.cwd, this.args), err => {
+      if (err && err.code !== 'ENOENT') return this.on_error(err)
+      if (!err) {
+        this.codePath = pt.join(this.cwd, this.args)
+        return cb()
+      } else {
+        fs.access(pt.join(this.packagesDir, this.args), err => {
+          if (err) {
+            return this.on_error(err)
+          } else {
+            fs.access(pt.join(this.packagesDir, this.args, 'package.json'), err => {
+              if (err && err.code === 'ENOENT') {
+                return this.on_error(
+                  `Found ${pt.join(this.packagesDir, this.args)}, but no package.json exists.`
+                )
+              }
+              if (err) {
+                return this.on_error(`No package exists matching ${this.args}`)
+              }
+
+              return fs.readFile(pt.join(this.packagesDir, this.args, 'package.json'), 'utf-8', (err, data) => {
+                if (err) return this.on_error(err)
+                const packageJSON = JSON.parse(data)
+
+                if (_.has(packageJSON, 'main')) {
+
+                  this.codePath = pt.join(this.packagesDir, this.args, packageJSON.main)
+                  cb()
+                } else {
+                  return this.on_error(`package.json has no "main" specified`)
+                }
+              })
+
+            })
+          }
+        })
+      }
+
+    })
+  }
+
   escapeShellArg(cmd) {
     return cmd.replace(/ /g, '\\ ')
   }
@@ -127,7 +172,7 @@ export class Task {
   }
 
   python(){
-    const args = trim(swig.render(this.args + ' {{filepath}}', { locals: this.getLocals() }))
+    const args = trim(swig.render(this.codePath + ' {{filepath}}', { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
@@ -153,7 +198,9 @@ export class Task {
   }
 
   rscript(){
-    const args = trim(swig.render(this.args + ' {{filepath}}', { locals: this.getLocals() }))
+    console.log(this.codePath)
+
+    const args = trim(swig.render(this.codePath + ' {{filepath}}', { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
@@ -182,7 +229,7 @@ export class Task {
     const template = "filepath='{{filepath}}';run('{{script}}');;exit;"
     const matlabCode = template
                         .replace('{{filepath}}', this.path)
-                        .replace('{{script}}', this.args)
+                        .replace('{{script}}', this.codePath)
 
     const tokens = [
       '-nodisplay',

@@ -14,8 +14,9 @@ const fork = (forkRpc) => {
   const time = 1000
   const smallTime = 200
 
-  const processFile = function processFile(index, path, watchPath, event) { // eslint-disable-line
+  const processFile = function processFile(index, path, watchPath, packagesDir, event) { // eslint-disable-line
     const pipeline = new Pipeline({
+      packagesDir,
       watchPath,
       path,
       on_complete: (pipe) => {
@@ -42,19 +43,19 @@ const fork = (forkRpc) => {
     })
   }
 
-  const addAfterTimeout = function addAfterTimeout(watcher, index, watchPath, event) {
+  const addAfterTimeout = function addAfterTimeout(watcher, index, watchPath, packagesDir, event) {
     clearTimeout(timer)
-    timer = setTimeout(add(watcher, index, watchPath, event), 200)
+    timer = setTimeout(add(watcher, index, watchPath, packagesDir, event), 200)
   }
 
-  const add = (watcher, index, watchPath, event) => () => {
+  const add = (watcher, index, watchPath, packagesDir, event) => () => {
     const numFiles = countWatched(watcher.getWatched())
     setTotalFiles(index, numFiles)
 
     const allFiles = flattenWatched(watcher.getWatched())
     _.each(allFiles, (file) => {
       if (!processedFiles[index].includes(file)) {
-        processFile(index, file, watchPath, event)
+        processFile(index, file, watchPath, packagesDir, event)
       }
     })
   }
@@ -65,20 +66,18 @@ const fork = (forkRpc) => {
     setProcessedFiles(index, 0)
   }
 
-  const startWatcher = function startWatcher({ path, index }) {
+  const startWatcher = function startWatcher({ path, index, packagesDir = null }) {
     if (!_.has(processedFiles, index)) processedFiles[index] = []
     if (!_.has(logs, index)) logs[index] = []
 
     watcherStarted(index)
-    // setProcessedFiles(index, 0)
-
     const t0 = new Date()
     const watcher = chokidar.watch(path, {
       ignored: ['**.rino**', '**.rino/**', '**.rino', '**/.rino', '/[\\]./', '.DS_Store'],
       ignoreInitial: false,
       usePolling: true
     }).on('add', function () {
-      addAfterTimeout(this, index, path, 'add')
+      addAfterTimeout(this, index, path, packagesDir, 'add')
     }).on('ready', function () {
       ready(this, index, t0)
     })

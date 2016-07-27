@@ -6,7 +6,6 @@ import createDebounce from 'redux-debounce'
 import createThrottle from 'redux-throttle'
 import { hashHistory } from 'react-router'
 
-
 import { routerMiddleware } from 'react-router-redux'
 import rootReducer from '../reducers'
 

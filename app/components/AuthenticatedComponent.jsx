@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { Link } from 'react-router'
-import * as authActions from '../actions/auth'
+import Navbar from './Navbar'
 
 
 export function requireAuthentication(Component) {
@@ -37,34 +36,16 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { dispatch, auth } = this.props
-
-      const onClickLogout = (e) => {
-        e.preventDefault()
-        dispatch(authActions.logout())
-      }
-
+      const { auth, location } = this.props
       return (
         <div>
-          <div className="container m-t">
-            {/* <Link className="brand-link p-a-0" to="/"> */}
-            {/* <i className="icon-brand"></i> */}
-            {/* </Link> */}
-            {/* <Link to="/" className="m-l btn btn-sm">Watch folders</Link> */}
-            {/* <Link to="/plugins" className="m-l btn btn-sm">Install plugin</Link> */}
-            {/* <Link to="/installed_plugins" className="m-l btn btn-sm">My plugins</Link> */}
-            <a href="#" className="pull-right" onClick={onClickLogout}>
-              {auth.isAuthenticating ?
-                <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
-                :
-                <span>Logout {auth.username}</span>
-              }
-            </a>
-          {auth.statusText}
-          {auth.access_token
-              ? <Component {...this.props} />
-              : null
-          }
+          <Navbar location={location} />
+          <div className="container">
+            {auth.statusText}
+            {auth.access_token
+                ? <Component {...this.props} />
+                : null
+            }
           </div>
         </div>
       )

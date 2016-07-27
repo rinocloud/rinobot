@@ -21,11 +21,6 @@ app.on('ready', async () => {
     titleBarStyle: 'hidden'
   })
 
-  process.on('uncaughtException', (error) => {
-    console.log(error)
-    console.log(error.stack)
-  })
-
   win.loadURL(`file://${__dirname}/app/app.html`)
 
   const rpc = createRPC(win)
@@ -34,6 +29,10 @@ app.on('ready', async () => {
   rpc.on('init', () => {
     win.show()
     win.focus()
+  })
+
+  process.on('uncaughtException', (error) => {
+    rpc.emit('error', error)
   })
 
   win.on('closed', () => {

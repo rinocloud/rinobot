@@ -9,5 +9,5 @@ export default {
   authFilePath: pt.join(remote.app.getPath('userData'), 'auth.json'),
   packagesFilePath: pt.join(remote.app.getPath('userData'), 'packages.json'),
   watcherFilePath: pt.join(remote.app.getPath('userData'), 'watcher.json'),
-  packagesDir: pt.join(remote.app.getPath('userData'), 'packages'),
+  packagesDir: pt.join(remote.app.getPath('documents'), 'rinobot-packages'),
 }
