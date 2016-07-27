@@ -1,10 +1,10 @@
-import pt from 'path'
-import swig from 'swig'
 import globule from 'globule'
 import omit from 'lodash/omit'
 import trim from 'lodash/trim'
 import map from 'lodash/map'
 import fs from 'fs-extra'
+import swig from 'swig'
+import pt from 'path'
 import { spawn } from 'child_process'
 
 export class Task {
@@ -54,10 +54,20 @@ export class Task {
   }
 
   run() {
-    if (this.command === 'rinocloud-upload' || this.command === 'upload') {
+    if (this.command === 'rinocloud-upload' ||
+        this.command === 'upload' ||
+        this.command === 'rinocloud'
+      ) {
       this.upload()
-    } else if (this.command === 'rinocloud-copy' || this.command === 'copy') {
+    } else if ( this.command === 'rinocloud-copy' ||
+                this.command === 'copy') {
       this.copy()
+    } else if ( this.command === 'python' ) {
+      this.python()
+    } else if ( this.command === 'matlab' ) {
+      this.matlab()
+    } else if ( this.command === 'Rscript' ) {
+      this.rscript()
     } else {
       this.processCommandLineTask()
     }
@@ -102,21 +112,108 @@ export class Task {
     return this.on_complete()
   }
 
-  copy() {
-    this.on_log('starting copy')
+  escapeShellArg(cmd) {
+    return cmd.replace(/ /g, '\\ ')
+  }
 
-    function escapeShellArg(cmd) {
-      return cmd.replace(/ /g, '\\ ');
-    }
-
-    const locals = {
-      filepath: escapeShellArg(this.path),
-      filename: escapeShellArg(this.filename),
-      path: escapeShellArg(`./${this.relPath}`),
+  getLocals(){
+    return {
+      filepath: this.escapeShellArg(this.path),
+      filename: this.escapeShellArg(this.filename),
+      path: this.escapeShellArg(`./${this.relPath}`),
       join: (x, y) => pt.join(x, y),
       ...this.metadata
     }
-    const args = trim(swig.render(this.args, { locals }))
+  }
+
+  python(){
+    const args = trim(swig.render(this.args + ' {{filepath}}', { locals: this.getLocals() }))
+    const magicDelimiter = ',,,xxx123'
+    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
+      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
+    )
+
+    const child = spawn('python', tokens, { cwd: this.cwd })
+    child.on('error', (error) => {
+      child.error = true
+      return this.on_error(error)
+    })
+    child.stdout.on('data', this.on_log)
+    child.stderr.on('data', this.on_log)
+    child.on('close', (code) => {
+      if (child.hasOwnProperty('error')) return
+      if (code !== 0) {
+        return this.on_error(
+          new Error(
+            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+      } else { // eslint-disable-line
+        return this.on_complete()
+      }
+    })
+  }
+
+  rscript(){
+    const args = trim(swig.render(this.args + ' {{filepath}}', { locals: this.getLocals() }))
+    const magicDelimiter = ',,,xxx123'
+    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
+      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
+    )
+
+    const child = spawn('Rscript', tokens, { cwd: this.cwd })
+    child.on('error', (error) => {
+      child.error = true
+      return this.on_error(error)
+    })
+    child.stdout.on('data', this.on_log)
+    child.stderr.on('data', this.on_log)
+    child.on('close', (code) => {
+      if (child.hasOwnProperty('error')) return
+      if (code !== 0) {
+        return this.on_error(
+          new Error(
+            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+      } else { // eslint-disable-line
+        return this.on_complete()
+      }
+    })
+  }
+
+  matlab(){
+    const template = "filepath='{{filepath}}';run('{{script}}');;exit;"
+    const matlabCode = template
+                        .replace('{{filepath}}', this.path)
+                        .replace('{{script}}', this.args)
+
+    const tokens = [
+      '-nodisplay',
+      '-nosplash',
+      '-nodesktop',
+      '-r',
+      matlabCode
+    ]
+
+    const child = spawn('matlab', tokens, { cwd: this.cwd })
+    child.on('error', (error) => {
+      child.error = true
+      return this.on_error(error)
+    })
+    child.stdout.on('data', this.on_log)
+    child.stderr.on('data', this.on_log)
+    child.on('close', (code) => {
+      if (child.hasOwnProperty('error')) return
+      if (code !== 0) {
+        return this.on_error(
+          new Error(
+            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+      } else { // eslint-disable-line
+        return this.on_complete()
+      }
+    })
+  }
+
+  copy() {
+    this.on_log('starting copy')
+    const args = trim(swig.render(this.args, { locals: this.getLocals() }))
     fs.copy(this.path, args, (err) => {
       if (err) return this.on_error(err)
       return this.on_complete()
@@ -124,50 +221,27 @@ export class Task {
   }
 
   processCommandLineTask() {
-    const self = this
-    /*
-      If the task has type=="cli" then the pipeline will run the command line
-      program specified by the task.
-      This is useful is the user wants to process or prepare data before sending it to rinocloud.
-    */
-    function escapeShellArg(cmd) {
-      return cmd.replace(/ /g, '\\ ');
-    }
-
+    const args = trim(swig.render(this.args, { locals: this.getLocals() } ))
     const magicDelimiter = ',,,xxx123'
-
-    const locals = {
-      filepath: escapeShellArg(this.path),
-      filename: escapeShellArg(this.filename),
-      path: escapeShellArg(`./${this.relPath}`),
-      join: (x, y) => pt.join(x, y),
-      ...this.metadata
-    }
-
-    const args = trim(swig.render(self.args, { locals }))
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
     )
 
-    const options = {
-      cwd: self.cwd
-    }
-
-    const child = spawn(self.command, tokens, options)
-    child.on('error', (error) => {
+    const child = spawn(this.command, tokens, { cwd: this.cwd })
+    child.on('error', error => {
       child.error = true
-      return self.on_error(error)
+      return this.on_error(error)
     })
-    child.stdout.on('data', self.on_log)
-    child.stderr.on('data', self.on_log)
-    child.on('close', (code) => {
+    child.stdout.on('data', this.on_log)
+    child.stderr.on('data', this.on_log)
+    child.on('close', code => {
       if (child.hasOwnProperty('error')) return
       if (code !== 0) {
-        return self.on_error(
+        return this.on_error(
           new Error(
-            `An error occured (code ${code}) while running "${self.command} ${args.split('  ')}"`))
+            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
       } else { // eslint-disable-line
-        return self.on_complete()
+        return this.on_complete()
       }
     })
   }

@@ -1,7 +1,7 @@
 'use strict'
 
 var chokidar = require('chokidar')
-var rinobot = require('../index')
+var pipeline = require('../pipeline')
 
 var chai = require('chai')
 var expect = chai.expect
@@ -12,7 +12,7 @@ var fs = require('fs-extra')
 var sysPath = require('path')
 var pt = require('path')
 var yaml = require('js-yaml')
-var api = require('rinocloud-javascript')
+var api = require('../../api/api')
 chai.use(require('sinon-chai'))
 var os = process.platform
 
@@ -53,9 +53,8 @@ function copy(name, o){
   fs.copySync(i, o)
 }
 
-
 var defaultOnComplete = function(pipe){console.log(`\t\t${pipe.relPath} complete`)}
-var defaultOnLog = function(pipe, msg){console.log(`\t\t${pipe.relPath} ${msg}`)}
+var defaultOnLog = function(pipe, msg){console.log(`${msg}`)}
 var defaultOnError = function(pipe, err){console.log(`\t\t${pipe.relPath} ${err.message}`)}
 var defaultOnIgnore = function(pipe, msg){console.log(`\t\t${pipe.relPath} ignored: ${msg}`)}
 
@@ -272,7 +271,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -287,6 +286,84 @@ function runTests(baseopts) {
       })
       .on('ready', w(function() {
         copy('experiment.log', getFixturePath('experiment.log'))
+      }))
+    })
+
+    it('should call matlab and add 1 to everything', function(done) {
+      this.timeout(10000)
+      copy('rino-matlab.yaml', getFixturePath('rino.yaml'))
+      copy('increment.m', getFixturePath('increment.m'))
+
+      const on_complete = (pipeline) => {
+
+        existsSync(getFixturePath('small_list.txt')).should.equal(true)
+        existsSync(getFixturePath('small_list.txt.processed.txt')).should.equal(true)
+
+        const oldData = fs.readFileSync(getFixturePath('small_list.txt'), 'utf-8')
+        const newData = fs.readFileSync(getFixturePath('small_list.txt.processed.txt'), 'utf-8')
+
+        oldData.should.equal('1\n2\n3\n')
+        newData.should.equal('2\n3\n4\n')
+
+        done()
+      }
+
+      watcher
+      .on('all', function(event, path){
+        var p = new pipeline.Pipeline({
+          path,
+          event,
+          on_complete,
+          on_error: defaultOnError,
+          on_log: defaultOnLog,
+          on_ignore: defaultOnIgnore,
+          watchPath: getFixturePath('')
+        })
+        p.ready(() => {
+          if(!p.ignored) p.run()
+        })
+      })
+      .on('ready', w(function() {
+        copy('small_list.txt', getFixturePath('small_list.txt'))
+      }))
+    })
+
+    it('should call Rscript and add 1 to everything', function(done) {
+      this.timeout(10000)
+      copy('rino-R.yaml', getFixturePath('rino.yaml'))
+      copy('increment.R', getFixturePath('increment.R'))
+
+      const on_complete = (pipeline) => {
+
+        existsSync(getFixturePath('small_list.txt')).should.equal(true)
+        existsSync(getFixturePath('small_list.txt.processed.txt')).should.equal(true)
+
+        const oldData = fs.readFileSync(getFixturePath('small_list.txt'), 'utf-8')
+        const newData = fs.readFileSync(getFixturePath('small_list.txt.processed.txt'), 'utf-8')
+
+        oldData.should.equal('1\n2\n3\n')
+        newData.should.equal('2\n3\n4\n')
+
+        done()
+      }
+
+      watcher
+      .on('all', function(event, path){
+        var p = new pipeline.Pipeline({
+          path,
+          event,
+          on_complete,
+          on_error: defaultOnError,
+          on_log: defaultOnLog,
+          on_ignore: defaultOnIgnore,
+          watchPath: getFixturePath('')
+        })
+        p.ready(() => {
+          if(!p.ignored) p.run()
+        })
+      })
+      .on('ready', w(function() {
+        copy('small_list.txt', getFixturePath('small_list.txt'))
       }))
     })
 
@@ -316,7 +393,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -368,7 +445,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -427,7 +504,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -463,7 +540,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -509,7 +586,7 @@ function runTests(baseopts) {
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -552,7 +629,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -601,7 +678,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete: defaultOnComplete,
@@ -630,7 +707,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete: defaultOnComplete,
@@ -660,7 +737,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete: defaultOnComplete,
@@ -688,7 +765,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete: defaultOnComplete,
@@ -745,7 +822,7 @@ tasks:
 
       watcher
       .on('all', function(event, path){
-        var p = new rinobot.pipeline.Pipeline({
+        var p = new pipeline.Pipeline({
           path,
           event,
           on_complete,
@@ -775,7 +852,7 @@ tasks:
 
         watcher
         .on('all', function(event, path){
-          var p = new rinobot.pipeline.Pipeline({
+          var p = new pipeline.Pipeline({
             path,
             event,
             on_complete,

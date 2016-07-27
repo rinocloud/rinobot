@@ -6,4 +6,4 @@ ignore:
 tasks:
   - match: "*.log"
     command: "python"
-    args: "parse.py {{filepath}}"
+    args: "parse.py"

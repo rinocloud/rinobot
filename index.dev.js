@@ -1,7 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import createMenu from './main/menu'
 import createRPC from './main/rpc'
-import createBot from './main/bot.js'
+import createBot from './main/bot/'
 
 app.setName('rinobot')
 

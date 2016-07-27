@@ -315,7 +315,7 @@ export class Pipeline {
             setTimeout(() => { callback() })
           },
           on_log: (tt, m) => {
-            self.on_log(`${tt.command}: ${m}`)
+            self.on_log(`${m}`)
           },
           on_complete: (tt) => {
             self.on_log(`${tt.command}: finished`)
