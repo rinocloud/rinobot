@@ -97,12 +97,11 @@ export default handleActions({
 
   PLUGIN_SET_INSTALLED_PACKAGE: (state, action) => ({
     ...state,
-    installedPackages: flatten([
-      ...defaultState.installedPackages,
-      filter(
-        map(action.payload, createPluginItem.bind(null, state)),
-        o => o.name !== 'rinobot.js')
-    ]),
+    installedPackages: action.payload,
+      // ...defaultState.installedPackages,
+      // filter(
+        // map(action.payload, createPluginItem.bind(null, state)),
+        // o => o.name !== 'rinobot.js')
     statusText: null
   }),
 

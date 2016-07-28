@@ -18,14 +18,37 @@ export const removeInstalledPackage = createAction('PLUGIN_REMOVE_INSTALLED_PACK
 export const addInstalledPackages = createAction('PLUGIN_ADD_INSTALLED_PACKAGE')
 export const setInstalledPackages = createAction('PLUGIN_SET_INSTALLED_PACKAGE')
 
+const getDirs = (rootDir, cb) => { // eslint-disable-line
+  fs.readdir(rootDir, (err, files) => {
+    const dirs = [];
+    for (let index = 0; index < files.length; ++index) {
+      const file = files[index];
+      if (file[0] !== '.') {
+        const filePath = pt.join(rootDir, file)
+        fs.stat(filePath, (err, stat) => { // eslint-disable-line
+          if (stat.isDirectory()) {
+            dirs.push(file);
+          }
+          if (files.length === (index + 1)) {
+            return cb(dirs);
+          }
+        })
+      }
+    }
+  });
+}
+
 export const readLocalPlugins = () => (dispatch) => {
-  let pluginsJSON = null
-  try {
-    pluginsJSON = JSON.parse(fs.readFileSync(constants.packagesFilePath))
-  } catch (err) {
-    if (err.code !== 'ENOENT') throw err
-  }
-  if (pluginsJSON) dispatch(setInstalledPackages(pluginsJSON))
+  getDirs(constants.packagesDir, (dirs) => {
+    dispatch(setInstalledPackages(dirs))
+  })
+  // let pluginsJSON = null
+  // try {
+  //   pluginsJSON = JSON.parse(fs.readFileSync(constants.packagesFilePath))
+  // } catch (err) {
+  //   if (err.code !== 'ENOENT') throw err
+  // }
+  // if (pluginsJSON) dispatch(setInstalledPackages(pluginsJSON))
 }
 
 export const persistPlugins = () => (dispatch, getState) => {
