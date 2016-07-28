@@ -48,6 +48,25 @@ class TaskForm extends React.Component {
 
         <div className="col-sm-3">
           <small>command to run</small>
+
+          {/*
+
+            gets a question mark to explain
+
+            change to a select box with these options:
+
+              rinocloud (upload)
+              copy
+              python
+              matlab
+              rscript
+
+              custom/other
+
+            if you press other, another box appears
+            asking for a command name (this box gets a question mark)
+            */}
+
           <input
             type="text"
             style={{ fontFamily: 'monospace' }}
@@ -55,6 +74,14 @@ class TaskForm extends React.Component {
             className="form-control input-sm"
             onChange={this.handleChangeMatch('command')}
           />
+
+          {task.command === 'custom' ?
+            <div>
+            {/* this is where the extra input box goes*/}
+            </div>
+            :
+            null
+          }
         </div>
 
         <div className="col-sm-1">
@@ -65,6 +92,25 @@ class TaskForm extends React.Component {
             <i className="fa fa-remove"></i>
           </button>
         </div>
+
+        {/*
+          this is the box for the argument of the command
+
+          gets question marks
+
+          if command is:
+            - upload -> no box needed
+            - copy -> box has copy to location ? can be a string, or even folder box
+            - pytohn, matlab, Rscript -> then show list of packages
+
+          list of packages:
+
+            selectBox like before which renders the items in the list
+            installedPackages.
+
+            but you need to add another option called other, where they
+            can add file
+        */}
 
         <div className="col-sm-4">
           <small>command arguments (optional)</small>
