@@ -346,13 +346,11 @@ export class Pipeline {
           return self.tryAgain()
         }
       }
-
       return self.attemptMetadataParse(() => {
         self.extendDiary({ finished: true })
         self.writeDiary(() => {
           self.on_complete()
         })
-
       })
     })
   }

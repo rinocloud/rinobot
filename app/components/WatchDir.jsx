@@ -65,34 +65,42 @@ class WatchDir extends React.Component {
         </div>
         <div className="row">
           <div className="col-sm-12">
-            {dir.isStarted ?
-              <a
-                href="#"
-                className="btn btn-sm btn-danger"
-                onClick={onStopClick}
-              >
-                stop
-              </a>
-               :
-              <a
-                href="#"
-                className="btn btn-sm btn-success"
-                onClick={onStartClick}
-              >
-                start
-              </a>
+
+            {!dir.configOpen ?
+              dir.isStarted ?
+                <a
+                  href="#"
+                  className="btn btn-sm btn-danger"
+                  onClick={onStopClick}
+                >
+                  stop
+                </a>
+                 :
+                <a
+                  href="#"
+                  className="btn btn-sm btn-success"
+                  onClick={onStartClick}
+                >
+                  start
+                </a>
+
+              : null
             }
-            <a
-              href="#"
-              className="m-l-sm btn btn-sm btn-default"
-              onClick={onToggleConfigClick}
-            >
-            {dir.configOpen ?
-              <span><i className="fa fa-save"></i> save</span>
-              :
-              <span><i className="fa fa-cogs"></i> setup</span>
-              }
-            </a>
+
+            {!dir.isStarted ?
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                onClick={onToggleConfigClick}
+              >
+                {dir.configOpen ?
+                  <span><i className="fa fa-save"></i> save</span>
+                  :
+                  <span><i className="fa fa-cogs"></i> setup</span>
+                }
+              </a>
+              : null
+            }
             {process.env.NODE_ENV === 'development' ?
               <a
                 href="#"

@@ -91,14 +91,14 @@ export class Watcher extends React.Component {
             <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>
               Choose folder
             </a>
-
-            {watcher.dirs.length ? '' :
-              <p className="m-t col-sm-6">
-                This is where you can choose directories to watch for file changes.
-                Just click on 'Choose folder'.
-              </p>
-            }
           </div>
+          {watcher.dirs.length ? '' :
+            <p className="m-t col-sm-6">
+              This is where you can choose directories to watch for file changes.
+              Just click on 'Choose folder'.
+            </p>
+          }
+
         </div>
 
         <WatcherDirsList

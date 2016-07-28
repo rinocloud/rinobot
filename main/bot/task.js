@@ -2,6 +2,7 @@ import globule from 'globule'
 import omit from 'lodash/omit'
 import trim from 'lodash/trim'
 import map from 'lodash/map'
+import yaml from 'js-yaml'
 import fs from 'fs-extra'
 import swig from 'swig'
 import pt from 'path'
@@ -124,28 +125,34 @@ export class Task {
       } else {
         fs.access(pt.join(this.packagesDir, this.args), err => {
           if (err) {
-            return this.on_error(err)
+            return this.on_error(`Cant find package "${this.args}"`)
           } else {
-            fs.access(pt.join(this.packagesDir, this.args, 'package.json'), err => {
+            fs.access(pt.join(this.packagesDir, this.args, 'package.yaml'), err => {
               if (err && err.code === 'ENOENT') {
                 return this.on_error(
-                  `Found ${pt.join(this.packagesDir, this.args)}, but no package.json exists.`
+                  `Found ${pt.join(this.packagesDir, this.args)}, but no package.yaml exists.`
                 )
               }
               if (err) {
                 return this.on_error(`No package exists matching ${this.args}`)
               }
 
-              return fs.readFile(pt.join(this.packagesDir, this.args, 'package.json'), 'utf-8', (err, data) => {
-                if (err) return this.on_error(err)
-                const packageJSON = JSON.parse(data)
+              return fs.readFile(pt.join(this.packagesDir, this.args, 'package.yaml'), 'utf-8', (err, data) => {
+                if (err) return this.on_error(`package.yaml in "${this.args}" could not be opened`)
 
-                if (_.has(packageJSON, 'main')) {
+                let packageYaml = {}
+                try{
+                  packageYaml = yaml.safeLoad(data)
+                }
+                catch (e) {
+                  return this.on_error(`package.yaml in "${this.args}" is malformed and could not be parsed`)
+                }
 
-                  this.codePath = pt.join(this.packagesDir, this.args, packageJSON.main)
+                if (_.has(packageYaml, 'main')) {
+                  this.codePath = pt.join(this.packagesDir, this.args, packageYaml.main)
                   cb()
                 } else {
-                  return this.on_error(`package.json has no "main" specified`)
+                  return this.on_error(`package.yaml in "${this.args}" has no "main" specified`)
                 }
               })
 
@@ -198,9 +205,7 @@ export class Task {
   }
 
   rscript(){
-    console.log(this.codePath)
-
-    const args = trim(swig.render(this.codePath + ' {{filepath}}', { locals: this.getLocals() }))
+    const args = trim(swig.render(this.codePath + ' {{filename}}', { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line

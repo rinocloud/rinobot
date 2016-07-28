@@ -15,7 +15,7 @@ const createDir = (dir) => ({
   ...dir,
   path: dir.path,
   isStarted: false,
-  configOpen: false,
+  configOpen: dir.config === null,
   logsOpen: true,
   isCustomPlugin: false,
   isBusy: false,
@@ -215,7 +215,9 @@ export default handleActions({
       ...state.dirs.slice(0, action.payload.index),
       {
         ...state.dirs[action.payload.index],
-        processedFiles: action.payload.numFiles
+        processedFiles: action.payload.numFiles,
+        totalFiles: (action.payload.numFiles > state.dirs[action.payload.index].totalFiles ?
+          action.payload.numFiles : state.dirs[action.payload.index].totalFiles)
       },
       ...state.dirs.slice(action.payload.index + 1)
     ],
