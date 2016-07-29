@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
 
+
 class ConfigurePipeline extends React.Component {
 
   static propTypes = {

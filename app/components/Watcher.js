@@ -5,7 +5,7 @@ import * as watcherActions from '../actions/watcher'
 const { dialog } = require('electron').remote;
 
 
-export class Watcher extends React.Component {
+class Watcher extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -85,9 +85,10 @@ export class Watcher extends React.Component {
     }
 
     return (
-      <div className="">
-        <div className="row m-t">
+      <div className="container">
+        <div className="row">
           <div className="col-sm-12">
+            <h2 className="lead">Rinobot</h2>
             <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>
               Choose folder
             </a>

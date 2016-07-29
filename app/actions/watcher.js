@@ -115,11 +115,9 @@ export const removeDotRino = (index) => (dispatch, getState) => {
   })
 }
 
-
 export const addLogs = (action) => (dispatch) => {
   dispatch(_addLogs(action))
 }
-
 
 export const watcherStarted = ({ index }) => (dispatch, getState) => {
   const dir = getState().watcher.dirs[index]

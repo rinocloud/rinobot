@@ -1,23 +1,16 @@
 import React, { PropTypes } from 'react'
-import { push } from 'react-router-redux'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import * as watcherActions from '../actions/watcher'
 import * as authActions from '../actions/auth'
-const { dialog } = require('electron').remote
 
-export class Navbar extends React.Component {
+class Navbar extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    watcher: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
-    plugins: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
   }
 
   render() {
-    const { dispatch, auth, location } = this.props
+    const { dispatch, auth } = this.props
 
     const onClickLogout = (e) => {
       e.preventDefault()
@@ -47,8 +40,4 @@ export class Navbar extends React.Component {
   }
 }
 
-export default connect((state) => ({
-  watcher: state.watcher,
-  plugins: state.plugins,
-  auth: state.auth
-}))(Navbar)
+export { Navbar }
