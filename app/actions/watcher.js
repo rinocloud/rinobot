@@ -164,7 +164,6 @@ export const pipelineLog = ({ index, logs, pipePath }) => (dispatch, getState) =
 
 
 export const pipelineError = ({ index, error, pipePath }) => (dispatch, getState) => { // eslint-disable-line
-  console.log(error)
   dispatch(unsetBusy(index))
 
   if (_.isObject(error)) {

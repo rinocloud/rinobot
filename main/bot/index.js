@@ -6,14 +6,6 @@ const Bot = (rpc) => {
   const child = fork(pt.join(__dirname, 'fork.js'))
   const forkRpc = forkRpcCreator(child)
 
-  child.on('close', (code) => {
-    rpc.emit('watcher error', {
-      name: 'child closed',
-      message: `child exited with code ${code}`
-    })
-    forkRpc.destroy()
-  })
-
   child.on('error', (error) => {
     rpc.emit('watcher error', { name: error.name, message: error.message, stack: error.stack })
   })
@@ -34,7 +26,7 @@ const Bot = (rpc) => {
   }
 
   forkRpc.emit('start')
-  return child
+  return {bot: child, fork: forkRpc}
 }
 
 export default Bot

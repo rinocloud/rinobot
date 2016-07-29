@@ -115,7 +115,8 @@ export class Watcher extends React.Component {
 
         {watcher.error ?
           <div className="alert alert-danger m-t">
-            {watcher.error}
+            <p>{watcher.error.name}</p>
+            <p>{watcher.error.message}</p>
           </div>
         : null}
 

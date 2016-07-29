@@ -1,4 +1,5 @@
 import { handleActions } from 'redux-actions'
+import _ from 'lodash'
 import isPlainObject from 'lodash/isPlainObject'
 import cloneDeep from 'lodash/cloneDeep'
 import flatten from 'lodash/flatten'
@@ -58,7 +59,11 @@ export default handleActions({
 
   WATCHER_SET_ERROR: (state, action) => ({
     ...state,
-    error: action.payload
+    error: _.isString(action.payload) ? {
+      name: 'Error',
+      message: action.payload,
+      stack: ''
+    } : action.payload
   }),
 
   WATCHER_SET_DIRS: (state, action) => ({

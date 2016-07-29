@@ -66,7 +66,7 @@ class WatchDir extends React.Component {
         <div className="row">
           <div className="col-sm-12">
 
-            {!dir.configOpen ?
+            {!dir.configOpen ? // eslint-disable-line
               dir.isStarted ?
                 <a
                   href="#"

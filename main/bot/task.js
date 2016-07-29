@@ -38,7 +38,7 @@ export class Task {
     this.filename = pt.basename(this.path)
     this.relPath = options.relPath
     this.command = options.command
-    this.args = options.args || []
+    this.args = options.args || ''
     this.packagesDir = options.packagesDir || ''
     this.cwd = options.cwd
     this.uploadTo = options.uploadTo || ''
