@@ -35,63 +35,100 @@ class TaskForm extends React.Component {
 
     return (
       <div className="form-group">
-        <div className="col-sm-3">
-          <small>files to match</small>
-          <input
-            type="text"
-            style={{ fontFamily: 'monospace' }}
-            value={task.match || ''}
-            className="form-control input-sm"
-            onChange={this.handleChangeMatch('match')}
-          />
-        </div>
-
-        <div className="col-sm-3">
-          <small>command to run</small>
-
-          {/*
-
-            gets a question mark to explain
-
-            change to a select box with these options:
-
-              rinocloud (upload)
-              copy
-              python
-              matlab
-              rscript
-
-              custom/other
-
-            if you press other, another box appears
-            asking for a command name (this box gets a question mark)
-            */}
-
-          <input
+        <div className="col-sm-3 ">
+          <small> Select comand to run</small>
+          <i className='fa fa-question-circle-o m-l-sm'></i>
+          <select
             type="text"
             style={{ fontFamily: 'monospace' }}
             value={task.command || ''}
-            className="form-control input-sm"
+            className="form-control custom-select"
             onChange={this.handleChangeMatch('command')}
-          />
+          >
+            <option value='upload'>Rinocloud (upload)</option>
+            <option value='copy' >Copy</option>
+            <option value='list'>Python</option>
+            <option value='list'>MATLAB</option>
+            <option value='list'>R</option>
+            <option value='custom'>custom/user</option>
+          </select>
+        </div>
 
-          {task.command === 'custom' ?
-            <div>
-            {/* this is where the extra input box goes*/}
+        <div className="col-sm-3">
+          <small> Add file to match
+          <i className='fa fa-question-circle-o m-l-sm'></i>
+          </small>
+
+          <input
+            type="text"
+            style={{ fontFamily: 'monospace' }}
+            value={task.task || ''}
+            className="form-control input-sm"
+            onChange={this.handleChangeMatch('task')}
+          />
+          </div>
+          {task.command === 'upload' ?
+            <div className="col-sm-3">
+              <small>Upload to</small>
+              <input
+                type="text"
+                style={{ fontFamily: 'monospace' }}
+                value={task.command || ''}
+                className="form-control input-sm"
+                onChange={this.handleChangeMatch('command')}
+              />
             </div>
+            : null}
+          {task.command === 'copy' ?
+            <div className="col-sm-3">
+              <small>Select destination folder
+              <i className='fa fa-question-circle-o m-l-sm'></i>
+              </small>
+              <input
+                type="text"
+                style={{ fontFamily: 'monospace' }}
+                value={task.command || ''}
+                className="form-control input-sm"
+                onChange={this.handleChangeMatch('command')}
+              />
+            </div>
+            : null}
+            {/*add changes */}
+            {task.command === 'list' ?
+              <div className="col-sm-3">
+                <small>Select package
+                  <i className='fa fa-question-circle-o m-l-sm'></i>
+                </small>
+                <select
+                  type="text"
+                  style={{ fontFamily: 'monospace' }}
+                  //value={task.command || ''}
+                  className="form-control  custom-select"
+                  //onChange={this.handleChangeMatch('command')}
+                >
+                  <option>Python integration</option>
+                  <option>MATLAB integration</option>
+                  <option>R integration</option>
+                </select>
+
+              </div>
+              : null}
+          {task.command === 'custom' ?
+            <div className="col-sm-3">
+              <small>Insert command name</small>
+                <i className='fa fa-question-circle-o m-l-sm'></i>
+              <input
+                type="text"
+                style={{ fontFamily: 'monospace' }}
+                value={task.command || ''}
+                className="form-control input-sm"
+                onChange={this.handleChangeMatch('command')}
+              />
+            </div>
+
             :
             null
           }
-        </div>
-
-        <div className="col-sm-1">
-          <button
-            className="task-remove-button btn btn-xs btn-danger"
-            onClick={this.handleRemoveClick}
-          >
-            <i className="fa fa-remove"></i>
-          </button>
-        </div>
 
         {/*
           this is the box for the argument of the command
@@ -112,7 +149,7 @@ class TaskForm extends React.Component {
             can add file
         */}
 
-        <div className="col-sm-4">
+        {/*<div className="col-sm-4">
           <small>command arguments (optional)</small>
           <input
             type="text"
@@ -122,8 +159,18 @@ class TaskForm extends React.Component {
             className="form-control input-sm"
             onChange={this.handleChangeMatch('args')}
           />
-        </div>
+        </div>*/}
 
+        {/*I have to add   onClick={this.handleAddTask}*/}
+
+        <div className="col-sm-1 pull-right">
+          <button
+            className="task-remove-button btn btn-xs btn-danger"
+            onClick={this.handleRemoveClick}
+          >
+            <i className="fa fa-trash"></i>
+          </button>
+        </div>
       </div>
     )
   }

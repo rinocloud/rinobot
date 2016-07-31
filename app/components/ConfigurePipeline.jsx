@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
+import {Tabs, Tab} from 'react-bootstrap'
 
 class ConfigurePipeline extends React.Component {
 
@@ -101,11 +102,15 @@ class ConfigurePipeline extends React.Component {
     const { formData } = this.state
 
     return (
-      <div className="m-t configForm">
+
+      <div className="m-t config">
         <div className="row">
           <div className="col-sm-12">
             <form className="form form-horizontal">
-              <div>
+              <Tabs defaultActiveKey={1} id="uncontrolled-tab">
+                <Tab eventKey={1} title="Task">
+
+              {/*<div>
                 <label className="lead pull-left">upload to</label>
                 <div className="form-group">
                   <div className="col-sm-4">
@@ -117,18 +122,20 @@ class ConfigurePipeline extends React.Component {
                     />
                   </div>
                 </div>
-              </div>
+              </div>*/}
 
-              <div>
-                <div className="lead">
-                  Tasks
-                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddTask}>
-                    <i className="fa fa-plus"></i>
+
+                {/*<div className="lead">
+                  Tasks*/}
+                  <div className="m-t">
+                  <button className="m-l btn btn-xs btn-success"
+                  onClick={this.handleAddTask}>
+                    Add task  <i className="fa fa-plus"></i>
                   </button>
-                </div>
+                {/*</div>*/}
 
                 {formData.tasks.map((o, i) =>
-                  <div className="p-l" key={`taskdiv${i}`}>
+                  <div className="p-l m-t" key={`taskdiv${i}`}>
                     <TaskForm
                       key={`task${i}`}
                       task={o}
@@ -140,17 +147,18 @@ class ConfigurePipeline extends React.Component {
                   </div>
                 )}
               </div>
-
-              <div className="m-t">
-                <div className="lead">
-                  Additional metadata
-                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddMetadata}>
-                    <i className="fa fa-plus"></i>
-                  </button>
-                </div>
-
+                </Tab>
+                <Tab eventKey={2} title="Metadata">
+                  <div className="m-t">
+                    {/*<div className="lead">
+                      Additional metadata*/}
+                      <button className="m-l btn btn-xs btn-success"
+                      onClick={this.handleAddMetadata}>
+                        Add Metadata  <i className="fa fa-plus"></i>
+                      </button>
+                    {/*</div>*/}
                 {formData.metadata.map((o, i) =>
-                  <div className="p-l" key={`metadiv${i}`}>
+                  <div className="p-l m-t" key={`metadiv${i}`}>
                     <MetadataForm
                       key={`meta${i}`}
                       object={o}
@@ -159,8 +167,9 @@ class ConfigurePipeline extends React.Component {
                     />
                   </div>
                 )}
-
-              </div>
+                  </div>
+                </Tab>
+              </Tabs>
             </form>
           </div>
         </div>

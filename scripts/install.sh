@@ -10,11 +10,11 @@ npm install
 cd ..
 
 # in the rinobot.js submodule
-cd bot
+cd main/bot
 npm install
 cd ..
 
 # in the rinocloud-javascript submodule
-cd api
+cd main/api
 npm install
 cd ..
