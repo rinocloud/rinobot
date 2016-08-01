@@ -18,6 +18,7 @@ class WatchDir extends React.Component {
     installedPackages: PropTypes.array.isRequired
   }
 
+
   render() {
     const { dir, installedPackages } = this.props
 
@@ -56,34 +57,45 @@ class WatchDir extends React.Component {
       this.props.removeDotRino()
     }
 
+    const firstTime = dir.config === null;
+
+    console.log(firstTime, dir.configOpen)
+
     return (
       <div className="p-a bordered m-t">
         <div className="row">
           <div className="col-sm-12 lead">
             <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
+            <a
+              href="#"
+              className="m-l-sm btn btn-sm btn-danger pull-right"
+              onClick={onRemoveDirClick}
+            >
+              <span><i className="fa fa-trash"></i> Remove</span>
+            </a>
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12">
-
-            {!dir.configOpen ?
+            {!dir.configOpen ? // eslint-disable-line
               dir.isStarted ?
                 <a
                   href="#"
                   className="btn btn-sm btn-danger"
                   onClick={onStopClick}
                 >
-                  stop
+                  Stop
                 </a>
                  :
+
                 <a
                   href="#"
                   className="btn btn-sm btn-success"
                   onClick={onStartClick}
+                  data-dismiss="alert"
                 >
-                  start
+                  Start
                 </a>
-
               : null
             }
 
@@ -94,14 +106,14 @@ class WatchDir extends React.Component {
                 onClick={onToggleConfigClick}
               >
                 {dir.configOpen ?
-                  <span><i className="fa fa-save"></i> save</span>
+                  <span><i className="fa fa-save"></i> Save</span>
                   :
-                  <span><i className="fa fa-cogs"></i> setup</span>
+                  <span><i className="fa fa-cogs"></i> Settings</span>
                 }
               </a>
               : null
             }
-            {process.env.NODE_ENV === 'development' ?
+            {/* {process.env.NODE_ENV === 'development' ?
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-danger pull-right"
@@ -109,18 +121,26 @@ class WatchDir extends React.Component {
               >
                 x
               </a>
-            : null}
-            <a
+            : null}*/}
+            {/* <a
               href="#"
               className="m-l-sm btn btn-sm btn-danger pull-right"
               onClick={onRemoveDirClick}
             >
               <span><i className="fa fa-remove"></i> remove</span>
-            </a>
-
-
+            </a>*/}
           </div>
         </div>
+
+      {/* Creating and alert http://v4-alpha.getbootstrap.com/components/alerts/*/}
+      {firstTime && !dir.configOpen ?
+        <div
+          className="alert alert-warning alert-dismissible fade in m-t"
+          role="alert"
+        >
+          Please, select the folder's <strong>'settings'</strong> before your start.
+        </div>
+        : null}
 
         {dir.configOpen ?
           <ConfigurePipeline

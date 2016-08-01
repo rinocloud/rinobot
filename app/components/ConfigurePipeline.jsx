@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
+import { Tabs, Tab } from 'react-bootstrap'
 
 class ConfigurePipeline extends React.Component {
 
@@ -101,66 +102,59 @@ class ConfigurePipeline extends React.Component {
     const { formData } = this.state
 
     return (
-      <div className="m-t configForm">
+
+      <div className="m-t config">
         <div className="row">
           <div className="col-sm-12">
             <form className="form form-horizontal">
-              <div>
-                <label className="lead pull-left">upload to</label>
-                <div className="form-group">
-                  <div className="col-sm-4">
-                    <input
-                      type="text"
-                      value={formData.uploadTo}
-                      onChange={this.handleUploadToChange}
-                      className="form-control input-sm"
-                    />
+              <Tabs defaultActiveKey={1} id="uncontrolled-tab">
+
+                <Tab eventKey={1} title="Task">
+                  <div className="m-t">
+                    {formData.tasks.map((o, i) =>
+                      <div className="p-l m-t" key={`taskdiv${i}`}>
+                        <TaskForm
+                          key={`task${i}`}
+                          task={o}
+                          installedPackages={installedPackages}
+                          onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
+                          onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
+                        />
+                      </div>
+                    )}
+
+                    <button
+                      className="m-l btn btn-xs btn-success"
+                      onClick={this.handleAddTask}
+                    >
+                      Add task <i className="fa fa-plus"> </i>
+                    </button>
                   </div>
-                </div>
-              </div>
+                </Tab>
 
-              <div>
-                <div className="lead">
-                  Tasks
-                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddTask}>
-                    <i className="fa fa-plus"></i>
-                  </button>
-                </div>
+                <Tab eventKey={2} title="Metadata">
+                  <div className="m-t">
+                    {formData.metadata.map((o, index) =>
+                      <div className="p-l m-t" key={`metadiv${index}`}>
+                        <MetadataForm
+                          key={`meta${index}`}
+                          object={o}
+                          onChange={(obj) => this.handleChangeArrayObject('metadata')(index, obj)}
+                          onRemove={() => this.handleRemoveArrayObject('metadata')(index)}
+                        />
+                      </div>
+                    )}
+                    <button
+                      className="m-l btn btn-xs btn-success"
+                      onClick={this.handleAddMetadata}
+                    >
+                      Add Metadata <i className="fa fa-plus"></i>
+                    </button>
 
-                {formData.tasks.map((o, i) =>
-                  <div className="p-l" key={`taskdiv${i}`}>
-                    <TaskForm
-                      key={`task${i}`}
-                      task={o}
-                      installedPackages={installedPackages}
-                      onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
-                      onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
-                    />
-                    {i !== formData.tasks.length - 1 ? <hr /> : ''}
                   </div>
-                )}
-              </div>
+                </Tab>
 
-              <div className="m-t">
-                <div className="lead">
-                  Additional metadata
-                  <button className="m-l btn btn-xs btn-success" onClick={this.handleAddMetadata}>
-                    <i className="fa fa-plus"></i>
-                  </button>
-                </div>
-
-                {formData.metadata.map((o, i) =>
-                  <div className="p-l" key={`metadiv${i}`}>
-                    <MetadataForm
-                      key={`meta${i}`}
-                      object={o}
-                      onChange={(obj) => this.handleChangeArrayObject('metadata')(i, obj)}
-                      onRemove={() => this.handleRemoveArrayObject('metadata')(i)}
-                    />
-                  </div>
-                )}
-
-              </div>
+              </Tabs>
             </form>
           </div>
         </div>

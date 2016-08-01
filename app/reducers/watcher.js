@@ -15,7 +15,8 @@ const createDir = (dir) => ({
   ...dir,
   path: dir.path,
   isStarted: false,
-  configOpen: dir.config === null,
+  // configOpen: dir.config === null,
+  configOpen: false,
   logsOpen: true,
   isCustomPlugin: false,
   isBusy: false,
@@ -23,11 +24,11 @@ const createDir = (dir) => ({
   processedFiles: 0,
   lastLog: null,
   logs: [],
-  config: createConfig(dir.config)
+  config: dir.config == null ? null : createConfig(dir.config)
 })
 
 const createConfig = (config) => {
-  let metadata = []
+  let metadata = [{ field: '', value: '' }]
   let copy = {}
 
   if (config) {

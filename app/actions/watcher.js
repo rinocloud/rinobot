@@ -81,7 +81,7 @@ export const addDir = (path) => (dispatch, getState) => {
   const config = getConfig(path)
   dispatch(_addDir({ path, config }))
   dispatch(persistDirs())
-  dispatch(persistConfig(getState().watcher.dirs.length - 1))
+  // dispatch(persistConfig(getState().watcher.dirs.length - 1))
 }
 
 

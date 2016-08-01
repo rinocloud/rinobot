@@ -89,13 +89,12 @@ export class Watcher extends React.Component {
         <div className="row m-t">
           <div className="col-sm-12">
             <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>
-              Choose folder
+            <i className='fa fa-search'/> Select folder
             </a>
           </div>
           {watcher.dirs.length ? '' :
             <p className="m-t col-sm-6">
-              This is where you can choose directories to watch for file changes.
-              Just click on 'Choose folder'.
+              Click <strong>'Select folder'</strong> to choose directories and watch for file changes.
             </p>
           }
 
