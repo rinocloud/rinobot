@@ -108,6 +108,7 @@ class ConfigurePipeline extends React.Component {
         <div className="row">
           <div className="col-sm-12">
             <form className="form form-horizontal">
+
               <Tabs defaultActiveKey={1} id="uncontrolled-tab">
 
                 <Tab eventKey={1} title="Task">
