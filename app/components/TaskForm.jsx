@@ -45,13 +45,13 @@ class TaskForm extends React.Component {
       <div className="form-group">
 
         <div className="col-xs-4">
-          <small> Select comand to run</small>
+          <small>Select comand to run</small>
           <OverlayTrigger
             trigger={['hover']}
             placement="bottom"
             overlay={myPopover}
           >
-            <i className="fa fa-2x fa-question-circle-o m-l-sm"></i>
+            <i className="fa fa-question-circle-o m-l-sm"></i>
           </OverlayTrigger>
 
           <select

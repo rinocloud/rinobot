@@ -53,7 +53,7 @@ class WatchDir extends React.Component {
 
     const removeDotRino = (e) => {
       e.preventDefault()
-      if (confirm("All data will be re-processed next time. Are you sure you want to do this?")) {
+      if (confirm("All data will be re-processed next time. Are you sure you want to do this?")) { // eslint-disable-line
         this.props.removeDotRino()
       }
     }
