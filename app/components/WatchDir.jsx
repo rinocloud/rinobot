@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React, { PropTypes } from 'react'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
@@ -94,13 +92,13 @@ class WatchDir extends React.Component {
                   href="#"
                   className="btn btn-sm btn-success"
                   onClick={onStartClick}
-                  data-dismiss='alert'
+                  data-dismiss="alert"
                 >
                   Start
                 </a>
               : null
             }
-            {/*Select settings before start
+            {/* Select settings before start
               <div className="alert alert-warning" role="alert">
                 Please, select <strong>'settings'</strong> before your start.
               </div> */}
@@ -119,7 +117,7 @@ class WatchDir extends React.Component {
               </a>
               : null
             }
-            {/*{process.env.NODE_ENV === 'development' ?
+            {/* {process.env.NODE_ENV === 'development' ?
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-danger pull-right"
@@ -128,7 +126,7 @@ class WatchDir extends React.Component {
                 x
               </a>
             : null}*/}
-            {/*<a
+            {/* <a
               href="#"
               className="m-l-sm btn btn-sm btn-danger pull-right"
               onClick={onRemoveDirClick}
@@ -138,17 +136,18 @@ class WatchDir extends React.Component {
           </div>
         </div>
 
-      {/*Creating and alert http://v4-alpha.getbootstrap.com/components/alerts/*/}
+      {/* Creating and alert http://v4-alpha.getbootstrap.com/components/alerts/*/}
       {firstTime && !dir.configOpen ?
-          <div className="alert alert-warning alert-dismissible fade in m-t"
-            role="alert">
-            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden='true'>&times;</span>
-            </button>
-            Please, select the folder's <strong>'settings'</strong> before your start.
-          </div>
+        <div
+          className="alert alert-warning alert-dismissible fade in m-t"
+          role="alert"
+        >
+          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden='true'>&times;</span>
+          </button>
+          Please, select the folder's <strong>'settings'</strong> before your start.
+        </div>
         : null}
-
 
         {dir.configOpen ?
           <ConfigurePipeline

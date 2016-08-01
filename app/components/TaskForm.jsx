@@ -35,42 +35,44 @@ class TaskForm extends React.Component {
 
     return (
       <div className="form-group">
-        <div className="col-sm-3 ">
+        <div className="col-xs-3 ">
           <small> Select comand to run</small>
-          <i className='fa fa-question-circle-o m-l-sm'></i>
+          <i className="fa fa-question-circle-o m-l-sm"></i>
           <select
             type="text"
             style={{ fontFamily: 'monospace' }}
             value={task.command || ''}
-            className="form-control custom-select"
+            className="form-control custom-select full-width"
             onChange={this.handleChangeMatch('command')}
           >
-            <option value='upload'>Rinocloud (upload)</option>
-            <option value='copy' >Copy</option>
-            <option value='list'>Python</option>
-            <option value='list'>MATLAB</option>
-            <option value='list'>R</option>
-            <option value='custom'>custom/user</option>
+            <option value="upload">Rinocloud-Upload</option>
+            <option value="copy" >Copy</option>
+            <option value="list">Python</option>
+            <option value="list">MATLAB</option>
+            <option value="list">R</option>
+            <option value="custom">Custom/Other</option>
           </select>
         </div>
 
-        <div className="col-sm-3">
+        <div className="col-xs-3">
           <small> Add file to match
-          <i className='fa fa-question-circle-o m-l-sm'></i>
+            <i className='fa fa-question-circle-o m-l-sm'></i>
           </small>
 
           <input
+            placeholder="*.for all files"
             type="text"
             style={{ fontFamily: 'monospace' }}
             value={task.task || ''}
             className="form-control input-sm"
             onChange={this.handleChangeMatch('task')}
           />
-          </div>
+        </div>
           {task.command === 'upload' ?
-            <div className="col-sm-3">
+            <div className="col-xs-3">
               <small>Upload to</small>
               <input
+                placeholder="write your Rinocloud folder"
                 type="text"
                 style={{ fontFamily: 'monospace' }}
                 value={task.command || ''}
@@ -80,9 +82,9 @@ class TaskForm extends React.Component {
             </div>
             : null}
           {task.command === 'copy' ?
-            <div className="col-sm-3">
+            <div className="col-xs-3">
               <small>Select destination folder
-              <i className='fa fa-question-circle-o m-l-sm'></i>
+                <i className='fa fa-question-circle-o m-l-sm'></i>
               </small>
               <input
                 type="text"
@@ -93,18 +95,18 @@ class TaskForm extends React.Component {
               />
             </div>
             : null}
-            {/*add changes */}
+            {/* add changes */}
             {task.command === 'list' ?
-              <div className="col-sm-3">
+              <div className="col-xs-3">
                 <small>Select package
-                  <i className='fa fa-question-circle-o m-l-sm'></i>
+                  <i className="fa fa-question-circle-o m-l-sm"></i>
                 </small>
                 <select
                   type="text"
                   style={{ fontFamily: 'monospace' }}
-                  //value={task.command || ''}
+                  // value={task.command || ''}
                   className="form-control  custom-select"
-                  //onChange={this.handleChangeMatch('command')}
+                  // onChange={this.handleChangeMatch('command')}
                 >
                   <option>Python integration</option>
                   <option>MATLAB integration</option>
@@ -114,9 +116,9 @@ class TaskForm extends React.Component {
               </div>
               : null}
           {task.command === 'custom' ?
-            <div className="col-sm-3">
+            <div className="col-xs-3">
               <small>Insert command name</small>
-                <i className='fa fa-question-circle-o m-l-sm'></i>
+              <i className='fa fa-question-circle-o m-l-sm'></i>
               <input
                 type="text"
                 style={{ fontFamily: 'monospace' }}
@@ -149,7 +151,7 @@ class TaskForm extends React.Component {
             can add file
         */}
 
-        {/*<div className="col-sm-4">
+        {/* <div className="col-sm-4">
           <small>command arguments (optional)</small>
           <input
             type="text"
@@ -161,9 +163,9 @@ class TaskForm extends React.Component {
           />
         </div>*/}
 
-        {/*I have to add   onClick={this.handleAddTask}*/}
+        {/* I have to add   onClick={this.handleAddTask}*/}
 
-        <div className="col-sm-1 pull-right">
+        <div className="col-xs-1 pull-right">
           <button
             className="task-remove-button btn btn-xs btn-danger"
             onClick={this.handleRemoveClick}

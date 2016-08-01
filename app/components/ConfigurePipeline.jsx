@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
-import {Tabs, Tab} from 'react-bootstrap'
+import { Tabs, Tab } from 'react-bootstrap'
 
 class ConfigurePipeline extends React.Component {
 
@@ -110,7 +110,7 @@ class ConfigurePipeline extends React.Component {
               <Tabs defaultActiveKey={1} id="uncontrolled-tab">
                 <Tab eventKey={1} title="Task">
 
-              {/*<div>
+              {/* <div>
                 <label className="lead pull-left">upload to</label>
                 <div className="form-group">
                   <div className="col-sm-4">
@@ -122,17 +122,19 @@ class ConfigurePipeline extends React.Component {
                     />
                   </div>
                 </div>
-              </div>*/}
+              </div> */}
 
 
-                {/*<div className="lead">
-                  Tasks*/}
+                {/* <div className="lead">
+                  Tasks */}
                   <div className="m-t">
-                  <button className="m-l btn btn-xs btn-success"
-                  onClick={this.handleAddTask}>
-                    Add task  <i className="fa fa-plus"></i>
-                  </button>
-                {/*</div>*/}
+                    <button
+                      className="m-l btn btn-xs btn-success"
+                      onClick={this.handleAddTask}
+                    >
+                    Add task  <i className="fa fa-plus"> </i>
+                    </button>
+                {/* </div> */}
 
                 {formData.tasks.map((o, i) =>
                   <div className="p-l m-t" key={`taskdiv${i}`}>
@@ -146,17 +148,19 @@ class ConfigurePipeline extends React.Component {
                     {i !== formData.tasks.length - 1 ? <hr /> : ''}
                   </div>
                 )}
-              </div>
+                  </div>
                 </Tab>
                 <Tab eventKey={2} title="Metadata">
                   <div className="m-t">
-                    {/*<div className="lead">
-                      Additional metadata*/}
-                      <button className="m-l btn btn-xs btn-success"
-                      onClick={this.handleAddMetadata}>
+                    {/* <div className="lead">
+                      Additional metadata */}
+                    <button
+                      className="m-l btn btn-xs btn-success"
+                      onClick={this.handleAddMetadata}
+                    >
                         Add Metadata  <i className="fa fa-plus"></i>
-                      </button>
-                    {/*</div>*/}
+                    </button>
+                    {/* </div> */}
                 {formData.metadata.map((o, i) =>
                   <div className="p-l m-t" key={`metadiv${i}`}>
                     <MetadataForm
