@@ -137,7 +137,6 @@ class ConfigurePipeline extends React.Component {
                       onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
                       onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
                     />
-                    {i !== formData.tasks.length - 1 ? <hr /> : ''}
                   </div>
                 )}
               </div>
