@@ -1,0 +1,26 @@
+{
+    "finished": true,
+    "completedTasks": {
+        "Rscript": {
+            "aborted": false,
+            "ignored": false,
+            "path": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test/packages-test/small_list.txt",
+            "filename": "small_list.txt",
+            "relPath": "small_list.txt",
+            "command": "Rscript",
+            "args": "",
+            "packagesDir": "/Users/eoinmurray/Documents/rinobot-packages",
+            "cwd": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test/packages-test",
+            "uploadTo": "asdffds",
+            "api": {
+                "config": {
+                    "base": "https://rinocloud.com",
+                    "token": "8186755009251ef0bbb273fbc86d7b9caa228374"
+                }
+            },
+            "match": "small_list*",
+            "on": "all",
+            "codePath": "/Users/eoinmurray/Dropbox/macbook-pro/rinobot/test/packages-test"
+        }
+    }
+}

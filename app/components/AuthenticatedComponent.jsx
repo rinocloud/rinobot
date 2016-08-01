@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import Navbar from './Navbar'
+import { Navbar } from './Navbar'
 
 
 export function requireAuthentication(Component) {
@@ -36,10 +36,10 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { auth, location } = this.props
+      const { auth, location, dispatch } = this.props
       return (
         <div>
-          <Navbar location={location} />
+          <Navbar dispatch={dispatch} auth={auth} />
           <div className="container">
             {auth.statusText}
             {auth.access_token

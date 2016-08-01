@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import constants from '../constants'
 const { shell } = require('electron')
 
-export class InstalledPackages extends React.Component {
+class InstalledPackages extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -23,15 +23,46 @@ export class InstalledPackages extends React.Component {
 
     return (
       <div className="container">
-        <div className="row m-t">
+        <div className="row">
           <div className="col-sm-12">
-            <p className="lead">Packages</p>
-            <a href="" onClick={openExternal}>Getting started with packages</a>
-            <br />
-            <br />
-            <a href="#" className="btn btn-sm btn-default" onClick={openPackagesDir}>
-              Open Packages Folder
-            </a>
+            <h2 className="lead">Packages</h2>
+
+            <p className="m-t">
+              <strong>
+                How to install a package
+              </strong>
+            </p>
+
+            <ol className="m-t">
+              <li>
+                <a
+                  href="https://github.com/search?utf8=✓&q=rinobot-&type=Repositories"
+                  onClick={openExternal}
+                >
+                  Browse available packages on Github
+                </a>
+              </li>
+              <li>
+                Download an unzip the package into <br />
+                <a href="#" onClick={openPackagesDir}>
+                  {constants.packagesDir} <i className="fa fa-external-link"></i>
+                </a>
+              </li>
+            </ol>
+
+            <p className="m-t">
+              <strong>Documentation/Guides</strong>
+            </p>
+
+            <ol className="m-t">
+              <li><a href="#" onClick={openExternal}>
+                Detailed guide to installing packages
+              </a></li>
+              <li><a href="#" onClick={openExternal}>
+                Using your own programs
+              </a></li>
+              <li><a href="#" onClick={openExternal}>(Advanced) Creating a package</a></li>
+            </ol>
           </div>
         </div>
       </div>

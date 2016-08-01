@@ -115,11 +115,9 @@ export const removeDotRino = (index) => (dispatch, getState) => {
   })
 }
 
-
 export const addLogs = (action) => (dispatch) => {
   dispatch(_addLogs(action))
 }
-
 
 export const watcherStarted = ({ index }) => (dispatch, getState) => {
   const dir = getState().watcher.dirs[index]
@@ -164,7 +162,6 @@ export const pipelineLog = ({ index, logs, pipePath }) => (dispatch, getState) =
 
 
 export const pipelineError = ({ index, error, pipePath }) => (dispatch, getState) => { // eslint-disable-line
-  console.log(error)
   dispatch(unsetBusy(index))
 
   if (_.isObject(error)) {

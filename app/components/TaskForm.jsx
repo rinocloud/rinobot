@@ -132,6 +132,7 @@ class TaskForm extends React.Component {
               }
             }}
           >Select file</a>
+
         </div>
         : null}
 
@@ -169,13 +170,12 @@ class TaskForm extends React.Component {
           </button>
         </div>
           {task.command === 'upload' ?
-            <div className='col-xs-12 text-muted m-t'>
+            <div className="col-xs-12 text-muted m-t">
               HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
               sdf apsodojdk
               sdpk asd
             </div>
             : null}
-
 
       </div>
     )

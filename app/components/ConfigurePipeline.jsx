@@ -3,6 +3,7 @@ import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
 import { Tabs, Tab } from 'react-bootstrap'
 
+
 class ConfigurePipeline extends React.Component {
 
   static propTypes = {

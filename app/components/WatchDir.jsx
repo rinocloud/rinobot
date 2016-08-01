@@ -59,8 +59,6 @@ class WatchDir extends React.Component {
 
     const firstTime = dir.config === null;
 
-    console.log(firstTime, dir.configOpen)
-
     return (
       <div className="p-a bordered m-t">
         <div className="row">
@@ -131,8 +129,6 @@ class WatchDir extends React.Component {
             </a>*/}
           </div>
         </div>
-
-      {/* Creating and alert http://v4-alpha.getbootstrap.com/components/alerts/*/}
       {firstTime && !dir.configOpen ?
         <div
           className="alert alert-warning alert-dismissible fade in m-t"

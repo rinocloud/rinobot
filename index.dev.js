@@ -24,7 +24,22 @@ app.on('ready', async () => {
   win.loadURL(`file://${__dirname}/app/app.html`)
 
   const rpc = createRPC(win)
-  const bot = createBot(rpc) // eslint-disable-line
+
+  const setupBot = () => {
+    let {bot, fork} = createBot(rpc) // eslint-disable-line
+
+    bot.on('close', () => {
+      console.log('child closed, disconnecting rpc')
+      rpc.emit('watcher error', {
+        name: 'child closed',
+        message: 'bot process exited for an unknown reason, please restart.'
+      })
+      fork.destroy()
+      setupBot()
+    })
+  }
+
+  setupBot()
 
   rpc.on('init', () => {
     win.show()
