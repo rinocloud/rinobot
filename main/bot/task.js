@@ -127,38 +127,40 @@ export class Task {
   }
 
   setUpScript(cb){
+    console.log(this.args)
+
     this.codePath = false
     // packages are only in the packagesDir folder,
     // they cannot be in the cwd
-    fs.access(pt.join(this.packagesDir, this.args), err => {
+    fs.access(pt.join(this.packagesDir, this.command), err => {
       if (err) {
-        return this.on_error(`Cant find package "${this.args}"`)
+        return this.on_error(`Cant find package "${this.command}"`)
       } else {
-        fs.access(pt.join(this.packagesDir, this.args, 'package.yaml'), err => {
+        fs.access(pt.join(this.packagesDir, this.command, 'package.yaml'), err => {
           if (err && err.code === 'ENOENT') {
             return this.on_error(
-              `Found ${pt.join(this.packagesDir, this.args)}, but no package.yaml exists.`
+              `Found ${pt.join(this.packagesDir, this.command)}, but no package.yaml exists.`
             )
           }
           if (err) {
-            return this.on_error(`No package exists matching ${this.args}`)
+            return this.on_error(`No package exists matching ${this.command}`)
           }
-          return fs.readFile(pt.join(this.packagesDir, this.args, 'package.yaml'), 'utf-8', (err, data) => {
-            if (err) return this.on_error(`package.yaml in "${this.args}" could not be opened`)
+          return fs.readFile(pt.join(this.packagesDir, this.command, 'package.yaml'), 'utf-8', (err, data) => {
+            if (err) return this.on_error(`package.yaml in "${this.command}" could not be opened`)
 
             let packageYaml = {}
             try{
               packageYaml = yaml.safeLoad(data)
             }
             catch (e) {
-              return this.on_error(`package.yaml in "${this.args}" is malformed and could not be parsed`)
+              return this.on_error(`package.yaml in "${this.command}" is malformed and could not be parsed`)
             }
 
             if (_.has(packageYaml, 'main')) {
-              this.codePath = pt.join(this.packagesDir, this.args, packageYaml.main)
+              this.codePath = pt.join(this.packagesDir, this.command, packageYaml.main)
               cb()
             } else {
-              return this.on_error(`package.yaml in "${this.args}" has no "main" specified`)
+              return this.on_error(`package.yaml in "${this.command}" has no "main" specified`)
             }
           })
         })

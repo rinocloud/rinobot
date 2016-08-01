@@ -18,7 +18,6 @@ class WatchDir extends React.Component {
     installedPackages: PropTypes.array.isRequired
   }
 
-
   render() {
     const { dir, installedPackages } = this.props
 
@@ -54,7 +53,9 @@ class WatchDir extends React.Component {
 
     const removeDotRino = (e) => {
       e.preventDefault()
-      this.props.removeDotRino()
+      if (confirm("All data will be re-processed next time. Are you sure you want to do this?")) {
+        this.props.removeDotRino()
+      }
     }
 
     const firstTime = dir.config === null;
@@ -64,17 +65,27 @@ class WatchDir extends React.Component {
         <div className="row">
           <div className="col-sm-12 lead">
             <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
-            <a
-              href="#"
-              className="m-l-sm btn btn-sm btn-danger pull-right"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-trash"></i> Remove</span>
-            </a>
           </div>
         </div>
         <div className="row">
           <div className="col-sm-12">
+            {process.env.NODE_ENV === 'development' ?
+              <a
+                href="#"
+                className="m-l-sm btn btn-xs btn-danger pull-right"
+                onClick={removeDotRino}
+              >
+                Clear record
+              </a>
+             : null}
+            <a
+              href="#"
+              className="m-l-sm btn btn-xs btn-danger pull-right"
+              onClick={onRemoveDirClick}
+            >
+              <span><i className="fa fa-trash"></i> Remove</span>
+            </a>
+
             {!dir.configOpen ? // eslint-disable-line
               dir.isStarted ?
                 <a
@@ -111,22 +122,6 @@ class WatchDir extends React.Component {
               </a>
               : null
             }
-            {/* {process.env.NODE_ENV === 'development' ?
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-danger pull-right"
-                onClick={removeDotRino}
-              >
-                x
-              </a>
-            : null}*/}
-            {/* <a
-              href="#"
-              className="m-l-sm btn btn-sm btn-danger pull-right"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-remove"></i> remove</span>
-            </a>*/}
           </div>
         </div>
       {firstTime && !dir.configOpen ?
