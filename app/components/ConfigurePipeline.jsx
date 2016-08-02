@@ -14,7 +14,6 @@ class ConfigurePipeline extends React.Component {
 
   constructor(props) {
     super(props)
-    this.handleUploadToChange = this.handleUploadToChange.bind(this)
     this.handleChangeArrayObject = this.handleChangeArrayObject.bind(this)
     this.handleRemoveArrayObject = this.handleRemoveArrayObject.bind(this)
     this.handleAddTask = this.handleAddTask.bind(this)
@@ -28,15 +27,6 @@ class ConfigurePipeline extends React.Component {
 
   handleFormDataChange() {
     this.props.onSetConfig(this.state.formData)
-  }
-
-  handleUploadToChange(e) {
-    this.setState({
-      formData: {
-        ...this.state.formData,
-        uploadTo: e.target.value
-      }
-    }, this.handleFormDataChange)
   }
 
   handleChangeArrayObject(field) {
@@ -78,7 +68,7 @@ class ConfigurePipeline extends React.Component {
         ...this.state.formData,
         tasks: [
           ...tasks,
-          { match: '*', command: null, on: null, args: null, plugin: null }
+          { match: '*', command: 'upload' }
         ]
       }
     })

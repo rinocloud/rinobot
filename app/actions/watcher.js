@@ -34,7 +34,7 @@ export const persistDirs = () => (dispatch, getState) => {
 }
 
 
-export const readLocalDirs = () => (dispatch) => {
+export const readLocalDirs = () => (dispatch, getState) => {
   let pluginsJSON = null
   try {
     pluginsJSON = JSON.parse(fs.readFileSync(constants.watcherFilePath))
@@ -42,7 +42,10 @@ export const readLocalDirs = () => (dispatch) => {
     if (err.code !== 'ENOENT') throw err
   }
 
-  if (pluginsJSON) dispatch(setDirs(pluginsJSON))
+  if (pluginsJSON) {
+    dispatch(setDirs(pluginsJSON))
+    getState().watcher.dirs.map((dir, index) => dispatch(readLocalConfig(index)))
+  }
 }
 
 
@@ -51,7 +54,9 @@ export const persistConfig = (index) => (dispatch, getState) => {
   let config = _.cloneDeep(dir.config)
   const metadata = {}
   _.each(config.metadata, o => {
-    metadata[o.field] = o.value
+    if (o.field && o.field !== '') {
+      metadata[o.field] = o.value
+    }
   })
   config.metadata = metadata
   if (_.isEmpty(config.metadata)) {

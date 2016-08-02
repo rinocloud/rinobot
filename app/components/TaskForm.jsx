@@ -93,15 +93,15 @@ class TaskForm extends React.Component {
     return (
       <div className="form-group">
         <div className="col-xs-4">
-          <small> Select command to run</small>
-        {pop ?
-          <OverlayTrigger
-            trigger={['hover']}
-            placement="bottom"
-            overlay={myPopover}
-          >
-            <i className="fa fa-question-circle-o m-l-sm"></i>
-          </OverlayTrigger>
+          <small>Select command to run</small>
+          {pop ?
+            <OverlayTrigger
+              trigger={['hover']}
+              placement="bottom"
+              overlay={myPopover}
+            >
+              <i className="fa fa-question-circle-o m-l-sm"></i>
+            </OverlayTrigger>
           : null}
           <select
             type="text"
@@ -109,12 +109,12 @@ class TaskForm extends React.Component {
             className="form-control"
             onChange={this.handleChangeMatch('command')}
           >
-            <option value="upload">Rinocloud-upload</option>
-            <option value="copy" >Copy</option>
-            <option value="matlab">MATLAB</option>
-            <option value="python">Python</option>
+            <option value="upload">rinocloud upload</option>
+            <option value="copy" >copy</option>
+            <option value="matlab">matlab</option>
+            <option value="python">python</option>
             <option value="Rscript">Rscript</option>
-            <option value="custom">Custom</option>
+            <option value="custom">custom</option>
             {installedPackages.map((packageName) =>
               <option key={packageName} value={packageName}>
                 {packageName}
@@ -126,15 +126,17 @@ class TaskForm extends React.Component {
 
         <div className="col-xs-3">
           <small> Add file to match </small>
-    {pop ?
-      <OverlayTrigger
-        trigger={['hover']}
-        placement="bottom"
-        overlay={Match}
-      >
-        <i className="fa fa-question-circle-o m-l-sm"></i>
-      </OverlayTrigger>
-      : null}
+          {pop ?
+            <OverlayTrigger
+              trigger={['hover']}
+              placement="bottom"
+              overlay={Match}
+            >
+              <i className="fa fa-question-circle-o m-l-sm"></i>
+            </OverlayTrigger>
+          :
+            null
+          }
           <input
             key={'myMatch${i}'}
             type="text"
@@ -266,63 +268,77 @@ class TaskForm extends React.Component {
             <i className="fa fa-trash"></i>
           </button>
         </div>
-          {task.command === 'upload' ?
-            <div className="col-xs-12 text-muted m-t">
-            Rinocloud-upload saves automatically your inside folder in your Rinocloud
-            </div>
-            : null}
-          {task.command === 'copy' ?
-            <div className="col-xs-12 text-muted m-t">
-              COPY
-            </div>
-            : null}
-          {task.command === 'matlab' ?
-            <div className="col-xs-12 text-muted m-t">
-            MATLAB
-            </div>
-            : null}
-            {task.command === 'python' ?
-              <div className="col-xs-12 text-muted m-t">
-              Python
-              </div>
-              : null}
-            {task.command === 'Rscript' ?
-              <div className="col-xs-12 text-muted m-t">
-              R
-              </div>
-              : null}
-            {task.command === 'custom' ?
-              <div className="col-xs-12 text-muted m-t">
-              Custom
-              </div>
-              : null}
-              {task.command === 'z' ?
-                <div className="col-xs-12 text-muted m-t">
-                  HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-                  sdf apsodojdk
-                  sdpk asd
-                </div>
-                : null}
-              {task.command === installedPackages.packageName ?
-                <div className="col-xs-12 text-muted m-t">
-                packages
-                </div>
-                : null}
-              {task.command === 'x' ?
-                <div className="col-xs-12 text-muted m-t">
-                HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-                    sdf apsodojdk
-                    sdpk asd
-                </div>
-                : null}
-                {/*{installedPackages.map((packageName) =>
-                 <div className="col-xs-12 text-muted m-t"
-                    value={packageName}>
-                    {packageName}asdasdasd
-                    {packageName}
-                  </div>
-                )}*/}
 
+        {task.command === 'upload' ?
+          <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
+            This will upload files to your rinocloud project. You can specify a target
+            folder in 'Upload to'.
+          </div>
+        :
+        null}
+
+        {task.command === 'copy' ?
+          <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
+            Copies files to the target location. You can also set the location in Metadata
+            {'  '}<a href="http://bot.rino.io">(see docs)</a>.
+          </div>
+        :
+        null}
+        {task.command === 'matlab' ?
+          <div className="col-xs-12 text-muted m-t">
+            MATLAB
+          </div>
+        :
+        null}
+
+        {task.command === 'python' ?
+          <div className="col-xs-12 text-muted m-t">
+          Python
+          </div>
+        : null}
+
+        {task.command === 'Rscript' ?
+          <div className="col-xs-12 text-muted m-t">
+          R
+          </div>
+        : null}
+
+        {task.command === 'custom' ?
+          <div className="col-xs-12 text-muted m-t">
+          Custom
+          </div>
+        : null}
+
+        {task.command === 'z' ?
+          <div className="col-xs-12 text-muted m-t">
+            HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
+            sdf apsodojdk
+            sdpk asd
+          </div>
+        : null}
+
+        {task.command === installedPackages.packageName ?
+          <div className="col-xs-12 text-muted m-t">
+          packages
+          </div>
+        : null}
+
+        {task.command === 'x' ?
+          <div className="col-xs-12 text-muted m-t">
+          HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
+              sdf apsodojdk
+              sdpk asd
+          </div>
+        : null}
+        {/*
+        {installedPackages.map((packageName) =>
+         <div className="col-xs-12 text-muted m-t"
+            value={packageName}>
+            {packageName}asdasdasd
+            {packageName}
+          </div>
+        )}
+        */}
       </div>
     )
   }

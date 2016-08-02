@@ -4,7 +4,6 @@ import _ from 'lodash'
 import yaml from 'js-yaml'
 
 const defaultConfig = {
-  uploadTo: '',
   base: 'https://rinocloud.com',
   metadataExtensions: ['.toml', '.json', '.yaml', '.yml'],
   ignore: ['*.json', '*.yaml', '*.toml', '*.rino', 'rino.yaml', 'rino.json', '.rino/*', '*~']

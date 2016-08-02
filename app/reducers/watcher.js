@@ -5,7 +5,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import flatten from 'lodash/flatten'
 import omit from 'lodash/omit'
 import map from 'lodash/map'
-import moment from 'moment'
 
 const defaultState = {
   error: null,
@@ -45,7 +44,6 @@ const createConfig = (config) => {
   }
 
   const newConfig = {
-    uploadTo: moment().format('YYYY-MM-DD'),
     tasks: [{
       match: '*',
       command: 'upload'
