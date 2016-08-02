@@ -117,6 +117,7 @@ class ConfigurePipeline extends React.Component {
                       <div className="p-l m-t" key={`taskdiv${i}`}>
                         <TaskForm
                           key={`task${i}`}
+                          pop={ i===0 }
                           task={o}
                           installedPackages={installedPackages}
                           onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}

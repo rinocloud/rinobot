@@ -33,34 +33,83 @@ class TaskForm extends React.Component {
   }
 
   render() {
-    const { task, installedPackages } = this.props //eslint-disable-line
-
+    const { task, pop, installedPackages } = this.props //eslint-disable-line
     const myPopover = (
-      <Popover id="popover-trigger-hover-focus" title="popover-bottom">
-        tengo que resolver un problema
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="what Select command means for you?"
+      >
+        A lot - Click here for more info
       </Popover>
     )
-
+    const Match = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="what file macth is?"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
+    const Upload = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="Upload"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
+    const Copy = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="Copy"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
+    const Select = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="Copy"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
+    const CommandRun = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="Copy"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
+    const Argument = (
+      <Popover
+        id="popover-trigger-hover-focus"
+        title="get command argument"
+      >
+        A lot - Rinobot book
+      </Popover>
+    )
     return (
       <div className="form-group">
-
         <div className="col-xs-4">
-          <small> Select comand to run</small>
+          <small> Select command to run</small>
+        {pop ?
           <OverlayTrigger
             trigger={['hover']}
             placement="bottom"
             overlay={myPopover}
           >
-            <i className="fa fa-2x fa-question-circle-o m-l-sm"></i>
+            <i className="fa fa-question-circle-o m-l-sm"></i>
           </OverlayTrigger>
-
+          : null}
           <select
             type="text"
             value={task.command || ''}
             className="form-control"
             onChange={this.handleChangeMatch('command')}
           >
-            <option value="upload">Rinocloud-Upload</option>
+            <option value="upload">Rinocloud-upload</option>
             <option value="copy" >Copy</option>
             <option value="matlab">MATLAB</option>
             <option value="python">Python</option>
@@ -76,10 +125,18 @@ class TaskForm extends React.Component {
         </div>
 
         <div className="col-xs-3">
-          <small> Add file to match
-            <i className="fa fa-question-circle-o m-l-sm"></i>
-          </small>
+          <small> Add file to match </small>
+    {pop ?
+      <OverlayTrigger
+        trigger={['hover']}
+        placement="bottom"
+        overlay={Match}
+      >
+        <i className="fa fa-question-circle-o m-l-sm"></i>
+      </OverlayTrigger>
+      : null}
           <input
+            key={'myMatch${i}'}
             type="text"
             value={task.match || ''}
             className="form-control input-sm"
@@ -90,6 +147,15 @@ class TaskForm extends React.Component {
         {task.command === 'upload' || task.command === null ?
           <div className="col-xs-4">
             <small>Upload to</small>
+          {pop ?
+            <OverlayTrigger
+              trigger={['hover']}
+              placement="bottom"
+              overlay={Upload}
+            >
+              <i className="fa fa-question-circle-o m-l-sm"></i>
+            </OverlayTrigger>
+          : null}
             <input
               placeholder="write your Rinocloud folder"
               type="text"
@@ -102,9 +168,16 @@ class TaskForm extends React.Component {
 
         {task.command === 'copy' ?
           <div className="col-xs-4">
-            <small> Destination folder
+            <small> Destination folder </small>
+          {pop ?
+            <OverlayTrigger
+              trigger={['hover']}
+              placement="bottom"
+              overlay={Copy}
+            >
               <i className="fa fa-question-circle-o m-l-sm"></i>
-            </small>
+            </OverlayTrigger>
+        : null}
             <input
               type="text"
               value={task.args || ''}
@@ -118,7 +191,15 @@ class TaskForm extends React.Component {
         <div className="col-xs-4">
           <div>
             <small>Select {task.command} file</small>
+        {pop ?
+          <OverlayTrigger
+            trigger={['hover']}
+            placement="bottom"
+            overlay={Select}
+          >
             <i className="fa fa-question-circle-o m-l-sm"></i>
+          </OverlayTrigger>
+        : null}
           </div>
           <a
             href="#"
@@ -140,7 +221,15 @@ class TaskForm extends React.Component {
           <div>
             <div className="col-xs-2">
               <small> Insert command to run</small>
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+           {pop ?
+             <OverlayTrigger
+               trigger={['hover']}
+               placement="bottom"
+               overlay={CommandRun}
+             >
+               <i className="fa fa-question-circle-o m-l-sm"></i>
+             </OverlayTrigger>
+          : null}
               <input
                 type="text"
                 value={task.command || ''}
@@ -150,7 +239,15 @@ class TaskForm extends React.Component {
             </div>
             <div className="col-xs-4">
               <small> Insert command argument</small>
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+              {pop ?
+                <OverlayTrigger
+                  trigger={['hover']}
+                  placement="bottom"
+                  overlay={Argument}
+                >
+                  <i className="fa fa-question-circle-o m-l-sm"></i>
+                </OverlayTrigger>
+              : null}
               <input
                 type="text"
                 value={task.args || ''}
@@ -171,11 +268,60 @@ class TaskForm extends React.Component {
         </div>
           {task.command === 'upload' ?
             <div className="col-xs-12 text-muted m-t">
-              HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-              sdf apsodojdk
-              sdpk asd
+            Rinocloud-upload saves automatically your inside folder in your Rinocloud
             </div>
             : null}
+          {task.command === 'copy' ?
+            <div className="col-xs-12 text-muted m-t">
+              COPY
+            </div>
+            : null}
+          {task.command === 'matlab' ?
+            <div className="col-xs-12 text-muted m-t">
+            MATLAB
+            </div>
+            : null}
+            {task.command === 'python' ?
+              <div className="col-xs-12 text-muted m-t">
+              Python
+              </div>
+              : null}
+            {task.command === 'Rscript' ?
+              <div className="col-xs-12 text-muted m-t">
+              R
+              </div>
+              : null}
+            {task.command === 'custom' ?
+              <div className="col-xs-12 text-muted m-t">
+              Custom
+              </div>
+              : null}
+              {task.command === 'z' ?
+                <div className="col-xs-12 text-muted m-t">
+                  HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
+                  sdf apsodojdk
+                  sdpk asd
+                </div>
+                : null}
+              {task.command === installedPackages.packageName ?
+                <div className="col-xs-12 text-muted m-t">
+                packages
+                </div>
+                : null}
+              {task.command === 'x' ?
+                <div className="col-xs-12 text-muted m-t">
+                HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
+                    sdf apsodojdk
+                    sdpk asd
+                </div>
+                : null}
+                {/*{installedPackages.map((packageName) =>
+                 <div className="col-xs-12 text-muted m-t"
+                    value={packageName}>
+                    {packageName}asdasdasd
+                    {packageName}
+                  </div>
+                )}*/}
 
       </div>
     )
