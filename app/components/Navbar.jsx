@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as authActions from '../actions/auth'
+const { shell } = require('electron')
 
 class Navbar extends React.Component {
 
@@ -11,6 +12,11 @@ class Navbar extends React.Component {
 
   render() {
     const { dispatch, auth } = this.props
+
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
 
     const onClickLogout = (e) => {
       e.preventDefault()
@@ -23,7 +29,16 @@ class Navbar extends React.Component {
           <Link to="/">
             Watched Folders
           </Link>
-
+          <Link to="/installed_packages" className="m-l">
+            My packages
+          </Link>
+          <a
+            href="http://bot.rino.io/"
+            className="m-l"
+            onClick={openExternal}
+          >
+            Documentation
+          </a>
           <a href="#" className="pull-right" onClick={onClickLogout}>
             {auth.isAuthenticating ?
               <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
@@ -31,9 +46,13 @@ class Navbar extends React.Component {
               <span>Logout {auth.username} <i className="fa fa-sign-out"></i></span>
             }
           </a>
-          <Link to="/installed_packages" className="m-l">
-            My packages
-          </Link>
+          <a
+            href={`https://${auth.project}.rinocloud.com/app/`}
+            className="pull-right m-r"
+            onClick={openExternal}
+          >
+            My rinocloud <i className="fa fa-external-link"></i>
+          </a>
         </div>
       </div>
     )

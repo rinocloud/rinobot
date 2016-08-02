@@ -34,7 +34,6 @@ export class Pipeline {
 
   constructor(options) {
     this.readyFunc = () => {}
-    this.aborted = false
     this.ignored = false
     this.reason = null
     this.retry = options.retry || false
@@ -109,7 +108,6 @@ export class Pipeline {
       this.tasks = this.config.tasks || []
       this.userMetadata = this.config.metadata || {}
       this.metadata = this.userMetadata
-      this.uploadTo = this.config.uploadTo || ''
       if (cb) cb()
     })
   }
@@ -300,14 +298,12 @@ export class Pipeline {
           api: self.api,
           packagesDir: self.packagesDir,
           metadata: self.metadata,
-          uploadTo: self.uploadTo,
           relPath: self.relPath,
           command: task.command,
           cwd: self.watchPath,
           match: task.match,
           path: self.path,
           args: task.args,
-          on: task.on
         }
 
         const t = new Task({

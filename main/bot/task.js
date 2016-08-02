@@ -30,7 +30,6 @@ export class Task {
   */
 
   constructor(options) {
-    this.aborted = false
     this.ignored = false
 
     this.metadata = options.metadata || {}
@@ -41,10 +40,8 @@ export class Task {
     this.args = options.args || ''
     this.packagesDir = options.packagesDir || ''
     this.cwd = options.cwd
-    this.uploadTo = options.uploadTo || ''
     this.api = options.api || ''
     this.match = options.match
-    this.on = options.on || 'all'
 
     this.setUpLogging(options)
 
@@ -55,6 +52,7 @@ export class Task {
   }
 
   run() {
+
     if (this.command === 'rinocloud-upload' ||
         this.command === 'upload' ||
         this.command === 'rinocloud'
@@ -98,7 +96,10 @@ export class Task {
   upload() {
     this.on_log('starting upload')
 
-    const nixPath = pt.join(this.uploadTo, this.relPath).replace(/\\/g, '/')
+    const nixPath = pt.join(this.args, this.relPath).replace(/\\/g, '/')
+
+    console.log(nixPath)
+
     const m = this.metadata || {}
     m.name = `${nixPath}`
     return this.api.s3uploadElectron(

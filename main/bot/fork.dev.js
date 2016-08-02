@@ -130,7 +130,7 @@ const fork = (forkRpc) => {
       clearTimeout(timers[index])
     }
 
-    logs[index].push(log)
+    logs[index].push(`${pipe.relPath}: ${log}`)
     const now = new Date().getTime()
     if (last[index] && now < last[index] + time) {
       timers[index] = setTimeout(task, time)

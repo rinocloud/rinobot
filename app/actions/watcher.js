@@ -54,7 +54,9 @@ export const persistConfig = (index) => (dispatch, getState) => {
   let config = _.cloneDeep(dir.config)
   const metadata = {}
   _.each(config.metadata, o => {
-    metadata[o.field] = o.value
+    if (o.field && o.field !== '') {
+      metadata[o.field] = o.value
+    }
   })
   config.metadata = metadata
   if (_.isEmpty(config.metadata)) {

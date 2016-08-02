@@ -36,7 +36,7 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { auth, location, dispatch } = this.props
+      const { auth, dispatch } = this.props
       return (
         <div>
           <Navbar dispatch={dispatch} auth={auth} />

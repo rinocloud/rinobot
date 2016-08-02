@@ -60,12 +60,12 @@ class TaskForm extends React.Component {
             className="form-control"
             onChange={this.handleChangeMatch('command')}
           >
-            <option value="upload">Rinocloud-Upload</option>
-            <option value="copy" >Copy</option>
-            <option value="matlab">MATLAB</option>
-            <option value="python">Python</option>
+            <option value="upload">rinocloud upload</option>
+            <option value="copy" >copy</option>
+            <option value="matlab">matlab</option>
+            <option value="python">python</option>
             <option value="Rscript">Rscript</option>
-            <option value="custom">Custom</option>
+            <option value="custom">custom</option>
             {installedPackages.map((packageName) =>
               <option key={packageName} value={packageName}>
                 {packageName}
@@ -169,13 +169,22 @@ class TaskForm extends React.Component {
             <i className="fa fa-trash"></i>
           </button>
         </div>
-          {task.command === 'upload' ?
-            <div className="col-xs-12 text-muted m-t">
-              HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-              sdf apsodojdk
-              sdpk asd
-            </div>
-            : null}
+
+        {task.command === 'upload' ?
+          <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
+            This will upload files to your rinocloud project. You can specify a target
+            folder in 'Upload to'.
+          </div>
+        :
+        null}
+
+        {task.command === 'copy' ?
+          <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
+            Copies files to the target location. You can also set the location in Metadata
+            {'  '}<a href="http://bot.rino.io">(see docs)</a>.
+          </div>
+        :
+        null}
 
       </div>
     )
