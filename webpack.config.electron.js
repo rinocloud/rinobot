@@ -3,11 +3,11 @@ import webpack from 'webpack'
 export default {
   target: 'electron-main',
   devtool: 'source-map',
-  entry: ['babel-polyfill', './index.dev'],
+  entry: ['babel-polyfill', './app/index.dev'],
   output: {
     libraryTarget: 'commonjs2',
     path: __dirname,
-    filename: './index.js'
+    filename: './app/index.js'
   },
   plugins: [
     new webpack.BannerPlugin(

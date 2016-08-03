@@ -1,14 +1,17 @@
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
 
+const nodeEnv = process.env.NODE_ENV || 'development'
+const isProd = nodeEnv === 'production'
+
 export default {
   target: 'node',
   devtool: 'source-map',
-  entry: ['babel-polyfill', './main/bot/fork.dev'],
+  entry: ['babel-polyfill', './app/bot/fork.dev'],
   output: {
     libraryTarget: 'commonjs2',
     path: __dirname,
-    filename: './main/bot/fork.js'
+    filename: isProd ? './app/fork.js' : './app/bot/fork.js'
   },
   plugins: [
     new webpack.BannerPlugin(

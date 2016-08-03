@@ -1,0 +1,39 @@
+body {
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 770px;
+}
+
+.bordered{
+  border: 1px solid #eeeeee;
+  border-radius: 4px;
+}
+
+.m-l-sm{
+  margin-left: 5px;
+}
+
+.icon-brand{
+  color: #0C4379;
+}
+
+.icon-brand:hover{
+  font-style: none;
+}
+
+.brand-link:focus,
+.brand-link:hover{
+  text-decoration: none!important;
+}
+
+.task-remove-button {
+  margin-top: 22px;
+}
+
+.metadata-remove-button {
+  margin-top: 4px;
+}
+
+.m-t-sm{
+  margin-top: 5px;
+}

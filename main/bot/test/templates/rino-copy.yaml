@@ -1,9 +1,0 @@
-apiToken: 123
-
-metadata:
-  location: ""
-
-tasks:
-  - match: "*.log"
-    command: "rinocloud-copy"
-    args: "{{join(location, path)}}"

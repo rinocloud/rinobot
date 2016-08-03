@@ -3,32 +3,13 @@
   <head lang="en">
     <meta charset="utf-8">
     <title>Rinobot</title>
-
-    <link rel="stylesheet" type="text/css" href="./css/font-awesome.css">
-    <link rel="stylesheet" type="text/css" href="./css/toolkit-startup.css">
-    <link rel="stylesheet" type="text/css" href="./css/application-startup.css">
-    <link rel="stylesheet" type="text/css" href="./css/rinocloud-icons.css">
-    <link rel="stylesheet" type="text/css" href="./css/loaders.css">
-    <link rel="stylesheet" type="text/css" href="./css/github.css">
-
-    <script>
-      (function() {
-          if (!process.env.HOT) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = '../dist/style.css';
-            document.write(link.outerHTML);
-          }
-      }());
-    </script>
   </head>
-
   <body>
     <div id="root"></div>
     <script>
       (function() {
         const script = document.createElement('script');
-        script.src = (process.env.HOT) ? 'http://localhost:3000/dist/bundle.js' : '../dist/bundle.js';
+        script.src = (process.env.HOT) ? 'http://localhost:3000/dist/bundle.js' : 'dist/bundle.js';
         document.write(script.outerHTML);
       }());
     </script>
