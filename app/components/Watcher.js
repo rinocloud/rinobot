@@ -3,6 +3,7 @@ import { WatcherDirsList } from './WatcherDirsList'
 import { connect } from 'react-redux'
 import * as watcherActions from '../actions/watcher'
 const { dialog } = require('electron').remote;
+const { shell } = require('electron')
 
 
 class Watcher extends React.Component {
@@ -83,19 +84,27 @@ class Watcher extends React.Component {
         dispatch(watcherActions.addDir(paths[0]))
       }
     }
-
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
     return (
       <div className="container">
         <div className="row">
           <div className="col-sm-12">
             <h2 className="lead">Rinobot</h2>
             <a href="#" className="btn btn-sm btn-primary" onClick={chooseFolder}>
-            <i className='fa fa-search'/> Select folder
+              <i className="fa fa-search" /> Select folder
             </a>
           </div>
           {watcher.dirs.length ? '' :
             <p className="m-t col-sm-6">
-              Click <strong>'Select folder'</strong> to choose directories and watch for file changes.
+              Click <strong>'Select folder'</strong> to choose directories and
+              watch for file changes.
+              More information on {'  '}
+              <a href="http://bot.rino.io" onClick={openExternal}>
+               'Getting starting with Rinobot'
+              </a>
             </p>
           }
 

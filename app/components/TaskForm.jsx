@@ -1,6 +1,7 @@
-import React from 'react'
+  import React from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 const { dialog } = require('electron').remote;
+const { shell } = require('electron')
 
 class TaskForm extends React.Component {
 
@@ -34,62 +35,47 @@ class TaskForm extends React.Component {
 
   render() {
     const { task, pop, installedPackages } = this.props //eslint-disable-line
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
     const myPopover = (
       <Popover
         id="popover-trigger-hover-focus"
-        title="what Select command means for you?"
+        //title="what Select command means for you?"
       >
-        A lot - Click here for more info
+        Select command to run
       </Popover>
     )
     const Match = (
       <Popover
         id="popover-trigger-hover-focus"
-        title="what file macth is?"
       >
-        A lot - Rinobot book
+        Add file to match
       </Popover>
     )
     const Upload = (
       <Popover
         id="popover-trigger-hover-focus"
-        title="Upload"
       >
-        A lot - Rinobot book
+      Upload to
       </Popover>
     )
     const Copy = (
       <Popover
         id="popover-trigger-hover-focus"
-        title="Copy"
       >
-        A lot - Rinobot book
+        Copy to
       </Popover>
     )
     const Select = (
       <Popover
         id="popover-trigger-hover-focus"
-        title="Copy"
       >
-        A lot - Rinobot book
+    Select command to run
       </Popover>
     )
-    const CommandRun = (
-      <Popover
-        id="popover-trigger-hover-focus"
-        title="Copy"
-      >
-        A lot - Rinobot book
-      </Popover>
-    )
-    const Argument = (
-      <Popover
-        id="popover-trigger-hover-focus"
-        title="get command argument"
-      >
-        A lot - Rinobot book
-      </Popover>
-    )
+
     return (
       <div className="form-group">
         <div className="col-xs-4">
@@ -100,7 +86,12 @@ class TaskForm extends React.Component {
               placement="bottom"
               overlay={myPopover}
             >
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+              <a
+                className="fa fa-question-circle-o m-l-sm"
+                href="http://docs.rinocloud.com/rinobot/"
+                onClick={openExternal}
+              >
+              </a>
             </OverlayTrigger>
           : null}
           <select
@@ -110,13 +101,13 @@ class TaskForm extends React.Component {
             onChange={this.handleChangeMatch('command')}
           >
             <option value="upload">rinocloud upload</option>
-            <option value="copy" >copy</option>
+            <option value="copy">copy</option>
             <option value="matlab">matlab</option>
             <option value="python">python</option>
             <option value="Rscript">Rscript</option>
             <option value="custom">custom</option>
             {installedPackages.map((packageName) =>
-              <option key={packageName} value={packageName}>
+              <option key={packageName} value={packageName} value="packages">
                 {packageName}
               </option>
             )}
@@ -132,7 +123,12 @@ class TaskForm extends React.Component {
               placement="bottom"
               overlay={Match}
             >
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+              <a
+                className="fa fa-question-circle-o m-l-sm"
+                href="http://docs.rinocloud.com/rinobot/"
+                onClick={openExternal}
+              >
+              </a>
             </OverlayTrigger>
           :
             null
@@ -155,7 +151,12 @@ class TaskForm extends React.Component {
               placement="bottom"
               overlay={Upload}
             >
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+              <a
+                className="fa fa-question-circle-o m-l-sm"
+                href="http://docs.rinocloud.com/rinobot/"
+                onClick={openExternal}
+              >
+              </a>
             </OverlayTrigger>
           : null}
             <input
@@ -177,7 +178,12 @@ class TaskForm extends React.Component {
               placement="bottom"
               overlay={Copy}
             >
-              <i className="fa fa-question-circle-o m-l-sm"></i>
+              <a
+                className="fa fa-question-circle-o m-l-sm"
+                href="http://docs.rinocloud.com/rinobot/"
+                onClick={openExternal}
+              >
+              </a>
             </OverlayTrigger>
         : null}
             <input
@@ -199,7 +205,12 @@ class TaskForm extends React.Component {
             placement="bottom"
             overlay={Select}
           >
-            <i className="fa fa-question-circle-o m-l-sm"></i>
+            <a
+              className="fa fa-question-circle-o m-l-sm"
+              href="http://docs.rinocloud.com/rinobot/"
+              onClick={openExternal}
+            >
+            </a>
           </OverlayTrigger>
         : null}
           </div>
@@ -223,15 +234,6 @@ class TaskForm extends React.Component {
           <div>
             <div className="col-xs-2">
               <small> Insert command to run</small>
-           {pop ?
-             <OverlayTrigger
-               trigger={['hover']}
-               placement="bottom"
-               overlay={CommandRun}
-             >
-               <i className="fa fa-question-circle-o m-l-sm"></i>
-             </OverlayTrigger>
-          : null}
               <input
                 type="text"
                 value={task.command || ''}
@@ -241,15 +243,6 @@ class TaskForm extends React.Component {
             </div>
             <div className="col-xs-4">
               <small> Insert command argument</small>
-              {pop ?
-                <OverlayTrigger
-                  trigger={['hover']}
-                  placement="bottom"
-                  overlay={Argument}
-                >
-                  <i className="fa fa-question-circle-o m-l-sm"></i>
-                </OverlayTrigger>
-              : null}
               <input
                 type="text"
                 value={task.args || ''}
@@ -262,83 +255,72 @@ class TaskForm extends React.Component {
 
         <div className="col-xs-1 pull-right">
           <button
-            className="task-remove-button btn btn-xs btn-danger"
+            className="fa fa-trash task-remove-button btn btn-xs btn-danger"
             onClick={this.handleRemoveClick}
           >
-            <i className="fa fa-trash"></i>
+            <i className="fa fa-lg-trash"></i>
           </button>
         </div>
 
         {task.command === 'upload' ?
           <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
-            This will upload files to your rinocloud project. You can specify a target
-            folder in 'Upload to'.
+            {/*This will upload files to your rinocloud project. You can specify a target
+            folder in 'Upload to'*/}
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('upload' docs)
+            </a>
           </div>
         :
         null}
 
         {task.command === 'copy' ?
           <div style={{ marginTop: '5px' }} className="col-xs-12 text-muted">
-            Copies files to the target location. You can also set the location in Metadata
-            {'  '}<a href="http://bot.rino.io">(see docs)</a>.
+            {/*Copies files to the target location. You can also set the location in Metadata*/}
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('copy' docs)</a>
           </div>
         :
         null}
         {task.command === 'matlab' ?
           <div className="col-xs-12 text-muted m-t">
-            MATLAB
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('MATLAB' docs)
+            </a>
           </div>
         :
         null}
 
         {task.command === 'python' ?
           <div className="col-xs-12 text-muted m-t">
-          Python
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('Python' docs)
+            </a>
           </div>
         : null}
 
         {task.command === 'Rscript' ?
           <div className="col-xs-12 text-muted m-t">
-          R
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('Rscript' docs)
+            </a>
           </div>
         : null}
 
         {task.command === 'custom' ?
           <div className="col-xs-12 text-muted m-t">
-          Custom
+            {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+            ('Custom' docs)
+            </a>
           </div>
         : null}
 
-        {task.command === 'z' ?
+        {task.command === 'packages' ?
           <div className="col-xs-12 text-muted m-t">
-            HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-            sdf apsodojdk
-            sdpk asd
+          {'  '}<a href="http://docs.rinocloud.com/rinobot/" onClick={openExternal}>
+          ('Packages' docs)
+          </a>
           </div>
         : null}
-
-        {task.command === installedPackages.packageName ?
-          <div className="col-xs-12 text-muted m-t">
-          packages
-          </div>
-        : null}
-
-        {task.command === 'x' ?
-          <div className="col-xs-12 text-muted m-t">
-          HEleejejladfsjda okj apdoad qapodkapskdja paoksdl;ads;ads
-              sdf apsodojdk
-              sdpk asd
-          </div>
-        : null}
-        {/*
-        {installedPackages.map((packageName) =>
-         <div className="col-xs-12 text-muted m-t"
-            value={packageName}>
-            {packageName}asdasdasd
-            {packageName}
-          </div>
-        )}
-        */}
       </div>
     )
   }

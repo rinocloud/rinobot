@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
 const { shell } = require('electron')
@@ -20,6 +21,11 @@ class WatchDir extends React.Component {
 
   render() {
     const { dir, installedPackages } = this.props
+
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
 
     const onStartClick = (e) => {
       e.preventDefault()
@@ -60,6 +66,14 @@ class WatchDir extends React.Component {
 
     const firstTime = dir.config === null;
 
+    const ClearRecord = (
+      <Popover
+        id="popover-trigger-hover-focus"
+      >
+        Clear Record
+      </Popover>
+    )
+
     return (
       <div className="p-a bordered m-t">
         <div className="row">
@@ -70,13 +84,29 @@ class WatchDir extends React.Component {
         <div className="row">
           <div className="col-sm-12">
             {process.env.NODE_ENV === 'development' ?
-              <a
-                href="#"
-                className="m-l-sm btn btn-xs btn-danger pull-right"
-                onClick={removeDotRino}
-              >
-                Clear record
-              </a>
+              <div >
+                <OverlayTrigger
+                  trigger={['hover']}
+                  placement="bottom"
+                  overlay={ClearRecord}
+                >
+                  <a
+                    className="fa fa-info-circle pull-right"
+                    href="http://docs.rinocloud.com/rinobot/"
+                    onClick={openExternal}
+                  >
+                  </a>
+
+                </OverlayTrigger>
+                <a
+                  href="#"
+                  className="m-l-sm btn btn-xs btn-danger pull-right"
+                  onClick={removeDotRino}
+                >
+                  Clear record
+                </a>
+
+              </div>
              : null}
             <a
               href="#"
@@ -130,6 +160,9 @@ class WatchDir extends React.Component {
           role="alert"
         >
           Please, select the folder's <strong>'settings'</strong> before your start.
+          <a href="http://bot.rino.io" onClick={openExternal}>
+          (see docs)
+          </a>
         </div>
         : null}
 

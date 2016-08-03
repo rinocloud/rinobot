@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import { MetadataForm } from './MetadataForm'
 import { Tabs, Tab } from 'react-bootstrap'
+const { shell } = require('electron')
 
 
 class ConfigurePipeline extends React.Component {
@@ -91,6 +92,10 @@ class ConfigurePipeline extends React.Component {
   render() {
     const { installedPackages } = this.props
     const { formData } = this.state
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
 
     return (
 
@@ -100,8 +105,8 @@ class ConfigurePipeline extends React.Component {
             <form className="form form-horizontal">
 
               <Tabs defaultActiveKey={1} id="uncontrolled-tab">
-
-                <Tab eventKey={1} title="Task">
+                <Tab eventKey={1} title="Task" >
+                 {/*<i className="fa fa-info-circle"></i>*/}
                   <div className="m-t">
                     {formData.tasks.map((o, i) =>
                       <div className="p-l m-t" key={`taskdiv${i}`}>
@@ -122,6 +127,12 @@ class ConfigurePipeline extends React.Component {
                     >
                       Add task <i className="fa fa-plus"> </i>
                     </button>
+                  {'  '}<a
+                    href="http://docs.rinocloud.com/rinobot/"
+                    onClick={openExternal}
+                    className="fa fa-info-circle"
+                  >
+                  </a>
                   </div>
                 </Tab>
 
@@ -143,7 +154,12 @@ class ConfigurePipeline extends React.Component {
                     >
                       Add Metadata <i className="fa fa-plus"></i>
                     </button>
-
+                    {'  '}<a
+                      className="fa fa-info-circle"
+                      href="http://docs.rinocloud.com/rinobot/"
+                      onClick={openExternal}
+                    >
+                    </a>
                   </div>
                 </Tab>
 
