@@ -15,7 +15,12 @@
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./index.dev",
     "start": "cross-env NODE_ENV=production electron ./index",
     "check-dev-engines": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
-    "postinstall": "npm run check-dev-engines"
+    "postinstall": "npm run check-dev-engines",
+    "docs:clean": "rimraf _book",
+    "docs:prepare": "gitbook install",
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:rinocloud/rinobot gh-pages --force"
   },
   "devDependencies": {
     "aws-sdk": "^2.4.7",
@@ -42,6 +47,7 @@
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
     "mocha": "^2.5.3",
+    "rimraf": "^2.3.4",
     "webpack-node-externals": "^1.2.0"
   },
   "dependencies": {
