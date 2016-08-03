@@ -29,3 +29,5 @@
   + Installing a packages
   + Using your own programs
   + Creating a package
+
+- Box sizes
