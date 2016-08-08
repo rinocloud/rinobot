@@ -1,7 +1,7 @@
 {
   "name": "rinobotapp",
   "productName": "rinobot",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "author": "rinocloud",
   "repository": "rinocloud/rinobot",
   "description": "Automate data tasks",
@@ -13,6 +13,8 @@
     "js-yaml": "^3.6.1",
     "lodash": "^4.13.1",
     "mkdirp": "^0.5.1",
+    "electron-is-dev": "0.1.1",
+    "ms": "0.7.1",
     "swig": "^1.4.2",
     "superagent": "^1.8.3",
     "superagent-promise-plugin": "^3.2.0",

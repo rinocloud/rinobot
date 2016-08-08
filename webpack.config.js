@@ -67,7 +67,11 @@ const config = {
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },
   plugins,
-  target: 'electron-renderer'
+  target: 'electron-renderer',
+  node: {
+    __filename: true,
+    __dirname: true
+  }
 }
 
 export default config

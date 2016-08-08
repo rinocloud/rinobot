@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Navbar } from './Navbar'
-
+import { Notifications } from './Notifications'
 
 export function requireAuthentication(Component) {
   class AuthenticatedComponent extends React.Component {
@@ -10,6 +10,7 @@ export function requireAuthentication(Component) {
     static propTypes = {
       dispatch: PropTypes.func.isRequired,
       auth: PropTypes.object.isRequired,
+      ui: PropTypes.object.isRequired,
       location: PropTypes.object.isRequired,
     }
 
@@ -36,10 +37,11 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { auth, dispatch } = this.props
+      const { auth, ui, dispatch } = this.props
       return (
         <div>
           <Navbar dispatch={dispatch} auth={auth} />
+          <Notifications ui={ui} dispatch={dispatch} />
           <div className="container">
             {auth.statusText}
             {auth.access_token
@@ -53,6 +55,7 @@ export function requireAuthentication(Component) {
   }
 
   return connect((state) => ({
-    auth: state.auth
+    auth: state.auth,
+    ui: state.ui
   }))(AuthenticatedComponent)
 }

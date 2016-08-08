@@ -1,12 +1,12 @@
-
 import { app, BrowserWindow, Menu } from 'electron'
 import createMenu from './menu'
 import createRPC from './rpc'
 import createBot from './bot/'
+import AutoUpdater from './auto-updater'
+const isDev = require('electron-is-dev')
 
 const main = () => {
   if (require('electron-squirrel-startup')) return // eslint-disable-line
-
   app.setName('rinobot')
 
   app.on('window-all-closed', () => {
@@ -27,7 +27,6 @@ const main = () => {
     win.loadURL(`file://${__dirname}/app.html`)
 
     const rpc = createRPC(win)
-
     const setupBot = () => {
       let {bot, fork} = createBot(rpc) // eslint-disable-line
 
@@ -47,6 +46,11 @@ const main = () => {
     rpc.on('init', () => {
       win.show()
       win.focus()
+      if (!isDev && process.platform !== 'linux') {
+        AutoUpdater(win, rpc)
+      } else {
+        console.log('ignoring auto updates during dev')
+      }
     })
 
     process.on('uncaughtException', (error) => {
@@ -70,5 +74,4 @@ const main = () => {
     win.setMenu(menu)
   })
 }
-
 main()

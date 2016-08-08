@@ -37,3 +37,21 @@ body {
 .m-t-sm{
   margin-top: 5px;
 }
+
+.notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.notification {
+  display: inline-block;
+  cursor: default;
+  webkit-user-select: none;
+  background: rgba(255, 255, 255, .2);
+  padding: 8px 14px 9px;
+  margin-left: 10px;
+  transition: 150ms opacity ease;
+  color: #fff;
+  font-size: 11px;
+}

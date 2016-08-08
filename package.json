@@ -1,20 +1,20 @@
 {
   "name": "rinobot-app-renderer",
   "productName": "rinobot",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "author": "rinocloud",
   "repository": "rinocloud/rinobot",
   "description": "Automate data tasks",
   "scripts": {
     "hot-server": "node -r babel-register server.js",
     "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run fork-dev\"",
-
     "build-app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/.bin/webpack --config webpack.config.electron.js --progress",
     "build-lib": "cross-env NODE_ENV=production node -r babel-register ./node_modules/.bin/webpack --config webpack.config.js --progress",
     "build-fork": "cross-env NODE_ENV=production node -r babel-register ./node_modules/.bin/webpack --config webpack.config.fork.js --progress",
     "build": "npm run build-lib && npm run build-app && npm run build-fork",
     "fork-dev": "cross-env NODE_ENV=development node -r babel-register ./node_modules/.bin/webpack --config webpack.config.fork.js --progress --watch",
     "postinstall": "install-app-deps",
+    "dist": "build",
     "dist:win": "build --platform win",
     "dist:osx": "build --platform darwin",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/index.dev",

@@ -8011,13 +8011,18 @@ module.exports =
 	
 	var _bot2 = _interopRequireDefault(_bot);
 	
+	var _autoUpdater = __webpack_require__(308);
+	
+	var _autoUpdater2 = _interopRequireDefault(_autoUpdater);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 	
-	var main = function main() {
-	  if (__webpack_require__(308)) return; // eslint-disable-line
+	var isDev = __webpack_require__(311);
 	
+	var main = function main() {
+	  if (__webpack_require__(312)) return; // eslint-disable-line
 	  _electron.app.setName('rinobot');
 	
 	  _electron.app.on('window-all-closed', function () {
@@ -8067,6 +8072,11 @@ module.exports =
 	            rpc.on('init', function () {
 	              win.show();
 	              win.focus();
+	              if (!isDev && process.platform !== 'linux') {
+	                (0, _autoUpdater2.default)(win, rpc);
+	              } else {
+	                console.log('ignoring auto updates during dev');
+	              }
 	            });
 	
 	            process.on('uncaughtException', function (error) {
@@ -8100,7 +8110,6 @@ module.exports =
 	    }, _callee, undefined);
 	  })));
 	};
-	
 	main();
 
 /***/ },
@@ -8586,9 +8595,238 @@ module.exports =
 /* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var _require = __webpack_require__(298);
+	
+	var autoUpdater = _require.autoUpdater;
+	
+	var _require2 = __webpack_require__(309);
+	
+	var version = _require2.version;
+	
+	var ms = __webpack_require__(310);
+	
+	// accepted values: `osx`, `win32`
+	// https://nuts.gitbook.com/update-windows.html
+	var platform = 'darwin' === process.platform ? 'osx' : process.platform;
+	var FEED_URL = 'https://updates.rinocloud.com/update/' + platform;
+	var isInit = false;
+	
+	function init() {
+	  autoUpdater.on('error', function (err, msg) {
+	    console.error('Error fetching updates', msg + ' (' + err.stack + ')');
+	  });
+	
+	  autoUpdater.setFeedURL(FEED_URL + '/' + version);
+	
+	  setTimeout(function () {
+	    autoUpdater.checkForUpdates();
+	  }, ms('10s'));
+	
+	  setInterval(function () {
+	    autoUpdater.checkForUpdates();
+	  }, ms('5m'));
+	
+	  isInit = true;
+	}
+	
+	module.exports = function (win, rpc) {
+	  if (!isInit) init();
+	
+	  var onupdate = function onupdate(ev, releaseNotes, releaseName) {
+	    rpc.emit('update available', { releaseNotes: releaseNotes, releaseName: releaseName });
+	  };
+	
+	  autoUpdater.on('update-downloaded', onupdate);
+	
+	  rpc.once('quit and install', function () {
+	    autoUpdater.quitAndInstall();
+	  });
+	
+	  win.on('close', function () {
+	    autoUpdater.removeListener('update-downloaded', onupdate);
+	  });
+	};
+
+/***/ },
+/* 309 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"name": "rinobotapp",
+		"productName": "rinobot",
+		"version": "0.0.5",
+		"author": "rinocloud",
+		"repository": "rinocloud/rinobot",
+		"description": "Automate data tasks",
+		"dependencies": {
+			"aws-sdk": "^2.4.7",
+			"async": "^2.0.0-rc.5",
+			"fs-extra": "^0.30.0",
+			"globule": "^1.0.0",
+			"js-yaml": "^3.6.1",
+			"lodash": "^4.13.1",
+			"mkdirp": "^0.5.1",
+			"electron-is-dev": "0.1.1",
+			"ms": "0.7.1",
+			"swig": "^1.4.2",
+			"superagent": "^1.8.3",
+			"superagent-promise-plugin": "^3.2.0",
+			"superagent-queue": "0.0.3",
+			"chokidar": "^1.6.0",
+			"formidable": "^1.0.17",
+			"source-map-support": "^0.4.2",
+			"uid2": "0.0.3"
+		}
+	};
+
+/***/ },
+/* 310 */
+/***/ function(module, exports) {
+
+	/**
+	 * Helpers.
+	 */
+	
+	var s = 1000;
+	var m = s * 60;
+	var h = m * 60;
+	var d = h * 24;
+	var y = d * 365.25;
+	
+	/**
+	 * Parse or format the given `val`.
+	 *
+	 * Options:
+	 *
+	 *  - `long` verbose formatting [false]
+	 *
+	 * @param {String|Number} val
+	 * @param {Object} options
+	 * @return {String|Number}
+	 * @api public
+	 */
+	
+	module.exports = function(val, options){
+	  options = options || {};
+	  if ('string' == typeof val) return parse(val);
+	  return options.long
+	    ? long(val)
+	    : short(val);
+	};
+	
+	/**
+	 * Parse the given `str` and return milliseconds.
+	 *
+	 * @param {String} str
+	 * @return {Number}
+	 * @api private
+	 */
+	
+	function parse(str) {
+	  str = '' + str;
+	  if (str.length > 10000) return;
+	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+	  if (!match) return;
+	  var n = parseFloat(match[1]);
+	  var type = (match[2] || 'ms').toLowerCase();
+	  switch (type) {
+	    case 'years':
+	    case 'year':
+	    case 'yrs':
+	    case 'yr':
+	    case 'y':
+	      return n * y;
+	    case 'days':
+	    case 'day':
+	    case 'd':
+	      return n * d;
+	    case 'hours':
+	    case 'hour':
+	    case 'hrs':
+	    case 'hr':
+	    case 'h':
+	      return n * h;
+	    case 'minutes':
+	    case 'minute':
+	    case 'mins':
+	    case 'min':
+	    case 'm':
+	      return n * m;
+	    case 'seconds':
+	    case 'second':
+	    case 'secs':
+	    case 'sec':
+	    case 's':
+	      return n * s;
+	    case 'milliseconds':
+	    case 'millisecond':
+	    case 'msecs':
+	    case 'msec':
+	    case 'ms':
+	      return n;
+	  }
+	}
+	
+	/**
+	 * Short format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function short(ms) {
+	  if (ms >= d) return Math.round(ms / d) + 'd';
+	  if (ms >= h) return Math.round(ms / h) + 'h';
+	  if (ms >= m) return Math.round(ms / m) + 'm';
+	  if (ms >= s) return Math.round(ms / s) + 's';
+	  return ms + 'ms';
+	}
+	
+	/**
+	 * Long format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+	
+	function long(ms) {
+	  return plural(ms, d, 'day')
+	    || plural(ms, h, 'hour')
+	    || plural(ms, m, 'minute')
+	    || plural(ms, s, 'second')
+	    || ms + ' ms';
+	}
+	
+	/**
+	 * Pluralization helper.
+	 */
+	
+	function plural(ms, n, name) {
+	  if (ms < n) return;
+	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+	  return Math.ceil(ms / n) + ' ' + name + 's';
+	}
+
+
+/***/ },
+/* 311 */
+/***/ function(module, exports) {
+
+	'use strict';
+	module.exports = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
+
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var path = __webpack_require__(307);
 	var spawn = __webpack_require__(305).spawn;
-	var debug = __webpack_require__(309)('electron-squirrel-startup');
+	var debug = __webpack_require__(313)('electron-squirrel-startup');
 	var app = __webpack_require__(298).app;
 	
 	var run = function(args, done) {
@@ -8625,7 +8863,7 @@ module.exports =
 
 
 /***/ },
-/* 309 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -8635,7 +8873,7 @@ module.exports =
 	 * Expose `debug()` as the module.
 	 */
 	
-	exports = module.exports = __webpack_require__(310);
+	exports = module.exports = __webpack_require__(314);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -8799,7 +9037,7 @@ module.exports =
 
 
 /***/ },
-/* 310 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -8815,7 +9053,7 @@ module.exports =
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(311);
+	exports.humanize = __webpack_require__(315);
 	
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -9002,7 +9240,7 @@ module.exports =
 
 
 /***/ },
-/* 311 */
+/* 315 */
 /***/ function(module, exports) {
 
 	/**
