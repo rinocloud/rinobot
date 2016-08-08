@@ -8057,7 +8057,7 @@ module.exports =
 	              var fork = _createBot.fork; // eslint-disable-line
 	
 	              bot.on('close', function () {
-	                console.log('child closed, disconnecting rpc');
+	                rpc.emit('log', 'child closed, disconnecting rpc');
 	                rpc.emit('watcher error', {
 	                  name: 'child closed',
 	                  message: 'bot process exited for an unknown reason, please restart.'
@@ -8072,11 +8072,13 @@ module.exports =
 	            rpc.on('init', function () {
 	              win.show();
 	              win.focus();
-	              if (!isDev && process.platform !== 'linux') {
-	                (0, _autoUpdater2.default)(win, rpc);
-	              } else {
-	                console.log('ignoring auto updates during dev');
-	              }
+	
+	              (0, _autoUpdater2.default)(win, rpc);
+	
+	              // if (!isDev && process.platform !== 'linux') {
+	              // } else {
+	              //   rpc.emit('log', 'ignoring auto updates during dev')
+	              // }
 	            });
 	
 	            process.on('uncaughtException', function (error) {
@@ -8613,34 +8615,56 @@ module.exports =
 	var FEED_URL = 'https://updates.rinocloud.com/update/' + platform;
 	var isInit = false;
 	
-	function init() {
+	function init(rpc) {
+	
+	  rpc.emit('log', 'in init');
 	  autoUpdater.on('error', function (err, msg) {
-	    console.error('Error fetching updates', msg + ' (' + err.stack + ')');
+	    rpc.emit('error', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
+	    rpc.emit('log', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
 	  });
 	
+	  rpc.emit('log', 'setting feed url');
 	  autoUpdater.setFeedURL(FEED_URL + '/' + version);
 	
 	  setTimeout(function () {
+	    rpc.emit('log', 'checkForUpdates');
 	    autoUpdater.checkForUpdates();
 	  }, ms('10s'));
 	
 	  setInterval(function () {
+	    rpc.emit('log', 'checkForUpdates');
 	    autoUpdater.checkForUpdates();
 	  }, ms('5m'));
 	
+	  rpc.emit('log', 'finished run through init');
 	  isInit = true;
 	}
 	
 	module.exports = function (win, rpc) {
-	  if (!isInit) init();
+	  rpc.emit('log', 'in auto-updater');
+	  if (!isInit) init(rpc);
 	
 	  var onupdate = function onupdate(ev, releaseNotes, releaseName) {
+	    rpc.emit('log', { releaseNotes: releaseNotes, releaseName: releaseName });
 	    rpc.emit('update available', { releaseNotes: releaseNotes, releaseName: releaseName });
 	  };
 	
 	  autoUpdater.on('update-downloaded', onupdate);
 	
+	  autoUpdater.on('update-not-available', function (args) {
+	    rpc.emit('log', 'update-not-available ' + args);
+	  });
+	
+	  autoUpdater.on('checking-for-update', function (args) {
+	    rpc.emit('log', 'checking-for-update ' + args);
+	  });
+	
+	  autoUpdater.on('update-available', function (args) {
+	    rpc.emit('log', 'update-available ' + args);
+	  });
+	
 	  rpc.once('quit and install', function () {
+	    rpc.emit('log', 'quit and install');
 	    autoUpdater.quitAndInstall();
 	  });
 	
@@ -8656,7 +8680,7 @@ module.exports =
 	module.exports = {
 		"name": "rinobotapp",
 		"productName": "rinobot",
-		"version": "0.0.5",
+		"version": "0.0.4",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",

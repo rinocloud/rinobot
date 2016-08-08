@@ -31,7 +31,7 @@ const main = () => {
       let {bot, fork} = createBot(rpc) // eslint-disable-line
 
       bot.on('close', () => {
-        console.log('child closed, disconnecting rpc')
+        rpc.emit('log', 'child closed, disconnecting rpc')
         rpc.emit('watcher error', {
           name: 'child closed',
           message: 'bot process exited for an unknown reason, please restart.'
@@ -46,11 +46,13 @@ const main = () => {
     rpc.on('init', () => {
       win.show()
       win.focus()
-      if (!isDev && process.platform !== 'linux') {
-        AutoUpdater(win, rpc)
-      } else {
-        console.log('ignoring auto updates during dev')
-      }
+
+      AutoUpdater(win, rpc)
+
+      // if (!isDev && process.platform !== 'linux') {
+      // } else {
+      //   rpc.emit('log', 'ignoring auto updates during dev')
+      // }
     })
 
     process.on('uncaughtException', (error) => {
