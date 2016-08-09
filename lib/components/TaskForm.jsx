@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 const { dialog } = require('electron').remote;
 const { shell } = require('electron')
@@ -57,6 +58,29 @@ class TaskForm extends React.Component {
       </Popover>
     )
 
+    const commandList = [
+      { name: 'rinocloud upload', value: 'upload' },
+      { name: 'copy', value: 'copy' },
+      { name: 'matlab', value: 'matlab' },
+      { name: 'python', value: 'python' },
+      { name: 'Rscript', value: 'Rscript' },
+      { name: 'custom', value: 'custom' },
+      ...installedPackages.map((packageName) => ({
+        name: packageName,
+        value: packageName
+      }))
+    ]
+
+    const isCustomCommand = (
+      !_.map(commandList, 'value').includes(task.command) ||
+      task.command === 'custom'
+    )
+
+    let selectedValue = task.command || ''
+    if (isCustomCommand) {
+      selectedValue = 'custom'
+    }
+
     return (
       <div className="form-group">
         <div className="col-xs-4">
@@ -77,26 +101,20 @@ class TaskForm extends React.Component {
           : null}
           <select
             type="text"
-            value={task.command || ''}
+            value={selectedValue}
             className="form-control"
             onChange={this.handleChangeMatch('command')}
           >
-            <option value="upload">rinocloud upload</option>
-            <option value="copy">copy</option>
-            <option value="matlab">matlab</option>
-            <option value="python">python</option>
-            <option value="Rscript">Rscript</option>
-            <option value="custom">custom</option>
-            {installedPackages.map((packageName) =>
-              <option key={packageName} value={packageName}>
-                {packageName}
+            {commandList.map((c) =>
+              <option key={c.value} value={c.value}>
+                {c.name}
               </option>
             )}
           </select>
 
         </div>
 
-        <div className="col-xs-3">
+        <div className="col-xs-2">
           <small> Add file to match </small>
           {pop ?
             <OverlayTrigger
@@ -169,10 +187,10 @@ class TaskForm extends React.Component {
         </div>
         : null}
 
-        {task.command === 'custom' ?
+        {isCustomCommand ?
           <div>
             <div className="col-xs-2">
-              <small> Insert command to run</small>
+              <small>Command to run</small>
               <input
                 type="text"
                 value={task.command || ''}
@@ -180,8 +198,8 @@ class TaskForm extends React.Component {
                 onChange={this.handleChangeMatch('command')}
               />
             </div>
-            <div className="col-xs-4">
-              <small> Insert command argument</small>
+            <div className="col-xs-3">
+              <small>Insert command argument</small>
               <input
                 type="text"
                 value={task.args || ''}
