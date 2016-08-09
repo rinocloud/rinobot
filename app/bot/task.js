@@ -276,7 +276,7 @@ export class Task {
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
     )
-    const child = spawn(this.command, tokens, { cwd: this.cwd })
+    const child = spawn(this.command, _.map(tokens, decodeURI), { cwd: this.cwd })
     child.on('error', error => {
       child.error = true
       return this.on_error(error)

@@ -47,12 +47,11 @@ const main = () => {
       win.show()
       win.focus()
 
-      AutoUpdater(win, rpc)
-
-      // if (!isDev && process.platform !== 'linux') {
-      // } else {
-      //   rpc.emit('log', 'ignoring auto updates during dev')
-      // }
+      if (!isDev && process.platform !== 'linux') {
+        AutoUpdater(win, rpc)
+      } else {
+        rpc.emit('log', 'ignoring auto updates during dev')
+      }
     })
 
     process.on('uncaughtException', (error) => {
