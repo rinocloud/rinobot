@@ -1,10 +1,4 @@
 {
-  "name": "rinobot-app-renderer",
-  "productName": "rinobot",
-  "version": "0.0.6",
-  "author": "rinocloud",
-  "repository": "rinocloud/rinobot",
-  "description": "Automate data tasks",
   "scripts": {
     "hot-server": "node -r babel-register server.js",
     "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run fork-dev\"",
@@ -89,7 +83,8 @@
   "build": {
     "appId": "co.rinocloud.rinobot",
     "app-category-type": "public.app-category.science-tools",
-    "asar": false
+    "asar": false,
+    "iconUrl": "https://raw.githubusercontent.com/rinocloud/logos/master/icon.ico"
   },
   "devEngines": {
     "node": "4.x || 5.x || 6.x",

@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import pt from 'path'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 const { dialog } = require('electron').remote;
 const { shell } = require('electron')
@@ -18,11 +19,11 @@ class TaskForm extends React.Component {
 
   handleChangeMatch(field) {
     const { task, onChange } = this.props //eslint-disable-line
-    return function (e) {
+    return function (e, val = null) {
       e.preventDefault()
       const state = {
         ...task,
-        [field]: e.target.value
+        [field]: val || e.target.value
       }
       onChange(state)
     }
@@ -177,13 +178,15 @@ class TaskForm extends React.Component {
             className="btn btn-default btn-sm"
             onClick={(e) => {
               e.preventDefault()
-                const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
+              const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
               if (paths) {
-                console.log(paths[0])
                 this.handleChangeMatch('args')(e, paths[0])
               }
             }}
-          >Select {task.command === 'Rscript' ? 'R' : task.command} file</a>
+          >
+            Select {task.command === 'Rscript' ? 'R' : task.command} file
+            {task.args ? ` (${pt.basename(task.args)})` : ''}
+          </a>
         </div>
         : null}
 
@@ -219,8 +222,8 @@ class TaskForm extends React.Component {
           </button>
         </div>
 
-        {task.command === 'upload' ?
-          <div className="col-xs-12">
+        <div className="col-xs-12">
+          {task.command === 'upload' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/uploading_to_rinocloud.html"
               onClick={openExternal}
@@ -229,12 +232,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}uploading to rinocloud
             </a>
-          </div>
-        :
-        null}
-
-        {task.command === 'copy' ?
-          <div className="col-xs-12">
+          :
+          null}
+          {task.command === 'copy' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/copying_moving_files.html"
               onClick={openExternal}
@@ -243,11 +243,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}copying files
             </a>
-          </div>
-        :
-        null}
-        {task.command === 'matlab' ?
-          <div className="col-xs-12">
+          :
+          null}
+          {task.command === 'matlab' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_matlab.html"
               onClick={openExternal}
@@ -256,12 +254,10 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}running matlab scripts
             </a>
-          </div>
-        :
-        null}
+          :
+          null}
 
-        {task.command === 'python' ?
-          <div className="col-xs-12">
+          {task.command === 'python' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_python.html"
               onClick={openExternal}
@@ -270,11 +266,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}running python scripts
             </a>
-          </div>
-        : null}
+          : null}
 
-        {task.command === 'Rscript' ?
-          <div className="col-xs-12">
+          {task.command === 'Rscript' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_r.html"
               onClick={openExternal}
@@ -283,11 +277,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}running r scripts
             </a>
-          </div>
-        : null}
+          : null}
 
-        {task.command === 'custom' ?
-          <div className="col-xs-12">
+          {task.command === 'custom' ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_custom_commands.html"
               onClick={openExternal}
@@ -296,8 +288,10 @@ class TaskForm extends React.Component {
               <i className="fa fa-info-circle m-r-sm"></i>
               {'  '}running custom commands
             </a>
-          </div>
-        : null}
+          : null}
+        </div>
+
+
       </div>
     )
   }

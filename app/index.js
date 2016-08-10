@@ -8073,12 +8073,11 @@ module.exports =
 	              win.show();
 	              win.focus();
 	
-	              (0, _autoUpdater2.default)(win, rpc);
-	
-	              // if (!isDev && process.platform !== 'linux') {
-	              // } else {
-	              //   rpc.emit('log', 'ignoring auto updates during dev')
-	              // }
+	              if (!isDev && process.platform !== 'linux') {
+	                (0, _autoUpdater2.default)(win, rpc);
+	              } else {
+	                rpc.emit('log', 'ignoring auto updates during dev');
+	              }
 	            });
 	
 	            process.on('uncaughtException', function (error) {
@@ -8680,7 +8679,7 @@ module.exports =
 	module.exports = {
 		"name": "rinobotapp",
 		"productName": "rinobot",
-		"version": "0.0.6",
+		"version": "0.0.7",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",

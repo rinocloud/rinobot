@@ -24,26 +24,26 @@ class Navbar extends React.Component {
     }
 
     return (
-      <div className="row m-l m-r m-t m-b-0 p-t">
+      <div className="row m-b-0 p-t">
         <div className="col-sm-12">
           <Link to="/">
-            Watched Folders
+            <i className="m-l-sm fa fa-crosshairs"></i> Watched Folders
           </Link>
           <Link to="/installed_packages" className="m-l">
-            Packages/Plugins
+            <i className="m-l-sm fa fa-line-chart"></i> Plugins
           </Link>
           <a
             href="http://docs.rinocloud.com/rinobot/"
             className="m-l"
             onClick={openExternal}
           >
-            Documentation
+            <i className="m-l-sm fa fa-book"></i> Documentation
           </a>
           <a href="#" className="pull-right" onClick={onClickLogout}>
             {auth.isAuthenticating ?
-              <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
+              <span>Logging out <i className="m-l-sm fa fa-spinner fa-spin"></i></span>
               :
-              <span>Logout {auth.username} <i className="fa fa-sign-out"></i></span>
+              <span>Logout {auth.username} <i className="m-l-sm fa fa-sign-out"></i></span>
             }
           </a>
           <a
@@ -51,7 +51,7 @@ class Navbar extends React.Component {
             className="pull-right m-r"
             onClick={openExternal}
           >
-            My rinocloud <i className="fa fa-external-link"></i>
+            My rinocloud <i className="m-l-sm fa fa-external-link"></i>
           </a>
         </div>
       </div>

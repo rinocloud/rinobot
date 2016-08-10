@@ -40,9 +40,9 @@ export function requireAuthentication(Component) {
       const { auth, ui, dispatch } = this.props
       return (
         <div>
-          <Navbar dispatch={dispatch} auth={auth} />
-          <Notifications ui={ui} dispatch={dispatch} />
           <div className="container">
+            <Navbar dispatch={dispatch} auth={auth} />
+            <Notifications ui={ui} dispatch={dispatch} />
             {auth.statusText}
             {auth.access_token
                 ? <Component {...this.props} />

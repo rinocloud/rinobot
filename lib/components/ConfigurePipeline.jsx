@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
 import { TaskForm } from './TaskForm'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
+import { Tabs, Tab, Popover, OverlayTrigger } from 'react-bootstrap'
 import { MetadataForm } from './MetadataForm'
-import { Tabs, Tab } from 'react-bootstrap'
 const { shell } = require('electron')
 
 
@@ -164,9 +164,15 @@ class ConfigurePipeline extends React.Component {
 
               <Tabs defaultActiveKey={1} id="uncontrolled-tab">
                 <Tab eventKey={1} title={taskTitle} >
-                  <div className="m-t">
-                    <div className="row">
+                  <div className="row">
+                    <div className="p-l m-t row">
+                      <div className="col-xs-12">
+                        Any{'  '}
+                        <Link to="/installed_packages">Plugins</Link>{'  '}
+                        you install will automatically appear in the command list.
+                      </div>
                     </div>
+
                     {formData.tasks.map((o, i) =>
                       <div className="p-l m-t" key={`taskdiv${i}`}>
                         <TaskForm

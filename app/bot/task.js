@@ -69,7 +69,7 @@ export class Task {
       this.rscript()
     } else {
       this.isPackage(this.command, (isPack) => {
-        if (isPack) return this.setUpScript(() => this.python())
+        if (isPack) return this.setUpScript(() => this.pythonPlugin())
         else return this.processCommandLineTask() // eslint-disable-line
       })
     }
@@ -176,7 +176,7 @@ export class Task {
     }
   }
 
-  python() {
+  pythonPlugin() {
     const args = trim(swig.render(`${this.codePath} {{filename}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
@@ -202,11 +202,37 @@ export class Task {
     })
   }
 
-  rscript() {
-    const args = trim(swig.render(`${this.codePath} {{filename}}`, { locals: this.getLocals() }))
+  python() {
+    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filename}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
-      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
+    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
+      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
+    )
+
+    const child = spawn('python', tokens, { cwd: this.cwd })
+    child.on('error', (error) => {
+      child.error = true
+      return this.on_error(error)
+    })
+    child.stdout.on('data', this.on_log)
+    child.stderr.on('data', this.on_log)
+    child.on('close', (code) => {
+      if (child.hasOwnProperty('error')) return
+      if (code !== 0) {
+        return this.on_error(
+          new Error(
+            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+      } else { // eslint-disable-line
+        return this.on_complete()
+      }
+    })
+  }
+
+  rscript() {
+    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filename}}`, { locals: this.getLocals() }))
+    const magicDelimiter = ',,,xxx123'
+    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
+      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
     )
 
     const child = spawn('Rscript', tokens, { cwd: this.cwd })
@@ -232,7 +258,7 @@ export class Task {
     const template = "filepath='{{filepath}}';run('{{script}}');;exit;"
     const matlabCode = template
                         .replace('{{filepath}}', this.path)
-                        .replace('{{script}}', this.codePath)
+                        .replace('{{script}}', this.args)
 
     const tokens = [
       '-nodisplay',
@@ -247,7 +273,7 @@ export class Task {
       child.error = true
       return this.on_error(error)
     })
-    child.stdout.on('data', this.on_log)
+    child.stdout.on('data', (s) => this.on_log(`\n${s.toString()}`))
     child.stderr.on('data', this.on_log)
     child.on('close', (code) => {
       if (child.hasOwnProperty('error')) return
@@ -276,7 +302,8 @@ export class Task {
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
     )
-    const child = spawn(this.command, _.map(tokens, decodeURI), { cwd: this.cwd })
+
+    const child = spawn(this.command, tokens, { cwd: this.cwd })
     child.on('error', error => {
       child.error = true
       return this.on_error(error)
