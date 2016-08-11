@@ -177,7 +177,7 @@ export class Task {
   }
 
   pythonPlugin() {
-    const args = trim(swig.render(`${this.codePath} {{filename}}`, { locals: this.getLocals() }))
+    const args = trim(swig.render(`${this.codePath} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
@@ -203,7 +203,7 @@ export class Task {
   }
 
   python() {
-    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filename}}`, { locals: this.getLocals() }))
+    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
@@ -229,7 +229,7 @@ export class Task {
   }
 
   rscript() {
-    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filename}}`, { locals: this.getLocals() }))
+    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
