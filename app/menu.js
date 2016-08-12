@@ -1,5 +1,26 @@
+import { Menu } from 'electron'
 
-export const darwinMenu = (app, mainWindow) => { // eslint-disable-line
+export default function (app, win) {
+  let template
+
+  if (process.platform === 'darwin') {
+    template = darwinMenu(app, win)
+  } else {
+    template = windowsMenu(app, win)
+  }
+
+  const menu = Menu.buildFromTemplate(template)
+  win.setMenu(menu)
+
+  win.webContents.on('context-menu', (e, props) => {
+    Menu.buildFromTemplate([{
+      label: 'Inspect element',
+      click() { win.inspectElement(props.x, props.y) }
+    }]).popup(win)
+  })
+}
+
+export const darwinMenu = (app, win) => { // eslint-disable-line
   return [
     {
       label: 'Rinobot',
@@ -42,19 +63,19 @@ export const darwinMenu = (app, mainWindow) => { // eslint-disable-line
           label: 'Reload',
           accelerator: 'Command+R',
           click() {
-            mainWindow.webContents.reload()
+            win.webContents.reload()
           }
         }, {
           label: 'Toggle Full Screen',
           accelerator: 'Ctrl+Command+F',
           click() {
-            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+            win.setFullScreen(!win.isFullScreen())
           }
         }, {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click() {
-            mainWindow.toggleDevTools()
+            win.toggleDevTools()
           }
         }
       ]
@@ -80,7 +101,7 @@ export const darwinMenu = (app, mainWindow) => { // eslint-disable-line
   ]
 }
 
-export const windowsMenu = (app, mainWindow) => { // eslint-disable-line
+export const windowsMenu = (app, win) => { // eslint-disable-line
   return [
     {
       label: '&File',
@@ -92,7 +113,7 @@ export const windowsMenu = (app, mainWindow) => { // eslint-disable-line
           label: '&Close',
           accelerator: 'Ctrl+W',
           click() {
-            mainWindow.close()
+            win.close()
           }
         }
       ]
@@ -103,31 +124,22 @@ export const windowsMenu = (app, mainWindow) => { // eslint-disable-line
           label: '&Reload',
           accelerator: 'Ctrl+R',
           click() {
-            mainWindow.webContents.reload()
+            win.webContents.reload()
           }
         }, {
           label: 'Toggle &Full Screen',
           accelerator: 'F11',
           click() {
-            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+            win.setFullScreen(!win.isFullScreen())
           }
         }, {
           label: 'Toggle &Developer Tools',
           accelerator: 'Alt+Ctrl+I',
           click() {
-            mainWindow.toggleDevTools()
+            win.toggleDevTools()
           }
         }
       ]
     },
   ]
-}
-
-export default function (app, mainWindow) {
-  if (process.platform === 'darwin') {
-    return darwinMenu(app, mainWindow)
-  }
-  else { // eslint-disable-line
-    return windowsMenu(app, mainWindow)
-  }
 }

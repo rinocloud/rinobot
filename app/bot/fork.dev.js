@@ -29,12 +29,15 @@ const fork = (forkRpc) => {
         processedFiles[index].push(path)
         setProcessedFiles(index, processedFiles[index].length)
         pipelineError(index, pipe, error)
+      },
+      on_task_complete: (pipe, task) => {
+        taskComplete(index, pipe, task)
       }
     })
 
     pipeline.ready(() => {
       if (!pipeline.ignored) {
-        pipelineStarted(index)
+        pipelineStarted(index, pipeline)
         pipeline.run()
       } else {
         processedFiles[index].push(path)
@@ -102,8 +105,8 @@ const fork = (forkRpc) => {
     if (!watchers[index].closed) forkRpc.emit('watcher set processed files', { index, numFiles })
   }, smallTime)
 
-  const pipelineStarted = _.throttle((index) => {
-    if (!watchers[index].closed) forkRpc.emit('pipeline started', { index })
+  const pipelineStarted = _.throttle((index, pipe) => {
+    if (!watchers[index].closed) forkRpc.emit('pipeline started', { index, pipePath: pipe.relPath })
   }, smallTime)
 
   const pipelineComplete = _.throttle((index, pipe) => {
@@ -115,6 +118,22 @@ const fork = (forkRpc) => {
       forkRpc.emit('pipeline error', { index, error, pipePath: pipe.relPath })
     }
   }, smallTime)
+
+  const taskComplete = _.throttle((index, pipe, task) => {
+    if (!watchers[index].closed) {
+      forkRpc.emit(
+        'task complete',
+        {
+          index,
+          pipePath: pipe.relPath,
+          command: task.command,
+          args: task.args,
+          match: task.match,
+        }
+      ) // eslint-disable-line
+    }
+  }, time)
+
 
   const pipelineLog = function pipelineLog(index, pipe, log) {
     const task = () => {

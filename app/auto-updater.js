@@ -4,18 +4,15 @@ const ms = require('ms')
 
 // accepted values: `osx`, `win32`
 // https://nuts.gitbook.com/update-windows.html
-const platform = 'darwin' === process.platform
-  ? 'osx'
-  : process.platform
+const platform = 'darwin' === process.platform ? 'osx' : process.platform // eslint-disable-line
 const FEED_URL = `https://updates.rinocloud.com/update/${platform}`
 let isInit = false
 
-function init (rpc) {
-
+function init(rpc) {
   rpc.emit('log', 'in init')
   autoUpdater.on('error', (err, msg) => {
-    rpc.emit('error', 'Error fetching updates: ' + msg + ' (' + err.stack + ')')
-    rpc.emit('log', 'Error fetching updates: ' + msg + ' (' + err.stack + ')')
+    rpc.emit('error', `Error fetching updates: ${msg} (${err.stack})`)
+    rpc.emit('log', `Error fetching updates: ${msg} (${err.stack})`)
   })
 
   rpc.emit('log', 'setting feed url')

@@ -42,6 +42,7 @@ const Bot = (rpc) => {
     forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))
     forkRpc.on('pipeline error', args => rpc.emit('pipeline error', args))
     forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
+    forkRpc.on('task complete', args => rpc.emit('task complete', args))
   }
 
   forkRpc.emit('start')

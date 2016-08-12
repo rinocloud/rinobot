@@ -44,7 +44,7 @@ export class Pipeline {
     this.start(options)
   }
 
-  ready(readyFunc){
+  ready(readyFunc) {
     this.readyFunc = readyFunc
   }
 
@@ -58,15 +58,17 @@ export class Pipeline {
         this.setUpAPI.bind(this, options),
         this.getDiary.bind(this),
         this.doIgnore.bind(this)
-      ], function(){
+      ], () => {
         this.readyFunc()
-      }.bind(this))
+      })
     })
   }
 
   setUpLogging(options) {
     this.on_complete = options.on_complete ? options.on_complete.bind(null, this) : function () {}
     this.on_error = options.on_error ? options.on_error.bind(null, this) : function (e) { throw e }
+
+    this.on_task_complete = options.on_task_complete ? options.on_task_complete.bind(null, this) : function () {} // eslint-disable-line
 
     this.on_ignore = (reason) => {
       this.ignored = true
@@ -158,20 +160,20 @@ export class Pipeline {
       }
     })
 
-    const matchesNone = _.every(this.tasks, task => {
-      return !globule.isMatch(task.match, this.filename)
-    })
+    const matchesNone = _.every(this.tasks, task =>
+     !globule.isMatch(task.match, this.filename)
+    )
 
-    if(matchesNone){
+    if (matchesNone) {
       this.on_ignore('Matches no tasks')
       this.ignored = true
     }
 
-    const allCompleted = _.every(this.tasks, (task) => {
-      return this.diary.completedTasks.hasOwnProperty(task.command)
-    })
+    const allCompleted = _.every(this.tasks, (task) =>
+      this.diary.completedTasks.hasOwnProperty(task.command)
+    )
 
-    if(allCompleted){
+    if (allCompleted) {
       this.on_ignore('All tasks completed')
       this.ignored = true
     }
@@ -202,7 +204,8 @@ export class Pipeline {
     if (!globResults.length) { return cb() }
 
     if (globResults.length > 1) {
-      this.on_error(new Error(`${globResults.length} conflicting metadata files. Should only be one.`))
+      this.on_error(
+        new Error(`${globResults.length} conflicting metadata files. Should only be one.`))
       return cb()
     }
 
@@ -261,7 +264,6 @@ export class Pipeline {
                 self.on_error(err)
               })
           })
-
         })
       })
     })
@@ -287,7 +289,6 @@ export class Pipeline {
     const self = this
     // lets make a list of functions that get called later
     const taskList = this.tasks.map((task) => (callback) => {
-
       if (self.diary.completedTasks.hasOwnProperty(task.command)) {
         self.on_ignore(`${task.command}: already complete`)
         return callback()
@@ -316,9 +317,9 @@ export class Pipeline {
             self.on_log(`${m}`)
           },
           on_complete: (tt) => {
-            self.on_log(`${tt.command}: finished`)
             self.logTask(tt.print())
             self.extendDiary({ response: tt._response })
+            self.on_task_complete(tt)
             setTimeout(() => { callback() })
           },
           on_error: (tt, error) => {
