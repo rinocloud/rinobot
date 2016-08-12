@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Notification } from './Notification'
-import * as updaterActions from '../actions/updater'
+import * as uiActions from '../actions/ui'
 
 class Notifications extends React.Component {
 
@@ -14,7 +14,7 @@ class Notifications extends React.Component {
 
     const onClickUpdate = (e) => {
       e.preventDefault()
-      dispatch(updaterActions.installUpdate())
+      dispatch(uiActions.installUpdate())
     }
 
     return (

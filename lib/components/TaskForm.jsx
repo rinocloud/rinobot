@@ -41,6 +41,7 @@ class TaskForm extends React.Component {
       e.preventDefault()
       shell.openExternal(e.target.href)
     }
+
     const CommandToRunPopover = (
       <Popover id="popover-trigger-hover-focus">
         <small>
@@ -49,6 +50,7 @@ class TaskForm extends React.Component {
         </small>
       </Popover>
     )
+
     const MatchPopover = (
       <Popover id="popover-trigger-hover-focus">
         <small>
@@ -167,7 +169,6 @@ class TaskForm extends React.Component {
             />
           </div>
         : null}
-
       {['python', 'Rscript', 'matlab'].includes(task.command) ?
         <div className="col-xs-4">
           <div>
@@ -290,8 +291,6 @@ class TaskForm extends React.Component {
             </a>
           : null}
         </div>
-
-
       </div>
     )
   }

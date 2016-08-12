@@ -1,6 +1,25 @@
-import { fork } from 'child_process'
+import { fork, exec } from 'child_process'
 import forkRpcCreator from './rpc-fork'
 import pt from 'path'
+
+export const checkPythonVersion = (cb) => {
+  // returns callback with values 2, 3 or false
+  exec('python -V', (error, stdout, stderr) => {
+    if(error) cb(false)
+
+    const re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/
+    let m
+
+    if ((m = re.exec(stderr)) !== null) {
+      if (m.index === re.lastIndex) {
+          re.lastIndex++;
+      }
+      cb(m[1])
+    } else {
+      cb(false)
+    }
+  })
+}
 
 const Bot = (rpc) => {
   const child = fork(pt.join(__dirname, 'fork.js'))
@@ -26,6 +45,7 @@ const Bot = (rpc) => {
   }
 
   forkRpc.emit('start')
+
   return {bot: child, fork: forkRpc}
 }
 

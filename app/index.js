@@ -8679,7 +8679,7 @@ module.exports =
 	module.exports = {
 		"name": "rinobotapp",
 		"productName": "Rinobot",
-		"version": "0.0.9",
+		"version": "0.0.10",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",

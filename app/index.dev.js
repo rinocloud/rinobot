@@ -1,9 +1,20 @@
 import { app, BrowserWindow, Menu } from 'electron'
+import createBot, { checkPythonVersion } from './bot/'
+import AutoUpdater from './auto-updater'
+import isDev from 'electron-is-dev'
+import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
-import createBot from './bot/'
-import AutoUpdater from './auto-updater'
-const isDev = require('electron-is-dev')
+import raven from 'raven'
+
+const client = new raven.Client(
+  'https://1ef48c3fe45247d487aabf4158dedf0d:aa76e34f867e4ce4b1df52b8b9d51136@app.getsentry.com/91878',
+  {
+    release: _package.version,
+    environment: process.env.NODE_ENV
+  }
+)
+client.patchGlobal()
 
 const main = () => {
   if (require('electron-squirrel-startup')) return // eslint-disable-line
@@ -47,6 +58,12 @@ const main = () => {
       win.show()
       win.focus()
 
+      rpc.emit('rinobot version', {version: _package.version})
+
+      checkPythonVersion((version) => {
+        rpc.emit('python version', {version})
+      })
+
       if (!isDev && process.platform !== 'linux') {
         AutoUpdater(win, rpc)
       } else {
@@ -75,4 +92,5 @@ const main = () => {
     win.setMenu(menu)
   })
 }
+
 main()

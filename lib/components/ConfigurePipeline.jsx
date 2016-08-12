@@ -164,6 +164,7 @@ class ConfigurePipeline extends React.Component {
 
               <Tabs defaultActiveKey={1} id="uncontrolled-tab">
                 <Tab eventKey={1} title={taskTitle} >
+
                   <div className="row">
                     <div className="p-l m-t row">
                       <div className="col-xs-12">

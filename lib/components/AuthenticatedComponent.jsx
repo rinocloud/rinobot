@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Navbar } from './Navbar'
+import { Footer } from './Footer'
 import { Notifications } from './Notifications'
 
 export function requireAuthentication(Component) {
@@ -48,6 +49,7 @@ export function requireAuthentication(Component) {
                 ? <Component {...this.props} />
                 : null
             }
+            <Footer ui={ui} />
           </div>
         </div>
       )

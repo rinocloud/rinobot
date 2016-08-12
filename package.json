@@ -1,5 +1,4 @@
 {
-
   "build": {
     "appId": "co.rinocloud.rinobot",
     "category": "public.app-category.science-tools",
@@ -9,32 +8,27 @@
       "certificateFile": "/Users/eoinmurray/Documents/crypto/helena_startssl/rinocloud-win-cert.p12"
     }
   },
-
   "scripts": {
     "postinstall": "install-app-deps",
-
     "dev": "concurrently --kill-others \"npm run dev:hot-server\" \"npm run dev:fork\"",
     "dev:hot-server": "node -r babel-register server.js",
     "dev:fork": "cross-env NODE_ENV=development node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress --watch",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/index.dev",
     "start": "cross-env NODE_ENV=production electron ./app",
-
     "build": "npm run build:lib && npm run build:app && npm run build:fork",
     "build:app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress",
     "build:lib": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.js --progress",
     "build:fork": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress",
-
     "dist": "build",
     "dist:win": "rm -r node_modules/electron-builder/ && npm install electron-builder@5.18.0 && build --platform win",
-    "dist:osx": "build --platform darwin",
-
+    "dist:osx": "rm -r node_modules/electron-builder/ && npm install electron-builder@5.24.0 && build --platform darwin",
+    "release": "npm run build && npm run dist:osx && npm run dist:win",
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:rinocloud/rinobot gh-pages --force"
   },
-
   "dependencies": {
     "js-yaml": "^3.6.1",
     "lodash": "^4.13.1",
@@ -56,7 +50,6 @@
     "superagent": "^1.8.3",
     "tar": "^2.2.1"
   },
-
   "devDependencies": {
     "babel-core": "^6.9.0",
     "babel-eslint": "^6.0.4",
@@ -88,6 +81,7 @@
     "file-loader": "^0.9.0",
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
+    "raven": "^0.12.1",
     "redux-debounce": "^1.0.1",
     "source-map-support": "^0.4.0",
     "style-loader": "^0.13.1",
@@ -97,12 +91,10 @@
     "webpack-hot-middleware": "^2.12.1",
     "webpack-node-externals": "^1.2.0"
   },
-
   "devEngines": {
     "node": "4.x || 5.x || 6.x",
     "npm": "2.x || 3.x"
   },
-
   "babel": {
     "presets": [
       "es2015",
@@ -125,7 +117,6 @@
       }
     }
   },
-
   "eslintConfig": {
     "parser": "babel-eslint",
     "extends": "airbnb",
@@ -158,5 +149,4 @@
       "react"
     ]
   }
-
 }

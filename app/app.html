@@ -6,6 +6,10 @@
   </head>
   <body>
     <div id="root"></div>
+    <script src="https://cdn.ravenjs.com/3.4.1/raven.min.js"></script>
+    <script>
+      window.rinobotVersion = require('./package').version
+    </script>
     <script>
       (function() {
         const script = document.createElement('script');

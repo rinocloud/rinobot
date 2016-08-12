@@ -16,9 +16,7 @@ const plugins = [
   })
 ]
 
-if (isProd) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({ compressor: { screw_ie8: true, warnings: false } }))
-} else {
+if (!isProd) {
   plugins.push(new webpack.HotModuleReplacementPlugin())
   plugins.push(new webpack.IgnorePlugin(/^(buffertools)$/))
   plugins.push(new webpack.NoErrorsPlugin())
