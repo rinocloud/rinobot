@@ -19,19 +19,6 @@ export default (app, sentry) => {
   const rpc = createRPC(win)
   const {bot, fork} = createBot(rpc) // eslint-disable-line
 
-  process.on('uncaughtException', (error) => {
-    rpc.emit('error', error)
-    sentry.captureException(error)
-  })
-
-  bot.on('close', () => {
-    rpc.emit('watcher error', {
-      name: 'child closed',
-      message: 'bot process exited for an unknown reason, please restart.'
-    })
-    fork.destroy()
-  })
-
   rpc.on('init', () => {
     win.show()
     win.focus()
@@ -48,8 +35,16 @@ export default (app, sentry) => {
     }
   })
 
+  win.on('close', () => {
+    console.log('ev:close destroying child processes and rpcs')
+    bot.kill()
+    fork.destroy()
+    rpc.destroy()
+  })
+
   win.on('closed', () => {
     win = null
     app.quit()
+    console.log('ev:quit')
   })
 }

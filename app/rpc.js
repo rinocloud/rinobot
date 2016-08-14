@@ -57,13 +57,11 @@ class Server {
   }
 
   destroy() {
+    this.destroyed = true
     this.removeAllListeners()
     this.wc.removeAllListeners()
     if (this.id) {
       ipcMain.removeListener(this.id, this.ipcListener)
-    } else {
-      // mark for `genUid` in constructor
-      this.destroyed = true
     }
   }
 
