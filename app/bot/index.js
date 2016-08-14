@@ -5,14 +5,12 @@ import pt from 'path'
 export const checkPythonVersion = (cb) => {
   // returns callback with values 2, 3 or false
   exec('python -V', (error, stdout, stderr) => {
-    if(error) cb(false)
-
+    if (error) cb(false)
     const re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/
     let m
-
-    if ((m = re.exec(stderr)) !== null) {
+    if ((m = re.exec(stderr)) !== null) { // eslint-disable-line
       if (m.index === re.lastIndex) {
-          re.lastIndex++;
+        re.lastIndex++;
       }
       cb(m[1])
     } else {
@@ -24,7 +22,6 @@ export const checkPythonVersion = (cb) => {
 const Bot = (rpc) => {
   const child = fork(pt.join(__dirname, 'fork.js'))
   const forkRpc = forkRpcCreator(child)
-
   child.on('error', (error) => {
     rpc.emit('watcher error', { name: error.name, message: error.message, stack: error.stack })
   })
@@ -43,11 +40,10 @@ const Bot = (rpc) => {
     forkRpc.on('pipeline error', args => rpc.emit('pipeline error', args))
     forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
     forkRpc.on('task complete', args => rpc.emit('task complete', args))
+    forkRpc.on('task started', args => rpc.emit('task started', args))
   }
-
   forkRpc.emit('start')
-
-  return {bot: child, fork: forkRpc}
+  return { bot: child, fork: forkRpc }
 }
 
 export default Bot

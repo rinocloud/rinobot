@@ -26,6 +26,7 @@ export class Pipeline {
   - on_ignore: function (pipeline, reason), called if the pipeline ignores the file
   - on_log: function (pipeline, message), general log for entire pipeline
   - on_task_complete: function (pipeline, task), called when a task completes
+  - on_task_start: function (pipeline, task), called when a task starts
   - on_task_error: function (pipeline, task, err), called when a task fails
   - on_task_ignore: function (pipeline, task, reason), called if the task has alredy
                     been completed, or ignored for some other reason
@@ -67,8 +68,8 @@ export class Pipeline {
   setUpLogging(options) {
     this.on_complete = options.on_complete ? options.on_complete.bind(null, this) : function () {}
     this.on_error = options.on_error ? options.on_error.bind(null, this) : function (e) { throw e }
-
     this.on_task_complete = options.on_task_complete ? options.on_task_complete.bind(null, this) : function () {} // eslint-disable-line
+    this.on_task_start = options.on_task_start ? options.on_task_start.bind(null, this) : function () {} // eslint-disable-line
 
     this.on_ignore = (reason) => {
       this.ignored = true
@@ -248,20 +249,19 @@ export class Pipeline {
 
             this.on_log('Synching metadata')
 
-            const self = this
             this.api
               .updateMerge(dataFileDiary.response.id, _.cloneDeep(this.metadata))
               .then((response) => {
                 _.extend(dataFileDiary, { response })
                 _.extend(dataFileDiary, { metadata: response.metadata })
                 mkdirp(pt.dirname(dataFileHiddenMetadataFile), (err) => {
-                  if (err) return self.on_error(err)
+                  if (err) return this.on_error(err)
                   const metadataString = JSON.stringify(dataFileDiary, null, 4)
-                  fs.writeFile(dataFileHiddenMetadataFile, metadataString, self.on_complete)
+                  fs.writeFile(dataFileHiddenMetadataFile, metadataString, this.on_complete)
                 })
               })
               .catch((err) => {
-                self.on_error(err)
+                this.on_error(err)
               })
           })
         })
@@ -286,40 +286,41 @@ export class Pipeline {
   }
 
   run() {
-    const self = this
     // lets make a list of functions that get called later
-    const taskList = this.tasks.map((task) => (callback) => {
-      if (self.diary.completedTasks.hasOwnProperty(task.command)) {
-        self.on_ignore(`${task.command}: already complete`)
+    const taskList = this.tasks.map(task => callback => {
+      this.on_task_start(task)
+
+      if (this.diary.completedTasks.hasOwnProperty(task.command)) {
+        this.on_ignore(`${task.command}: already complete`)
         return callback()
       }
 
-      self.attemptMetadataParse(() => {
+      this.attemptMetadataParse(() => {
         const opts = {
-          api: self.api,
-          packagesDir: self.packagesDir,
-          metadata: self.metadata,
-          relPath: self.relPath,
+          api: this.api,
+          packagesDir: this.packagesDir,
+          metadata: this.metadata,
+          relPath: this.relPath,
           command: task.command,
-          cwd: self.watchPath,
+          cwd: this.watchPath,
           match: task.match,
-          path: self.path,
+          path: this.path,
           args: task.args,
         }
 
         const t = new Task({
           ...opts,
           on_ignore: (tt, m) => {
-            self.on_ignore(`${tt.command}: ${m}`)
+            this.on_ignore(`${tt.command}: ${m}`)
             setTimeout(() => { callback() })
           },
           on_log: (tt, m) => {
-            self.on_log(`${m}`)
+            this.on_log(`${m}`)
           },
           on_complete: (tt) => {
-            self.logTask(tt.print())
-            self.extendDiary({ response: tt._response })
-            self.on_task_complete(tt)
+            this.logTask(tt.print())
+            this.extendDiary({ response: tt._response })
+            this.on_task_complete(tt)
             setTimeout(() => { callback() })
           },
           on_error: (tt, error) => {
@@ -337,36 +338,35 @@ export class Pipeline {
     // if any of the tasks fail, the queue is killed and the error is returned
     scheduler.pipelineQueue.push(scheduler.createQueue(taskList), (err) => {
       if (err) {
-        if (!self.retry) {
-          return self.on_error(err)
+        if (!this.retry) {
+          return this.on_error(err)
         } else { // eslint-disable-line
-          return self.tryAgain()
+          return this.tryAgain()
         }
       }
-      return self.attemptMetadataParse(() => {
-        self.extendDiary({ finished: true })
-        self.writeDiary(() => {
-          self.on_complete()
+      return this.attemptMetadataParse(() => {
+        this.extendDiary({ finished: true })
+        this.writeDiary(() => {
+          this.on_complete()
         })
       })
     })
   }
 
   tryAgain() {
-    const self = this
-    self.on_log('Pipeline failed')
-    self.on_log(`Retrying in ${countdown} seconds`)
+    this.on_log('Pipeline failed')
+    this.on_log(`Retrying in ${countdown} seconds`)
 
-    self.timeout = self.timeout === 1 ? 2 : self.timeout * 2
-    let countdown = self.timeout
+    this.timeout = this.timeout === 1 ? 2 : this.timeout * 2
+    let countdown = this.timeout
     const interval = setInterval(() => {
       countdown = countdown - 1
       if (countdown === 0) {
-        self.on_log('Retrying now')
+        this.on_log('Retrying now')
         clearInterval(interval)
-        self.run()
+        this.run()
       } else {
-        self.on_log(`Retrying in ${countdown} seconds`)
+        this.on_log(`Retrying in ${countdown} seconds`)
       }
     }, 1000)
   }

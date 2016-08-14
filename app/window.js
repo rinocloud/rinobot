@@ -6,7 +6,7 @@ import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
 
-export default (app) => {
+export default (app, sentry) => {
   let win = new BrowserWindow({
     show: false,
     width: 1024,
@@ -19,16 +19,17 @@ export default (app) => {
   const rpc = createRPC(win)
   const {bot, fork} = createBot(rpc) // eslint-disable-line
 
+  process.on('uncaughtException', (error) => {
+    rpc.emit('error', error)
+    sentry.captureException(error)
+  })
+
   bot.on('close', () => {
     rpc.emit('watcher error', {
       name: 'child closed',
       message: 'bot process exited for an unknown reason, please restart.'
     })
     fork.destroy()
-  })
-
-  process.on('uncaughtException', (error) => {
-    rpc.emit('error', error)
   })
 
   rpc.on('init', () => {

@@ -30,6 +30,9 @@ const fork = (forkRpc) => {
         setProcessedFiles(index, processedFiles[index].length)
         pipelineError(index, pipe, error)
       },
+      on_task_start: (pipe, task) => {
+        taskStart(index, pipe, task)
+      },
       on_task_complete: (pipe, task) => {
         taskComplete(index, pipe, task)
       }
@@ -123,6 +126,21 @@ const fork = (forkRpc) => {
     if (!watchers[index].closed) {
       forkRpc.emit(
         'task complete',
+        {
+          index,
+          pipePath: pipe.relPath,
+          command: task.command,
+          args: task.args,
+          match: task.match,
+        }
+      ) // eslint-disable-line
+    }
+  }, time)
+
+  const taskStart = _.throttle((index, pipe, task) => {
+    if (!watchers[index].closed) {
+      forkRpc.emit(
+        'task started',
         {
           index,
           pipePath: pipe.relPath,
