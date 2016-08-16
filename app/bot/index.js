@@ -21,11 +21,6 @@ export const checkPythonVersion = (cb) => {
 
 const Bot = (rpc) => {
   const child = fork(pt.join(__dirname, 'fork.js'))
-
-  child.stderr.on('data', buf => {
-    console.log('[STR] stderr "%s"', String(buf))
-  })
-
   const forkRpc = forkRpcCreator(child)
 
   if (rpc) { // sometimes I test from cli, in that case there's no rpc defined
