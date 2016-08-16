@@ -5,6 +5,10 @@ import { Pipeline } from './pipeline'
 import { countWatched, flattenWatched } from './utils'
 
 const fork = (forkRpc) => {
+  // setTimeout(() => {
+  throw new Error('asdsdfasdf')
+  // }, 1000)
+
   const watchers = {}
   const processedFiles = {}
   let timer
@@ -182,8 +186,8 @@ const fork = (forkRpc) => {
 
 const forkRpc = rpc(process)
 
-try {
-  fork(forkRpc)
-} catch (error) {
-  forkRpc.emit('error', { name: error.name, message: error.message, stack: error.stack })
-}
+// try {
+fork(forkRpc)
+// } catch (error) {
+  // forkRpc.emit('error', { name: error.name, message: error.message, stack: error.stack })
+// }

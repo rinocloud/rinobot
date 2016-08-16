@@ -6,6 +6,15 @@ import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
 
+
+function JSONError(error) {
+  this.name = error.name
+  this.message = (error.message || '')
+  this.stack = error.stack
+}
+
+JSONError.prototype = Error.prototype;
+
 export default (app, sentry) => {
   let win = new BrowserWindow({
     show: false,
@@ -18,6 +27,20 @@ export default (app, sentry) => {
   createMenu(app, win)
   const rpc = createRPC(win)
   const {bot, fork} = createBot(rpc) // eslint-disable-line
+
+  fork.on('error', error => {
+    // this get called if there is an issue **in** the child process
+    rpc.emit('error', error)
+    sentry.captureException(new JSONError(error))
+  })
+
+  bot.on('error', error => {
+    // this only gets called if there is an issue **creating**
+    // the child process, not if there is an error **in** the
+    // child process
+    rpc.emit('error', error)
+    sentry.captureException(new JSONError(error))
+  })
 
   rpc.on('init', () => {
     win.show()
@@ -43,8 +66,8 @@ export default (app, sentry) => {
   })
 
   win.on('closed', () => {
+    console.log('ev:quit')
     win = null
     app.quit()
-    console.log('ev:quit')
   })
 }
