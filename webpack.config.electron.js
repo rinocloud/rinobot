@@ -40,6 +40,7 @@ export default {
   },
   externals: [
     'chokidar',
+    'raven',
     'font-awesome',
     'source-map-support'
   ]

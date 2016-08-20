@@ -7999,118 +7999,33 @@ module.exports =
 	
 	var _electron = __webpack_require__(298);
 	
-	var _menu = __webpack_require__(299);
+	var _analytics = __webpack_require__(299);
 	
-	var _menu2 = _interopRequireDefault(_menu);
+	var _window = __webpack_require__(302);
 	
-	var _rpc = __webpack_require__(300);
-	
-	var _rpc2 = _interopRequireDefault(_rpc);
-	
-	var _bot = __webpack_require__(304);
-	
-	var _bot2 = _interopRequireDefault(_bot);
-	
-	var _autoUpdater = __webpack_require__(308);
-	
-	var _autoUpdater2 = _interopRequireDefault(_autoUpdater);
+	var _window2 = _interopRequireDefault(_window);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+	console.log(__webpack_require__.c[0].filename);
 	
-	var isDev = __webpack_require__(311);
+	var isOSX = process.platform === 'darwin';
 	
 	var main = function main() {
-	  if (__webpack_require__(312)) return; // eslint-disable-line
+	  if (__webpack_require__(315)) return; // eslint-disable-line
+	
+	  var sentry = (0, _analytics.createSentry)();
+	
 	  _electron.app.setName('rinobot');
-	
 	  _electron.app.on('window-all-closed', function () {
-	    if (process.platform !== 'darwin') _electron.app.quit();
+	    if (!isOSX) _electron.app.quit();
 	  });
-	
-	  if (process.platform === 'darwin') {
-	    _electron.app.dock.show();
-	  }
-	
-	  _electron.app.on('ready', _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-	    var win, rpc, setupBot, template, menu;
-	    return regeneratorRuntime.wrap(function _callee$(_context) {
-	      while (1) {
-	        switch (_context.prev = _context.next) {
-	          case 0:
-	            win = new _electron.BrowserWindow({
-	              show: false,
-	              width: 1024,
-	              height: 728
-	            });
-	
-	
-	            win.loadURL('file://' + __dirname + '/app.html');
-	
-	            rpc = (0, _rpc2.default)(win);
-	
-	            setupBot = function setupBot() {
-	              var _createBot = (0, _bot2.default)(rpc);
-	
-	              var bot = _createBot.bot;
-	              var fork = _createBot.fork; // eslint-disable-line
-	
-	              bot.on('close', function () {
-	                rpc.emit('log', 'child closed, disconnecting rpc');
-	                rpc.emit('watcher error', {
-	                  name: 'child closed',
-	                  message: 'bot process exited for an unknown reason, please restart.'
-	                });
-	                fork.destroy();
-	                setupBot();
-	              });
-	            };
-	
-	            setupBot();
-	
-	            rpc.on('init', function () {
-	              win.show();
-	              win.focus();
-	
-	              if (!isDev && process.platform !== 'linux') {
-	                (0, _autoUpdater2.default)(win, rpc);
-	              } else {
-	                rpc.emit('log', 'ignoring auto updates during dev');
-	              }
-	            });
-	
-	            process.on('uncaughtException', function (error) {
-	              rpc.emit('error', error);
-	            });
-	
-	            win.on('closed', function () {
-	              win = null;
-	              _electron.app.quit();
-	            });
-	
-	            win.webContents.on('context-menu', function (e, props) {
-	              _electron.Menu.buildFromTemplate([{
-	                label: 'Inspect element',
-	                click: function click() {
-	                  win.inspectElement(props.x, props.y);
-	                }
-	              }]).popup(win);
-	            });
-	
-	            template = (0, _menu2.default)(_electron.app, win);
-	            menu = _electron.Menu.buildFromTemplate(template);
-	
-	            win.setMenu(menu);
-	
-	          case 12:
-	          case 'end':
-	            return _context.stop();
-	        }
-	      }
-	    }, _callee, undefined);
-	  })));
+	  _electron.app.on('ready', function () {
+	    (0, _window2.default)(_electron.app, sentry);
+	  });
+	  if (isOSX) _electron.app.dock.show();
 	};
+	
 	main();
 
 /***/ },
@@ -8121,319 +8036,109 @@ module.exports =
 
 /***/ },
 /* 299 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.createSentry = undefined;
 	
-	exports.default = function (app, mainWindow) {
-	  if (process.platform === 'darwin') {
-	    return darwinMenu(app, mainWindow);
-	  } else {
-	    // eslint-disable-line
-	    return windowsMenu(app, mainWindow);
-	  }
-	};
+	var _package2 = __webpack_require__(300);
 	
-	var darwinMenu = exports.darwinMenu = function darwinMenu(app, mainWindow) {
-	  // eslint-disable-line
-	  return [{
-	    label: 'Rinobot',
-	    submenu: [{
-	      label: 'About Rinobot',
-	      selector: 'orderFrontStandardAboutPanel:'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      label: 'Services',
-	      submenu: []
-	    }, {
-	      type: 'separator'
-	    }, {
-	      label: 'Hide Rinobot',
-	      accelerator: 'Command+H',
-	      selector: 'hide:'
-	    }, {
-	      label: 'Hide Others',
-	      accelerator: 'Command+Shift+H',
-	      selector: 'hideOtherApplications:'
-	    }, {
-	      label: 'Show All',
-	      selector: 'unhideAllApplications:'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      label: 'Quit',
-	      accelerator: 'Command+Q',
-	      click: function click() {
-	        app.quit();
-	      }
-	    }]
-	  }, {
-	    label: 'View',
-	    submenu: [{
-	      label: 'Reload',
-	      accelerator: 'Command+R',
-	      click: function click() {
-	        mainWindow.webContents.reload();
-	      }
-	    }, {
-	      label: 'Toggle Full Screen',
-	      accelerator: 'Ctrl+Command+F',
-	      click: function click() {
-	        mainWindow.setFullScreen(!mainWindow.isFullScreen());
-	      }
-	    }, {
-	      label: 'Toggle Developer Tools',
-	      accelerator: 'Alt+Command+I',
-	      click: function click() {
-	        mainWindow.toggleDevTools();
-	      }
-	    }]
-	  }, {
-	    label: 'Window',
-	    submenu: [{
-	      label: 'Minimize',
-	      accelerator: 'Command+M',
-	      selector: 'performMiniaturize:'
-	    }, {
-	      label: 'Close',
-	      accelerator: 'Command+W',
-	      selector: 'performClose:'
-	    }, {
-	      type: 'separator'
-	    }, {
-	      label: 'Bring All to Front',
-	      selector: 'arrangeInFront:'
-	    }]
-	  }];
-	};
+	var _package3 = _interopRequireDefault(_package2);
 	
-	var windowsMenu = exports.windowsMenu = function windowsMenu(app, mainWindow) {
-	  // eslint-disable-line
-	  return [{
-	    label: '&File',
-	    submenu: [{
-	      label: '&Open',
-	      accelerator: 'Ctrl+O'
-	    }, {
-	      label: '&Close',
-	      accelerator: 'Ctrl+W',
-	      click: function click() {
-	        mainWindow.close();
-	      }
-	    }]
-	  }, {
-	    label: '&View',
-	    submenu: [{
-	      label: '&Reload',
-	      accelerator: 'Ctrl+R',
-	      click: function click() {
-	        mainWindow.webContents.reload();
-	      }
-	    }, {
-	      label: 'Toggle &Full Screen',
-	      accelerator: 'F11',
-	      click: function click() {
-	        mainWindow.setFullScreen(!mainWindow.isFullScreen());
-	      }
-	    }, {
-	      label: 'Toggle &Developer Tools',
-	      accelerator: 'Alt+Ctrl+I',
-	      click: function click() {
-	        mainWindow.toggleDevTools();
-	      }
-	    }]
-	  }];
+	var _raven = __webpack_require__(301);
+	
+	var _raven2 = _interopRequireDefault(_raven);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var createSentry = exports.createSentry = function createSentry() {
+	  var sentry = new _raven2.default.Client('https://1ef48c3fe45247d487aabf4158dedf0d:aa76e34f867e4ce4b1df52b8b9d51136@app.getsentry.com/91878', {
+	    release: _package3.default.version,
+	    environment: ("production")
+	  });
+	
+	  sentry.patchGlobal();
+	
+	  return sentry;
 	};
 
 /***/ },
 /* 300 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	/*
-	  This is the rpc between the main electron process and the renderer process
-	*/
-	
-	var _require = __webpack_require__(301);
-	
-	var EventEmitter = _require.EventEmitter;
-	
-	var _require2 = __webpack_require__(298);
-	
-	var ipcMain = _require2.ipcMain;
-	
-	var genUid = __webpack_require__(302);
-	
-	var Server = function () {
-	  function Server(win) {
-	    var _this = this;
-	
-	    _classCallCheck(this, Server);
-	
-	    this.win = win;
-	    this.cache = {};
-	    this.ipcListener = this.ipcListener.bind(this);
-	    this.emitter = new EventEmitter();
-	
-	    genUid(10, function (err, uid) {
-	      if (_this.destroyed) return;
-	      if (err) return _this.emitter.emit('error', err);
-	
-	      _this.id = uid;
-	      ipcMain.on(uid, _this.ipcListener);
-	      // we intentionally subscribe to `on` instead of `once`
-	      // to support reloading the window and re-initializing
-	      // the channel
-	      _this.wc.on('did-finish-load', function () {
-	        _this.wc.send('init', uid);
-	      });
-	    });
-	  }
-	
-	  _createClass(Server, [{
-	    key: 'ipcListener',
-	    value: function ipcListener(event, _ref) {
-	      var ev = _ref.ev;
-	      var data = _ref.data;
-	
-	      this.emitter.emit(ev, data);
-	    }
-	  }, {
-	    key: 'emit',
-	    value: function emit(ch, data) {
-	      this.wc.send(this.id, { ch: ch, data: data });
-	    }
-	  }, {
-	    key: 'on',
-	    value: function on(ev, fn) {
-	      this.emitter.on(ev, fn);
-	    }
-	  }, {
-	    key: 'once',
-	    value: function once(ev, fn) {
-	      this.emitter.once(ev, fn);
-	    }
-	  }, {
-	    key: 'removeListener',
-	    value: function removeListener(ev, fn) {
-	      this.emitter.removeListener(ev, fn);
-	    }
-	  }, {
-	    key: 'removeAllListeners',
-	    value: function removeAllListeners() {
-	      this.emitter.removeAllListeners();
-	    }
-	  }, {
-	    key: 'destroy',
-	    value: function destroy() {
-	      this.removeAllListeners();
-	      this.wc.removeAllListeners();
-	      if (this.id) {
-	        ipcMain.removeListener(this.id, this.ipcListener);
-	      } else {
-	        // mark for `genUid` in constructor
-	        this.destroyed = true;
-	      }
-	    }
-	  }, {
-	    key: 'wc',
-	    get: function get() {
-	      return this.win.webContents;
-	    }
-	  }]);
-	
-	  return Server;
-	}();
-	
-	module.exports = function createRPC(win) {
-	  return new Server(win);
+	module.exports = {
+		"name": "rinobotapp",
+		"productName": "Rinobot",
+		"version": "0.0.11",
+		"author": "rinocloud",
+		"repository": "rinocloud/rinobot",
+		"description": "Automate data tasks",
+		"dependencies": {
+			"aws-sdk": "^2.4.7",
+			"async": "^2.0.0-rc.5",
+			"fs-extra": "^0.30.0",
+			"globule": "^1.0.0",
+			"js-yaml": "^3.6.1",
+			"lodash": "^4.13.1",
+			"mkdirp": "^0.5.1",
+			"electron-is-dev": "0.1.1",
+			"ms": "0.7.1",
+			"swig": "^1.4.2",
+			"superagent": "^1.8.3",
+			"superagent-promise-plugin": "^3.2.0",
+			"raven": "^0.12.1",
+			"superagent-queue": "0.0.3",
+			"chokidar": "^1.6.0",
+			"formidable": "^1.0.17",
+			"source-map-support": "^0.4.2",
+			"uid2": "0.0.3"
+		},
+		"eslintConfig": {
+			"parser": "babel-eslint",
+			"extends": "airbnb",
+			"env": {
+				"browser": true,
+				"mocha": true,
+				"node": true
+			},
+			"rules": {
+				"consistent-return": 0,
+				"comma-dangle": 0,
+				"no-use-before-define": 0,
+				"import/no-unresolved": [
+					2,
+					{
+						"ignore": [
+							"electron"
+						]
+					}
+				],
+				"react/jsx-no-bind": 0,
+				"react/prefer-stateless-function": 0,
+				"semi": 0,
+				"func-names": 0,
+				"no-underscore-dangle": 0,
+				"no-console": 0
+			},
+			"plugins": [
+				"import",
+				"react"
+			]
+		}
 	};
 
 /***/ },
 /* 301 */
 /***/ function(module, exports) {
 
-	module.exports = require("events");
+	module.exports = require("raven");
 
 /***/ },
 /* 302 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Module dependencies
-	 */
-	
-	var crypto = __webpack_require__(303);
-	
-	/**
-	 * 62 characters in the ascii range that can be used in URLs without special
-	 * encoding.
-	 */
-	var UIDCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	
-	/**
-	 * Make a Buffer into a string ready for use in URLs
-	 *
-	 * @param {String}
-	 * @returns {String}
-	 * @api private
-	 */
-	function tostr(bytes) {
-	  var chars, r, i;
-	
-	  r = [];
-	  for (i = 0; i < bytes.length; i++) {
-	    r.push(UIDCHARS[bytes[i] % UIDCHARS.length]);
-	  }
-	
-	  return r.join('');
-	}
-	
-	/**
-	 * Generate an Unique Id
-	 *
-	 * @param {Number} length  The number of chars of the uid
-	 * @param {Number} cb (optional)  Callback for async uid generation
-	 * @api public
-	 */
-	
-	function uid(length, cb) {
-	
-	  if (typeof cb === 'undefined') {
-	    return tostr(crypto.pseudoRandomBytes(length));
-	  } else {
-	    crypto.pseudoRandomBytes(length, function(err, bytes) {
-	       if (err) return cb(err);
-	       cb(null, tostr(bytes));
-	    })
-	  }
-	}
-	
-	/**
-	 * Exports
-	 */
-	
-	module.exports = uid;
-
-
-/***/ },
-/* 303 */
-/***/ function(module, exports) {
-
-	module.exports = require("crypto");
-
-/***/ },
-/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8442,9 +8147,119 @@ module.exports =
 	  value: true
 	});
 	
-	var _child_process = __webpack_require__(305);
+	var _bot = __webpack_require__(303);
 	
-	var _rpcFork = __webpack_require__(306);
+	var _bot2 = _interopRequireDefault(_bot);
+	
+	var _electron = __webpack_require__(298);
+	
+	var _autoUpdater = __webpack_require__(308);
+	
+	var _autoUpdater2 = _interopRequireDefault(_autoUpdater);
+	
+	var _electronIsDev = __webpack_require__(310);
+	
+	var _electronIsDev2 = _interopRequireDefault(_electronIsDev);
+	
+	var _package2 = __webpack_require__(300);
+	
+	var _package3 = _interopRequireDefault(_package2);
+	
+	var _menu = __webpack_require__(311);
+	
+	var _menu2 = _interopRequireDefault(_menu);
+	
+	var _rpc = __webpack_require__(312);
+	
+	var _rpc2 = _interopRequireDefault(_rpc);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function JSONError(error) {
+	  this.name = error.name;
+	  this.message = error.message || '';
+	  this.stack = error.stack;
+	}
+	
+	JSONError.prototype = Error.prototype;
+	
+	exports.default = function (app, sentry) {
+	  var win = new _electron.BrowserWindow({
+	    show: false,
+	    width: 1024,
+	    height: 728
+	  });
+	
+	  win.loadURL('file://' + __dirname + '/app.html');
+	
+	  (0, _menu2.default)(app, win);
+	  var rpc = (0, _rpc2.default)(win);
+	
+	  var _createBot = (0, _bot2.default)(rpc);
+	
+	  var bot = _createBot.bot;
+	  var fork = _createBot.fork; // eslint-disable-line
+	
+	  fork.on('error', function (error) {
+	    // this get called if there is an issue **in** the child process
+	    rpc.emit('error', error);
+	    sentry.captureException(new JSONError(error));
+	  });
+	
+	  bot.on('error', function (error) {
+	    // this only gets called if there is an issue **creating**
+	    // the child process, not if there is an error **in** the
+	    // child process
+	    rpc.emit('error', error);
+	    sentry.captureException(new JSONError(error));
+	  });
+	
+	  rpc.on('init', function () {
+	    win.show();
+	    win.focus();
+	
+	    rpc.emit('rinobot version', { version: _package3.default.version });
+	    (0, _bot.checkPythonVersion)(function (version) {
+	      rpc.emit('python version', { version: version });
+	    });
+	
+	    if (!_electronIsDev2.default && process.platform !== 'linux') {
+	      (0, _autoUpdater2.default)(win, rpc);
+	    } else {
+	      rpc.emit('log', 'ignoring auto updates during dev');
+	    }
+	  });
+	
+	  win.on('close', function () {
+	    console.log('ev:close destroying child processes and rpcs');
+	    bot.kill();
+	    fork.destroy();
+	    rpc.destroy();
+	  });
+	
+	  win.on('closed', function () {
+	    console.log('ev:quit');
+	    win = null;
+	    app.quit();
+	  });
+	};
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 303 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.checkPythonVersion = undefined;
+	
+	var _child_process = __webpack_require__(304);
+	
+	var _rpcFork = __webpack_require__(305);
 	
 	var _rpcFork2 = _interopRequireDefault(_rpcFork);
 	
@@ -8454,13 +8269,27 @@ module.exports =
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var checkPythonVersion = exports.checkPythonVersion = function checkPythonVersion(cb) {
+	  // returns callback with values 2, 3 or false
+	  (0, _child_process.exec)('python -V', function (error, stdout, stderr) {
+	    if (error) cb(false);
+	    var re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/;
+	    var m = void 0;
+	    if ((m = re.exec(stderr)) !== null) {
+	      // eslint-disable-line
+	      if (m.index === re.lastIndex) {
+	        re.lastIndex++;
+	      }
+	      cb(m[1]);
+	    } else {
+	      cb(false);
+	    }
+	  });
+	};
+	
 	var Bot = function Bot(rpc) {
 	  var child = (0, _child_process.fork)(_path2.default.join(__dirname, 'fork.js'));
 	  var forkRpc = (0, _rpcFork2.default)(child);
-	
-	  child.on('error', function (error) {
-	    rpc.emit('watcher error', { name: error.name, message: error.message, stack: error.stack });
-	  });
 	
 	  if (rpc) {
 	    // sometimes I test from cli, in that case there's no rpc defined
@@ -8472,9 +8301,6 @@ module.exports =
 	    });
 	    forkRpc.on('ready', function () {
 	      return rpc.emit('child process ready');
-	    });
-	    forkRpc.on('error', function (error) {
-	      return rpc.emit('watcher error', error);
 	    });
 	    forkRpc.on('watcher ready', function (args) {
 	      return rpc.emit('watcher ready', args);
@@ -8500,23 +8326,27 @@ module.exports =
 	    forkRpc.on('pipeline log', function (args) {
 	      return rpc.emit('pipeline log', args);
 	    });
+	    forkRpc.on('task complete', function (args) {
+	      return rpc.emit('task complete', args);
+	    });
+	    forkRpc.on('task started', function (args) {
+	      return rpc.emit('task started', args);
+	    });
 	  }
-	
 	  forkRpc.emit('start');
 	  return { bot: child, fork: forkRpc };
 	};
 	
 	exports.default = Bot;
-	module.exports = exports['default'];
 
 /***/ },
-/* 305 */
+/* 304 */
 /***/ function(module, exports) {
 
 	module.exports = require("child_process");
 
 /***/ },
-/* 306 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8535,7 +8365,7 @@ module.exports =
 	  return new IPC(_process);
 	};
 	
-	var _events = __webpack_require__(301);
+	var _events = __webpack_require__(306);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -8587,6 +8417,12 @@ module.exports =
 	}();
 
 /***/ },
+/* 306 */
+/***/ function(module, exports) {
+
+	module.exports = require("events");
+
+/***/ },
 /* 307 */
 /***/ function(module, exports) {
 
@@ -8602,20 +8438,19 @@ module.exports =
 	
 	var autoUpdater = _require.autoUpdater;
 	
-	var _require2 = __webpack_require__(309);
+	var _require2 = __webpack_require__(300);
 	
 	var version = _require2.version;
 	
-	var ms = __webpack_require__(310);
+	var ms = __webpack_require__(309);
 	
 	// accepted values: `osx`, `win32`
 	// https://nuts.gitbook.com/update-windows.html
-	var platform = 'darwin' === process.platform ? 'osx' : process.platform;
+	var platform = 'darwin' === process.platform ? 'osx' : process.platform; // eslint-disable-line
 	var FEED_URL = 'https://updates.rinocloud.com/update/' + platform;
 	var isInit = false;
 	
 	function init(rpc) {
-	
 	  rpc.emit('log', 'in init');
 	  autoUpdater.on('error', function (err, msg) {
 	    rpc.emit('error', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
@@ -8674,38 +8509,6 @@ module.exports =
 
 /***/ },
 /* 309 */
-/***/ function(module, exports) {
-
-	module.exports = {
-		"name": "rinobotapp",
-		"productName": "Rinobot",
-		"version": "0.0.10",
-		"author": "rinocloud",
-		"repository": "rinocloud/rinobot",
-		"description": "Automate data tasks",
-		"dependencies": {
-			"aws-sdk": "^2.4.7",
-			"async": "^2.0.0-rc.5",
-			"fs-extra": "^0.30.0",
-			"globule": "^1.0.0",
-			"js-yaml": "^3.6.1",
-			"lodash": "^4.13.1",
-			"mkdirp": "^0.5.1",
-			"electron-is-dev": "0.1.1",
-			"ms": "0.7.1",
-			"swig": "^1.4.2",
-			"superagent": "^1.8.3",
-			"superagent-promise-plugin": "^3.2.0",
-			"superagent-queue": "0.0.3",
-			"chokidar": "^1.6.0",
-			"formidable": "^1.0.17",
-			"source-map-support": "^0.4.2",
-			"uid2": "0.0.3"
-		}
-	};
-
-/***/ },
-/* 310 */
 /***/ function(module, exports) {
 
 	/**
@@ -8836,7 +8639,7 @@ module.exports =
 
 
 /***/ },
-/* 311 */
+/* 310 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8844,12 +8647,333 @@ module.exports =
 
 
 /***/ },
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.windowsMenu = exports.darwinMenu = undefined;
+	
+	exports.default = function (app, win) {
+	  var template = void 0;
+	
+	  if (process.platform === 'darwin') {
+	    template = darwinMenu(app, win);
+	  } else {
+	    template = windowsMenu(app, win);
+	  }
+	
+	  var menu = _electron.Menu.buildFromTemplate(template);
+	  win.setMenu(menu);
+	
+	  win.webContents.on('context-menu', function (e, props) {
+	    _electron.Menu.buildFromTemplate([{
+	      label: 'Inspect element',
+	      click: function click() {
+	        win.inspectElement(props.x, props.y);
+	      }
+	    }]).popup(win);
+	  });
+	};
+	
+	var _electron = __webpack_require__(298);
+	
+	var darwinMenu = exports.darwinMenu = function darwinMenu(app, win) {
+	  // eslint-disable-line
+	  return [{
+	    label: 'Rinobot',
+	    submenu: [{
+	      label: 'About Rinobot',
+	      selector: 'orderFrontStandardAboutPanel:'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      label: 'Services',
+	      submenu: []
+	    }, {
+	      type: 'separator'
+	    }, {
+	      label: 'Hide Rinobot',
+	      accelerator: 'Command+H',
+	      selector: 'hide:'
+	    }, {
+	      label: 'Hide Others',
+	      accelerator: 'Command+Shift+H',
+	      selector: 'hideOtherApplications:'
+	    }, {
+	      label: 'Show All',
+	      selector: 'unhideAllApplications:'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      label: 'Quit',
+	      accelerator: 'Command+Q',
+	      click: function click() {
+	        app.quit();
+	      }
+	    }]
+	  }, {
+	    label: 'View',
+	    submenu: [{
+	      label: 'Reload',
+	      accelerator: 'Command+R',
+	      click: function click() {
+	        win.webContents.reload();
+	      }
+	    }, {
+	      label: 'Toggle Full Screen',
+	      accelerator: 'Ctrl+Command+F',
+	      click: function click() {
+	        win.setFullScreen(!win.isFullScreen());
+	      }
+	    }, {
+	      label: 'Toggle Developer Tools',
+	      accelerator: 'Alt+Command+I',
+	      click: function click() {
+	        win.toggleDevTools();
+	      }
+	    }]
+	  }, {
+	    label: 'Window',
+	    submenu: [{
+	      label: 'Minimize',
+	      accelerator: 'Command+M',
+	      selector: 'performMiniaturize:'
+	    }, {
+	      label: 'Close',
+	      accelerator: 'Command+W',
+	      selector: 'performClose:'
+	    }, {
+	      type: 'separator'
+	    }, {
+	      label: 'Bring All to Front',
+	      selector: 'arrangeInFront:'
+	    }]
+	  }];
+	};
+	
+	var windowsMenu = exports.windowsMenu = function windowsMenu(app, win) {
+	  // eslint-disable-line
+	  return [{
+	    label: '&File',
+	    submenu: [{
+	      label: '&Open',
+	      accelerator: 'Ctrl+O'
+	    }, {
+	      label: '&Close',
+	      accelerator: 'Ctrl+W',
+	      click: function click() {
+	        win.close();
+	      }
+	    }]
+	  }, {
+	    label: '&View',
+	    submenu: [{
+	      label: '&Reload',
+	      accelerator: 'Ctrl+R',
+	      click: function click() {
+	        win.webContents.reload();
+	      }
+	    }, {
+	      label: 'Toggle &Full Screen',
+	      accelerator: 'F11',
+	      click: function click() {
+	        win.setFullScreen(!win.isFullScreen());
+	      }
+	    }, {
+	      label: 'Toggle &Developer Tools',
+	      accelerator: 'Alt+Ctrl+I',
+	      click: function click() {
+	        win.toggleDevTools();
+	      }
+	    }]
+	  }];
+	};
+
+/***/ },
 /* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	/*
+	  This is the rpc between the main electron process and the renderer process
+	*/
+	
+	var _require = __webpack_require__(306);
+	
+	var EventEmitter = _require.EventEmitter;
+	
+	var _require2 = __webpack_require__(298);
+	
+	var ipcMain = _require2.ipcMain;
+	
+	var genUid = __webpack_require__(313);
+	
+	var Server = function () {
+	  function Server(win) {
+	    var _this = this;
+	
+	    _classCallCheck(this, Server);
+	
+	    this.win = win;
+	    this.cache = {};
+	    this.ipcListener = this.ipcListener.bind(this);
+	    this.emitter = new EventEmitter();
+	
+	    genUid(10, function (err, uid) {
+	      if (_this.destroyed) return;
+	      if (err) return _this.emitter.emit('error', err);
+	
+	      _this.id = uid;
+	      ipcMain.on(uid, _this.ipcListener);
+	      // we intentionally subscribe to `on` instead of `once`
+	      // to support reloading the window and re-initializing
+	      // the channel
+	      _this.wc.on('did-finish-load', function () {
+	        _this.wc.send('init', uid);
+	      });
+	    });
+	  }
+	
+	  _createClass(Server, [{
+	    key: 'ipcListener',
+	    value: function ipcListener(event, _ref) {
+	      var ev = _ref.ev;
+	      var data = _ref.data;
+	
+	      this.emitter.emit(ev, data);
+	    }
+	  }, {
+	    key: 'emit',
+	    value: function emit(ch, data) {
+	      this.wc.send(this.id, { ch: ch, data: data });
+	    }
+	  }, {
+	    key: 'on',
+	    value: function on(ev, fn) {
+	      this.emitter.on(ev, fn);
+	    }
+	  }, {
+	    key: 'once',
+	    value: function once(ev, fn) {
+	      this.emitter.once(ev, fn);
+	    }
+	  }, {
+	    key: 'removeListener',
+	    value: function removeListener(ev, fn) {
+	      this.emitter.removeListener(ev, fn);
+	    }
+	  }, {
+	    key: 'removeAllListeners',
+	    value: function removeAllListeners() {
+	      this.emitter.removeAllListeners();
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.destroyed = true;
+	      this.removeAllListeners();
+	      this.wc.removeAllListeners();
+	      if (this.id) {
+	        ipcMain.removeListener(this.id, this.ipcListener);
+	      }
+	    }
+	  }, {
+	    key: 'wc',
+	    get: function get() {
+	      return this.win.webContents;
+	    }
+	  }]);
+	
+	  return Server;
+	}();
+	
+	module.exports = function createRPC(win) {
+	  return new Server(win);
+	};
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Module dependencies
+	 */
+	
+	var crypto = __webpack_require__(314);
+	
+	/**
+	 * 62 characters in the ascii range that can be used in URLs without special
+	 * encoding.
+	 */
+	var UIDCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	
+	/**
+	 * Make a Buffer into a string ready for use in URLs
+	 *
+	 * @param {String}
+	 * @returns {String}
+	 * @api private
+	 */
+	function tostr(bytes) {
+	  var chars, r, i;
+	
+	  r = [];
+	  for (i = 0; i < bytes.length; i++) {
+	    r.push(UIDCHARS[bytes[i] % UIDCHARS.length]);
+	  }
+	
+	  return r.join('');
+	}
+	
+	/**
+	 * Generate an Unique Id
+	 *
+	 * @param {Number} length  The number of chars of the uid
+	 * @param {Number} cb (optional)  Callback for async uid generation
+	 * @api public
+	 */
+	
+	function uid(length, cb) {
+	
+	  if (typeof cb === 'undefined') {
+	    return tostr(crypto.pseudoRandomBytes(length));
+	  } else {
+	    crypto.pseudoRandomBytes(length, function(err, bytes) {
+	       if (err) return cb(err);
+	       cb(null, tostr(bytes));
+	    })
+	  }
+	}
+	
+	/**
+	 * Exports
+	 */
+	
+	module.exports = uid;
+
+
+/***/ },
+/* 314 */
+/***/ function(module, exports) {
+
+	module.exports = require("crypto");
+
+/***/ },
+/* 315 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var path = __webpack_require__(307);
-	var spawn = __webpack_require__(305).spawn;
-	var debug = __webpack_require__(313)('electron-squirrel-startup');
+	var spawn = __webpack_require__(304).spawn;
+	var debug = __webpack_require__(316)('electron-squirrel-startup');
 	var app = __webpack_require__(298).app;
 	
 	var run = function(args, done) {
@@ -8886,7 +9010,7 @@ module.exports =
 
 
 /***/ },
-/* 313 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -8896,7 +9020,7 @@ module.exports =
 	 * Expose `debug()` as the module.
 	 */
 	
-	exports = module.exports = __webpack_require__(314);
+	exports = module.exports = __webpack_require__(317);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -9060,7 +9184,7 @@ module.exports =
 
 
 /***/ },
-/* 314 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -9076,7 +9200,7 @@ module.exports =
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(315);
+	exports.humanize = __webpack_require__(318);
 	
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -9263,7 +9387,7 @@ module.exports =
 
 
 /***/ },
-/* 315 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/**

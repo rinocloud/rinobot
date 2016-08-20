@@ -5,7 +5,6 @@ import { Pipeline } from './pipeline'
 import { countWatched, flattenWatched } from './utils'
 
 const fork = forkRpc => {
-
   const watchers = {}
   const processedFiles = {}
   let timer

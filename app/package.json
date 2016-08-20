@@ -1,7 +1,7 @@
 {
   "name": "rinobotapp",
   "productName": "Rinobot",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "author": "rinocloud",
   "repository": "rinocloud/rinobot",
   "description": "Automate data tasks",
@@ -18,6 +18,7 @@
     "swig": "^1.4.2",
     "superagent": "^1.8.3",
     "superagent-promise-plugin": "^3.2.0",
+    "raven": "^0.12.1",
     "superagent-queue": "0.0.3",
     "chokidar": "^1.6.0",
     "formidable": "^1.0.17",

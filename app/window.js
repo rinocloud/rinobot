@@ -6,7 +6,6 @@ import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
 
-
 function JSONError(error) {
   this.name = error.name
   this.message = (error.message || '')
@@ -26,19 +25,26 @@ export default (app, sentry) => {
 
   createMenu(app, win)
   const rpc = createRPC(win)
-  const {bot, fork} = createBot(rpc) // eslint-disable-line
+  const { child, forkRpc } = createBot()
 
-  fork.on('error', error => {
+  rpc.on('watch', args => forkRpc.emit('watch', args))
+  rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
+  forkRpc.on('ready', () => rpc.emit('child process ready'))
+  forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
+  forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
+  forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))
+  forkRpc.on('watcher set processed files', args => rpc.emit('watcher set processed files', args))
+  forkRpc.on('pipeline started', args => rpc.emit('pipeline started', args))
+  forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))
+  forkRpc.on('pipeline error', args => rpc.emit('pipeline error', args))
+  forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
+  forkRpc.on('task complete', args => rpc.emit('task complete', args))
+  forkRpc.on('task started', args => rpc.emit('task started', args))
+
+  forkRpc.on('error', error => {
     // this get called if there is an issue **in** the child process
     rpc.emit('error', error)
-    sentry.captureException(new JSONError(error))
-  })
-
-  bot.on('error', error => {
-    // this only gets called if there is an issue **creating**
-    // the child process, not if there is an error **in** the
-    // child process
-    rpc.emit('error', error)
+    console.log(`forkRpc >>> ${JSON.stringify(error, null, 2)}`)
     sentry.captureException(new JSONError(error))
   })
 
@@ -60,8 +66,8 @@ export default (app, sentry) => {
 
   win.on('close', () => {
     console.log('ev:close destroying child processes and rpcs')
-    bot.kill()
-    fork.destroy()
+    child.kill()
+    forkRpc.destroy()
     rpc.destroy()
   })
 
