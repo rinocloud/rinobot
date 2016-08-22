@@ -171,7 +171,7 @@ export class Pipeline {
     }
 
     const allCompleted = _.every(this.tasks, (task) =>
-      this.diary.completedTasks.hasOwnProperty(task.command)
+      this.diary.completedTasks.hasOwnProperty(task)
     )
 
     if (allCompleted) {

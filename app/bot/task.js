@@ -7,7 +7,21 @@ import yaml from 'js-yaml'
 import fs from 'fs-extra'
 import swig from 'swig'
 import pt from 'path'
-import { spawn } from 'child_process'
+import { exec, spawn } from 'child_process'
+
+export const checkPythonVersion = (cb) => {
+  // returns callback with values 2, 3 or false
+  exec('python3 -V', (error) => {
+    if (error) {
+      exec('python -V', (error) => { // eslint-disable-line
+        if (error) cb(false)
+        else cb('python')
+      })
+    } else {
+      cb('python3')
+    }
+  })
+}
 
 export class Task {
   /*
@@ -203,27 +217,34 @@ export class Task {
   }
 
   python() {
-    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() }))
+    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() })) // eslint-disable-line
     const magicDelimiter = ',,,xxx123'
     const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
     )
 
-    const child = spawn('python', tokens, { cwd: this.cwd })
-    child.on('error', (error) => {
-      child.error = true
-      return this.on_error(error)
-    })
-    child.stdout.on('data', this.on_log)
-    child.stderr.on('data', this.on_log)
-    child.on('close', (code) => {
-      if (child.hasOwnProperty('error')) return
-      if (code !== 0) {
+    checkPythonVersion(python => {
+      if (!python) {
         return this.on_error(
-          new Error(
-            `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+          new Error('No python installed'))
       } else { // eslint-disable-line
-        return this.on_complete()
+        const child = spawn(python, tokens, { cwd: this.cwd })
+        child.on('error', (error) => {
+          child.error = true
+          return this.on_error(error)
+        })
+        child.stdout.on('data', this.on_log)
+        child.stderr.on('data', this.on_log)
+        child.on('close', (code) => {
+          if (child.hasOwnProperty('error')) return
+          if (code !== 0) {
+            return this.on_error(
+              new Error(
+                `An error occured (code ${code}) while running "${this.command} ${args.split('  ')}"`))
+          } else { // eslint-disable-line
+            return this.on_complete()
+          }
+        })
       }
     })
   }
