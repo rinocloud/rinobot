@@ -14,10 +14,8 @@ git clone https://github.com/rinocloud/rinobot.git
 And then install dependencies.
 
 ```bash
->>> sh ./scripts/install.sh
+  npm install
 ```
-
-Or just go into `./scripts/install.sh` and run each command
 
 ## Run
 
@@ -50,21 +48,7 @@ Try running
 
 ## Packaging
 
-1. First build the app. Either run `sh ./scripts/build.sh` or just run all the
-commands inside `./scripts/build.sh`
-
-2. Either run `sh ./scripts/package-this.sh` or just run all the commands inside `./scripts/package-this.sh`
-This will build the app for the current operating system.
-
-### Packaging for all operating systems at once
-
-This is only tested on mac, and you need wine installed. but
-
-```
-sh ./scripts/package-all.sh
-```
-
-should work.
+Let Eoin do the packaging for now
 
 ## Maintainers
 

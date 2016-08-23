@@ -147,5 +147,24 @@
       "import",
       "react"
     ]
-  }
+  },
+  "name": "rinobot",
+  "description": "This is the interface for the command line program [rinobot.js](https://github.com/rinocloud/rinobot/)",
+  "version": "1.0.0",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rinocloud/rinobot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rinocloud/rinobot/issues"
+  },
+  "homepage": "https://github.com/rinocloud/rinobot#readme"
 }

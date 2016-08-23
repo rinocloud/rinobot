@@ -7997,31 +7997,162 @@ module.exports =
 
 	'use strict';
 	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.JSONError = undefined;
+	
 	var _electron = __webpack_require__(298);
 	
 	var _analytics = __webpack_require__(299);
 	
-	var _window = __webpack_require__(302);
+	var _bot = __webpack_require__(303);
 	
-	var _window2 = _interopRequireDefault(_window);
+	var _bot2 = _interopRequireDefault(_bot);
+	
+	var _autoUpdater = __webpack_require__(308);
+	
+	var _autoUpdater2 = _interopRequireDefault(_autoUpdater);
+	
+	var _electronIsDev = __webpack_require__(302);
+	
+	var _electronIsDev2 = _interopRequireDefault(_electronIsDev);
+	
+	var _package2 = __webpack_require__(300);
+	
+	var _package3 = _interopRequireDefault(_package2);
+	
+	var _menu = __webpack_require__(310);
+	
+	var _menu2 = _interopRequireDefault(_menu);
+	
+	var _rpc = __webpack_require__(311);
+	
+	var _rpc2 = _interopRequireDefault(_rpc);
+	
+	var _npmi = __webpack_require__(314);
+	
+	var _npmi2 = _interopRequireDefault(_npmi);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	console.log(__webpack_require__.c[0].filename);
+	var JSONError = exports.JSONError = function JSONError(error) {
+	  undefined.name = error.name;
+	  undefined.message = error.message || '';
+	  undefined.stack = error.stack;
+	};
+	
+	JSONError.prototype = Error.prototype;
 	
 	var isOSX = process.platform === 'darwin';
 	
+	var createWindow = function createWindow(app, sentry) {
+	  // eslint-disable-line
+	  var win = new _electron.BrowserWindow({
+	    show: false,
+	    width: 1024,
+	    height: 728
+	  });
+	
+	  win.loadURL('file://' + __dirname + '/app.html');
+	
+	  (0, _menu2.default)(app, win);
+	  var rpc = (0, _rpc2.default)(win);
+	
+	  var _createBot = (0, _bot2.default)();
+	
+	  var child = _createBot.child;
+	  var forkRpc = _createBot.forkRpc;
+	
+	
+	  rpc.on('watch', function (args) {
+	    return forkRpc.emit('watch', args);
+	  });
+	  rpc.on('unwatch', function (args) {
+	    return forkRpc.emit('unwatch', args);
+	  });
+	  forkRpc.on('ready', function () {
+	    return rpc.emit('child process ready');
+	  });
+	  forkRpc.on('watcher ready', function (args) {
+	    return rpc.emit('watcher ready', args);
+	  });
+	  forkRpc.on('watcher started', function (args) {
+	    return rpc.emit('watcher started', args);
+	  });
+	  forkRpc.on('watcher set total files', function (args) {
+	    return rpc.emit('watcher set total files', args);
+	  });
+	  forkRpc.on('watcher set processed files', function (args) {
+	    return rpc.emit('watcher set processed files', args);
+	  });
+	  forkRpc.on('pipeline started', function (args) {
+	    return rpc.emit('pipeline started', args);
+	  });
+	  forkRpc.on('pipeline complete', function (args) {
+	    return rpc.emit('pipeline complete', args);
+	  });
+	  forkRpc.on('pipeline log', function (args) {
+	    return rpc.emit('pipeline log', args);
+	  });
+	  forkRpc.on('task complete', function (args) {
+	    return rpc.emit('task complete', args);
+	  });
+	  forkRpc.on('task started', function (args) {
+	    return rpc.emit('task started', args);
+	  });
+	
+	  forkRpc.on('pipeline error', function (error) {
+	    rpc.emit('pipeline error', error);
+	    console.log('pipeline >>> ' + JSON.stringify(error, null, 2));
+	    sentry.captureException(new JSONError(error));
+	  });
+	
+	  forkRpc.on('error', function (error) {
+	    rpc.emit('error', error);
+	    console.log('forkRpc >>> ' + JSON.stringify(error, null, 2));
+	    sentry.captureException(new JSONError(error));
+	  });
+	
+	  rpc.on('init', function () {
+	    win.show();
+	    win.focus();
+	
+	    rpc.emit('rinobot version', { version: _package3.default.version });
+	    (0, _bot.checkPythonVersion)(function (version) {
+	      rpc.emit('python version', { version: version });
+	    });
+	
+	    if (!_electronIsDev2.default && process.platform !== 'linux') {
+	      (0, _autoUpdater2.default)(win, rpc);
+	    } else {
+	      rpc.emit('log', 'ignoring auto updates during dev');
+	    }
+	  });
+	
+	  win.on('close', function () {
+	    console.log('ev:close destroying child processes and rpcs');
+	    child.kill();
+	    forkRpc.destroy();
+	    rpc.destroy();
+	  });
+	
+	  win.on('closed', function () {
+	    console.log('ev:quit');
+	    win = null;
+	    app.quit();
+	  });
+	};
+	
 	var main = function main() {
 	  if (__webpack_require__(315)) return; // eslint-disable-line
-	
 	  var sentry = (0, _analytics.createSentry)();
-	
 	  _electron.app.setName('rinobot');
 	  _electron.app.on('window-all-closed', function () {
 	    if (!isOSX) _electron.app.quit();
 	  });
 	  _electron.app.on('ready', function () {
-	    (0, _window2.default)(_electron.app, sentry);
+	    createWindow(_electron.app, sentry);
 	  });
 	  if (isOSX) _electron.app.dock.show();
 	};
@@ -8053,9 +8184,21 @@ module.exports =
 	
 	var _raven2 = _interopRequireDefault(_raven);
 	
+	var _electronIsDev = __webpack_require__(302);
+	
+	var _electronIsDev2 = _interopRequireDefault(_electronIsDev);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var createSentry = exports.createSentry = function createSentry() {
+	  if (_electronIsDev2.default) {
+	    return {
+	      captureException: function captureException(e) {
+	        return console.error(e);
+	      }
+	    };
+	  }
+	
 	  var sentry = new _raven2.default.Client('https://1ef48c3fe45247d487aabf4158dedf0d:aa76e34f867e4ce4b1df52b8b9d51136@app.getsentry.com/91878', {
 	    release: _package3.default.version,
 	    environment: ("production")
@@ -8078,23 +8221,25 @@ module.exports =
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",
 		"dependencies": {
-			"aws-sdk": "^2.4.7",
 			"async": "^2.0.0-rc.5",
+			"aws-sdk": "^2.4.7",
+			"chokidar": "^1.6.0",
+			"electron-is-dev": "0.1.1",
+			"formidable": "^1.0.17",
 			"fs-extra": "^0.30.0",
 			"globule": "^1.0.0",
+			"init-package-json": "^1.9.4",
 			"js-yaml": "^3.6.1",
 			"lodash": "^4.13.1",
 			"mkdirp": "^0.5.1",
-			"electron-is-dev": "0.1.1",
 			"ms": "0.7.1",
-			"swig": "^1.4.2",
+			"npmi": "^2.0.1",
+			"raven": "^0.12.1",
+			"source-map-support": "^0.4.2",
 			"superagent": "^1.8.3",
 			"superagent-promise-plugin": "^3.2.0",
-			"raven": "^0.12.1",
 			"superagent-queue": "0.0.3",
-			"chokidar": "^1.6.0",
-			"formidable": "^1.0.17",
-			"source-map-support": "^0.4.2",
+			"swig": "^1.4.2",
 			"uid2": "0.0.3"
 		},
 		"eslintConfig": {
@@ -8139,112 +8284,11 @@ module.exports =
 
 /***/ },
 /* 302 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _bot = __webpack_require__(303);
-	
-	var _bot2 = _interopRequireDefault(_bot);
-	
-	var _electron = __webpack_require__(298);
-	
-	var _autoUpdater = __webpack_require__(308);
-	
-	var _autoUpdater2 = _interopRequireDefault(_autoUpdater);
-	
-	var _electronIsDev = __webpack_require__(310);
-	
-	var _electronIsDev2 = _interopRequireDefault(_electronIsDev);
-	
-	var _package2 = __webpack_require__(300);
-	
-	var _package3 = _interopRequireDefault(_package2);
-	
-	var _menu = __webpack_require__(311);
-	
-	var _menu2 = _interopRequireDefault(_menu);
-	
-	var _rpc = __webpack_require__(312);
-	
-	var _rpc2 = _interopRequireDefault(_rpc);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function JSONError(error) {
-	  this.name = error.name;
-	  this.message = error.message || '';
-	  this.stack = error.stack;
-	}
-	
-	JSONError.prototype = Error.prototype;
-	
-	exports.default = function (app, sentry) {
-	  var win = new _electron.BrowserWindow({
-	    show: false,
-	    width: 1024,
-	    height: 728
-	  });
-	
-	  win.loadURL('file://' + __dirname + '/app.html');
-	
-	  (0, _menu2.default)(app, win);
-	  var rpc = (0, _rpc2.default)(win);
-	
-	  var _createBot = (0, _bot2.default)(rpc);
-	
-	  var bot = _createBot.bot;
-	  var fork = _createBot.fork; // eslint-disable-line
-	
-	  fork.on('error', function (error) {
-	    // this get called if there is an issue **in** the child process
-	    rpc.emit('error', error);
-	    sentry.captureException(new JSONError(error));
-	  });
-	
-	  bot.on('error', function (error) {
-	    // this only gets called if there is an issue **creating**
-	    // the child process, not if there is an error **in** the
-	    // child process
-	    rpc.emit('error', error);
-	    sentry.captureException(new JSONError(error));
-	  });
-	
-	  rpc.on('init', function () {
-	    win.show();
-	    win.focus();
-	
-	    rpc.emit('rinobot version', { version: _package3.default.version });
-	    (0, _bot.checkPythonVersion)(function (version) {
-	      rpc.emit('python version', { version: version });
-	    });
-	
-	    if (!_electronIsDev2.default && process.platform !== 'linux') {
-	      (0, _autoUpdater2.default)(win, rpc);
-	    } else {
-	      rpc.emit('log', 'ignoring auto updates during dev');
-	    }
-	  });
-	
-	  win.on('close', function () {
-	    console.log('ev:close destroying child processes and rpcs');
-	    bot.kill();
-	    fork.destroy();
-	    rpc.destroy();
-	  });
-	
-	  win.on('closed', function () {
-	    console.log('ev:quit');
-	    win = null;
-	    app.quit();
-	  });
-	};
-	
-	module.exports = exports['default'];
+	module.exports = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
+
 
 /***/ },
 /* 303 */
@@ -8271,70 +8315,40 @@ module.exports =
 	
 	var checkPythonVersion = exports.checkPythonVersion = function checkPythonVersion(cb) {
 	  // returns callback with values 2, 3 or false
-	  (0, _child_process.exec)('python -V', function (error, stdout, stderr) {
-	    if (error) cb(false);
-	    var re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/;
-	    var m = void 0;
-	    if ((m = re.exec(stderr)) !== null) {
-	      // eslint-disable-line
-	      if (m.index === re.lastIndex) {
-	        re.lastIndex++;
-	      }
-	      cb(m[1]);
+	  (0, _child_process.exec)('python3 -V', function (error) {
+	    if (error) {
+	      (0, _child_process.exec)('python -V', function (error, stdout, stderr) {
+	        // eslint-disable-line
+	        if (error) cb(false);
+	        var re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/;
+	        var m = void 0;
+	        if ((m = re.exec(stderr)) !== null) {
+	          // eslint-disable-line
+	          if (m.index === re.lastIndex) {
+	            re.lastIndex++;
+	          }
+	          cb(m[1]);
+	        } else {
+	          cb(false);
+	        }
+	      });
 	    } else {
-	      cb(false);
+	      cb('3');
 	    }
 	  });
 	};
 	
-	var Bot = function Bot(rpc) {
+	var Bot = function Bot() {
 	  var child = (0, _child_process.fork)(_path2.default.join(__dirname, 'fork.js'));
 	  var forkRpc = (0, _rpcFork2.default)(child);
 	
-	  if (rpc) {
-	    // sometimes I test from cli, in that case there's no rpc defined
-	    rpc.on('watch', function (args) {
-	      return forkRpc.emit('watch', args);
-	    });
-	    rpc.on('unwatch', function (args) {
-	      return forkRpc.emit('unwatch', args);
-	    });
-	    forkRpc.on('ready', function () {
-	      return rpc.emit('child process ready');
-	    });
-	    forkRpc.on('watcher ready', function (args) {
-	      return rpc.emit('watcher ready', args);
-	    });
-	    forkRpc.on('watcher started', function (args) {
-	      return rpc.emit('watcher started', args);
-	    });
-	    forkRpc.on('watcher set total files', function (args) {
-	      return rpc.emit('watcher set total files', args);
-	    });
-	    forkRpc.on('watcher set processed files', function (args) {
-	      return rpc.emit('watcher set processed files', args);
-	    });
-	    forkRpc.on('pipeline started', function (args) {
-	      return rpc.emit('pipeline started', args);
-	    });
-	    forkRpc.on('pipeline complete', function (args) {
-	      return rpc.emit('pipeline complete', args);
-	    });
-	    forkRpc.on('pipeline error', function (args) {
-	      return rpc.emit('pipeline error', args);
-	    });
-	    forkRpc.on('pipeline log', function (args) {
-	      return rpc.emit('pipeline log', args);
-	    });
-	    forkRpc.on('task complete', function (args) {
-	      return rpc.emit('task complete', args);
-	    });
-	    forkRpc.on('task started', function (args) {
-	      return rpc.emit('task started', args);
-	    });
-	  }
 	  forkRpc.emit('start');
-	  return { bot: child, fork: forkRpc };
+	
+	  child.on('error', function (error) {
+	    forkRpc.emit('error', error);
+	  });
+	
+	  return { child: child, forkRpc: forkRpc };
 	};
 	
 	exports.default = Bot;
@@ -8640,14 +8654,6 @@ module.exports =
 
 /***/ },
 /* 310 */
-/***/ function(module, exports) {
-
-	'use strict';
-	module.exports = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
-
-
-/***/ },
-/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8794,7 +8800,7 @@ module.exports =
 	};
 
 /***/ },
-/* 312 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8815,7 +8821,7 @@ module.exports =
 	
 	var ipcMain = _require2.ipcMain;
 	
-	var genUid = __webpack_require__(313);
+	var genUid = __webpack_require__(312);
 	
 	var Server = function () {
 	  function Server(win) {
@@ -8901,14 +8907,14 @@ module.exports =
 	};
 
 /***/ },
-/* 313 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies
 	 */
 	
-	var crypto = __webpack_require__(314);
+	var crypto = __webpack_require__(313);
 	
 	/**
 	 * 62 characters in the ascii range that can be used in URLs without special
@@ -8962,10 +8968,16 @@ module.exports =
 
 
 /***/ },
-/* 314 */
+/* 313 */
 /***/ function(module, exports) {
 
 	module.exports = require("crypto");
+
+/***/ },
+/* 314 */
+/***/ function(module, exports) {
+
+	module.exports = require("npmi");
 
 /***/ },
 /* 315 */

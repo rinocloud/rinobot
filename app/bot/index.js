@@ -4,20 +4,27 @@ import pt from 'path'
 
 export const checkPythonVersion = (cb) => {
   // returns callback with values 2, 3 or false
-  exec('python -V', (error, stdout, stderr) => {
-    if (error) cb(false)
-    const re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/
-    let m
-    if ((m = re.exec(stderr)) !== null) { // eslint-disable-line
-      if (m.index === re.lastIndex) {
-        re.lastIndex++;
-      }
-      cb(m[1])
+  exec('python3 -V', (error) => {
+    if (error) {
+      exec('python -V', (error, stdout, stderr) => { // eslint-disable-line
+        if (error) cb(false)
+        const re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/
+        let m
+        if ((m = re.exec(stderr)) !== null) { // eslint-disable-line
+          if (m.index === re.lastIndex) {
+            re.lastIndex++;
+          }
+          cb(m[1])
+        } else {
+          cb(false)
+        }
+      })
     } else {
-      cb(false)
+      cb('3')
     }
   })
 }
+
 
 const Bot = () => {
   const child = fork(pt.join(__dirname, 'fork.js'))

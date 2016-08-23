@@ -23,7 +23,7 @@ if (!isProd) {
 }
 
 const config = {
-  devtool: isProd ? 'hidden-source-map' : 'cheap-eval-source-map',
+  devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
 
   entry: isProd ? './lib/index' :
   [
@@ -35,7 +35,8 @@ const config = {
     path: path.join(__dirname, 'app', 'dist'),
     filename: 'bundle.js',
     libraryTarget: 'commonjs2',
-    publicPath: isProd ? null : 'http://localhost:3000/dist/'
+    publicPath: isProd ? null : 'http://localhost:3000/dist/',
+    sourceMapFilename: 'bundle.map.js'
   },
   module: {
     loaders: [

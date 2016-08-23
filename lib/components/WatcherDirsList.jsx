@@ -12,11 +12,13 @@ class WatcherDirsList extends React.Component {
     onToggleLogsClick: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
-    installedPackages: PropTypes.array.isRequired
+    packagesConfig: PropTypes.object
   }
 
   render() {
-    const { dirs, installedPackages } = this.props
+    const { dirs, packagesConfig } = this.props
+
+    console.log(this.props)
 
     return (
       <div>
@@ -31,7 +33,7 @@ class WatcherDirsList extends React.Component {
             onToggleLogsClick={() => this.props.onToggleLogsClick(index)}
             onSetConfig={(config) => this.props.onSetConfig(index, config)}
             removeDotRino={() => this.props.removeDotRino(index)}
-            installedPackages={installedPackages}
+            packagesConfig={packagesConfig}
           />
       )}
       </div>)
