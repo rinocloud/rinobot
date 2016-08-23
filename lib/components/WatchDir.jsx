@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
+import { Tree } from './Tree'
 const { shell } = require('electron')
 
 
@@ -207,7 +208,15 @@ class WatchDir extends React.Component {
                   </a>
                 : null}
                 {dir.logsOpen ?
-                  <LogScroll logs={dir.logs} />
+                  <div>
+                    <LogScroll logs={dir.logs} />
+                    <div className="p-a bordered m-t">
+                      <div className="row">
+                        <h4 className="pull-left col-sm-12"> File/Folder</h4>
+                        <Tree />
+                      </div>
+                    </div>
+                  </div>
                 : null
                 }
               </div>
