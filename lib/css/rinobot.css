@@ -56,7 +56,30 @@ body {
   font-size: 11px;
 }
 
-.footer{
-  position: absolute;
-  bottom: 25px;
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  height: 100%;
+}
+
+.wrapper {
+  min-height: 100%;
+  /* Equal to height of footer */
+  /* But also accounting for potential margin-bottom of last child */
+  margin-bottom: -50px;
+}
+.footer,
+.push {
+  height: 50px;
+}
+
+#root {
+  height: 100%;
+}
+
+#root > div{
+  height: 100%;
 }
