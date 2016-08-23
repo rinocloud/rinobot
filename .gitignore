@@ -11,6 +11,7 @@ fork.js.map
 ./index.js
 !./app/index.js
 index.js.map
+dfgs/
 coverage
 .grunt
 .lock-wscript

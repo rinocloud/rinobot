@@ -7997,6 +7997,11 @@ module.exports =
 
 	'use strict';
 	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.JSONError = undefined;
+	
 	var _electron = __webpack_require__(298);
 	
 	var _analytics = __webpack_require__(299);
@@ -8025,7 +8030,19 @@ module.exports =
 	
 	var _rpc2 = _interopRequireDefault(_rpc);
 	
+	var _npmi = __webpack_require__(314);
+	
+	var _npmi2 = _interopRequireDefault(_npmi);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var JSONError = exports.JSONError = function JSONError(error) {
+	  undefined.name = error.name;
+	  undefined.message = error.message || '';
+	  undefined.stack = error.stack;
+	};
+	
+	JSONError.prototype = Error.prototype;
 	
 	var isOSX = process.platform === 'darwin';
 	
@@ -8128,7 +8145,7 @@ module.exports =
 	};
 	
 	var main = function main() {
-	  if (__webpack_require__(314)) return; // eslint-disable-line
+	  if (__webpack_require__(315)) return; // eslint-disable-line
 	  var sentry = (0, _analytics.createSentry)();
 	  _electron.app.setName('rinobot');
 	  _electron.app.on('window-all-closed', function () {
@@ -8204,23 +8221,25 @@ module.exports =
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",
 		"dependencies": {
-			"aws-sdk": "^2.4.7",
 			"async": "^2.0.0-rc.5",
+			"aws-sdk": "^2.4.7",
+			"chokidar": "^1.6.0",
+			"electron-is-dev": "0.1.1",
+			"formidable": "^1.0.17",
 			"fs-extra": "^0.30.0",
 			"globule": "^1.0.0",
+			"init-package-json": "^1.9.4",
 			"js-yaml": "^3.6.1",
 			"lodash": "^4.13.1",
 			"mkdirp": "^0.5.1",
-			"electron-is-dev": "0.1.1",
 			"ms": "0.7.1",
-			"swig": "^1.4.2",
+			"npmi": "^2.0.1",
+			"raven": "^0.12.1",
+			"source-map-support": "^0.4.2",
 			"superagent": "^1.8.3",
 			"superagent-promise-plugin": "^3.2.0",
-			"raven": "^0.12.1",
 			"superagent-queue": "0.0.3",
-			"chokidar": "^1.6.0",
-			"formidable": "^1.0.17",
-			"source-map-support": "^0.4.2",
+			"swig": "^1.4.2",
 			"uid2": "0.0.3"
 		},
 		"eslintConfig": {
@@ -8956,11 +8975,17 @@ module.exports =
 
 /***/ },
 /* 314 */
+/***/ function(module, exports) {
+
+	module.exports = require("npmi");
+
+/***/ },
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var path = __webpack_require__(307);
 	var spawn = __webpack_require__(304).spawn;
-	var debug = __webpack_require__(315)('electron-squirrel-startup');
+	var debug = __webpack_require__(316)('electron-squirrel-startup');
 	var app = __webpack_require__(298).app;
 	
 	var run = function(args, done) {
@@ -8997,7 +9022,7 @@ module.exports =
 
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -9007,7 +9032,7 @@ module.exports =
 	 * Expose `debug()` as the module.
 	 */
 	
-	exports = module.exports = __webpack_require__(316);
+	exports = module.exports = __webpack_require__(317);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -9171,7 +9196,7 @@ module.exports =
 
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -9187,7 +9212,7 @@ module.exports =
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(317);
+	exports.humanize = __webpack_require__(318);
 	
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -9374,7 +9399,7 @@ module.exports =
 
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/**

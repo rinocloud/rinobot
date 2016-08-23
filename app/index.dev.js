@@ -6,6 +6,7 @@ import isDev from 'electron-is-dev'
 import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
+import npmi from 'npmi'
 
 export const JSONError = error => {
   this.name = error.name

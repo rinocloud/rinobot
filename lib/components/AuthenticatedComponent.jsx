@@ -40,8 +40,8 @@ export function requireAuthentication(Component) {
     render() {
       const { auth, ui, dispatch } = this.props
       return (
-        <div>
-          <div className="container">
+        <div className="container">
+          <div className="wrapper">
             <Navbar dispatch={dispatch} auth={auth} />
             <Notifications ui={ui} dispatch={dispatch} />
             {auth.statusText}
@@ -49,8 +49,9 @@ export function requireAuthentication(Component) {
                 ? <Component {...this.props} />
                 : null
             }
-            <Footer ui={ui} />
+            <div className="push"></div>
           </div>
+          <Footer ui={ui} />
         </div>
       )
     }

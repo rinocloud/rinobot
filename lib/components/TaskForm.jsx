@@ -36,7 +36,7 @@ class TaskForm extends React.Component {
   }
 
   render() {
-    const { task, pop, installedPackages } = this.props //eslint-disable-line
+    const { task, pop, packagesConfig } = this.props //eslint-disable-line
     const openExternal = (e) => {
       e.preventDefault()
       shell.openExternal(e.target.href)
@@ -61,6 +61,15 @@ class TaskForm extends React.Component {
       </Popover>
     )
 
+    let installDeps = []
+
+    if (packagesConfig && packagesConfig.dependencies) {
+      installDeps = _.keys(packagesConfig.dependencies).map((dep) => ({
+        name: dep.replace('rinobot-plugin-', ''),
+        value: dep
+      }))
+    }
+
     const commandList = [
       { name: 'rinocloud upload', value: 'upload' },
       { name: 'copy', value: 'copy' },
@@ -68,10 +77,7 @@ class TaskForm extends React.Component {
       { name: 'python', value: 'python' },
       { name: 'Rscript', value: 'Rscript' },
       { name: 'custom', value: 'custom' },
-      ...installedPackages.map((packageName) => ({
-        name: packageName,
-        value: packageName
-      }))
+      ...installDeps
     ]
 
     const isCustomCommand = (

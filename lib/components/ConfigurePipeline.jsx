@@ -11,7 +11,7 @@ class ConfigurePipeline extends React.Component {
   static propTypes = {
     dir: PropTypes.object.isRequired,
     onSetConfig: PropTypes.func.isRequired,
-    installedPackages: PropTypes.array.isRequired,
+    packagesConfig: PropTypes.object,
   }
 
   constructor(props) {
@@ -91,7 +91,7 @@ class ConfigurePipeline extends React.Component {
   }
 
   render() {
-    const { installedPackages } = this.props
+    const { packagesConfig } = this.props
     const { formData } = this.state
     const openExternal = (e) => {
       e.preventDefault()
@@ -180,7 +180,7 @@ class ConfigurePipeline extends React.Component {
                           key={`task${i}`}
                           pop={i === 0}
                           task={o}
-                          installedPackages={installedPackages}
+                          packagesConfig={packagesConfig}
                           onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
                           onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
                         />
