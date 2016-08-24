@@ -18,8 +18,6 @@ class WatcherDirsList extends React.Component {
   render() {
     const { dirs, packagesConfig } = this.props
 
-    console.log(this.props)
-
     return (
       <div>
         {dirs.map((dir, index) =>

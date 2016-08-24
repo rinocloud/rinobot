@@ -6,14 +6,12 @@ import isDev from 'electron-is-dev'
 import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
-import npmi from 'npmi'
 
-export const JSONError = error => {
+export const JSONError = function (error) {
   this.name = error.name
   this.message = (error.message || '')
   this.stack = error.stack
 }
-
 JSONError.prototype = Error.prototype;
 
 const isOSX = process.platform === 'darwin'
@@ -46,8 +44,9 @@ const createWindow = (app, sentry) => { // eslint-disable-line
 
   forkRpc.on('pipeline error', error => {
     rpc.emit('pipeline error', error)
+    error.error.name = 'Pipeline error' // eslint-disable-line
     console.log(`pipeline >>> ${JSON.stringify(error, null, 2)}`)
-    sentry.captureException(new JSONError(error))
+    sentry.captureException(new JSONError(error.error))
   })
 
   forkRpc.on('error', error => {

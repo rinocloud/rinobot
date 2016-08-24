@@ -8216,7 +8216,7 @@ module.exports =
 	module.exports = {
 		"name": "rinobotapp",
 		"productName": "Rinobot",
-		"version": "0.0.11",
+		"version": "0.0.12",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",
@@ -8234,7 +8234,7 @@ module.exports =
 			"mkdirp": "^0.5.1",
 			"ms": "0.7.1",
 			"npmi": "^2.0.1",
-			"raven": "^0.12.1",
+			"raven": "^0.11.0",
 			"source-map-support": "^0.4.2",
 			"superagent": "^1.8.3",
 			"superagent-promise-plugin": "^3.2.0",

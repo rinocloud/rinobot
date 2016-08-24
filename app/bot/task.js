@@ -193,8 +193,8 @@ export class Task {
   pythonPlugin() {
     const args = trim(swig.render(`${this.codePath} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
-      arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
+    const tokens = map(args.split(/\\ /g).join(magicDelimiter).split(' '), (arg) =>
+      arg.split(new RegExp(magicDelimiter, 'g')).join('\ ') // eslint-disable-line
     )
 
     const child = spawn('python', tokens, { cwd: this.cwd })

@@ -116,7 +116,11 @@ const fork = forkRpc => {
     if (!watchers[index].closed) forkRpc.emit('pipeline complete', { index, pipePath: pipe.relPath }) // eslint-disable-line
   }, time)
 
-  const pipelineError = _.throttle((index, pipe, error) => {
+  const pipelineError = _.throttle((index, pipe, err) => {
+    const error = {}
+    error.name = err.name
+    error.message = err.message
+    error.stack = err.stack
     if (!watchers[index].closed) {
       forkRpc.emit('pipeline error', { index, error, pipePath: pipe.relPath })
     }
