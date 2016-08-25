@@ -7,6 +7,7 @@ import yaml from 'js-yaml'
 import fs from 'fs-extra'
 import swig from 'swig'
 import pt from 'path'
+import mv from 'mv'
 import { exec, spawn } from 'child_process'
 
 export const checkPythonVersion = (cb) => {
@@ -73,8 +74,11 @@ export class Task {
       ) {
       this.upload()
     } else if (this.command === 'rinocloud-copy' ||
-                this.command === 'copy') {
+               this.command === 'copy') {
       this.copy()
+    } else if (this.command === 'rinocloud-move' ||
+               this.command === 'move') {
+      this.move()
     } else if (this.command === 'python') {
       this.python()
     } else if (this.command === 'matlab') {
@@ -311,7 +315,16 @@ export class Task {
   copy() {
     this.on_log('starting copy')
     const args = trim(swig.render(this.args, { locals: this.getLocals() }))
-    fs.copy(this.path, args, (err) => {
+    fs.copy(this.path, args, err => {
+      if (err) return this.on_error(err)
+      return this.on_complete()
+    })
+  }
+
+  move() {
+    this.on_log('starting move')
+    const args = trim(swig.render(this.args, { locals: this.getLocals() }))
+    mv(this.path, pt.join(args, this.filename), { mkdirp: true, clobber: true }, (err) => {
       if (err) return this.on_error(err)
       return this.on_complete()
     })

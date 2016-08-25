@@ -8,9 +8,13 @@ import createMenu from './menu'
 import createRPC from './rpc'
 
 export const JSONError = function (error) {
-  this.name = error.name
-  this.message = (error.message || '')
-  this.stack = error.stack
+  this.name = error.name || ''
+  this.message = error.message || ''
+  this.stack = error.stack || ''
+  if (error.code) this.code = error.code
+  if (error.errno) this.errno = error.errno || ''
+  if (error.syscall) this.syscall = error.syscall || ''
+  if (error.path) this.path = error.path || ''
 }
 JSONError.prototype = Error.prototype;
 
@@ -44,14 +48,11 @@ const createWindow = (app, sentry) => { // eslint-disable-line
 
   forkRpc.on('pipeline error', error => {
     rpc.emit('pipeline error', error)
-    error.error.name = 'Pipeline error' // eslint-disable-line
-    console.log(`pipeline >>> ${JSON.stringify(error, null, 2)}`)
     sentry.captureException(new JSONError(error.error))
   })
 
   forkRpc.on('error', error => {
     rpc.emit('error', error)
-    console.log(`forkRpc >>> ${JSON.stringify(error, null, 2)}`)
     sentry.captureException(new JSONError(error))
   })
 
