@@ -170,7 +170,7 @@ class TaskForm extends React.Component {
               <br />
               <button
                 className="btn btn-sm btn-default"
-                style={{border:'none'}}
+                style={{ border: 'none' }}
               >
                 to
               </button>
