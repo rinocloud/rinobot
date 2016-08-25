@@ -165,31 +165,42 @@ class TaskForm extends React.Component {
         : null}
 
         {['copy', 'move'].includes(task.command) ?
-          <div className="col-xs-4">
-            {/*<small>Destination folder </small>
-            <input
-              type="text"
-              value={task.args || ''}
-              className="form-control input-sm"
-              onChange={this.handleChangeMatch('args')}
-              placeholder="target folder"
-            />*/}
-            <br />
-            <a
-              href="#"
-              className="btn btn-default btn-sm"
-              onClick={(e) => {
-                e.preventDefault()
-                const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
-                if (paths) {
-                  this.handleChangeMatch('args')(e, paths[0])
-                }
-              }}
-            >
-              Select destination
-              {task.args ? ` (${pt.basename(task.args)})` : ''}
-            </a>
-
+          <div className="col-xs-5">
+            <div className="col-xs-2">
+              <br />
+              <button
+                className="btn btn-sm btn-default"
+                style={{border:'none'}}
+              >
+                to
+              </button>
+            </div>
+            <div className="col-xs-4">
+              <br />
+              <a
+                href="#"
+                className="btn btn-default btn-sm"
+                onClick={(e) => {
+                  e.preventDefault()
+                  const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                  if (paths) {
+                    this.handleChangeMatch('args')(e, paths[0])
+                  }
+                }}
+              >
+                Select folder
+              </a>
+            </div>
+            <div className="col-xs-6">
+             <br />
+              <input
+                type="text"
+                value={task.args || ''}
+                className="form-control input-sm"
+                onChange={this.handleChangeMatch('args')}
+                placeholder="or type a location"
+              />
+            </div>
           </div>
         : null}
       {['python', 'Rscript', 'matlab'].includes(task.command) ?
