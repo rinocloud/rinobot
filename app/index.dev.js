@@ -44,6 +44,7 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))
   forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
   forkRpc.on('task complete', args => rpc.emit('task complete', args))
+  forkRpc.on('task ignore', args => rpc.emit('task ignore', args))
   forkRpc.on('task started', args => rpc.emit('task started', args))
 
   forkRpc.on('pipeline error', error => {

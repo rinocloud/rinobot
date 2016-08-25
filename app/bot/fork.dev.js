@@ -35,6 +35,9 @@ const fork = forkRpc => {
       },
       on_task_complete: (pipe, task) => {
         taskComplete(index, pipe, task)
+      },
+      on_task_ignore: (pipe, task) => {
+        taskIgnore(index, pipe, task)
       }
     })
 
@@ -153,6 +156,22 @@ const fork = forkRpc => {
           command: task.command,
           args: task.args,
           match: task.match,
+        }
+      ) // eslint-disable-line
+    }
+  }, time)
+
+  const taskIgnore = _.throttle((index, pipe, task) => {
+    if (!watchers[index].closed) {
+      forkRpc.emit(
+        'task ignore',
+        {
+          index,
+          pipePath: pipe.relPath,
+          command: task.command,
+          args: task.args,
+          match: task.match,
+          reason: task.reason
         }
       ) // eslint-disable-line
     }

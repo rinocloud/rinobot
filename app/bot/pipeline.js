@@ -28,7 +28,7 @@ export class Pipeline {
   - on_task_complete: function (pipeline, task), called when a task completes
   - on_task_start: function (pipeline, task), called when a task starts
   - on_task_error: function (pipeline, task, err), called when a task fails
-  - on_task_ignore: function (pipeline, task, reason), called if the task has alredy
+  - on_task_ignore: function (pipeline, task), called if the task has alredy
                     been completed, or ignored for some other reason
   - api: rinocloud-javascript api instance, defaults to making its own instance
   */
@@ -69,6 +69,7 @@ export class Pipeline {
     this.on_complete = options.on_complete ? options.on_complete.bind(null, this) : function () {}
     this.on_error = options.on_error ? options.on_error.bind(null, this) : function (e) { throw e }
     this.on_task_complete = options.on_task_complete ? options.on_task_complete.bind(null, this) : function () {} // eslint-disable-line
+    this.on_task_ignore = options.on_task_ignore ? options.on_task_ignore.bind(null, this) : function () {} // eslint-disable-line
     this.on_task_start = options.on_task_start ? options.on_task_start.bind(null, this) : function () {} // eslint-disable-line
 
     this.on_ignore = (reason) => {
@@ -167,15 +168,6 @@ export class Pipeline {
 
     if (matchesNone) {
       this.on_ignore('Matches no tasks')
-      this.ignored = true
-    }
-
-    const allCompleted = _.every(this.tasks, (task) =>
-      this.diary.completedTasks.hasOwnProperty(task)
-    )
-
-    if (allCompleted) {
-      this.on_ignore('All tasks completed')
       this.ignored = true
     }
 
@@ -282,23 +274,17 @@ export class Pipeline {
   }
 
   logTask(task) {
-    this.diary.completedTasks[task.command] = task
+    this.diary.completedTasks[task.command] = task.hash
   }
 
   run() {
     // lets make a list of functions that get called later
     const taskList = this.tasks.map(task => callback => {
-      this.on_task_start(task)
-
-      if (this.diary.completedTasks.hasOwnProperty(task.command)) {
-        this.on_ignore(`${task.command}: already complete`)
-        return callback()
-      }
-
       this.attemptMetadataParse(() => {
         const opts = {
           api: this.api,
           packagesDir: this.packagesDir,
+          completedTaskHashList: this.diary.completedTasks,
           metadata: this.metadata,
           relPath: this.relPath,
           command: task.command,
@@ -310,10 +296,6 @@ export class Pipeline {
 
         const t = new Task({
           ...opts,
-          on_ignore: (tt, m) => {
-            this.on_ignore(`${tt.command}: ${m}`)
-            setTimeout(() => { callback() })
-          },
           on_log: (tt, m) => {
             this.on_log(`${m}`)
           },
@@ -328,9 +310,17 @@ export class Pipeline {
           }
         })
 
-        if (!t.ignored) {
-          t.run()
-        }
+        t.ready(() => {
+          this.on_task_start(task)
+          if (!t.ignored) {
+            console.log('running task')
+            t.run()
+          } else {
+            console.log('ignoring task')
+            this.on_task_ignore(t)
+            setTimeout(() => { callback() })
+          }
+        })
       })
     })
 

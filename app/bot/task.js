@@ -2,12 +2,14 @@ import globule from 'globule'
 import _ from 'lodash'
 import omit from 'lodash/omit'
 import trim from 'lodash/trim'
+import series from 'async/series'
 import map from 'lodash/map'
 import yaml from 'js-yaml'
 import fs from 'fs-extra'
 import swig from 'swig'
 import pt from 'path'
 import mv from 'mv'
+import crypto from 'crypto'
 import { exec, spawn } from 'child_process'
 
 export const checkPythonVersion = (cb) => {
@@ -41,30 +43,74 @@ export class Task {
 
   on_complete: function (task),
   on_error: function (task),
-  on_ignore: function (task),
   on_log: function (task),
   */
 
   constructor(options) {
+    this.readyFunc = () => {}
     this.ignored = false
+    this.reason = null
 
     this.metadata = options.metadata || {}
     this.path = options.path
     this.filename = pt.basename(this.path)
     this.relPath = options.relPath
     this.command = options.command
+    this.completedTaskHashList = options.completedTaskHashList
+    this.hash = this.command
     this.args = options.args || ''
     this.packagesDir = options.packagesDir || ''
     this.cwd = options.cwd
     this.api = options.api || ''
     this.match = options.match
 
-    this.setUpLogging(options)
+    series([
+      this.setUpLogging.bind(this, options),
+      this.createHash.bind(this),
+      this.doIgnore.bind(this),
+    ], () => {
+      this.readyFunc()
+    })
+  }
 
+  ready(readyFunc) {
+    this.readyFunc = readyFunc
+  }
+
+  setUpLogging(options, cb) {
+    this.on_complete = options.on_complete ? options.on_complete.bind(null, this) : function () {}
+    this.on_error = options.on_error ? options.on_error.bind(null, this) : function (err) { throw err } // eslint-disable-line
+    this.on_log = options.on_log ? options.on_log.bind(null, this) : function () {}
+    cb()
+  }
+
+  createHash(done) {
+    fs.readFile(this.path, (err, data) => {
+      if (err) return this.on_error(err)
+      const hash = crypto.createHash('md5')
+      hash
+        .update(data)
+        .update(this.command)
+      const digest = hash.digest('base64')
+      this.hash = digest
+      done()
+    })
+  }
+
+  doIgnore(cb) {
     if (!globule.isMatch(this.match, this.filename)) {
       this.ignored = true
-      return this.on_ignore('Filename doesnt match task glob')
+      this.reason = 'Filename doesnt match task glob'
     }
+
+    if (
+        _.has(this.completedTaskHashList, this.command) &&
+        this.completedTaskHashList[this.command] === this.hash
+    ) {
+      this.ignored = true
+      this.reason = 'Task already completed'
+    }
+    cb()
   }
 
   run() {
@@ -93,20 +139,6 @@ export class Task {
     }
   }
 
-  setUpLogging(options) {
-    this.on_complete = options.on_complete ? options.on_complete.bind(null, this) : function () {}
-    this.on_error = options.on_error ?
-      options.on_error.bind(null, this) : function (err) { throw err }
-
-    this.on_ignore = function (reason) {
-      this.ignored = true
-      const emitIgnore = options.on_ignore ? options.on_ignore.bind(null, this) : function () {}
-      emitIgnore(reason)
-    }.bind(this)
-
-    this.on_log = options.on_log ? options.on_log.bind(null, this) : function () {}
-  }
-
   print() {
     return omit(this, ['metadata', '_response'])
   }
@@ -132,22 +164,10 @@ export class Task {
   }
 
   isPackage(command, cb) {
-
-    console.log(`>>> checking if its a package: ${command}`)
-
     fs.access(pt.join(this.packagesDir, this.command), err => {
-
-      console.log(err)
-
       if (err) {
-
-        console.log(`>>> is not a package`)
-
         return cb(false)
       } else { // eslint-disable-line
-
-        console.log(`>>> is a package`)
-
         return cb(true)
       }
     })
