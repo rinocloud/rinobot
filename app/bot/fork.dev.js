@@ -119,13 +119,24 @@ const fork = forkRpc => {
   const pipelineError = _.throttle((index, pipe, err) => {
     const error = {}
 
-    error.name = err[0].name
-    error.message = err[0].message
-    error.stack = err[0].stack
-    error.code = err[0].code
-    error.errno = err[0].errno
-    error.syscall = err[0].syscall
-    error.path = err[0].path
+    if (_.isArray(err)) {
+      error.name = err[0].name
+      error.message = err[0].message
+      error.stack = err[0].stack
+      error.code = err[0].code
+      error.errno = err[0].errno
+      error.syscall = err[0].syscall
+      error.path = err[0].path
+    } else {
+      error.name = err.name
+      error.message = err.message
+      error.stack = err.stack
+      error.code = err.code
+      error.errno = err.errno
+      error.syscall = err.syscall
+      error.path = err.path
+    }
+
 
     if (!watchers[index].closed) {
       forkRpc.emit('pipeline error', { index, error, pipePath: pipe.relPath })

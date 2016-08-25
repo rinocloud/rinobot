@@ -132,10 +132,22 @@ export class Task {
   }
 
   isPackage(command, cb) {
-    fs.access(pt.join(this.packagesDir, this.args), err => {
+
+    console.log(`>>> checking if its a package: ${command}`)
+
+    fs.access(pt.join(this.packagesDir, this.command), err => {
+
+      console.log(err)
+
       if (err) {
+
+        console.log(`>>> is not a package`)
+
         return cb(false)
       } else { // eslint-disable-line
+
+        console.log(`>>> is a package`)
+
         return cb(true)
       }
     })
