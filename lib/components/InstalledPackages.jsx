@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import moment from 'moment'
 import { shell } from 'electron'
+import semver from 'semver'
 import * as pluginsActions from '../actions/plugins'
 
 
@@ -37,10 +38,33 @@ class InstalledPackages extends React.Component {
 
   render() {
     const { dispatch, plugins } = this.props
-    let registry = _.map(plugins.pluginRegistry, p => ({
-      ...p,
-      isInstalled: _.includes(_.keys(plugins.config.dependencies), p.name)
-    }))
+    let registry = _.map(plugins.pluginRegistry, p => {
+      console.log(p['dist-tags'].latest, plugins.config.dependencies[p.name])
+
+      const isInstalled = _.has(plugins.config.dependencies, p.name)
+      let canUpdate = false
+      if (isInstalled && p['dist-tags']) {
+        const currentVersion = plugins.config.dependencies[p.name]
+        const registryVersion = p['dist-tags'].latest
+
+        if (semver.validRange(currentVersion)) {
+          canUpdate = semver.gtr(registryVersion, currentVersion)
+        } else {
+          canUpdate = semver.lt(currentVersion, registryVersion)
+        }
+      }
+      return {
+        ...p,
+        isInstalled,
+        canUpdate
+      }
+    })
+
+    // to get plugins.pluginRegistry latest version use:
+    // plugin['dist-tags'].latest
+
+    // to get installed version from plugins.config.dependencies use:
+    // name: version
 
     registry.sort((x, y) => { // eslint-disable-line
       return (x.isInstalled === y.isInstalled) ? 0 : x.isInstalled ? -1 : 1 // eslint-disable-line
@@ -65,6 +89,10 @@ class InstalledPackages extends React.Component {
       dispatch(pluginsActions.uninstall(plugin, index))
     }
 
+    const onClickUpdate = (plugin, index) => {
+      dispatch(pluginsActions.update(plugin, index))
+    }
+
     return (
       <div className="container">
         <div className="row">
@@ -79,9 +107,7 @@ class InstalledPackages extends React.Component {
               : ''}
             </h2>
             <div className="col-sm-8">
-
               <div className="row m-b">
-
                 <form className="form col-sm-8 p-a-0" onSubmit={this.setSearchTerm} >
                   <input
                     className="form-control"
@@ -99,47 +125,90 @@ class InstalledPackages extends React.Component {
                 {plugins.statusText}
               </div>
 
-              {_.map(registry, (el, i) =>
-                <div className="row" key={`plugin${i}`}>
+              {_.map(registry, (el, i) => {
+                return (
+                  <div className="row" key={`plugin${i}`}>
+                    <div className="m-b">
+                      <span
+                        className="m-r lead"
+                        style={{
+                          fontWeight: 500,
+                          verticalAlign: 'bottom'
+                        }}
+                      >
+                        {el.name.replace('rinobot-plugin-', '')}
+                      </span>
+                      {!el.isInstalled ?
+                        <a
+                          href="#"
+                          className="btn btn-xs btn-primary"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            onClickInstall(el, i)
+                          }}
+                        >
+                          {
+                            el.isInstalling
+                            ?
+                            'Installing'
+                            :
+                            'Install'
+                          }
+                        </a>
 
-                  <div>
-                    <h4>{el.name.replace('rinobot-plugin-', '')}</h4>
-                    {!el.isInstalled ?
-                      <a
-                        href="#"
-                        className="btn btn-xs btn-primary"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          onClickInstall(el, i)
-                        }}
-                      >
-                        {!el.isInstalling ? 'Install' : 'Installing'}
-                      </a>
-                      :
-                      <a
-                        href="#"
-                        className="btn btn-xs btn-default"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          onClickUninstall(el, i)
-                        }}
-                      >
-                        Uninstall
-                      </a>
-                    }
+                        :
+                        <span>
+                          <a
+                            href="#"
+                            className="btn btn-xs btn-default"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              onClickUninstall(el, i)
+                            }}
+                          >
+                            Uninstall
+                          </a>{'  '}
+                          {el.canUpdate ? // eslint-disable-line
+                            <a
+                              href="#"
+                              className="btn btn-xs btn-default"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                onClickUpdate(el, i)
+                              }}
+                            >
+                              Update to v{el['dist-tags'].latest}
+                            </a>
+                            :
+                            <span className=" text-muted">
+                              up to date
+                            </span>
+                          }
+                        </span>
+                        }
+                    </div>
+
+                    <div>{el.description}</div>
+
+                    <small className="text-muted">
+                      {el.isInstalled ?
+                        <span>
+                          Your version: v{plugins.config.dependencies[el.name]}
+                        </span>
+                        :
+                        <span>
+                          v{el['dist-tags'] ? el['dist-tags'].latest : ''}
+                          {' '} updated by {el.author && el.author.name} {' '}
+                          {el.time && moment(el.time.modified).fromNow()}
+                        </span>
+                      }
+                    </small>
+
+                    <hr />
+
                   </div>
-
-                  <div>{el.description}</div>
-
-                  <small className="text-muted">
-                    v{el['dist-tags'] ? el['dist-tags'].latest : ''}
-                    {' '} updated by {el.author && el.author.name} {' '}
-                    {el.time && moment(el.time.modified).fromNow()}
-                  </small>
-
-                  <hr />
-
-                </div>
+                )
+              }
               )}
             </div>
 

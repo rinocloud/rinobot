@@ -73,6 +73,7 @@ class TaskForm extends React.Component {
     const commandList = [
       { name: 'rinocloud upload', value: 'upload' },
       { name: 'copy', value: 'copy' },
+      { name: 'move', value: 'move' },
       { name: 'matlab', value: 'matlab' },
       { name: 'python', value: 'python' },
       { name: 'Rscript', value: 'Rscript' },
@@ -163,16 +164,32 @@ class TaskForm extends React.Component {
           </div>
         : null}
 
-        {task.command === 'copy' ?
+        {['copy', 'move'].includes(task.command) ?
           <div className="col-xs-4">
-            <small>Destination folder </small>
+            {/*<small>Destination folder </small>
             <input
               type="text"
               value={task.args || ''}
               className="form-control input-sm"
               onChange={this.handleChangeMatch('args')}
               placeholder="target folder"
-            />
+            />*/}
+            <br />
+            <a
+              href="#"
+              className="btn btn-default btn-sm"
+              onClick={(e) => {
+                e.preventDefault()
+                const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                if (paths) {
+                  this.handleChangeMatch('args')(e, paths[0])
+                }
+              }}
+            >
+              Select destination
+              {task.args ? ` (${pt.basename(task.args)})` : ''}
+            </a>
+
           </div>
         : null}
       {['python', 'Rscript', 'matlab'].includes(task.command) ?
@@ -241,14 +258,14 @@ class TaskForm extends React.Component {
             </a>
           :
           null}
-          {task.command === 'copy' ?
+          {['copy', 'move'].includes(task.command) ?
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/copying_moving_files.html"
               onClick={openExternal}
               className="text-muted"
             >
               <i className="fa fa-info-circle m-r-sm"></i>
-              {'  '}copying files
+              {'  '}copy/move files
             </a>
           :
           null}
