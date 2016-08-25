@@ -315,7 +315,7 @@ export class Task {
   copy() {
     this.on_log('starting copy')
     const args = trim(swig.render(this.args, { locals: this.getLocals() }))
-    fs.copy(this.path, args, err => {
+    fs.copy(this.path, pt.join(args, this.filename), err => {
       if (err) return this.on_error(err)
       return this.on_complete()
     })
