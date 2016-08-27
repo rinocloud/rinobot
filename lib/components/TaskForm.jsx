@@ -103,7 +103,7 @@ class TaskForm extends React.Component {
             >
               <a
                 className="fa fa-question-circle-o m-l-sm text-muted"
-                href="http://docs.rinocloud.com/rinobot/tasks/running_commands.html"
+                href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
                 onClick={openExternal}
               >
               </a>
@@ -264,7 +264,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}uploading to rinocloud
             </a>
           :
@@ -275,7 +275,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}copy/move files
             </a>
           :
@@ -286,7 +286,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running matlab scripts
             </a>
           :
@@ -298,7 +298,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running python scripts
             </a>
           : null}
@@ -309,7 +309,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running r scripts
             </a>
           : null}
@@ -320,7 +320,7 @@ class TaskForm extends React.Component {
               onClick={openExternal}
               className="text-muted"
             >
-              <i className="fa fa-info-circle m-r-sm"></i>
+              <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running custom commands
             </a>
           : null}

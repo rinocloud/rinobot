@@ -92,7 +92,7 @@ class WatchDir extends React.Component {
               overlay={ClearRecord}
             >
               <a
-                className="fa fa-info-circle pull-right m-t-sm fa-lg text-muted"
+                className="fa fa-question-circle-o pull-right m-t-sm fa-lg text-muted"
                 href="http://docs.rinocloud.com/rinobot/introduction/clearing_rinobot_records.html"
                 onClick={openExternal}
               >
@@ -113,41 +113,57 @@ class WatchDir extends React.Component {
               <span><i className="fa fa-trash"></i> Remove</span>
             </a>
 
-            {!dir.configOpen ? // eslint-disable-line
-              dir.isStarted ?
-                <a
-                  href="#"
-                  className="btn btn-sm btn-danger"
-                  onClick={onStopClick}
-                >
-                  Stop
-                </a>
-                 :
-
-                <a
-                  href="#"
-                  className="btn btn-sm btn-success"
-                  onClick={onStartClick}
-                  data-dismiss="alert"
-                >
-                  Start
-                </a>
-              : null
+            {!dir.configOpen && dir.isStarted &&
+              <a
+                href="#"
+                className="btn btn-sm btn-danger"
+                onClick={onStopClick}
+              >
+                Stop
+              </a>
             }
 
-            {!dir.isStarted ?
+            {(!dir.configOpen && !dir.isStarted) &&
+              <a
+                href="#"
+                className="btn btn-sm btn-success"
+                onClick={onStartClick}
+                data-dismiss="alert"
+              >
+                Start
+              </a>
+            }
+
+            {dir.configOpen &&
+              <a
+                href="#"
+                className="btn btn-sm btn-success disabled"
+                data-dismiss="alert"
+                disabled
+              >
+                Start
+              </a>
+            }
+
+
+            {!dir.isStarted && dir.configOpen &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
                 onClick={onToggleConfigClick}
               >
-                {dir.configOpen ?
-                  <span><i className="fa fa-save"></i> Save</span>
-                  :
-                  <span><i className="fa fa-cogs"></i> Settings</span>
-                }
+                <span><i className="fa fa-save"></i> Save</span>
               </a>
-              : null
+            }
+
+            {!dir.isStarted && !dir.configOpen &&
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                onClick={onToggleConfigClick}
+              >
+                <span><i className="fa fa-cogs"></i> Setup</span>
+              </a>
             }
           </div>
         </div>

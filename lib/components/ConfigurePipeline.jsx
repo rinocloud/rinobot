@@ -111,19 +111,19 @@ class ConfigurePipeline extends React.Component {
 
     const taskTitle = (
       <span>
+        Task{'  '}
         <OverlayTrigger
           trigger={['hover']}
           placement="right"
           overlay={TasksOverlay}
         >
           <a
-            className="fa fa-info-circle m-t-sm text-muted"
+            className="fa fa-question-circle-o m-t-sm text-muted"
             href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
             onClick={openExternal}
           >
           </a>
         </OverlayTrigger>
-        {'  '}Task
       </span>
     )
 
@@ -140,19 +140,19 @@ class ConfigurePipeline extends React.Component {
 
     const metadataTitle = (
       <span>
+        Metadata{'  '}
         <OverlayTrigger
           trigger={['hover']}
           placement="right"
           overlay={MetadataOverlay}
         >
           <a
-            className="fa fa-info-circle m-t-sm text-muted"
+            className="fa fa-question-circle-o m-t-sm text-muted"
             href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
             onClick={openExternal}
           >
           </a>
         </OverlayTrigger>
-        {'  '}Metadata
       </span>
     )
 
