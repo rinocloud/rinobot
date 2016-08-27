@@ -1,7 +1,7 @@
 {
   "name": "rinobotapp",
   "productName": "Rinobot",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "author": "rinocloud",
   "repository": "rinocloud/rinobot",
   "description": "Automate data tasks",
