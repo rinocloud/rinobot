@@ -83,3 +83,21 @@ html, body {
 #root > div{
   height: 100%;
 }
+
+.bg-ignored {
+  background-color: #DCDCDC;
+}
+a.bg-ignored:hover,
+a.bg-ignored:focus {
+  background-color: #e4b9b9;
+}
+
+.bg-rino {
+  background-color: #DDA0DD;
+}
+a.bg-rino:hover{
+  background-color: red;
+}
+a.bg-rino:focus {
+  background-color: yellow;
+}

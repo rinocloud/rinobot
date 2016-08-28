@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
+import { Tree } from './Tree'
 const { shell } = require('electron')
 
 
@@ -209,6 +210,29 @@ class WatchDir extends React.Component {
                   style={{ minHeight: '20px' }}
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
                 />
+                <div>
+                {dir.isStarted ?
+                  <a
+                    href="#"
+                    className="text-muted m-l-sm"
+                    onClick={onToggleLogsClick}
+                  >
+                    <p>
+                  {dir.logsOpen ?
+                    <span className="text-muted">
+                      <a className="btn btn-default btn-sm fa fa-align-justify"> More</a> {'  '}
+                      <i className="btn btn-default btn-sm fa fa-times"> Close</i>
+                    </span> // eslint-disable-line
+                    :
+                    <span className="text-muted">
+                      <a className="btn btn-default btn-sm fa fa-align-justify"> More</a>
+                    </span>
+                    }
+                    </p>
+                  </a>
+                : null}
+
+                {/*
                 {dir.isStarted ?
                   <a
                     href="#"
@@ -221,9 +245,18 @@ class WatchDir extends React.Component {
                     <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
                     }
                   </a>
-                : null}
+                : null}*/}
+                </div>
                 {dir.logsOpen ?
-                  <LogScroll logs={dir.logs} />
+                  <div>
+                    {/*<LogScroll logs={dir.logs} />*/}
+                    <div className="p-a bordered m-t bg-muted">
+                      <div className="row">
+                        <pre className="pull-left  col-sm-12"> File/Folder Status</pre>
+                        <Tree />
+                      </div>
+                    </div>
+                  </div>
                 : null
                 }
               </div>
