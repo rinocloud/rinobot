@@ -4,7 +4,6 @@ import omit from 'lodash/omit'
 import trim from 'lodash/trim'
 import series from 'async/series'
 import map from 'lodash/map'
-import yaml from 'js-yaml'
 import fs from 'fs-extra'
 import swig from 'swig'
 import pt from 'path'
@@ -181,30 +180,32 @@ export class Task {
       if (err) {
         return this.on_error(`Cant find package "${this.command}"`)
       } else { // eslint-disable-line
-        fs.access(pt.join(this.packagesDir, this.command, 'package.yaml'), err => {
+
+        const packagePath = pt.join(this.packagesDir, this.command, 'package.json')
+        fs.access(packagePath, err => { // eslint-disable-line
           if (err && err.code === 'ENOENT') {
             return this.on_error(
-              `Found ${pt.join(this.packagesDir, this.command)}, but no package.yaml exists.`
+              `Found ${pt.join(this.packagesDir, this.command)}, but no package.json exists.`
             )
           }
           if (err) {
             return this.on_error(`No package exists matching ${this.command}`)
           }
-          return fs.readFile(pt.join(this.packagesDir, this.command, 'package.yaml'), 'utf-8', (err, data) => {
-            if (err) return this.on_error(`package.yaml in "${this.command}" could not be opened`)
+          return fs.readFile(packagePath, 'utf-8', (err, data) => { // eslint-disable-line
+            if (err) return this.on_error(`package.json in "${this.command}" could not be opened`)
 
-            let packageYaml = {}
+            let packageJSON = {}
             try {
-              packageYaml = yaml.safeLoad(data)
+              packageJSON = JSON.parse(data)
             } catch (e) {
-              return this.on_error(`package.yaml in "${this.command}" is malformed and could not be parsed`)
+              return this.on_error(`package.json in "${this.command}" could not be parsed`)
             }
 
-            if (_.has(packageYaml, 'main')) {
-              this.codePath = pt.join(this.packagesDir, this.command, packageYaml.main)
+            if (_.has(packageJSON, 'main')) {
+              this.codePath = pt.join(this.packagesDir, this.command, packageJSON.main)
               cb()
             } else {
-              return this.on_error(`package.yaml in "${this.command}" has no "main" specified`)
+              return this.on_error(`package.json in "${this.command}" has no "main" specified`)
             }
           })
         })

@@ -1,4 +1,9 @@
 {
   "root": "./docs",
-  "plugins": ["-sharing"]
+  "plugins": ["-sharing", "ga"],
+  "pluginsConfig": {
+    "ga": {
+      "token": "UA-70561504-5"
+    }
+  }
 }
