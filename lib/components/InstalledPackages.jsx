@@ -203,46 +203,11 @@ class InstalledPackages extends React.Component {
                         </span>
                       }
                     </small>
-
                     <hr />
-
                   </div>
                 )
               }
               )}
-            </div>
-
-            <div className="col-sm-4">
-              <p className="m-t">
-                <strong>Documentation/Guides</strong>
-              </p>
-
-              <ol className="m-t">
-                <li>
-                  <a
-                    href="http://docs.rinocloud.com/rinobot/plugins/installing_a_plugin.html"
-                    onClick={openExternal}
-                  >
-                    Detailed guide to installing a plugin
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="http://docs.rinocloud.com/rinobot/tasks/running_your_own_programs.html"
-                    onClick={openExternal}
-                  >
-                    Using your own programs
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="http://docs.rinocloud.com/rinobot/plugins/creating_a_plugin.html"
-                    onClick={openExternal}
-                  >
-                    Creating and sharing a plugin
-                  </a>
-                </li>
-              </ol>
             </div>
           </div>
         </div>
