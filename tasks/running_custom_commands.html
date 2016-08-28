@@ -1,0 +1,465 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Custom commands and batch files · GitBook</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../styles/website.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../metadata/" />
+    
+    
+    <link rel="prev" href="running_r.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Table of Contents</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../introduction/getting_started.html">
+            
+                <a href="../introduction/getting_started.html">
+            
+                    
+                    Getting started with Rinobot
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../plugins/">
+            
+                <a href="../plugins/">
+            
+                    
+                    Plugins
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../plugins/installing_a_plugin.html">
+            
+                <a href="../plugins/installing_a_plugin.html">
+            
+                    
+                    Installing a plugin
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../plugins/creating_a_plugin.html">
+            
+                <a href="../plugins/creating_a_plugin.html">
+            
+                    
+                    Creating a plugin
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Tasks
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="getting_started.html">
+            
+                <a href="getting_started.html">
+            
+                    
+                    Getting started with tasks
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="matching_files.html">
+            
+                <a href="matching_files.html">
+            
+                    
+                    Matching files
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="uploading_to_rinocloud.html">
+            
+                <a href="uploading_to_rinocloud.html">
+            
+                    
+                    Uploading to Rinocloud
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="copying_moving_files.html">
+            
+                <a href="copying_moving_files.html">
+            
+                    
+                    Copying and moving
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="running_python.html">
+            
+                <a href="running_python.html">
+            
+                    
+                    Auto-run python scripts
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="running_matlab.html">
+            
+                <a href="running_matlab.html">
+            
+                    
+                    Auto-run MATLAB scripts
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="running_r.html">
+            
+                <a href="running_r.html">
+            
+                    
+                    Auto-run R scripts
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.8" data-path="running_custom_commands.html">
+            
+                <a href="running_custom_commands.html">
+            
+                    
+                    Custom commands and batch files
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../metadata/">
+            
+                <a href="../metadata/">
+            
+                    
+                    Metadata
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../metadata/getting_started.html">
+            
+                <a href="../metadata/getting_started.html">
+            
+                    
+                    Adding extra metadata
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../introduction/clearing_rinobot_records.html">
+            
+                <a href="../introduction/clearing_rinobot_records.html">
+            
+                    
+                    Clearing Rinobot records
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Custom commands and batch files</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="running-custom-commands-and-batch-files-in-rinobot">Running custom commands and batch files in Rinobot</h1><p>Its easy to run any command line task from within Rinobot. Just choose <code>custom</code>
+from the dropdown list of commands.</p><h2 id="example-linuxmac-run-command-line-program">Example: (Linux/Mac) run command line program</h2><p>Say we are running a long running simulation, and at the end of the simulation we want to call
+a compiled program called <code>process-data</code> and feed it the files created by the simulation:</p><pre><code>process-data ./simulation/output.txt</code></pre>
+<p>We just insert a command like in the image below</p><p><img src="../images/custom_command.png" width="600"></p><h2 id="example-windows-run-batch-file-program">Example: (Windows) run batch file program</h2><p>Say we have a simple batch file called script.bat, containing the following code, which prints the arguments passed to it</p><pre><code>echo %1</code></pre>
+<p>So on windows if we typed the following into the console</p><pre><code class="lang-bash">&gt;&gt;&gt; ./script.bat /path/to/file.txt</code></pre>
+<p>It would emit</p><pre><code class="lang-bash">&gt;&gt;&gt; /path/to/file.txt</code></pre>
+<p>so we can easy pass files to batch files by using the following command</p><p><img src="../images/batch_command.png" width="600"></p><p>We need to pass the <code>powershell</code> and <code>/c</code> arguments because Rinobot spawns a new instance of powershell to run the file.</p><p>With this you can schedule a whole bunch of windows commands to operate on data as it appears.</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="running_r.html" class="navigation navigation-prev " aria-label="Previous page: Auto-run R scripts">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../metadata/" class="navigation navigation-next " aria-label="Next page: Metadata">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Custom commands and batch files","level":"1.4.8","depth":2,"next":{"title":"Metadata","level":"1.5","depth":1,"path":"metadata/README.md","ref":"metadata/README.md","articles":[{"title":"Adding extra metadata","level":"1.5.1","depth":2,"path":"metadata/getting_started.md","ref":"metadata/getting_started.md","articles":[]}]},"previous":{"title":"Auto-run R scripts","level":"1.4.7","depth":2,"path":"tasks/running_r.md","ref":"tasks/running_r.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","ga"],"root":"./docs","styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"ga":{"configuration":"auto","token":"UA-70561504-5"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"gitbook":"*"},"file":{"path":"tasks/running_custom_commands.md","mtime":"2016-08-28T10:24:55.000Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2016-08-28T11:47:09.270Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-ga/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

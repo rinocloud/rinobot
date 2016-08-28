@@ -1,0 +1,18 @@
+/* CSS for website */
+
+.logo-div {
+    display:table;
+}
+
+.logo-text-span {
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.page-inner{
+  padding-bottom: 250px;
+}
+
+.page-inner li {
+  margin-top: 20px;
+}
