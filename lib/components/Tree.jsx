@@ -11,61 +11,27 @@ class Tree extends React.Component {
   */
 
   static propTypes = {
-    list: PropTypes.array,
+    initialList: PropTypes.array,
     indent: PropTypes.number,
     status: PropTypes.string,
     overflowHidden: PropTypes.bool
   }
 
   static defaultProps = {
-    indent: 10,
-    list: [{
-      name: '/test/test-fixtures',
-      open: false,
-      children: [
-        {
-          name: '/test/test-fixtures/1',
-          open: false,
-          children: [
-            {
-              name: '/test/test-fixtures/1/2',
-              open: false,
-              children: [
-                {
-                  name: '/test/test-fixtures/1/2/test1.txt',
-                  status: 'success'
-                },
-                {
-                  name: '/test/test-fixtures/1/2/test2.txt',
-                  status: 'failure',
-                },
-                {
-                  name: '/test/test-fixtures/1/2/test3.txt',
-                  status: 'active',
-                }
-              ]
-            },
-            {
-              name: '/test/test-fixtures/1/test1.txt',
-              status: 'ignored',
-            }
-          ]
-        },
-        {
-          name: '/test/test-fixtures/rino.yaml',
-          status: 'rino',
-        }
-      ]
-    }]
+    indent: 10
   }
-
 
   constructor(props) {
     super(props)
 
+    console.log('constructor', props)
+
     this.state = {
-      list: this.props.list,
-      overflowHidden: true
+      overflowHidden: true,
+      list: _.map(props.initialList, item => ({
+        ...item,
+        open: true
+      }))
     }
   }
 
@@ -74,6 +40,7 @@ class Tree extends React.Component {
       e.preventDefault()
       this.setState({ overflowHidden: !this.state.overflowHidden })
     }
+
     const onClickFolder = (index) => {
       const listCopy = _.clone(this.state.list)
       listCopy[index].open = !listCopy[index].open
@@ -104,7 +71,6 @@ class Tree extends React.Component {
         bgClass = 'bg-ignored'
       }
 
-
       if (item.status === 'rino') {
         bgClass = spanStyle
       }
@@ -117,34 +83,30 @@ class Tree extends React.Component {
         backgroundColor: (this.state.overflowHidden ? 'white' : '#DDA0DD'),
       }
 
-      console.log(spanStyle)
-      console.log(tdStyle)
-      console.log(this.state.overflowHidden)
-
       return (
         <div key={status.id} >
-          <div>
-              {isFolder ?
-                <a
-                  className="btn btn-sm"
-                  style={{ marginLeft: `${String(this.props.indent)}px` }}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    onClickFolder(index)
-                  }}
-                >
-                  <i className="fa fa-folder-o m-l-xs" style={{ color: '#696969' }}></i>
-                  <h7 style={{ color: '#696969' }}> {'  '}
-                  {pt.basename(item.name)}
-                  </h7>
-                </a>
-                :
+
+          {isFolder &&
+            <a
+              className="btn btn-sm"
+              style={{ marginLeft: `${String(this.props.indent)}px` }}
+              onClick={(e) => {
+                e.preventDefault()
+                onClickFolder(index)
+              }}
+            >
+              <i className="fa fa-folder-o m-l-xs" style={{ color: '#696969' }}></i>
+              <h7 style={{ color: '#696969' }}> {'  '}
+              {pt.basename(item.name)}
+              </h7>
+            </a>
+          }
+
+              {!isFolder &&
                 <div style={{ marginLeft: `${String(this.props.indent)}px` }}>
                   <i className="fa fa-file-o"></i> {'  '}
                       {pt.basename(item.name)} {'  '}
-                  {/* <h8 className={bgClass} >*/}
-                  <h8 style={tdStyle}
-                  >
+                  <h8 style={tdStyle}>
                     {item.status === 'success' ?
                       <h8>
                         <i className={`fa fa-check ${bgClass}`}></i> {'   '}
@@ -179,23 +141,23 @@ class Tree extends React.Component {
                         Rinocloud uploaded
                       </div>
                     : null}
-                      {/* </h8>*/}
                   </h8>
                 </div>
               }
 
              {isOpen ?
                <div>
-                 <Tree list={item.children} indent={this.props.indent + 20} />
+                 <Tree initialList={item.children} indent={this.props.indent + 20} />
                  <hr />
                </div>
               :
               ''
             }
-          </div>
+
         </div>
       )
     })
+
     return <span>{items}</span>
   }}
 

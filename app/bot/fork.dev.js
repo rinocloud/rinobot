@@ -58,10 +58,12 @@ const fork = forkRpc => {
   }
 
   const add = (watcher, index, watchPath, packagesDir, event) => () => {
-    const numFiles = countWatched(watcher.getWatched())
+    const watched = watcher.getWatched()
+    const numFiles = countWatched(watched)
     setTotalFiles(index, numFiles)
+    const allFiles = flattenWatched(watched)
+    setFiles(index, watched)
 
-    const allFiles = flattenWatched(watcher.getWatched())
     _.each(allFiles, (file) => {
       if (!processedFiles[index].includes(file)) {
         processFile(index, file, watchPath, packagesDir, event)
@@ -102,6 +104,10 @@ const fork = forkRpc => {
 
   const watcherReady = (index, delta) => forkRpc.emit('watcher ready', { index, delta })
   const watcherStarted = (index) => forkRpc.emit('watcher started', { index })
+
+  const setFiles = _.throttle((index, watched) => {
+    if (!watchers[index].closed) forkRpc.emit('watcher set files', { index, files: watched })
+  }, smallTime)
 
   const setTotalFiles = _.throttle((index, numFiles) => {
     if (!watchers[index].closed) forkRpc.emit('watcher set total files', { index, numFiles })
@@ -191,7 +197,6 @@ const fork = forkRpc => {
       ) // eslint-disable-line
     }
   }, time)
-
 
   const pipelineLog = function pipelineLog(index, pipe, log) {
     const task = () => {

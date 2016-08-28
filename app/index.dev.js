@@ -39,6 +39,7 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
   forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
   forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))
+  forkRpc.on('watcher set files', args => rpc.emit('watcher set files', args))
   forkRpc.on('watcher set processed files', args => rpc.emit('watcher set processed files', args))
   forkRpc.on('pipeline started', args => rpc.emit('pipeline started', args))
   forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))

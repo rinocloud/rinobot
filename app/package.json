@@ -9,6 +9,7 @@
     "async": "^2.0.0-rc.5",
     "aws-sdk": "^2.4.7",
     "chokidar": "^1.6.0",
+    "chokidar-nest": "0.0.1",
     "electron-is-dev": "0.1.1",
     "formidable": "^1.0.17",
     "fs-extra": "^0.30.0",
