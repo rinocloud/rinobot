@@ -1,0 +1,199 @@
+**** QUICK HELP ***
+
+**Style
+
+-Change text color - and color is and style object
+EX.<h7 style={{'color': 'red(color wanted)'}}>
+
+-Change Size text-
+EX.<h7 style={{fontSize: '1.0 em (size wanted)'}}>
+
+-two different style
+EX.<p className={'m-l-lg ' + bgClass}>
+
+-control style with a var§
+if (item.status === 'rino') {
+  bgClass = 'bg-rino'
+}
+return
+
+{item.status === 'failure' ?
+  <span>
+    <i className="fa fa-check"></i> {'  '}
+  Failure
+  </span>
+: null}
+
+-Highlight text-
+EX.<h7 className="text-ribbon" > It will be black unless,
+<span className="text-ribbon" style={{'backgroundColor':bgColor}}> Cambiaria a bg color
+
+const bgColor = collection.isChecked ? '#ddd': 'white'
+    let link = "/app/folder/" + collection.fields.id
+
+
+  <Link alt={collection.fields.name} to={link} onClick={onClickCollection} style={{'background':'white'}}>
+    <span className="text-ribbon" style={{'backgroundColor':bgColor}}>
+      {collection.fields.name}
+   </span>
+ </Link>
+
+
+    handleCheck: function(e){
+        e.preventDefault()
+        if (this.props.collection.isChecked == false)
+          this.props.onCheck()
+        if (this.props.collection.isChecked == true)
+          this.props.onUnCheck()
+      },
+
+
+
+
+
+      {/*import React, {Component, PropTypes} from 'react'
+      import { Link } from 'react-router'
+      import {OverlayTrigger, Popover} from 'react-bootstrap'
+      import moment from 'moment'
+
+      // import {getNextStep} from './Tour'
+      import * as utils from '../utils'
+
+      var Collection = React.createClass({*/}
+
+        getInitialState(){
+          return {overflowHidden: true}
+        },
+
+        toggleOverflow(e){
+          e.preventDefault()
+          this.setState({overflowHidden: !this.state.overflowHidden})
+        },
+
+        render: function(){
+          const {collection} = this.props
+
+          let iclass = 'icon icon-folder'
+
+          if(collection.fields.type!="folder"){
+            iclass = utils.hasExtension(collection.fields.name, ['.jpg', '.gif', '.png']) ? 'icon icon-image' : 'icon icon-news'
+          }
+
+          if(collection.fields.type=="notebook"){
+            iclass = 'icon icon-open-book'
+          }
+
+          if(collection.fields.type=="object"){
+            iclass = 'icon icon-code'
+          }
+
+          const bgColor = collection.isChecked ? '#ddd': 'white'
+          let link = "/app/folder/" + collection.fields.id
+
+
+          if (collection.fields.type != "folder"){
+            link = "/app/file/" + collection.fields.id
+          }
+
+          if (collection.fields.type=="notebook"){
+            link = "/app/notebook/" + collection.fields.id
+          }
+
+          const onClickCollection = (e) => {
+            e.stopPropagation()
+          }
+
+          const newTab = (e) => {
+            e.preventDefault()
+            var win = window.open(e.target.href, '_blank');
+            win.focus();
+          }
+
+          const toggleShare = (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            this.props.onClickShare()
+          }
+
+          let shareLink = <a href="#" onClick={toggleShare}>Create share url</a>
+
+          if(collection.fields.shared){
+            shareLink = <span>
+              <a onClick={newTab} href={'/s/' + collection.fields.share_code} className="fa fa-external-link"> Open</a>
+              <span className="m-l">|</span>
+              <a href="#" className="m-l" onClick={toggleShare}>Unshare</a>
+            </span>
+          }
+
+          let tourCls = ''
+          if(collection.fields.metadata.hasOwnProperty('product_tour')){
+              tourCls = "tourHook"
+          }
+
+          const tdStyle = {
+            overflow: (this.state.overflowHidden ? 'hidden': 'visible'),
+          }
+
+          // const spanStyle = {
+          //   backgroundColor: (this.state.overflowHidden ? 'white': '#f5f5f5'),
+          // }
+
+
+          return <tr
+              onMouseLeave={this.toggleOverflow}
+              onMouseEnter={this.toggleOverflow}
+              style={{'backgroundColor':bgColor}} key={collection.fields.id} onClick={this.handleCheck}>
+              <td>
+                <span className={iclass}></span>
+              </td>
+              <td style={tdStyle}>
+                <div
+                  style={{width: '300px'}}
+                  className={tourCls}>
+                    <Link alt={collection.fields.name} to={link} onClick={onClickCollection} style={{'background':'white'}}>
+                        <span className="text-ribbon" style={{'backgroundColor':bgColor}}>
+                          {collection.fields.name}
+                        </span>
+                    </Link>
+
+                </div>
+              </td>
+              <td>
+                <span>
+                  <small style={{'color': '#777'}}>#{collection.fields.id}</small>
+                </span>
+              </td>
+              <td>
+                <span>
+                  <small style={{'color': '#777'}}>{collection.fields.number_of_comments}</small>
+                </span>
+              </td>
+              <td>
+                <span>
+                {moment(collection.fields.updated_on).format('Do MMM YY, HH:mm:ss')}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {collection.fields.owner}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {shareLink}
+                </span>
+              </td>
+          </tr>
+        },
+
+        handleCheck: function(e){
+          e.preventDefault()
+          if (this.props.collection.isChecked == false)
+            this.props.onCheck()
+          if (this.props.collection.isChecked == true)
+            this.props.onUnCheck()
+        },
+
+      })
+
+      module.exports = {Collection: Collection}
