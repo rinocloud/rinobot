@@ -20,16 +20,12 @@ export class Pipeline {
   - watchPath: Path, the path of the root directory being watched
 
   options has some optional properties
+  - on_task_complete: function (pipeline, task)
+  - on_task_start: function (pipeline, task)
+  - on_task_error: function (pipeline, task, err)
+  - on_task_ignore: function (pipeline, task)
+  - on_task_log: function (pipeline, task, log)
 
-  - on_complete: function (pipeline), called when the entire pipeline completes successfully
-  - on_error: function (pipeline, err), called if the pipeline fails to complete
-  - on_ignore: function (pipeline, reason), called if the pipeline ignores the file
-  - on_log: function (pipeline, message), general log for entire pipeline
-  - on_task_complete: function (pipeline, task), called when a task completes
-  - on_task_start: function (pipeline, task), called when a task starts
-  - on_task_error: function (pipeline, task, err), called when a task fails
-  - on_task_ignore: function (pipeline, task), called if the task has alredy
-                    been completed, or ignored for some other reason
   - api: rinocloud-javascript api instance, defaults to making its own instance
   */
 
@@ -71,6 +67,8 @@ export class Pipeline {
     this.on_task_complete = options.on_task_complete ? options.on_task_complete.bind(null, this) : function () {} // eslint-disable-line
     this.on_task_ignore = options.on_task_ignore ? options.on_task_ignore.bind(null, this) : function () {} // eslint-disable-line
     this.on_task_start = options.on_task_start ? options.on_task_start.bind(null, this) : function () {} // eslint-disable-line
+    this.on_task_error = options.on_task_error ? options.on_task_error.bind(null, this) : function () {} // eslint-disable-line
+    this.on_task_log = options.on_task_log ? options.on_task_log.bind(null, this) : function () {} // eslint-disable-line
 
     this.on_ignore = (reason) => {
       this.ignored = true
@@ -78,8 +76,6 @@ export class Pipeline {
       const emitIgnore = options.on_ignore ? options.on_ignore.bind(null, this) : function () {}
       emitIgnore(reason)
     }
-
-    this.on_log = options.on_log ? options.on_log.bind(null, this) : function () {}
   }
 
   setUpPaths(options) {
@@ -228,18 +224,16 @@ export class Pipeline {
 
     this.attemptMetadataParse(() => {
       fs.exists(dataFile, (exists) => {
-        if (!exists) return // this.on_log(`Ignoring filetype.`)
+        if (!exists) return
         fs.exists(dataFileHiddenMetadataFile, (exists) => { // eslint-disable-line
-          if (!exists) return this.on_log('No data file yet for metadata file.')
+          if (!exists) return
 
           fs.readFile(dataFileHiddenMetadataFile, (err, data) => {
             if (err) return this.on_error(err)
             const dataFileDiary = JSON.parse(data)
             if (!dataFileDiary.hasOwnProperty('response')) {
-              return this.on_log('Data file has not been uploaded.')
+              return
             }
-
-            this.on_log('Synching metadata')
 
             this.api
               .updateMerge(dataFileDiary.response.id, _.cloneDeep(this.metadata))
@@ -297,7 +291,7 @@ export class Pipeline {
         const t = new Task({
           ...opts,
           on_log: (tt, m) => {
-            this.on_log(`${m}`)
+            this.on_task_log(tt, `${m}`)
           },
           on_complete: (tt) => {
             this.logTask(tt.print())
@@ -306,6 +300,7 @@ export class Pipeline {
             setTimeout(() => { callback() })
           },
           on_error: (tt, error) => {
+            this.on_task_error(tt, error)
             setTimeout(() => { callback(error) })
           }
         })

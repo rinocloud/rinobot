@@ -41,15 +41,9 @@ class Server {
   }
 
   emit(ch, data) {
-    // this.wc.send(this.id, { ch, data })
-
     const payload = { ch, data }
-
-    console.log(payload)
-
     const task = () => {
       if (this.queue.length === 0) return
-      console.log('sending batch', JSON.stringify(this.queue))
       this.wc.send(this.id, { ch: 'batch', data: this.queue })
       this.queue = []
     }

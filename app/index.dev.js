@@ -35,26 +35,23 @@ const createWindow = (app, sentry) => { // eslint-disable-line
 
   rpc.on('watch', args => forkRpc.emit('watch', args))
   rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
+
   forkRpc.on('ready', () => rpc.emit('child process ready'))
+
   forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
   forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
   forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))
   forkRpc.on('watcher set processed files', args => rpc.emit('watcher set processed files', args))
-  forkRpc.on('pipeline started', args => rpc.emit('pipeline started', args))
-  forkRpc.on('pipeline complete', args => rpc.emit('pipeline complete', args))
-  forkRpc.on('pipeline log', args => rpc.emit('pipeline log', args))
-  forkRpc.on('task complete', args => rpc.emit('task complete', args))
-  forkRpc.on('task ignore', args => rpc.emit('task ignore', args))
+
   forkRpc.on('task started', args => rpc.emit('task started', args))
+  forkRpc.on('task log', args => rpc.emit('task log', args))
+  forkRpc.on('task complete', args => rpc.emit('task complete', args))
+  forkRpc.on('task error', args => rpc.emit('task error', args))
+  forkRpc.on('task ignore', args => rpc.emit('task ignore', args))
 
-  forkRpc.on('pipeline error', error => {
-    rpc.emit('pipeline error', error)
+  forkRpc.on('unexpected error', error => {
+    rpc.emit('unexpected error', error)
     sentry.captureException(new JSONError(error.error))
-  })
-
-  forkRpc.on('error', error => {
-    rpc.emit('error', error)
-    sentry.captureException(new JSONError(error))
   })
 
   rpc.on('init', () => {

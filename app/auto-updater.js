@@ -11,11 +11,10 @@ let isInit = false
 function init(rpc) {
   rpc.emit('log', 'in init')
   autoUpdater.on('error', (err, msg) => {
-    rpc.emit('error', `Error fetching updates: ${msg} (${err.stack})`)
+    rpc.emit('unexpected error', `Error fetching updates: ${msg} (${err.stack})`)
     rpc.emit('log', `Error fetching updates: ${msg} (${err.stack})`)
   })
 
-  rpc.emit('log', 'setting feed url')
   autoUpdater.setFeedURL(`${FEED_URL}/${version}`)
 
   setTimeout(() => {
@@ -28,7 +27,6 @@ function init(rpc) {
     autoUpdater.checkForUpdates()
   }, ms('5m'))
 
-  rpc.emit('log', 'finished run through init')
   isInit = true
 }
 
@@ -43,12 +41,12 @@ module.exports = function (win, rpc) {
 
   autoUpdater.on('update-downloaded', onupdate)
 
-  autoUpdater.on('update-not-available', args => {
-    rpc.emit('log', `update-not-available ${args}`)
+  autoUpdater.on('update-not-available', () => {
+    rpc.emit('log', 'update-not-available')
   })
 
-  autoUpdater.on('checking-for-update', args => {
-    rpc.emit('log', `checking-for-update ${args}`)
+  autoUpdater.on('checking-for-update', () => {
+    rpc.emit('log', 'checking-for-update')
   })
 
   autoUpdater.on('update-available', args => {

@@ -205,14 +205,10 @@ class WatchDir extends React.Component {
                 {dir.processedFiles}/{dir.totalFiles} files processed
               </div>
               <div className="col-sm-12">
-                <span
-                  style={{ minHeight: '20px' }}
-                  dangerouslySetInnerHTML={{ __html: dir.lastLog }}
-                />
                 {dir.isStarted ?
                   <a
                     href="#"
-                    className="text-muted m-l-sm pull-right"
+                    className="text-muted m-l-sm"
                     onClick={onToggleLogsClick}
                   >
                   {dir.logsOpen ?
