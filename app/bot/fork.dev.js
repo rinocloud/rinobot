@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import rpc from './rpc-fork'
 import chokidar from 'chokidar'
+import moment from 'moment'
 import { Pipeline } from './pipeline'
 import { countWatched, flattenWatched } from './utils'
 
@@ -11,8 +12,8 @@ const fork = forkRpc => {
   const logs = {}
   const timers = {}
   const last = {}
-  const time = 1000
-  const smallTime = 200
+  const time = 0
+  const smallTime = 0
 
   const processFile = function processFile(index, path, watchPath, packagesDir, event) { // eslint-disable-line
     const pipeline = new Pipeline({
@@ -159,7 +160,7 @@ const fork = forkRpc => {
         }
       ) // eslint-disable-line
     }
-  }, time)
+  }, smallTime)
 
   const taskIgnore = _.throttle((index, pipe, task) => {
     if (!watchers[index].closed) {
@@ -175,7 +176,7 @@ const fork = forkRpc => {
         }
       ) // eslint-disable-line
     }
-  }, time)
+  }, smallTime)
 
   const taskStart = _.throttle((index, pipe, task) => {
     if (!watchers[index].closed) {
@@ -190,8 +191,7 @@ const fork = forkRpc => {
         }
       ) // eslint-disable-line
     }
-  }, time)
-
+  }, smallTime)
 
   const pipelineLog = function pipelineLog(index, pipe, log) {
     const task = () => {
@@ -203,11 +203,18 @@ const fork = forkRpc => {
     if (!_.has(logs, index)) {
       logs[index] = []
     }
+
     if (timers[index]) {
       clearTimeout(timers[index])
     }
 
-    logs[index].push(`${pipe.relPath}: ${log}`)
+    logs[index].push({
+      filepath: pipe.relPath,
+      status: 'active',
+      message: log,
+      datetime: moment()
+    })
+
     const now = new Date().getTime()
     if (last[index] && now < last[index] + time) {
       timers[index] = setTimeout(task, time)

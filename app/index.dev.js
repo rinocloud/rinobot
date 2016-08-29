@@ -74,14 +74,12 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   })
 
   win.on('close', () => {
-    console.log('ev:close destroying child processes and rpcs')
     child.kill()
     forkRpc.destroy()
     rpc.destroy()
   })
 
   win.on('closed', () => {
-    console.log('ev:quit')
     win = null
     app.quit()
   })

@@ -311,12 +311,11 @@ export class Pipeline {
         })
 
         t.ready(() => {
-          this.on_task_start(task)
           if (!t.ignored) {
-            console.log('running task')
+            this.on_task_start(task)
             t.run()
           } else {
-            console.log('ignoring task')
+            this.on_task_start(task)
             this.on_task_ignore(t)
             setTimeout(() => { callback() })
           }

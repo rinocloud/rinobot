@@ -26,6 +26,10 @@ class Server {
         this.wc.send('init', uid)
       })
     })
+
+    this.queue = []
+    this.timer = null
+    this.last = null
   }
 
   get wc() {
@@ -37,7 +41,31 @@ class Server {
   }
 
   emit(ch, data) {
-    this.wc.send(this.id, { ch, data })
+    // this.wc.send(this.id, { ch, data })
+
+    const payload = { ch, data }
+
+    console.log(payload)
+
+    const task = () => {
+      if (this.queue.length === 0) return
+      console.log('sending batch', JSON.stringify(this.queue))
+      this.wc.send(this.id, { ch: 'batch', data: this.queue })
+      this.queue = []
+    }
+
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+
+    this.queue.push(payload)
+    const now = new Date().getTime()
+    if (this.last && now < this.last + 500) {
+      this.timer = setTimeout(task, 500)
+    } else {
+      this.last = now
+      task()
+    }
   }
 
   on(ev, fn) {
