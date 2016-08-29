@@ -1,6 +1,6 @@
 import async from 'async'
 
-export function jobCallback(jobQueue, err) {
+export const jobCallback = (jobQueue, err) => {
   if (err) {
     const drain = jobQueue.drain
     jobQueue.kill()
@@ -8,19 +8,17 @@ export function jobCallback(jobQueue, err) {
   }
 }
 
-export function createQueue(funcArray) {
-  return function (funcArray, jobCallback, pipelineCallback) { // eslint-disable-line
-    const jobQueue = new async.queue(function (job, callback) { // eslint-disable-line
-      job(callback)
-    }, 1);
+export const createQueue = (funcArray) => (pipelineCallback) => {
+  const jobQueue = new async.queue(function (job, callback) { // eslint-disable-line
+    job(callback)
+  }, 1);
 
-    jobQueue.drain = pipelineCallback
-    jobQueue.push(funcArray, jobCallback.bind(null, jobQueue))
+  jobQueue.drain = pipelineCallback
+  jobQueue.push(funcArray, jobCallback.bind(null, jobQueue))
 
-    return jobQueue
-  }.bind(null, funcArray, jobCallback)
+  return jobQueue
 }
 
-export const pipelineQueue = async.queue((job, callback) => {
+export const queue = async.queue((job, callback) => {
   job(callback)
 }, 1)

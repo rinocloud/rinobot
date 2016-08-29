@@ -2,7 +2,7 @@ import _ from 'lodash'
 import rpc from './rpc-fork'
 import chokidar from 'chokidar'
 import moment from 'moment'
-import { Pipeline } from './pipeline'
+import createPipeline from './pipeline'
 import { flattenWatched } from './utils'
 
 /*
@@ -27,7 +27,9 @@ const watchers = {}
 const processedFiles = {}
 let timer
 
-forkRpc.on('watch', ({ path, index, packagesDir = null }) => {
+forkRpc.on('watch', (opts) => {
+  const { apiToken, config, path, index, pluginsDir } = opts
+
   if (!_.has(processedFiles, index)) processedFiles[index] = []
 
   forkRpc.emit('watcher started', { index })
@@ -41,7 +43,7 @@ forkRpc.on('watch', ({ path, index, packagesDir = null }) => {
     })
     .on('add', () => {
       clearTimeout(timer)
-      timer = setTimeout(add(watcher, { index, watchPath: path, packagesDir }), 0)
+      timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 0)
     })
     .on('ready', () => {
       ready(this, index, t0)
@@ -58,10 +60,9 @@ forkRpc.on('unwatch', ({ index }) => {
 const add = (watcher, arg) => () => {
   const allFiles = flattenWatched(watcher.getWatched())
   forkRpc.emit('watcher set total files', { index: arg.index, numFiles: allFiles.length })
-  _.each(allFiles, (file) => {
-    console.log(file, !processedFiles[arg.index].includes(file))
-    if (!processedFiles[arg.index].includes(file)) {
-      processFile(arg.index, { ...arg, path: file })
+  _.each(allFiles, (filepath) => {
+    if (!processedFiles[arg.index].includes(filepath)) {
+      processFile(arg.index, { ...arg, filepath })
     }
   })
 }
@@ -76,59 +77,49 @@ const ready = (watcher, index, t0) => {
 }
 
 const processFile = (index, opts) => {
-  const { path, watchPath, packagesDir } = opts
+  const { filepath, baseDir, pluginsDir, apiToken, config } = opts
 
-  const pipeline = new Pipeline({
-    packagesDir,
-    watchPath,
-    path,
+  createPipeline({
+    pluginsDir,
+    apiToken,
+    filepath,
+    baseDir,
+    config,
 
-    on_task_start: (pipe, task) => {
-      console.log('starting task', pipe.relPath, task.command)
-      taskStart(index, pipe, task)
+    onTaskStart: (task) => {
+      taskStart(index, task)
     },
 
-    on_task_log: (pipe, task, log) => {
-      taskLog(index, pipe, task, log)
+    onTaskLog: (task, log) => {
+      taskLog(index, task, log)
     },
 
-    on_task_complete: (pipe, task) => {
-      console.log('completed task', pipe.relPath, task.command)
-      taskComplete(index, pipe, task)
-      finishedFile(index, path)
+    onTaskComplete: (task) => {
+      taskComplete(index, task)
+      finishedFile(index, filepath)
     },
 
-    on_task_ignore: (pipe, task) => {
-      console.log('ignored task', pipe.relPath, task.command)
-      taskIgnore(index, pipe, task)
-      finishedFile(index, path)
+    onTaskIgnore: (task) => {
+      taskIgnore(index, task)
+      finishedFile(index, filepath)
     },
 
-    on_task_error: (pipe, task) => {
-      console.log('error task', pipe.relPath, task.command)
-      taskError(index, pipe, task)
-      finishedFile(index, path)
+    onTaskError: (task) => {
+      taskError(index, task)
+      finishedFile(index, filepath)
     },
 
-    on_error: (pipe, error) => {
+    onError: (error) => {
       unexpectedError(error)
-      finishedFile(index, path)
+      finishedFile(index, filepath)
     }
 
-  })
-
-  pipeline.ready(() => {
-    if (!pipeline.ignored) {
-      pipeline.run()
-    } else {
-      finishedFile(index, path)
-    }
   })
 }
 
-const finishedFile = (index, path) => {
-  if (!processedFiles[index].includes(path)) {
-    processedFiles[index].push(path)
+const finishedFile = (index, filepath) => {
+  if (!processedFiles[index].includes(filepath)) {
+    processedFiles[index].push(filepath)
   }
 
   forkRpc.emit('watcher set processed files', {
@@ -137,12 +128,12 @@ const finishedFile = (index, path) => {
   })
 }
 
-const taskStart = (index, pipe, task) => {
+const taskStart = (index, task) => {
   forkRpc.emit(
     'task started',
     {
       index,
-      filepath: pipe.relPath,
+      filepath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -151,13 +142,13 @@ const taskStart = (index, pipe, task) => {
   )
 }
 
-const taskLog = (index, pipe, task, log) => {
+const taskLog = (index, task, log) => {
   forkRpc.emit(
     'task log',
     {
       index,
       log,
-      filepath: pipe.relPath,
+      filepath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -166,12 +157,12 @@ const taskLog = (index, pipe, task, log) => {
   )
 }
 
-const taskComplete = (index, pipe, task) => {
+const taskComplete = (index, task) => {
   forkRpc.emit(
     'task complete',
     {
       index,
-      filepath: pipe.relPath,
+      filepath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -180,12 +171,12 @@ const taskComplete = (index, pipe, task) => {
   )
 }
 
-const taskIgnore = (index, pipe, task) => {
+const taskIgnore = (index, task) => {
   forkRpc.emit(
     'task ignore',
     {
       index,
-      filepath: pipe.relPath,
+      filepath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -195,12 +186,12 @@ const taskIgnore = (index, pipe, task) => {
   )
 }
 
-const taskError = (index, pipe, task, error) => {
+const taskError = (index, task, error) => {
   forkRpc.emit(
     'task error',
     {
       index,
-      filepath: pipe.relPath,
+      filepath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
