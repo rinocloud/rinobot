@@ -196,19 +196,17 @@ class WatchDir extends React.Component {
           <div className="m-t configForm">
             <div className="row">
               <div className="col-sm-12">
-                {dir.isBusy ?
+                {/*{dir.isBusy ?
                   <i className="fa fa-spinner fa-spin"></i>
                 :
                   <i className="fa fa-check"></i>
-                }
-                {'  '}
+                }*/}
+                {/*{'  '}*/}
                 {dir.processedFiles}/{dir.totalFiles} files processed
-              </div>
-              <div className="col-sm-12">
                 {dir.isStarted ?
                   <a
                     href="#"
-                    className="text-muted m-l-sm"
+                    className="text-muted m-l-sm pull-right"
                     onClick={onToggleLogsClick}
                   >
                   {dir.logsOpen ?
@@ -218,6 +216,9 @@ class WatchDir extends React.Component {
                     }
                   </a>
                 : null}
+
+              </div>
+              <div className="col-sm-12">
                 {dir.logsOpen ?
                   <LogScroll logs={dir.logs} />
                 : null

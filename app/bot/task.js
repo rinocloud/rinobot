@@ -1,50 +1,16 @@
-import globule from 'globule'
-import _ from 'lodash'
-import omit from 'lodash/omit'
-import trim from 'lodash/trim'
+import { spawn } from 'child_process'
 import series from 'async/series'
-import map from 'lodash/map'
+import globule from 'globule'
+import crypto from 'crypto'
 import fs from 'fs-extra'
 import swig from 'swig'
+import _ from 'lodash'
 import pt from 'path'
 import mv from 'mv'
-import crypto from 'crypto'
-import { exec, spawn } from 'child_process'
+import { checkPythonVersion } from './utils'
 
-export const checkPythonVersion = (cb) => {
-  // returns callback with values 2, 3 or false
-  exec('python3 -V', (error) => {
-    if (error) {
-      exec('python -V', (error) => { // eslint-disable-line
-        if (error) cb(false)
-        else cb('python')
-      })
-    } else {
-      cb('python3')
-    }
-  })
-}
 
 export class Task {
-  /*
-  const task = new Task(options)
-
-  options has properties:
-
-  metadata: {}, any metadata to add to the command line task and upload,
-  filename: the filename,
-  relPath: relative path from the file to the watchPath,
-  command: command to run - either a rinocloud command or a cli program,
-  args: arguments for the command line program,
-  cwd: where to set the cwd if its a cli program,
-  event: the chokidar event,
-  match: glob to match the task with the filename,
-
-  on_complete: function (task),
-  on_error: function (task),
-  on_log: function (task),
-  */
-
   constructor(options) {
     this.readyFunc = () => {}
     this.ignored = false
@@ -139,7 +105,7 @@ export class Task {
   }
 
   print() {
-    return omit(this, ['metadata', '_response'])
+    return _.omit(this, ['metadata', '_response'])
   }
 
   upload() {
@@ -228,9 +194,9 @@ export class Task {
   }
 
   pythonPlugin() {
-    const args = trim(swig.render(`${this.codePath} {{filepath}}`, { locals: this.getLocals() }))
+    const args = _.trim(swig.render(`${this.codePath} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.split(/\\ /g).join(magicDelimiter).split(' '), (arg) =>
+    const tokens = _.map(args.split(/\\ /g).join(magicDelimiter).split(' '), (arg) =>
       arg.split(new RegExp(magicDelimiter, 'g')).join('\ ') // eslint-disable-line
     )
 
@@ -254,9 +220,9 @@ export class Task {
   }
 
   python() {
-    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() })) // eslint-disable-line
+    const args = _.trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() })) // eslint-disable-line
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
+    const tokens = _.map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
     )
 
@@ -287,9 +253,9 @@ export class Task {
   }
 
   rscript() {
-    const args = trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() }))
+    const args = _.trim(swig.render(`${this.escapeShellArg(this.args)} {{filepath}}`, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
+    const tokens = _.map(args.replace(/\\ /g, magicDelimiter).split(' '), arg =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ').replace(/ /g, '\ ') // eslint-disable-line
     )
 
@@ -347,7 +313,7 @@ export class Task {
 
   copy() {
     this.on_log('starting copy')
-    const args = trim(swig.render(this.args, { locals: this.getLocals() }))
+    const args = _.trim(swig.render(this.args, { locals: this.getLocals() }))
     fs.copy(this.path, pt.join(args, this.filename), err => {
       if (err) return this.on_error(err)
       return this.on_complete()
@@ -356,7 +322,7 @@ export class Task {
 
   move() {
     this.on_log('starting move')
-    const args = trim(swig.render(this.args, { locals: this.getLocals() }))
+    const args = _.trim(swig.render(this.args, { locals: this.getLocals() }))
     mv(this.path, pt.join(args, this.filename), { mkdirp: true, clobber: true }, (err) => {
       if (err) return this.on_error(err)
       return this.on_complete()
@@ -364,9 +330,9 @@ export class Task {
   }
 
   processCommandLineTask() {
-    const args = trim(swig.render(this.args, { locals: this.getLocals() }))
+    const args = _.trim(swig.render(this.args, { locals: this.getLocals() }))
     const magicDelimiter = ',,,xxx123'
-    const tokens = map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
+    const tokens = _.map(args.replace(/\\ /g, magicDelimiter).split(' '), (arg) =>
       arg.replace(new RegExp(magicDelimiter, 'g'), '\ ') // eslint-disable-line
     )
 

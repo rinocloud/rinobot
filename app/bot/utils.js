@@ -1,9 +1,6 @@
 import pt from 'path'
 import _ from 'lodash'
-
-export const countWatched = (_watched) => {
-  return flattenWatched(_watched).length
-}
+import { exec } from 'child_process'
 
 
 export const flattenWatched = (_watched) =>
@@ -19,3 +16,17 @@ export const flattenWatched = (_watched) =>
       , [])
     )
   )
+
+export const checkPythonVersion = (cb) => {
+  // returns callback with values 2, 3 or false
+  exec('python3 -V', (error) => {
+    if (error) {
+      exec('python -V', (error) => { // eslint-disable-line
+        if (error) cb(false)
+        else cb('python')
+      })
+    } else {
+      cb('python3')
+    }
+  })
+}
