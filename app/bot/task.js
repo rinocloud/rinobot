@@ -39,7 +39,7 @@ export class Task {
 
     series([
       this.createHash.bind(this),
-      this.doIgnore.bind(this),
+      this.checkIgnore.bind(this),
     ], () => {
       this.readyFunc()
     })
@@ -49,6 +49,13 @@ export class Task {
     this.readyFunc = readyFunc
   }
 
+  done() {
+    // this is where we insert the hash into
+    // some record file, then we call onComplete
+
+    this.onComplete()
+  }
+
   createHash(done) {
     fs.readFile(this.filepath, (err, data) => {
       if (err) return this.onError(err)
@@ -56,29 +63,27 @@ export class Task {
       hash
         .update(data)
         .update(this.command)
+        .update(this.filepath)
       const digest = hash.digest('base64')
       this.hash = digest
       done()
     })
   }
 
-  doIgnore(cb) {
+  checkIgnore(cb) {
+    if (globule.isMatch(['*.json', '*.yaml', '*.yml'], this.filename)) {
+      // do sync
+    }
+
     if (!globule.isMatch(this.match, this.filename)) {
       this.ignored = true
       this.reason = 'Filename doesnt match task glob'
     }
 
-    if (this.relativePath.indexOf('.rino') > -1) {
+    if (this.filepath.indexOf('.rino') > -1) {
       this.ignored = true
       this.reason = 'Ignoring .rino repository'
     }
-
-    fs.lstat(this.filepath, (stat) => {
-      if (stat && stat.isDirectory()) {
-        this.ignored = true
-        this.reason = 'Ignoring directory'
-      }
-    })
 
     if (
         _.has(this.completedTaskHashList, this.command) &&
@@ -147,7 +152,7 @@ export class Task {
       relativePath: this.relativePath,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -159,7 +164,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -170,7 +175,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -182,7 +187,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -193,7 +198,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -205,7 +210,7 @@ export class Task {
       command: this.command,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -216,7 +221,7 @@ export class Task {
       filepath: this.filepath,
       filename: this.filename,
       onError: this.onError,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 
@@ -227,7 +232,7 @@ export class Task {
       filepath: this.filepath,
       filename: this.filename,
       onError: this.onError,
-      onComplete: this.onComplete
+      onComplete: this.done
     })
   }
 }
