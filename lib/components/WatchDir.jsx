@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
-import { Tree } from './Tree'
 const { shell } = require('electron')
 
 
@@ -22,8 +21,6 @@ class WatchDir extends React.Component {
 
   render() {
     const { dir, packagesConfig } = this.props
-
-    console.log('render ', dir.files)
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -81,9 +78,9 @@ class WatchDir extends React.Component {
     )
 
     return (
-      <div className="p-a bordered m-t">
+      <div className="p-a bordered m-l" style={{ 'margin-top': '50px' }}>
         <div className="row">
-          <div className="col-sm-12 lead">
+          <div className="col-sm-12 lead m-t">
             <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
           </div>
         </div>
@@ -212,32 +209,21 @@ class WatchDir extends React.Component {
                   style={{ minHeight: '20px' }}
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
                 />
-
-                {dir.isStarted &&
-                  <div className="m-t">
-                    <a
-                      href="#"
-                      className="text-muted m-l-sm"
-                      onClick={onToggleLogsClick}
-                    >
-                    {dir.logsOpen ?
-                      <span className="text-muted"><i className="fa fa-compress"></i> close details</span> // eslint-disable-line
-                      :
-                      <span className="text-muted"><i className="fa fa-expand"></i> open details</span>
-                      }
-                    </a>
-                  </div>
-                }
+                {dir.isStarted ?
+                  <a
+                    href="#"
+                    className="text-muted m-l-sm pull-right"
+                    onClick={onToggleLogsClick}
+                  >
+                  {dir.logsOpen ?
+                    <span className="text-muted"><i className="fa fa-compress"></i> close logs</span> // eslint-disable-line
+                    :
+                    <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
+                    }
+                  </a>
+                : null}
                 {dir.logsOpen ?
-                  <div>
-                    {/* <LogScroll logs={dir.logs} />*/}
-                    <div className="p-a bordered m-t bg-muted">
-                      <div className="row">
-                        <pre className="pull-left  col-sm-12"> File/Folder Status</pre>
-                        <Tree key={`Tree${dir.files.length}`} initialList={dir.files} />
-                      </div>
-                    </div>
-                  </div>
+                  <LogScroll logs={dir.logs} />
                 : null
                 }
               </div>

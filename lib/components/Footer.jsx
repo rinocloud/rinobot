@@ -34,9 +34,9 @@ class Footer extends React.Component {
     )
 
     return (
-      <div className="footer text-muted">
+      <div className="footer text-muted bottom-align-text">
         <div className="row">
-          <div className="col-sm-10">
+          <div className="col-sm-9">
             {ui.pythonVersion === false ?
               <span>
                 No python found, please install {pythonLink} to use plugins.
@@ -50,7 +50,7 @@ class Footer extends React.Component {
             :
             ''}
           </div>
-          <div className="col-sm-2">
+          <div className="col-sm-2 m-t">
             Rinobot v{ui.rinobotVersion}
           </div>
         </div>

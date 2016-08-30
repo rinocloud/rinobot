@@ -40,7 +40,7 @@ body {
 
 .notification-container {
   position: fixed;
-  bottom: 60px;
+  bottom: 20px;
   right: 20px;
 }
 
@@ -67,6 +67,7 @@ html, body {
 
 .wrapper {
   min-height: 100%;
+  background-color: red;
   /* Equal to height of footer */
   /* But also accounting for potential margin-bottom of last child */
   margin-bottom: -50px;
@@ -84,20 +85,29 @@ html, body {
   height: 100%;
 }
 
-.bg-ignored {
-  background-color: #DCDCDC;
-}
-a.bg-ignored:hover,
-a.bg-ignored:focus {
-  background-color: #e4b9b9;
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    overflow-y: auto;
+    padding-right: 20px;
+    border-right: 4px solid #eee;
+    background-color: #9C27B0;
+    color: white;
 }
 
-.bg-rino {
-  background-color: #DDA0DD;
+.main-container {
+    padding-left: 60px !important;
+    padding-right: 60px !important;
+    min-height: 100%;
+    background-color:white;
+    margin-bottom: -50px;
+    margin-top: 30px
 }
-a.bg-rino:hover{
-  background-color: red;
-}
-a.bg-rino:focus {
-  background-color: yellow;
+
+.main {
+    padding-right: 40px;
+    padding-left: 40px;
 }

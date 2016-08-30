@@ -95,7 +95,7 @@ class InstalledPackages extends React.Component {
 
     return (
       <div className="container">
-        <div className="row">
+        <div className="row m-l">
           <div className="col-sm-12 row">
             <h2 className="lead">
               Plugins{'  '}

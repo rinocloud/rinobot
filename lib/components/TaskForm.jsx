@@ -124,7 +124,7 @@ class TaskForm extends React.Component {
 
         </div>
 
-        <div className="col-xs-2">
+        <div className="col-xs-3">
           <small> Add file to match </small>
           {pop ?
             <OverlayTrigger
