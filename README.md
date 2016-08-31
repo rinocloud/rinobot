@@ -58,3 +58,15 @@ Let Eoin do the packaging for now
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
+
+## Storage idea
+{
+  filepath: {
+    id - rinocloud id or null,
+    etag - file etag - calculated locally,
+    created - ISO date string
+    completed: [
+      task name - task argument - ISO date string,
+    ]
+  },
+}

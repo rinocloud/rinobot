@@ -28,10 +28,9 @@ const processedFiles = {}
 let timer
 
 forkRpc.on('watch', (opts) => {
-  const { apiToken, config, path, index, pluginsDir } = opts
+  const { apiToken, config, path, index, pluginsDir } = opts // path is folder path
 
   if (!_.has(processedFiles, index)) processedFiles[index] = []
-
   forkRpc.emit('watcher started', { index })
   const t0 = new Date()
 
@@ -43,7 +42,7 @@ forkRpc.on('watch', (opts) => {
     })
     .on('add', () => {
       clearTimeout(timer)
-      timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 0)
+      timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 500)
     })
     .on('ready', () => {
       ready(this, index, t0)

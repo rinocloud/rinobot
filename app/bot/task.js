@@ -12,6 +12,7 @@ import runCommand from './runCommand'
 import runUpload from './runUpload'
 import runCopy from './runCopy'
 import runMove from './runMove'
+import hashFile from './hashFile'
 
 export class Task {
   constructor(opts) {
@@ -49,22 +50,24 @@ export class Task {
     this.readyFunc = readyFunc
   }
 
-  done() {
+  done(response) {
     // this is where we insert the hash into
     // some record file, then we call onComplete
+    console.log(response.body)
+    console.log()
 
     this.onComplete()
   }
 
   createHash(done) {
-    fs.readFile(this.filepath, (err, data) => {
+    hashFile(this.filepath, (err, fileHash) => {
       if (err) return this.onError(err)
       const hash = crypto.createHash('md5')
       hash
-        .update(data)
+        .update(fileHash)
         .update(this.command)
         .update(this.filepath)
-      const digest = hash.digest('base64')
+      const digest = hash.digest('hex')
       this.hash = digest
       done()
     })
@@ -92,6 +95,7 @@ export class Task {
       this.ignored = true
       this.reason = 'Task already completed'
     }
+
     cb()
   }
 
