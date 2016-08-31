@@ -6,10 +6,10 @@ import moment from 'moment'
 
 export default (historyFilePath, targetFilepath, obj, cb) => {
   mkdirp(pt.dirname(historyFilePath), (error) => {
-    if (error) return cb(error)
+    if (error) return cb(error, null)
 
     fs.readFile(historyFilePath, 'utf8', (err, data) => {
-      if (err && err.code !== 'ENOENT') return cb(err)
+      if (err && err.code !== 'ENOENT') return cb(err, null)
 
       let history
       if (err && err.code === 'ENOENT') {
@@ -36,8 +36,8 @@ export default (historyFilePath, targetFilepath, obj, cb) => {
       }
 
       fs.writeFile(historyFilePath, JSON.stringify(history, null, 2), (err) => { // eslint-disable-line
-        if (err) cb(err)
-        else cb()
+        if (err) cb(err, null)
+        else cb(null, history)
       })
     })
   })

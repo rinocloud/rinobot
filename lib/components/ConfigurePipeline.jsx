@@ -109,6 +109,17 @@ class ConfigurePipeline extends React.Component {
       </Popover>
     )
 
+    const MetadataOverlay = (
+      <Popover
+        id="popover-trigger-hover-focus"
+      >
+        <small>
+          This is where you can add metadata to all files which will be uploaded.
+          Metadata can also be referenced in task arguments. Click to learn more.
+        </small>
+      </Popover>
+    )
+
     const taskTitle = (
       <span>
         Task{'  '}
@@ -125,17 +136,6 @@ class ConfigurePipeline extends React.Component {
           </a>
         </OverlayTrigger>
       </span>
-    )
-
-    const MetadataOverlay = (
-      <Popover
-        id="popover-trigger-hover-focus"
-      >
-        <small>
-          This is where you can add metadata to all files which will be uploaded.
-          Metadata can also be referenced in task arguments. Click to learn more.
-        </small>
-      </Popover>
     )
 
     const metadataTitle = (

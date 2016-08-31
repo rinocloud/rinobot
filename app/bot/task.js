@@ -109,10 +109,14 @@ export class Task {
     const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
     mergeHistory(historyFilePath, this.filepath, {
       etag: this.etag,
-      lastRun: moment().toISOString()
-    }, err => {
+      lastRun: moment().toISOString(),
+      current: this.ignored ? null : this.command
+    }, (err, history) => {
       if (err) this.onError(err)
-      else cb()
+      else {
+        this.history = history
+        cb()
+      }
     })
   }
 
@@ -133,10 +137,12 @@ export class Task {
           lastRun,
           etag: this.etag,
           completed,
+          current: null,
           id: response ? response.body.id : null,
         },
-      er => {
+      (er, _history) => {
         if (er) return this.onError(er)
+        this.history = _history
         this.onComplete()
       })
     })

@@ -219,10 +219,7 @@ class WatchDir extends React.Component {
 
               </div>
               <div className="col-sm-12">
-                {dir.logsOpen ?
-                  <LogScroll logs={dir.logs} />
-                : null
-                }
+                 {dir.logsOpen && <LogScroll history={dir.history} />}
               </div>
             </div>
           </div>

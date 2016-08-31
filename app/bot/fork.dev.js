@@ -128,6 +128,8 @@ const finishedFile = (index, filepath) => {
 }
 
 const taskStart = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task started',
     {
@@ -157,6 +159,8 @@ const taskLog = (index, task, log) => {
 }
 
 const taskComplete = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task complete',
     {
@@ -171,6 +175,8 @@ const taskComplete = (index, task) => {
 }
 
 const taskIgnore = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task ignore',
     {
