@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as authActions from '../actions/auth'
 import { Nav, NavItem } from 'react-bootstrap'
-import { Footer } from './Footer'
+
 const { shell } = require('electron')
 
 class Navbar extends React.Component {
@@ -10,11 +10,11 @@ class Navbar extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    // eventKey: PropTypes.number,
+    location: PropTypes.object.isRequired,
   }
 
   render() {
-    const { dispatch, auth } = this.props
+    const { dispatch, auth, } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -26,49 +26,61 @@ class Navbar extends React.Component {
       dispatch(authActions.logout())
     }
 
-    // const handleSelect = (e) => {
-    //   e.preventDefault()
-    //   this.setState({ eventKey: !this.state.eventKey })
-    // }
+    const currentLocation = this.props.location.hash
+    const isHome = currentLocation.includes('#/?')
+    const isPlugins = currentLocation.includes('installed_packages')
 
+    console.log(location)
 
     return (
       <div>
         <div className="sidebar">
           <div className="m-t">
-            <h2 className="lead m-t m-l">Rinobot</h2>
+            <h2 className="lead m-t m-l">Rinobot <i className="fa fa-bell"></i> </h2>
           </div>
-          <Nav
-            bsStyle="pills"
-            //  stacked activeKey={1}
-            //  onSelect={(e) => {
-            //    e.preventDefault()
-            //    handleSelect(e)
-            //  }}
-          >
-            <div className="m-t">
-              <NavItem eventKey={1} href="/home">
+          <Nav bsStyle="pills">
+            <div className="m-t m-r">
+              <NavItem>
                 <Link to="/">
-                  <i className="m-l fa fa-crosshairs"></i> Watched Folders
+                {isHome ?
+                  <div style={{ 'backgroundColor': '#4e3156' }}>
+                    <span className="text-muted m-r" style={{ display: 'inline-block' }}>
+                      <i className="m-l fa fa-crosshairs"></i> Watched Folders
+                    </span>
+                  </div>
+                    :
+                  <div style={{ 'backgroundColor': '#674172' }}>
+                    <span className="text-muted m-r" style={{ display: 'inline-block' }}>
+                      <i className="m-l fa fa-crosshairs"></i> Watched Folders
+                    </span>
+                  </div>
+                }
                 </Link>
               </NavItem>
-              <div className="m-t">
-                <NavItem eventKey={2} title="Item">
-                  <Link to="/installed_packages" className="m-l">
-                    <i className=" fa fa-line-chart"></i> Plugins
-                  </Link>
-                </NavItem>
-              </div>
-              <div className="m-t"></div>
-              <NavItem eventKey={3} title="Item">
-                <a
-                  href="http://docs.rinocloud.com/rinobot/"
-                  className="m-l"
-                  onClick={openExternal}
-                >
-                  <i className="fa fa-book"></i> Documentation
-                </a>
+              <NavItem>
+                <Link className="m-l text-muted" to="/installed_packages">
+                {isPlugins ?
+                  <div style={{ 'backgroundColor': '#4e3156' }}>
+                    <span className="text-muted m-l" style={{ display: 'inline-block' }}>
+                      <i className=" fa fa-line-chart"></i> Plugins
+                    </span>
+                  </div>
+                  :
+                  <div style={{ 'backgroundColor': '#674172' }}>
+                    <span className="text-muted m-l" style={{ display: 'inline-block' }}>
+                      <i className=" fa fa-line-chart"></i> Plugins
+                    </span>
+                  </div>
+                }
+                </Link>
               </NavItem>
+              <a
+                href="http://docs.rinocloud.com/rinobot/"
+                className="m-l text-muted"
+                onClick={openExternal}
+              >
+                <i className="fa fa-book"></i> Documentation
+              </a>
             </div>
           </Nav>
         </div>

@@ -39,8 +39,6 @@ class InstalledPackages extends React.Component {
   render() {
     const { dispatch, plugins } = this.props
     let registry = _.map(plugins.pluginRegistry, p => {
-      console.log(p['dist-tags'].latest, plugins.config.dependencies[p.name])
-
       const isInstalled = _.has(plugins.config.dependencies, p.name)
       let canUpdate = false
       if (isInstalled && p['dist-tags']) {
@@ -94,10 +92,10 @@ class InstalledPackages extends React.Component {
     }
 
     return (
-      <div className="container">
-        <div className="row m-l">
-          <div className="col-sm-12 row">
-            <h2 className="lead">
+      <div className="p-a m-t m-l">
+        <div className="row">
+          <div className="col-sm-12 row m-l">
+            <h2 className="lead m-t m-r">
               Plugins{'  '}
               {plugins.isSearching ?
                 <small className="text-muted">

@@ -94,8 +94,8 @@ html, body {
     overflow-y: auto;
     padding-right: 20px;
     border-right: 4px solid #eee;
-    background-color: #9C27B0;
-    color: white;
+    background-color: #674172;
+    color: #E6E9ED;
 }
 
 .main-container {
@@ -104,10 +104,16 @@ html, body {
     min-height: 100%;
     background-color:white;
     margin-bottom: -50px;
-    margin-top: 30px
-}
+    margin-top: 30px;
+  }
 
 .main {
     padding-right: 40px;
     padding-left: 40px;
 }
+
+.bottom-align-text {
+    position: absolute;
+    bottom: 100px;
+    right: 200px;
+  }

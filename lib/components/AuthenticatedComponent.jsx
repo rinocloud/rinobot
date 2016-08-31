@@ -40,9 +40,9 @@ export function requireAuthentication(Component) {
     render() {
       const { auth, ui, dispatch } = this.props
       return (
-        <div style={{minHeight: '100%'}}>
-          <div className="main-container col-sm-11 col-sm-offset-1">
-            <Navbar dispatch={dispatch} auth={auth} />
+        <div style={{ minHeight: '100%' }}>
+          <div className="main-container col-sm-  11 col-sm-offset-1">
+            <Navbar location={location} dispatch={dispatch} auth={auth} />
             <div className="main row" style={{ minHeight: '100%' }}>
               <Notifications ui={ui} dispatch={dispatch} />
               {auth.statusText}
@@ -52,8 +52,8 @@ export function requireAuthentication(Component) {
               }
             </div>
           </div>
-          <div className="push-down"></div>
-          <Footer ui={ui} />
+          <div className="bottom-align-text col-sm-12"> </div>
+            <Footer ui={ui} />
         </div>
       )
     }

@@ -78,14 +78,14 @@ class WatchDir extends React.Component {
     )
 
     return (
-      <div className="p-a bordered m-l" style={{ 'margin-top': '50px' }}>
+      <div className="p-a m-t m-l">
         <div className="row">
-          <div className="col-sm-12 lead m-t">
+          <div className="col-sm-12 lead m-t m-l">
             <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
           </div>
         </div>
         <div className="row">
-          <div className="col-sm-12">
+          <div className="col-sm-12 m-l">
             <OverlayTrigger
               trigger={['hover']}
               placement="bottom"
@@ -195,7 +195,7 @@ class WatchDir extends React.Component {
         {dir.isStarted ?
           <div className="m-t configForm">
             <div className="row">
-              <div className="col-sm-12">
+              <div className="col-sm-12 m-l">
                 {dir.isBusy ?
                   <i className="fa fa-spinner fa-spin"></i>
                 :
@@ -204,7 +204,7 @@ class WatchDir extends React.Component {
                 {'  '}
                 {dir.processedFiles}/{dir.totalFiles} files processed
               </div>
-              <div className="col-sm-12">
+              <div className="col-sm-12 m-l">
                 <span
                   style={{ minHeight: '20px' }}
                   dangerouslySetInnerHTML={{ __html: dir.lastLog }}
