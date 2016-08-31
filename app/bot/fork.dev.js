@@ -103,13 +103,13 @@ const processFile = (index, opts) => {
       finishedFile(index, filepath)
     },
 
-    onTaskError: (task) => {
-      taskError(index, task)
+    onTaskError: (task, error) => {
+      taskError(index, task, error)
       finishedFile(index, filepath)
     },
 
     onError: (error) => {
-      unexpectedError(error)
+      unexpectedError(index, error)
       finishedFile(index, filepath)
     }
 

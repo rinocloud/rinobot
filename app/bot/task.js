@@ -1,6 +1,7 @@
 import series from 'async/series'
 import globule from 'globule'
 import crypto from 'crypto'
+import moment from 'moment'
 import fs from 'fs-extra'
 import _ from 'lodash'
 import pt from 'path'
@@ -13,12 +14,14 @@ import runUpload from './runUpload'
 import runCopy from './runCopy'
 import runMove from './runMove'
 import hashFile from './hashFile'
+import mergeHistory from './mergeHistory'
+import readHistory from './readHistory'
 
 export class Task {
   constructor(opts) {
-    this.onComplete = opts.onComplete.bind(null, this)
-    this.onError = opts.onError.bind(null, this)
-    this.onLog = opts.onLog.bind(null, this)
+    this.onComplete = () => opts.onComplete(this)
+    this.onError = (err) => opts.onError(this, err)
+    this.onLog = (message) => opts.onLog(this, message)
 
     this.filepath = opts.filepath
     this.baseDir = opts.baseDir
@@ -27,7 +30,6 @@ export class Task {
     this.command = opts.command
     this.match = opts.match
     this.args = opts.args || ''
-    this.completedTaskHashList = opts.completedTaskHashList
     this.apiToken = opts.apiToken
 
     this.readyFunc = () => {}
@@ -41,6 +43,7 @@ export class Task {
     series([
       this.createHash.bind(this),
       this.checkIgnore.bind(this),
+      this.writeInitialHistory.bind(this)
     ], () => {
       this.readyFunc()
     })
@@ -53,29 +56,47 @@ export class Task {
   done(response) {
     // this is where we insert the hash into
     // some record file, then we call onComplete
-    console.log(response.body)
-    console.log()
+    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+    const lastModified = moment().toISOString()
 
-    this.onComplete()
+    readHistory(historyFilePath, this.filepath, (err, history) => {
+      if (err) return this.onError(err)
+
+      const completed = _.clone(history.completed)
+      completed.push(`${this.command},${this.args},${lastModified}`)
+
+      mergeHistory(historyFilePath, this.filepath,
+        {
+          lastModified,
+          etag: this.etag,
+          completed,
+          id: response ? response.body.id : null,
+        },
+      er => {
+        if (er) return this.onError(er)
+        this.onComplete()
+      })
+    })
   }
 
-  createHash(done) {
-    hashFile(this.filepath, (err, fileHash) => {
+  createHash(cb) {
+    hashFile(this.filepath, (err, etag) => {
       if (err) return this.onError(err)
       const hash = crypto.createHash('md5')
       hash
-        .update(fileHash)
+        .update(etag)
         .update(this.command)
         .update(this.filepath)
       const digest = hash.digest('hex')
+      this.etag = etag
       this.hash = digest
-      done()
+      cb()
     })
   }
 
   checkIgnore(cb) {
     if (globule.isMatch(['*.json', '*.yaml', '*.yml'], this.filename)) {
-      // do sync
+      // do update of metadata
     }
 
     if (!globule.isMatch(this.match, this.filename)) {
@@ -88,15 +109,18 @@ export class Task {
       this.reason = 'Ignoring .rino repository'
     }
 
-    if (
-        _.has(this.completedTaskHashList, this.command) &&
-        this.completedTaskHashList[this.command] === this.hash
-    ) {
-      this.ignored = true
-      this.reason = 'Task already completed'
-    }
-
     cb()
+  }
+
+  writeInitialHistory(cb) {
+    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+    mergeHistory(historyFilePath, this.filepath, {
+      etag: this.etag,
+      lastModified: moment().toISOString()
+    }, err => {
+      if (err) this.onError(err)
+      else cb()
+    })
   }
 
   run() {
@@ -156,7 +180,7 @@ export class Task {
       relativePath: this.relativePath,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -168,7 +192,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -179,7 +203,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -191,7 +215,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -202,7 +226,7 @@ export class Task {
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -214,7 +238,7 @@ export class Task {
       command: this.command,
       onError: this.onError,
       onLog: this.onLog,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -225,7 +249,7 @@ export class Task {
       filepath: this.filepath,
       filename: this.filename,
       onError: this.onError,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 
@@ -236,7 +260,7 @@ export class Task {
       filepath: this.filepath,
       filename: this.filename,
       onError: this.onError,
-      onComplete: this.done
+      onComplete: this.done.bind(this)
     })
   }
 }

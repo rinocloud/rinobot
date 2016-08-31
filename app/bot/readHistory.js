@@ -18,17 +18,12 @@ import _ from 'lodash'
     })
 */
 
-export default (opts, cb) => {
-  const {
-    historyFilePath,
-    targetFilepath,
-  } = opts
-
+export default (historyFilePath, targetFilepath, cb) => {
   fs.readFile(historyFilePath, 'utf8', (err, data) => {
     if (err) cb(err, null)
     const history = JSON.parse(data)
 
-    if (_.hash(history, targetFilepath)) {
+    if (_.has(history, targetFilepath)) {
       cb(null, history[targetFilepath])
     } else {
       cb(null, null)
