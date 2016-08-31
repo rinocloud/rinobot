@@ -13,10 +13,7 @@ export default (historyFilePath, targetFilepath, obj, cb) => {
 
       let history
       if (err && err.code === 'ENOENT') {
-        history = {
-          createdOn: moment.toISOString(),
-          lastSynchronization: null,
-        }
+        history = {}
       } else {
         history = JSON.parse(data)
       }
@@ -28,7 +25,9 @@ export default (historyFilePath, targetFilepath, obj, cb) => {
         }
       } else {
         history[targetFilepath] = {
-          lastModified: null,
+          createdOn: moment().toISOString(),
+          lastSynchronization: null,
+          lastRun: null,
           etag: null,
           completed: [],
           id: null,

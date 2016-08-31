@@ -53,32 +53,6 @@ export class Task {
     this.readyFunc = readyFunc
   }
 
-  done(response) {
-    // this is where we insert the hash into
-    // some record file, then we call onComplete
-    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
-    const lastModified = moment().toISOString()
-
-    readHistory(historyFilePath, this.filepath, (err, history) => {
-      if (err) return this.onError(err)
-
-      const completed = _.clone(history.completed)
-      completed.push(`${this.command},${this.args},${lastModified}`)
-
-      mergeHistory(historyFilePath, this.filepath,
-        {
-          lastModified,
-          etag: this.etag,
-          completed,
-          id: response ? response.body.id : null,
-        },
-      er => {
-        if (er) return this.onError(er)
-        this.onComplete()
-      })
-    })
-  }
-
   createHash(cb) {
     hashFile(this.filepath, (err, etag) => {
       if (err) return this.onError(err)
@@ -109,17 +83,62 @@ export class Task {
       this.reason = 'Ignoring .rino repository'
     }
 
-    cb()
+    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+    readHistory(historyFilePath, this.filepath, (err, history) => {
+      if (err) {
+        this.ignored = true
+        return this.onError(err)
+      }
+
+      if (!history) {
+        return cb()
+      }
+
+      const taskString = `${this.command},${this.args}`
+
+      if (history.completed.includes(taskString)) {
+        this.ignored = true
+        this.reason = `Already ran ${this.command} with arguments ${this.args}`
+      }
+
+      cb()
+    })
   }
 
   writeInitialHistory(cb) {
     const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
     mergeHistory(historyFilePath, this.filepath, {
       etag: this.etag,
-      lastModified: moment().toISOString()
+      lastRun: moment().toISOString()
     }, err => {
       if (err) this.onError(err)
       else cb()
+    })
+  }
+
+  done(response) {
+    // this is where we insert the hash into
+    // some record file, then we call onComplete
+    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+    const lastRun = moment().toISOString()
+
+    readHistory(historyFilePath, this.filepath, (err, history) => {
+      if (err) return this.onError(err)
+
+      const completed = _.clone(history.completed)
+      completed.push(`${this.command},${this.args}`)
+
+      mergeHistory(historyFilePath, this.filepath,
+        {
+          lastRun,
+          etag: this.etag,
+          completed,
+          id: response ? response.body.id : null,
+        },
+      er => {
+        if (er) return this.onError(er)
+        this.onComplete()
+      })
     })
   }
 
