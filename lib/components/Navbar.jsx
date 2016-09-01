@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
+import * as watcherActions from '../actions/watcher'
 import * as authActions from '../actions/auth'
+const { dialog } = require('electron').remote
 import * as uiActions from '../actions/ui'
-import pt from 'path'
 const { shell } = require('electron')
+import pt from 'path'
+
 
 class Navbar extends React.Component {
 
@@ -25,6 +28,14 @@ class Navbar extends React.Component {
     const onClickLogout = (e) => {
       e.preventDefault()
       dispatch(authActions.logout())
+    }
+
+    const chooseFolder = (e) => {
+      e.preventDefault()
+      const paths = dialog.showOpenDialog({ properties: ['openDirectory', 'multiSelections'] })
+      if (paths) {
+        dispatch(watcherActions.addDir(paths[0]))
+      }
     }
 
     return (
@@ -70,7 +81,6 @@ class Navbar extends React.Component {
               >
                 <br />
                 {pt.basename(dir.path)}
-
               </a>
             )
           })}
