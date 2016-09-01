@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as authActions from '../actions/auth'
+import * as uiActions from '../actions/ui'
+import pt from 'path'
 const { shell } = require('electron')
 
 class Navbar extends React.Component {
@@ -8,10 +10,12 @@ class Navbar extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
+    watcher: PropTypes.object.isRequired,
+    ui: PropTypes.object.isRequired,
   }
 
   render() {
-    const { dispatch, auth } = this.props
+    const { dispatch, auth, watcher } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -53,6 +57,24 @@ class Navbar extends React.Component {
           >
             My rinocloud <i className="m-l-sm fa fa-external-link"></i>
           </a>
+
+          {watcher.dirs.map((dir, i) => {
+            return (
+              <a
+                href="#"
+                key={`dira${i}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  dispatch(uiActions.setCurrentDir(i))
+                }}
+              >
+                <br />
+                {pt.basename(dir.path)}
+
+              </a>
+            )
+          })}
+
         </div>
       </div>
     )

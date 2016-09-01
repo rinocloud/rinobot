@@ -12,6 +12,7 @@ export function requireAuthentication(Component) {
       dispatch: PropTypes.func.isRequired,
       auth: PropTypes.object.isRequired,
       ui: PropTypes.object.isRequired,
+      watcher: PropTypes.object.isRequired,
       location: PropTypes.object.isRequired,
     }
 
@@ -38,11 +39,11 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { auth, ui, dispatch } = this.props
+      const { auth, ui, dispatch, watcher } = this.props
       return (
         <div className="container">
           <div className="wrapper">
-            <Navbar dispatch={dispatch} auth={auth} />
+            <Navbar ui={ui} watcher={watcher} dispatch={dispatch} auth={auth} />
             <Notifications ui={ui} dispatch={dispatch} />
             {auth.statusText}
             {auth.access_token
@@ -59,6 +60,7 @@ export function requireAuthentication(Component) {
 
   return connect((state) => ({
     auth: state.auth,
-    ui: state.ui
+    ui: state.ui,
+    watcher: state.watcher,
   }))(AuthenticatedComponent)
 }

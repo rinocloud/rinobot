@@ -5,7 +5,7 @@ import moment from 'moment'
 
 class LogScroll extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
+    history: PropTypes.object
   }
 
   render() {
@@ -20,52 +20,51 @@ class LogScroll extends React.Component {
       return a > b ? -1 : a < b ? 1 : 0 // eslint-disable-line
     })
 
-    logs = logs.slice(0, 5)
-
-    console.log(logs)
+    logs = logs.slice(0, 50)
 
     return (
-      <div
-        className="m-t m-b"
-        style={{
-          backgroundColor: 'white',
-          overflowY: 'scroll'
-        }}
-      >
-        {_.map(logs, (l, i) => {
-          return (
-            <div
-              className="p-l"
-              style={{
-                marginTop: '10px'
-              }}
-              key={`log-${i}`}
-            >
-              <div className="row">
-                <div className="col-sm-11">
-                  {pt.basename(l.filepath)}
-                  <small className="text-muted m-l-sm">
-                    {moment(l.lastRun).fromNow()}
-                  </small>
-                </div>
-              </div>
-
-              {_.map(l.completed, (m, i) =>
-                <div
-                  key={`logmsg${i}`}
-                  className="row"
-                  style={{
-                    fontSize: '0.9em'
-                  }}
-                >
-                  <div className="col-sm-11 col-sm-offset-1 text-muted">
-                    {`>>> ${m}`}
-                  </div>
-                </div>
-              )}
-            </div>
-          )
-        })}
+      <div className="row">
+        <div className="col-sm-8">
+          <table
+            className="table m-t p-l"
+          >
+            <tbody>
+            {_.map(logs, (l, i) => {
+              return (
+                <tr key={`hist-${i}`}>
+                  <td>
+                    {l.completed.length ?
+                      <i className="fa fa-2 fa-file-text-o"></i>
+                      :
+                      <i className="fa fa-2 fa-file-text-o text-muted"></i>
+                    }
+                  </td>
+                  <td>
+                    <small>{pt.basename(l.filepath)}</small>
+                  </td>
+                  <td>
+                    <small className="text-muted">{moment(l.lastRun).fromNow()}</small>
+                  </td>
+                  <td style={{ minWidth: '250px' }}>
+                    {_.map(l.completed, (m, i) =>
+                      <small
+                        key={`msg${i}${l.lastRun}`}
+                        style={{ maxHeight: '30px', overflowX: 'scroll' }}
+                      >
+                        <i
+                          className="fa fa-level-up fa-rotate-90"
+                          style={{ marginRight: '6px' }}
+                        ></i>
+                        {m.split(',')[0]}<br />
+                      </small>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }

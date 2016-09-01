@@ -83,3 +83,10 @@ html, body {
 #root > div{
   height: 100%;
 }
+
+.table > tbody > tr > td{
+  padding: 8px;
+  line-height: 1.4;
+  vertical-align: top;
+  border-top: none;
+}
