@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { Navbar } from './Navbar'
+import { Sidebar } from './Sidebar'
 import { Footer } from './Footer'
 import { Notifications } from './Notifications'
 
@@ -47,7 +47,7 @@ export function requireAuthentication(Component) {
               <Notifications ui={ui} dispatch={dispatch} />
 
               <div className="sidebar p-0 m-0">
-                <Navbar location={location} ui={ui} watcher={watcher} dispatch={dispatch} auth={auth} />
+                <Sidebar location={location} ui={ui} watcher={watcher} dispatch={dispatch} auth={auth} />
               </div>
               <div className="col-sm-10 col-sm-offset-2 p-0 m-0">
 
