@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as authActions from '../actions/auth'
-import { Nav, NavItem } from 'react-bootstrap'
 
 const { shell } = require('electron')
 
@@ -36,53 +35,57 @@ class Navbar extends React.Component {
       <div>
         <div className="sidebar">
           <div className="m-t">
-            <h2 className="lead m-t m-l">Rinobot <i className="fa fa-bell"></i> </h2>
+            <h2 className="lead m-t m-l">Rinobot </h2>
           </div>
-          <Nav bsStyle="pills">
-            <div className="m-t m-r">
-              <NavItem>
+          <ul className="nav nav-siderbar m-t">
+            <div className="m-t">
+              <il>
                 <Link to="/">
                 {isHome ?
-                  <div style={{ 'backgroundColor': '#4e3156' }}>
-                    <span className="text-muted m-r" style={{ display: 'inline-block' }}>
-                      <i className="m-l fa fa-crosshairs"></i> Watched Folders
+                  <div className="background-rino1">
+                    <span className="text-rino" style={{ display: 'inline-block' }}>
+                      <i className="m-l fa fa-crosshairs fa-lg"></i> Watched Folders
                     </span>
                   </div>
                     :
-                  <div style={{ 'backgroundColor': '#674172' }}>
-                    <span className="text-muted m-r" style={{ display: 'inline-block' }}>
-                      <i className="m-l fa fa-crosshairs"></i> Watched Folders
+                  <div className="background-rinono1">
+                    <span className="text-rino" style={{ display: 'inline-block' }}>
+                      <i className="m-l fa fa-crosshairs fa-lg"></i> Watched Folders
                     </span>
                   </div>
                 }
                 </Link>
-              </NavItem>
-              <NavItem>
-                <Link className="m-l text-muted" to="/installed_packages">
+              </il>
+              <il>
+                <Link className="m-l text-rino" to="/installed_packages">
                 {isPlugins ?
-                  <div style={{ 'backgroundColor': '#4e3156' }}>
-                    <span className="text-muted m-l" style={{ display: 'inline-block' }}>
-                      <i className=" fa fa-line-chart"></i> Plugins
+                  <div className="background-rino">
+                    <span className="text-rino m-l" style={{ display: 'inline-block' }}>
+                      <i className=" fa fa-line-chart fa-lg"></i> Plugins
                     </span>
                   </div>
                   :
-                  <div style={{ 'backgroundColor': '#674172' }}>
-                    <span className="text-muted m-l" style={{ display: 'inline-block' }}>
-                      <i className=" fa fa-line-chart"></i> Plugins
+                  <div className="background-rinono">
+                    <span className="text-rino m-l" style={{ display: 'inline-block' }}>
+                      <i className=" fa fa-line-chart fa-lg"></i> Plugins
                     </span>
                   </div>
                 }
                 </Link>
-              </NavItem>
-              <a
-                href="http://docs.rinocloud.com/rinobot/"
-                className="m-l text-muted"
-                onClick={openExternal}
-              >
-                <i className="fa fa-book"></i> Documentation
-              </a>
+              </il>
+              <div className="m-t">
+                <il>
+                  <a
+                    href="http://docs.rinocloud.com/rinobot/"
+                    className="m-l text-rino"
+                    onClick={openExternal}
+                  >
+                    <i className="fa fa-book fa-lg"></i> Documentation
+                  </a>
+                </il>
+              </div>
             </div>
-          </Nav>
+          </ul>
         </div>
         <div className="col-sm-12">
           <div className="m-r" >

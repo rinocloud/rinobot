@@ -94,8 +94,8 @@ html, body {
     overflow-y: auto;
     padding-right: 20px;
     border-right: 4px solid #eee;
-    background-color: #674172;
-    color: #E6E9ED;
+    background-color: #E6E9ED;
+    color: #674172;
 }
 
 .main-container {
@@ -116,4 +116,83 @@ html, body {
     position: absolute;
     bottom: 100px;
     right: 200px;
+  }
+
+  .bg-rino {
+    background-color: #674172;
+  }
+
+  a.bg-rino:hover,
+  a.bg-rino:focus {
+    background-color: #674172;
+  }
+
+  .text-rino {
+    color: #674172;
+  }
+
+  .background-rinono {
+    margin-right: 0;
+    border-top: 10px solid #E6E9ED;
+    border-bottom: 10px solid #E6E9ED;
+    border-right: 55px solid #E6E9ED;
+    background-color: #E6E9ED;
+  }
+
+  .background-rino {
+    margin-right: 0;
+    border-top: 10px solid #c3c2d6;
+    border-bottom: 10px solid #c3c2d6;
+    border-right: 55px solid #c3c2d6;
+    background-color: #c3c2d6;
+  }
+
+  .background-rino1 {
+    margin-right: 0;
+    border-top: 10px solid #c3c2d6;
+    border-bottom: 10px solid #c3c2d6;
+    border-right: 5px solid #c3c2d6;
+    background-color: #c3c2d6;
+  }
+
+  .background-rinono1 {
+    margin-right: 0;
+    border-top: 10px solid #E6E9ED;
+    border-bottom: 10px solid #E6E9ED;
+    border-right: 5px solid #E6E9ED;
+    background-color: #E6E9ED;
+  }
+  .nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .sidebar .nav-sidebar > li > a:hover,
+  .sidebar .nav-sidebar > li > a:focus{
+    background-color: #813296;
+    text-decoration: none;
+  }
+
+
+  .sidebar .nav-sidebar > li > a:hover span,
+  .sidebar .nav-sidebar > li > a:focus span {
+    text-decoration: underline;
+  }
+
+  .sidebar-inverse{
+    background-color: white;
+  }
+
+  .sidebar-inverse a{
+    color: #813296;
+  }
+
+  .sidebar-inverse .nav > li > a:hover,
+  .sidebar-inverse .nav > li > a:focus{
+    background-color: white;
+  }
+
+
+  .nav i{
+    font-size: 1.3em;
   }
