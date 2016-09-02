@@ -13,7 +13,6 @@ class WatchDir extends React.Component {
     onStopClick: PropTypes.func.isRequired,
     onRemoveDirClick: PropTypes.func.isRequired,
     onToggleConfigClick: PropTypes.func.isRequired,
-    onToggleLogsClick: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
     packagesConfig: PropTypes.object
@@ -78,14 +77,19 @@ class WatchDir extends React.Component {
     )
 
     return (
-      <div className="p-a bordered m-t">
-        <div className="row">
-          <div className="col-sm-12 lead">
-            <a href="#" onClick={openPluginHomepage}>{dir.path}</a>
+      <div>
+        <div className="panel panel-default m-t">
+          <div className="panel-heading">
+            {dir.path}
+            <a
+              href="#"
+              onClick={openPluginHomepage}
+              className="pull-right"
+            >
+              Open <i className="fa fa-external-link"></i>
+            </a>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-12">
+          <div className="panel-body">
             <OverlayTrigger
               trigger={['hover']}
               placement="bottom"
@@ -113,7 +117,7 @@ class WatchDir extends React.Component {
               <span><i className="fa fa-trash"></i> Remove</span>
             </a>
 
-            {!dir.configOpen && dir.isStarted &&
+            {dir.isStarted &&
               <a
                 href="#"
                 className="btn btn-sm btn-danger"
@@ -123,7 +127,7 @@ class WatchDir extends React.Component {
               </a>
             }
 
-            {(!dir.configOpen && !dir.isStarted) &&
+            {!dir.isStarted &&
               <a
                 href="#"
                 className="btn btn-sm btn-success"
@@ -134,7 +138,7 @@ class WatchDir extends React.Component {
               </a>
             }
 
-            {dir.configOpen &&
+            {/*{dir.isConfigOpen &&
               <a
                 href="#"
                 className="btn btn-sm btn-success disabled"
@@ -143,10 +147,9 @@ class WatchDir extends React.Component {
               >
                 Start
               </a>
-            }
+            }*/}
 
-
-            {!dir.isStarted && dir.configOpen &&
+            {!dir.isStarted &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
@@ -156,7 +159,7 @@ class WatchDir extends React.Component {
               </a>
             }
 
-            {!dir.isStarted && !dir.configOpen &&
+            {/* {!dir.isStarted && !dir.isConfigOpen &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
@@ -164,66 +167,65 @@ class WatchDir extends React.Component {
               >
                 <span><i className="fa fa-cogs"></i> Setup</span>
               </a>
-            }
+            } */}
+
+            {firstTime && !dir.isConfigOpen ?
+              <div
+                className="m-t-sm"
+                role="alert"
+              >
+                Select the folder's <strong>'settings'</strong> before you start to set up some tasks.
+                <br />
+                <a
+                  href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
+                  onClick={openExternal}
+                >
+                Tasks Getting Started guide
+                </a>
+              </div>
+            : null}
+
+            <ConfigurePipeline
+              dir={dir}
+              onSetConfig={this.props.onSetConfig}
+              packagesConfig={packagesConfig}
+            />
           </div>
         </div>
-      {firstTime && !dir.configOpen ?
-        <div
-          className="m-t-sm"
-          role="alert"
-        >
-          Select the folder's <strong>'settings'</strong> before you start to set up some tasks.
-          <br />
-          <a
-            href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-            onClick={openExternal}
-          >
-          Tasks Getting Started guide
-          </a>
-        </div>
-        : null}
-
-        {dir.configOpen ?
-          <ConfigurePipeline
-            dir={dir}
-            onSetConfig={this.props.onSetConfig}
-            packagesConfig={packagesConfig}
-          />
-        :
-        ''}
-
-        {dir.isStarted ?
-          <div className="m-t configForm">
-            <div className="row">
-              <div className="col-sm-12">
-                {/*{dir.isBusy ?
-                  <i className="fa fa-spinner fa-spin"></i>
-                :
-                  <i className="fa fa-check"></i>
-                }*/}
-                {/*{'  '}*/}
-                {dir.processedFiles}/{dir.totalFiles} files processed
-                {dir.isStarted ?
-                  <a
-                    href="#"
-                    className="text-muted m-l-sm pull-right"
-                    onClick={onToggleLogsClick}
-                  >
-                  {dir.logsOpen ?
-                    <span className="text-muted"><i className="fa fa-compress"></i> close logs</span> // eslint-disable-line
-                    :
-                    <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
-                    }
-                  </a>
-                : null}
-
-              </div>
-              <div className="col-sm-12">
-                 {dir.logsOpen && <LogScroll history={dir.history} />}
-              </div>
-            </div>
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            Activity log
           </div>
-        : ''}
+          <div className="panel-body">
+            {dir.isStarted ?
+              <div className="m-t configForm">
+                <div className="row">
+                  <div className="col-sm-12">
+                    {dir.processedFiles}/{dir.totalFiles} files processed
+                    {/* {dir.isStarted ?
+                      <a
+                        href="#"
+                        className="text-muted m-l-sm pull-right"
+                        onClick={onToggleLogsClick}
+                      >
+                      {dir.isLogsOpen ?
+                        <span className="text-muted"><i className="fa fa-compress"></i> close logs</span>
+                        :
+                        <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
+                        }
+                      </a>
+                    : null} */}
+
+                  </div>
+                  <div className="col-sm-12">
+                     {dir.isLogsOpen && <LogScroll history={dir.history} />}
+                  </div>
+                </div>
+              </div>
+            : ''}
+
+          </div>
+        </div>
       </div>
 
     )

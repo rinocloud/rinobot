@@ -77,7 +77,6 @@ const ready = (watcher, index, t0) => {
 
 const processFile = (index, opts) => {
   const { filepath, baseDir, pluginsDir, apiToken, config } = opts
-
   createPipeline({
     pluginsDir,
     apiToken,
@@ -144,6 +143,7 @@ const taskStart = (index, task) => {
 }
 
 const taskLog = (index, task, log) => {
+  console.log('task log', log)
   forkRpc.emit(
     'task log',
     {
@@ -192,6 +192,8 @@ const taskIgnore = (index, task) => {
 }
 
 const taskError = (index, task, error) => {
+  console.log('task error', error)
+
   forkRpc.emit(
     'task error',
     {

@@ -90,3 +90,13 @@ html, body {
   vertical-align: top;
   border-top: none;
 }
+
+.rinobot-navbar{
+  height: 60px;
+  /*background-color: #933FAA;*/
+  padding: 20px;
+}
+
+body{
+  /*background-color: #B9A4BF*/
+}

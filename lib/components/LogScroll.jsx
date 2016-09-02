@@ -24,7 +24,7 @@ class LogScroll extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-8">
+        <div className="col-sm-10">
           <table
             className="table m-t p-l"
           >
@@ -46,6 +46,15 @@ class LogScroll extends React.Component {
                     <small className="text-muted">{moment(l.lastRun).fromNow()}</small>
                   </td>
                   <td style={{ minWidth: '250px' }}>
+                    {l.current && <small
+                      style={{ maxHeight: '30px', overflowX: 'scroll' }}
+                    >
+                      <i
+                        className="fa fa-cog fa-spin"
+                        style={{ marginRight: '6px' }}
+                      ></i>
+                      {l.current}<br />
+                    </small>}
                     {_.map(l.completed, (m, i) =>
                       <small
                         key={`msg${i}${l.lastRun}`}

@@ -1,10 +1,11 @@
-import React, { PropTypes } from 'react'
-import { Link } from 'react-router'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
 import * as watcherActions from '../actions/watcher'
 import * as authActions from '../actions/auth'
 const { dialog } = require('electron').remote
 import * as uiActions from '../actions/ui'
+import React, { PropTypes } from 'react'
 const { shell } = require('electron')
+import { Link } from 'react-router'
 import pt from 'path'
 
 
@@ -18,7 +19,7 @@ class Navbar extends React.Component {
   }
 
   render() {
-    const { dispatch, auth, watcher } = this.props
+    const { dispatch, ui, auth, watcher } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -39,8 +40,47 @@ class Navbar extends React.Component {
     }
 
     return (
-      <div className="row m-b-0 p-t">
+      <div className="rinobot-navbar">
         <div className="col-sm-12">
+          {watcher.dirs.length !== 0 &&
+            <DropdownButton
+              id="drop"
+              title={
+                `${pt.basename(pt.dirname(watcher.dirs[ui.currentDir].path))}
+                /
+                ${pt.basename(watcher.dirs[ui.currentDir].path)}`
+              }
+              bsSize="xsmall"
+            >
+              {watcher.dirs.map((dir, i) =>
+                <MenuItem
+                  style={{ fontSize: '0.8em' }}
+                  eventKey={`${i}`}
+                  key={`dira${i}`}
+                  id={`dira${i}`}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    dispatch(uiActions.setCurrentDir(i))
+                  }}
+                >
+                  {pt.basename(pt.dirname(dir.path))}/
+                  {pt.basename(dir.path)}/
+                </MenuItem>
+              )}
+              <MenuItem
+                style={{ fontSize: '0.8em' }}
+                eventKey={"add"}
+                key={'add'}
+                id={'add'}
+                href="#"
+                onClick={chooseFolder}
+              >
+                Add directory <i className="fa fa-plus"></i>
+              </MenuItem>
+            </DropdownButton>
+          }
+
           <Link to="/">
             <i className="m-l-sm fa fa-crosshairs"></i> Watched Folders
           </Link>
@@ -68,22 +108,6 @@ class Navbar extends React.Component {
           >
             My rinocloud <i className="m-l-sm fa fa-external-link"></i>
           </a>
-
-          {watcher.dirs.map((dir, i) => {
-            return (
-              <a
-                href="#"
-                key={`dira${i}`}
-                onClick={(e) => {
-                  e.preventDefault()
-                  dispatch(uiActions.setCurrentDir(i))
-                }}
-              >
-                <br />
-                {pt.basename(dir.path)}
-              </a>
-            )
-          })}
 
         </div>
       </div>
