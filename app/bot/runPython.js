@@ -31,9 +31,9 @@ export default (opts) => {
         return onError(error)
       })
 
-      child.stdout.on('data', onLog)
+      child.stdout.on('data', (b) => onLog(b.toString()))
 
-      child.stderr.on('data', onLog)
+      child.stderr.on('data', (b) => onLog(b.toString()))
 
       child.on('close', (code) => {
         if (child.hasOwnProperty('error')) return
