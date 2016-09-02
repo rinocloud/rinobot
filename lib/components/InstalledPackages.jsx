@@ -39,8 +39,6 @@ class InstalledPackages extends React.Component {
   render() {
     const { dispatch, plugins } = this.props
     let registry = _.map(plugins.pluginRegistry, p => {
-      console.log(p['dist-tags'].latest, plugins.config.dependencies[p.name])
-
       const isInstalled = _.has(plugins.config.dependencies, p.name)
       let canUpdate = false
       if (isInstalled && p['dist-tags']) {
@@ -94,10 +92,10 @@ class InstalledPackages extends React.Component {
     }
 
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12 row">
-            <h2 className="lead">
+      <div className="row p-a">
+        <div>
+          <div className="panel panel-default m-t">
+            <div className="panel-heading">
               Plugins{'  '}
               {plugins.isSearching ?
                 <small className="text-muted">
@@ -105,114 +103,119 @@ class InstalledPackages extends React.Component {
                   {'  '}checking for updates
                 </small>
               : ''}
-            </h2>
-            <div className="col-sm-8">
-              <div className="row m-b">
-                <form className="form col-sm-8 p-a-0" onSubmit={this.setSearchTerm} >
-                  <input
-                    className="form-control"
-                    name="searchInput"
-                    type="text"
-                    placeholder="Search for plugin"
-                  />
-                  <br />
-                  <input type="submit" value="Search" className="btn btn-xs btn-primary" /> {'  '}
-                  <a onClick={this.clearSearchTerm} className="btn btn-xs btn-default">Clear</a>
-                </form>
+            </div>
 
-              </div>
-              <div className="row">
-                {plugins.statusText}
-              </div>
+            <div className="panel-body">
+              <div className="col-sm-12">
+                <div className="row m-b">
+                  <form className="form col-sm-8 p-a-0" onSubmit={this.setSearchTerm} >
+                    <input
+                      className="form-control"
+                      name="searchInput"
+                      type="text"
+                      placeholder="Search for plugin"
+                    />
+                    <br />
+                    <input type="submit" value="Search" className="btn btn-xs btn-primary" /> {'  '}
+                    <a onClick={this.clearSearchTerm} className="btn btn-xs btn-default">Clear</a>
+                  </form>
 
-              {_.map(registry, (el, i) => {
-                return (
-                  <div className="row" key={`plugin${i}`}>
-                    <div className="m-b">
-                      <span
-                        className="m-r lead"
-                        style={{
-                          fontWeight: 500,
-                          verticalAlign: 'bottom'
-                        }}
-                      >
-                        {el.name.replace('rinobot-plugin-', '')}
-                      </span>
-                      {!el.isInstalled ?
-                        <a
-                          href="#"
-                          className="btn btn-xs btn-primary"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            onClickInstall(el, i)
+                </div>
+                <div className="row">
+                  {plugins.statusText}
+                </div>
+
+                {_.map(registry, (el, i) => {
+                  return (
+                    <div className="row" key={`plugin${i}`}>
+                      <div className="m-b">
+                        <span
+                          className="m-r lead"
+                          style={{
+                            fontWeight: 500,
+                            verticalAlign: 'bottom'
                           }}
                         >
-                          {
-                            el.isInstalling
-                            ?
-                            'Installing'
-                            :
-                            'Install'
-                          }
-                        </a>
-
-                        :
-                        <span>
+                          {el.name.replace('rinobot-plugin-', '')}
+                        </span>
+                        {!el.isInstalled ?
                           <a
                             href="#"
-                            className="btn btn-xs btn-default"
+                            className="btn btn-xs btn-primary"
                             onClick={(e) => {
                               e.preventDefault()
-                              onClickUninstall(el, i)
+                              onClickInstall(el, i)
                             }}
                           >
-                            Uninstall
-                          </a>{'  '}
-                          {el.canUpdate ? // eslint-disable-line
+                            {
+                              el.isInstalling
+                              ?
+                              'Installing'
+                              :
+                              'Install'
+                            }
+                          </a>
+
+                          :
+                          <span>
                             <a
                               href="#"
                               className="btn btn-xs btn-default"
                               onClick={(e) => {
                                 e.preventDefault()
-                                onClickUpdate(el, i)
+                                onClickUninstall(el, i)
                               }}
                             >
-                              Update to v{el['dist-tags'].latest}
-                            </a>
-                            :
-                            <span className=" text-muted">
-                              up to date
-                            </span>
+                              Uninstall
+                            </a>{'  '}
+                            {el.canUpdate ? // eslint-disable-line
+                              <a
+                                href="#"
+                                className="btn btn-xs btn-default"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  onClickUpdate(el, i)
+                                }}
+                              >
+                                Update to v{el['dist-tags'].latest}
+                              </a>
+                              :
+                              <span className=" text-muted">
+                                up to date
+                              </span>
+                            }
+                          </span>
                           }
-                        </span>
+                      </div>
+
+                      <div>{el.description}</div>
+
+                      <small className="text-muted">
+                        {el.isInstalled ?
+                          <span>
+                            Your version: v{plugins.config.dependencies[el.name]}
+                          </span>
+                          :
+                          <span>
+                            v{el['dist-tags'] ? el['dist-tags'].latest : ''}
+                            {' '} updated by {el.author && el.author.name} {' '}
+                            {el.time && moment(el.time.modified).fromNow()}
+                          </span>
                         }
+                      </small>
+                      <hr />
                     </div>
+                  )
+                }
+                )}
 
-                    <div>{el.description}</div>
-
-                    <small className="text-muted">
-                      {el.isInstalled ?
-                        <span>
-                          Your version: v{plugins.config.dependencies[el.name]}
-                        </span>
-                        :
-                        <span>
-                          v{el['dist-tags'] ? el['dist-tags'].latest : ''}
-                          {' '} updated by {el.author && el.author.name} {' '}
-                          {el.time && moment(el.time.modified).fromNow()}
-                        </span>
-                      }
-                    </small>
-                    <hr />
-                  </div>
-                )
-              }
-              )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    );
+
+    )
   }
 }
 

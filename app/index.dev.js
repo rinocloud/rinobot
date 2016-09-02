@@ -47,15 +47,20 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   forkRpc.on('task started', args => rpc.emit('task started', args))
   forkRpc.on('task log', args => rpc.emit('task log', args))
   forkRpc.on('task complete', args => rpc.emit('task complete', args))
-  forkRpc.on('task error', args => rpc.emit('task error', args))
+  forkRpc.on('task error', args => {
+    sentry.captureException(new JSONError(args.error))
+    rpc.emit('task error', args)
+  })
   forkRpc.on('task ignore', args => rpc.emit('task ignore', args))
 
   forkRpc.on('unexpected error', error => {
     rpc.emit('unexpected error', error)
-    sentry.captureException(new JSONError(error.error))
+    sentry.captureException(new JSONError(error))
   })
 
   rpc.on('init', () => {
+    console.log('initializing window')
+
     win.show()
     win.focus()
 

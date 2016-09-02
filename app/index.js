@@ -8070,9 +8070,11 @@ module.exports =
 	  rpc.on('unwatch', function (args) {
 	    return forkRpc.emit('unwatch', args);
 	  });
+	
 	  forkRpc.on('ready', function () {
 	    return rpc.emit('child process ready');
 	  });
+	
 	  forkRpc.on('watcher ready', function (args) {
 	    return rpc.emit('watcher ready', args);
 	  });
@@ -8085,32 +8087,29 @@ module.exports =
 	  forkRpc.on('watcher set processed files', function (args) {
 	    return rpc.emit('watcher set processed files', args);
 	  });
-	  forkRpc.on('pipeline started', function (args) {
-	    return rpc.emit('pipeline started', args);
-	  });
-	  forkRpc.on('pipeline complete', function (args) {
-	    return rpc.emit('pipeline complete', args);
-	  });
-	  forkRpc.on('pipeline log', function (args) {
-	    return rpc.emit('pipeline log', args);
-	  });
-	  forkRpc.on('task complete', function (args) {
-	    return rpc.emit('task complete', args);
-	  });
-	  forkRpc.on('task ignore', function (args) {
-	    return rpc.emit('task ignore', args);
+	
+	  forkRpc.on('set history', function (args) {
+	    return rpc.emit('set history', args);
 	  });
 	  forkRpc.on('task started', function (args) {
 	    return rpc.emit('task started', args);
 	  });
-	
-	  forkRpc.on('pipeline error', function (error) {
-	    rpc.emit('pipeline error', error);
-	    sentry.captureException(new JSONError(error.error));
+	  forkRpc.on('task log', function (args) {
+	    return rpc.emit('task log', args);
+	  });
+	  forkRpc.on('task complete', function (args) {
+	    return rpc.emit('task complete', args);
+	  });
+	  forkRpc.on('task error', function (args) {
+	    sentry.captureException(new JSONError(args.error));
+	    rpc.emit('task error', args);
+	  });
+	  forkRpc.on('task ignore', function (args) {
+	    return rpc.emit('task ignore', args);
 	  });
 	
-	  forkRpc.on('error', function (error) {
-	    rpc.emit('error', error);
+	  forkRpc.on('unexpected error', function (error) {
+	    rpc.emit('unexpected error', error);
 	    sentry.captureException(new JSONError(error));
 	  });
 	
@@ -8131,14 +8130,12 @@ module.exports =
 	  });
 	
 	  win.on('close', function () {
-	    console.log('ev:close destroying child processes and rpcs');
 	    child.kill();
 	    forkRpc.destroy();
 	    rpc.destroy();
 	  });
 	
 	  win.on('closed', function () {
-	    console.log('ev:quit');
 	    win = null;
 	    app.quit();
 	  });
@@ -8234,6 +8231,7 @@ module.exports =
 			"mkdirp": "^0.5.1",
 			"ms": "0.7.1",
 			"mv": "^2.1.1",
+			"nedb": "^1.8.0",
 			"npm": "3.9.2",
 			"npmi": "2.0.1",
 			"raven": "^0.11.0",
@@ -8469,11 +8467,10 @@ module.exports =
 	function init(rpc) {
 	  rpc.emit('log', 'in init');
 	  autoUpdater.on('error', function (err, msg) {
-	    rpc.emit('error', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
+	    rpc.emit('unexpected error', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
 	    rpc.emit('log', 'Error fetching updates: ' + msg + ' (' + err.stack + ')');
 	  });
 	
-	  rpc.emit('log', 'setting feed url');
 	  autoUpdater.setFeedURL(FEED_URL + '/' + version);
 	
 	  setTimeout(function () {
@@ -8486,7 +8483,6 @@ module.exports =
 	    autoUpdater.checkForUpdates();
 	  }, ms('5m'));
 	
-	  rpc.emit('log', 'finished run through init');
 	  isInit = true;
 	}
 	
@@ -8501,12 +8497,12 @@ module.exports =
 	
 	  autoUpdater.on('update-downloaded', onupdate);
 	
-	  autoUpdater.on('update-not-available', function (args) {
-	    rpc.emit('log', 'update-not-available ' + args);
+	  autoUpdater.on('update-not-available', function () {
+	    rpc.emit('log', 'update-not-available');
 	  });
 	
-	  autoUpdater.on('checking-for-update', function (args) {
-	    rpc.emit('log', 'checking-for-update ' + args);
+	  autoUpdater.on('checking-for-update', function () {
+	    rpc.emit('log', 'checking-for-update');
 	  });
 	
 	  autoUpdater.on('update-available', function (args) {
@@ -8849,6 +8845,10 @@ module.exports =
 	        _this.wc.send('init', uid);
 	      });
 	    });
+	
+	    this.queue = [];
+	    this.timer = null;
+	    this.last = null;
 	  }
 	
 	  _createClass(Server, [{
@@ -8862,7 +8862,27 @@ module.exports =
 	  }, {
 	    key: 'emit',
 	    value: function emit(ch, data) {
-	      this.wc.send(this.id, { ch: ch, data: data });
+	      var _this2 = this;
+	
+	      var payload = { ch: ch, data: data };
+	      var task = function task() {
+	        if (_this2.queue.length === 0) return;
+	        _this2.wc.send(_this2.id, { ch: 'batch', data: _this2.queue });
+	        _this2.queue = [];
+	      };
+	
+	      if (this.timer) {
+	        clearTimeout(this.timer);
+	      }
+	
+	      this.queue.push(payload);
+	      var now = new Date().getTime();
+	      if (this.last && now < this.last + 500) {
+	        this.timer = setTimeout(task, 500);
+	      } else {
+	        this.last = now;
+	        task();
+	      }
 	    }
 	  }, {
 	    key: 'on',

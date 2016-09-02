@@ -20,8 +20,12 @@ import readHistory from './readHistory'
 export class Task {
   constructor(opts) {
     this.onComplete = () => opts.onComplete(this)
-    this.onError = (err) => opts.onError(this, err)
     this.onLog = (message) => opts.onLog(this, message)
+
+    this.onError = (err) => {
+      // should take task out of history
+      return opts.onError(this, err)
+    }
 
     this.filepath = opts.filepath
     this.baseDir = opts.baseDir

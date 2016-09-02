@@ -127,13 +127,15 @@ const finishedFile = (index, filepath) => {
 }
 
 const taskStart = (index, task) => {
+  console.log('task start')
   forkRpc.emit('set history', { index, history: task.history })
 
   forkRpc.emit(
     'task started',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -143,13 +145,14 @@ const taskStart = (index, task) => {
 }
 
 const taskLog = (index, task, log) => {
-  console.log('task log', log)
+  console.log('task log')
   forkRpc.emit(
     'task log',
     {
       index,
       log,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -165,7 +168,8 @@ const taskComplete = (index, task) => {
     'task complete',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -181,7 +185,8 @@ const taskIgnore = (index, task) => {
     'task ignore',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -192,13 +197,12 @@ const taskIgnore = (index, task) => {
 }
 
 const taskError = (index, task, error) => {
-  console.log('task error', error)
-
   forkRpc.emit(
     'task error',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,

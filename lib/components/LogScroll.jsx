@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
-import moment from 'moment'
+import moment from 'moment.twitter'
 
 class LogScroll extends React.Component {
   static propTypes = {
@@ -24,28 +24,38 @@ class LogScroll extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-10">
+        <div className="col-sm-12">
           <table
             className="table m-t p-l"
           >
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Processed</th>
+                <th>Tasks run</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
             {_.map(logs, (l, i) => {
               return (
                 <tr key={`hist-${i}`}>
-                  <td>
+                  <td className="col-sm-4">
                     {l.completed.length ?
                       <i className="fa fa-2 fa-file-text-o"></i>
                       :
                       <i className="fa fa-2 fa-file-text-o text-muted"></i>
-                    }
-                  </td>
-                  <td>
+                    }{'  '}
                     <small>{pt.basename(l.filepath)}</small>
                   </td>
-                  <td>
-                    <small className="text-muted">{moment(l.lastRun).fromNow()}</small>
+
+                  <td className="col-sm-1">
+                    <small className="text-muted">
+                      {`${moment(l.lastRun).twitter()} ago`}
+                    </small>
                   </td>
-                  <td style={{ minWidth: '250px' }}>
+
+                  <td className="col-sm-3">
                     {l.current && <small
                       style={{ maxHeight: '30px', overflowX: 'scroll' }}
                     >
@@ -68,6 +78,41 @@ class LogScroll extends React.Component {
                       </small>
                     )}
                   </td>
+
+                  {l.error &&
+                    <td className="col-sm-4">
+                      <small
+                        className="text-danger"
+                        style={{
+                          border: 'none',
+                          backgroundColor: 'white',
+                          fontFamily: 'monospace',
+                          fontSize: '0.7em',
+                          padding: 0,
+                        }}
+                      >
+                        {l.error.message}
+                      </small>
+                    </td>
+                  }
+
+                  <td className="col-sm-4">
+                  {!l.error && _.map(l.stdout, (m, i) =>
+                    <pre
+                      key={`e${i}`}
+                      style={{
+                        border: 'none',
+                        backgroundColor: 'white',
+                        fontFamily: 'monospace',
+                        fontSize: '0.7em',
+                        padding: 0,
+                      }}
+                    >
+                      {m}
+                    </pre>
+                  )}
+                  </td>
+
                 </tr>
               )
             })}

@@ -23,7 +23,7 @@ export default (opts) => {
 
       onError: (_task, error) => {
         opts.onTaskError(_task, error)
-        setTimeout(() => { callback(error) })
+        setTimeout(() => { callback() })
       }
 
     })

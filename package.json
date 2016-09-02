@@ -34,7 +34,9 @@
     "lodash": "^4.13.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.14.1",
+    "moment.twitter": "0.0.1",
     "react": "^15.2.1",
+    "react-addons-update": "^15.3.1",
     "react-bootstrap": "^0.30.0",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
@@ -145,7 +147,8 @@
       "semi": 0,
       "func-names": 0,
       "no-underscore-dangle": 0,
-      "no-console": 0
+      "no-console": 0,
+      "arrow-body-style": 0
     },
     "plugins": [
       "import",

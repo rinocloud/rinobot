@@ -98,5 +98,20 @@ html, body {
 }
 
 body{
-  /*background-color: #B9A4BF*/
+  background-color: #f7f8fb
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.main-container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }

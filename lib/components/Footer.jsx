@@ -34,7 +34,7 @@ class Footer extends React.Component {
     )
 
     return (
-      <div className="footer text-muted">
+      <div className="footer main-container text-muted">
         <div className="row">
           <div className="col-sm-10">
             {ui.pythonVersion === false ?
