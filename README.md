@@ -26,26 +26,6 @@ $ npm run dev # builds the html based UI and also the rinobot child process, hot
 $ npm run start-hot # starts the electron window
 ```
 
-## Install errors
-
-If you get something like the following
-
-```
-> cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./main.development
-
-fs.js:634
-  return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
-                 ^
-Error: ENOENT: no such file or directory, open 'C:\Users\eoin\Documents\projects\rinobot\node_modules\electron-prebuilt\path.txt'
-```
-
-Try running
-
-```
->>> cd node_modules/electron-prebuilt
->>> npm install
-```
-
 ## Packaging
 
 Let Eoin do the packaging for now
@@ -60,6 +40,7 @@ Let Eoin do the packaging for now
 [Rinocloud](https://github.com/rinocloud)
 
 ## Storage idea
+
 {
   filepath: {
     id - rinocloud id or null,
@@ -68,5 +49,5 @@ Let Eoin do the packaging for now
     completed: [
       task name - task argument - ISO date string,
     ]
-  },
+  }
 }

@@ -38,6 +38,7 @@ class InstalledPackages extends React.Component {
 
   render() {
     const { dispatch, plugins } = this.props
+
     let registry = _.map(plugins.pluginRegistry, p => {
       const isInstalled = _.has(plugins.config.dependencies, p.name)
       let canUpdate = false
@@ -136,7 +137,10 @@ class InstalledPackages extends React.Component {
                             verticalAlign: 'bottom'
                           }}
                         >
-                          {el.name.replace('rinobot-plugin-', '')}
+                          <a
+                            onClick={openExternal}
+                            href={el.homepage}
+                          >{el.name.replace('rinobot-plugin-', '')}</a>
                         </span>
                         {!el.isInstalled ?
                           <a

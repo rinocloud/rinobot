@@ -1,4 +1,3 @@
-import { Dropdown, MenuItem } from 'react-bootstrap'
 import * as watcherActions from '../actions/watcher'
 import * as authActions from '../actions/auth'
 const { dialog } = require('electron').remote
@@ -20,7 +19,7 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { dispatch, ui, auth, watcher, location } = this.props
+    const { dispatch, auth, watcher } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -81,30 +80,31 @@ class Sidebar extends React.Component {
           </a>
         </li>
 
+        <li>
+          <a href="#" onClick={onClickLogout}>
+            {auth.isAuthenticating ?
+              <span>Logging out <i className="fa fa-spinner fa-spin"></i></span>
+              :
+              <span>Logout {auth.username} <i className="fa fa-sign-out"></i></span>
+            }
+          </a>
+        </li>
+        <li>
+          <a
+            href={`https://${auth.project}.rinocloud.com/app/`}
+            className="pull-right m-r"
+            onClick={openExternal}
+          >
+            My rinocloud
+            <i className="fa fa-external-link"></i>
+          </a>
+        </li>
+
+
+
       </ul>
     )
   }
 }
 
 export { Sidebar }
-
-
-/*
-<div className="m-r" >
-  <a href="#" className="pull-right" onClick={onClickLogout}>
-    {auth.isAuthenticating ?
-      <span>Logging out <i className="m-l-sm fa fa-spinner fa-spin"></i></span>
-      :
-      <span>Logout {auth.username} <i className="m-l-sm fa fa-sign-out"></i></span>
-    }
-  </a>
-  <a
-    href={`https://${auth.project}.rinocloud.com/app/`}
-    className="pull-right m-r"
-    onClick={openExternal}
-  >
-    My rinocloud
-    <i className="m-l-sm fa fa-external-link"></i>
-  </a>
-</div>
-*/

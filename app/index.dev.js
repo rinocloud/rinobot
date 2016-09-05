@@ -59,8 +59,6 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   })
 
   rpc.on('init', () => {
-    console.log('initializing window')
-
     win.show()
     win.focus()
 

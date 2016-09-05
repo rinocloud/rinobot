@@ -44,6 +44,10 @@ forkRpc.on('watch', (opts) => {
       clearTimeout(timer)
       timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 500)
     })
+    .on('change', () => {
+      clearTimeout(timer)
+      timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 500)
+    })
     .on('ready', () => {
       ready(this, index, t0)
     })

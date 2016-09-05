@@ -46,11 +46,6 @@ class WatchDir extends React.Component {
       this.props.onToggleConfigClick()
     }
 
-    const onToggleLogsClick = (e) => {
-      e.preventDefault()
-      this.props.onToggleLogsClick()
-    }
-
     const openPluginHomepage = (e) => {
       e.preventDefault()
       shell.showItemInFolder(dir.path)
@@ -174,7 +169,9 @@ class WatchDir extends React.Component {
                 className="m-t-sm"
                 role="alert"
               >
-                Select the folder's <strong>'settings'</strong> before you start to set up some tasks.
+                Select the folder's
+                <strong>'settings'</strong>
+                before you start to set up some tasks.
                 <br />
                 <a
                   href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
@@ -186,6 +183,8 @@ class WatchDir extends React.Component {
             : null}
 
             <ConfigurePipeline
+              // it has state - so give it some novel key
+              key={`configpipe-${dir.config.tasks[0].command}`}
               dir={dir}
               onSetConfig={this.props.onSetConfig}
               packagesConfig={packagesConfig}
