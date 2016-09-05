@@ -6,9 +6,10 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 
 import config from './webpack.config';
+import forkConfig from './webpack.config.fork'
 
 const app = express();
-const compiler = webpack(config);
+const compiler = webpack([config, forkConfig]);
 const PORT = 3000;
 
 const wdm = webpackDevMiddleware(compiler, {
