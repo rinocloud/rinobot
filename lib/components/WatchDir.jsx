@@ -73,7 +73,7 @@ class WatchDir extends React.Component {
 
     return (
       <div>
-        <div className="panel panel-default m-t">
+        <div className="panel panel-default">
           <div className="panel-heading">
             {dir.path}
             <a

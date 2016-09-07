@@ -50,9 +50,6 @@ class Footer extends React.Component {
             :
             ''}
           </div>
-          <div className="col-sm-2">
-            Rinobot v{ui.rinobotVersion}
-          </div>
         </div>
       </div>
     )

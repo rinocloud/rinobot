@@ -95,7 +95,7 @@ class InstalledPackages extends React.Component {
     return (
       <div className="row p-a">
         <div>
-          <div className="panel panel-default m-t">
+          <div className="panel panel-default">
             <div className="panel-heading">
               Plugins{'  '}
               {plugins.isSearching ?
