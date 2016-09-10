@@ -105,7 +105,7 @@ describe('Tasks which run sub-processes', () => {
     const cwd = pt.dirname(codePath)
 
     const onLog = (l) => {
-      assert.equal(l, 'hello\n')
+      assert.equal(l.includes('hello'), true)
     }
 
     const code = 'print("hello")'
