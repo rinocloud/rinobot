@@ -97,7 +97,7 @@ describe('Tasks which run sub-processes', () => {
     })
   });
 
-  (doOptionalTest ? it : it.skip)('python3 -V', done => {
+  (doOptionalTest ? it : it.skip)('python -V', done => {
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.py'))
     const locals = {
       filepath: getFixturePath(pt.join('folder w space', 'test.txt'))
