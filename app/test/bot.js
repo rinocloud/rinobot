@@ -84,23 +84,31 @@ describe('Tasks which run sub-processes', () => {
     /*
       For this batch of tests which run sub-processes
       like python, R and matlab - we want to only run
-      the test if the corresponding program exists; so we
+      the test if the corresponding program exists so we
       check before each test.
     */
     this.timeout(20000)
-    checkForProgram(this.currentTest.title, (exists) => {
-      if (exists) {
-        doOptionalTest = true
-      } else {
-        doOptionalTest = false
-      }
+
+    if (this.currentTest.title.includes('matlab') && !testMatlab) {
       subdir++
       fixturesPath = getFixturePath('')
       done()
-    })
-  });
+    } else {
+      checkForProgram(this.currentTest.title, (exists) => {
+        if (exists) {
+          doOptionalTest = true
+        } else {
+          doOptionalTest = false
+        }
+        subdir++
+        fixturesPath = getFixturePath('')
+        done()
+      })
+    }
+  })
 
-  (doOptionalTest ? it : it.skip)('python -V', done => {
+  it('python -V', done => {
+    if (!doOptionalTest) return this.skip()
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.py'))
     const locals = {
       filepath: getFixturePath(pt.join('folder w space', 'test.txt'))
@@ -127,9 +135,10 @@ describe('Tasks which run sub-processes', () => {
         })
       })
     })
-  });
+  })
 
-  (doOptionalTest ? it : it.skip)('Rscript --version', done => {
+  it('Rscript --version', function (done) {
+    if (!doOptionalTest) return this.skip()
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.R'))
     const locals = {
       filepath: getFixturePath(pt.join('folder w space', 'test.txt'))
@@ -158,7 +167,8 @@ describe('Tasks which run sub-processes', () => {
     })
   });
 
-  (doOptionalTest && testMatlab ? it : it.skip)('matlab -nosplash -nodesktop -nodisplay -r "exit;"', function (done) { // eslint-disable-line
+  it('matlab -nosplash -nodesktop -nodisplay -r "exit"', function (done) { // eslint-disable-line
+    if (!doOptionalTest || !testMatlab) return this.skip()
     this.timeout(20000)
 
     const codePath = getFixturePath(pt.join('folder w space', 'script_wo_space.m'))
@@ -180,7 +190,7 @@ describe('Tasks which run sub-processes', () => {
       }
     }
 
-    const code = 'disp(filepath);'
+    const code = 'disp(filepath)'
 
     mkdirp(cwd, (err) => {
       if (err) return done(err)
@@ -196,5 +206,5 @@ describe('Tasks which run sub-processes', () => {
         })
       })
     })
-  });
+  })
 })
