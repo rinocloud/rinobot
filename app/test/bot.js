@@ -16,9 +16,12 @@ const testMatlab = false
 let fixturesPath = pt.join(__dirname, 'test-fixtures', subdir && subdir.toString() || '')
 
 export const checkForProgram = (program, cb) => {
-  exec(program, (error, stdout) => {
-    if (error) cb(false)
-    cb(stdout)
+  exec(program, (error) => {
+    if (error) {
+      cb(false)
+    } else {
+      cb(true)
+    }
   })
 }
 
