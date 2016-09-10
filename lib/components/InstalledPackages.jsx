@@ -61,10 +61,8 @@ class InstalledPackages extends React.Component {
 
     // to get plugins.pluginRegistry latest version use:
     // plugin['dist-tags'].latest
-
     // to get installed version from plugins.config.dependencies use:
     // name: version
-
     registry.sort((x, y) => { // eslint-disable-line
       return (x.isInstalled === y.isInstalled) ? 0 : x.isInstalled ? -1 : 1 // eslint-disable-line
     })

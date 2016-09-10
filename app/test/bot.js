@@ -1,3 +1,4 @@
+import runPlugin from '../bot/runPlugin'
 import runPython from '../bot/runPython'
 import runMatlab from '../bot/runMatlab'
 import runR from '../bot/runR'
@@ -88,26 +89,37 @@ describe('Tasks which run sub-processes', () => {
       check before each test.
     */
     this.timeout(20000)
+    const title = this.currentTest.title
 
-    if (this.currentTest.title.includes('matlab') && !testMatlab) {
+    if (title.includes('matlab') && !testMatlab) {
+      subdir++
+      fixturesPath = getFixturePath('')
+      return done()
+    }
+    let program = 'python -V'
+    if (title.includes('matlab')) {
+      program = 'matlab -nosplash -nodesktop -nodisplay -r "exit"'
+    }
+    if (title.includes('Rscript')) {
+      program = 'Rscript --version'
+    }
+    if (title.includes('python')) {
+      program = 'python -V'
+    }
+
+    checkForProgram(program, (exists) => {
+      if (exists) {
+        doOptionalTest = true
+      } else {
+        doOptionalTest = false
+      }
       subdir++
       fixturesPath = getFixturePath('')
       done()
-    } else {
-      checkForProgram(this.currentTest.title, (exists) => {
-        if (exists) {
-          doOptionalTest = true
-        } else {
-          doOptionalTest = false
-        }
-        subdir++
-        fixturesPath = getFixturePath('')
-        done()
-      })
-    }
+    })
   })
 
-  it('python -V', done => {
+  it('python runs', function (done) {
     if (!doOptionalTest) return this.skip()
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.py'))
     const locals = {
@@ -137,7 +149,47 @@ describe('Tasks which run sub-processes', () => {
     })
   })
 
-  it('Rscript --version', function (done) {
+  it('plugin runs and can import file @python', function (done) {
+    if (!doOptionalTest) return this.skip()
+    const locals = {
+      filepath: getFixturePath(pt.join('test w space.txt'))
+    }
+    const cwd = pt.dirname(locals.filepath)
+
+    const codePath = pt.join(cwd, 'test-plugin', 'index.py')
+    const packagePath = pt.join(cwd, 'test-plugin', 'package.json')
+    const code = `
+import sys
+with open (sys.argv[1], "r") as myfile:
+  print(myfile.readlines())
+    `
+    const packageJSON = JSON.stringify({ main: 'index.py' })
+    const onLog = (l) => { console.log(l) }
+
+    mkdirp(pt.join(cwd, 'test-plugin'), err => {
+      if (err) return done(err)
+      fs.writeFile(codePath, code, err => { // eslint-disable-line
+        if (err) return done(err)
+        fs.writeFile(packagePath, packageJSON, err => { // eslint-disable-line
+          if (err) return done(err)
+          fs.writeFile(locals.filepath, '1\n2\n3\n', (error) => {
+            if (error) return done(error)
+            runPlugin({
+              pluginsDir: cwd,
+              command: 'test-plugin',
+              locals,
+              cwd,
+              onLog,
+              onComplete: done,
+              onError: done
+            })
+          })
+        })
+      })
+    })
+  })
+
+  it('Rscript runs', function (done) {
     if (!doOptionalTest) return this.skip()
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.R'))
     const locals = {
@@ -167,7 +219,7 @@ describe('Tasks which run sub-processes', () => {
     })
   });
 
-  it('matlab -nosplash -nodesktop -nodisplay -r "exit"', function (done) { // eslint-disable-line
+  it('matlab runs', function (done) { // eslint-disable-line
     if (!doOptionalTest || !testMatlab) return this.skip()
     this.timeout(20000)
 

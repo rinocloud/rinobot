@@ -1,44 +1,43 @@
 import { spawn } from 'child_process'
-import _ from 'lodash'
 import fs from 'fs-extra'
-import swig from 'swig'
+import _ from 'lodash'
 import pt from 'path'
 
 const setUpScript = (pluginsDir, command, cb) => {
   let codePath = false
+  const packagePath = pt.join(pluginsDir, command, 'package.json')
+  fs.readFile(packagePath, 'utf-8', (err, data) => { // eslint-disable-line
+    if (err) return cb(err, null)
 
-  fs.access(pt.join(pluginsDir, command), err => {
-    if (err) {
-      cb(new Error(`Cant find package "${command}"`), null)
+    let packageJSON = {}
+    try {
+      packageJSON = JSON.parse(data)
+    } catch (e) {
+      return cb(new Error(`package.json in "${command}" could not be parsed`), null)
+    }
+
+    if (_.has(packageJSON, 'main')) {
+      codePath = pt.join(pluginsDir, command, packageJSON.main)
+      cb(null, codePath)
     } else {
-      const packagePath = pt.join(pluginsDir, command, 'package.json')
-      fs.access(packagePath, err => { // eslint-disable-line
-        if (err) {
-          return cb(new Error(`Error reading package.json for plugin ${command}`), null)
-        }
-        return fs.readFile(packagePath, 'utf-8', (err, data) => { // eslint-disable-line
-          if (err) return cb(new Error(`package.json in "${command}" could not be opened`), null)
-
-          let packageJSON = {}
-          try {
-            packageJSON = JSON.parse(data)
-          } catch (e) {
-            return cb(new Error(`package.json in "${command}" could not be parsed`), null)
-          }
-
-          if (_.has(packageJSON, 'main')) {
-            codePath = pt.join(pluginsDir, command, packageJSON.main)
-            cb(null, codePath)
-          } else {
-            return cb(new Error(`package.json in "${command}" has no "main" specified`), null)
-          }
-        })
-      })
+      return cb(new Error(`package.json in "${command}" has no "main" specified`), null)
     }
   })
 }
 
 export default (opts) => {
+  /*
+    runPlugin({
+      pluginsDir: path to plugins directory,
+      command: the plugin name,
+      locals: this.getLocals(),
+      cwd: watched dir,
+      onError: function(err){}
+      onLog: function(log){}
+      onComplete: function(){}
+    })
+  */
+
   const pluginsDir = opts.pluginsDir
   const command = opts.command
   const locals = opts.locals

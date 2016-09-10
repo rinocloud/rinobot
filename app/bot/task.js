@@ -215,15 +215,11 @@ export class Task {
     })
   }
 
-  escapeShellArg(cmd) {
-    return cmd.replace(/ /g, '\\ ')
-  }
-
   getLocals() {
     return {
-      filepath: this.escapeShellArg(this.filepath),
-      filename: this.escapeShellArg(this.filename),
-      path: this.escapeShellArg(`./${this.relativePath}`),
+      filepath: this.filepath,
+      filename: this.filename,
+      path: `./${this.relativePath}`,
       join: (x, y) => pt.join(x, y)
     }
   }
@@ -254,7 +250,7 @@ export class Task {
 
   python() {
     runPython({
-      codePath: this.escapeShellArg(this.args),
+      codePath: this.args,
       locals: this.getLocals(),
       cwd: this.baseDir,
       onError: this.onError,
@@ -276,7 +272,7 @@ export class Task {
 
   rscript() {
     runR({
-      codePath: this.escapeShellArg(this.args),
+      codePath: this.args,
       locals: this.getLocals(),
       cwd: this.baseDir,
       onError: this.onError,
