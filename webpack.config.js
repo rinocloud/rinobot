@@ -24,7 +24,9 @@ if (!isProd) {
 
 const config = {
   devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
-
+  devServer: {
+    stats: 'errors-only',
+  },
   entry: isProd ? './lib/index' :
   [
     'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',

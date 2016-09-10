@@ -1,20 +1,16 @@
 import { spawn } from 'child_process'
 
 export default (opts) => {
-  const codePath = opts.codePath
   const cwd = opts.cwd
 
   const filepath = opts.filepath
-  const args = opts.args
+  const codePath = opts.codePath
 
   const onError = opts.onError
   const onLog = opts.onLog
   const onComplete = opts.onComplete
 
-  const template = "filepath='{{filepath}}';run('{{script}}');;exit;"
-  const matlabCode = template
-                      .replace('{{filepath}}', filepath)
-                      .replace('{{script}}', args)
+  const matlabCode = `filepath='${filepath}';run('${codePath}');exit;`
 
   const tokens = [
     '-nodisplay',
@@ -41,7 +37,7 @@ export default (opts) => {
     if (code !== 0) {
       return onError(
         new Error(
-          `An error occured (code ${code}) while running "$MATLAB ${args.split('  ')}"`))
+          `An error occured (code ${code}) while running "$MATLAB ${codePath.split('  ')}"`))
     } else { // eslint-disable-line
       return onComplete()
     }

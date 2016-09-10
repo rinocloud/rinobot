@@ -238,9 +238,8 @@ export class Task {
 
   matlab() {
     runMatlab({
-      filepath: this.filepath,
-      args: this.args,
-      locals: this.getLocals(),
+      codePath: this.args,
+      filepath: this.getLocals().filepath,
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,

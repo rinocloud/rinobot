@@ -24,7 +24,7 @@ import { flattenWatched } from './utils'
 const forkRpc = rpc(process)
 
 const watchers = {}
-const processedFiles = {}
+let processedFiles = {}
 let timer
 
 forkRpc.on('watch', (opts) => {
@@ -58,6 +58,13 @@ forkRpc.on('watch', (opts) => {
 forkRpc.on('unwatch', ({ index }) => {
   if (watchers[index]) watchers[index].close()
   processedFiles[index] = []
+})
+
+forkRpc.on('unwatch all', () => {
+  _.each(watchers, (val) => {
+    val.close()
+  })
+  processedFiles = {}
 })
 
 const add = (watcher, arg) => () => {

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
-const { shell } = require('electron')
+import { shell } from 'electron'
 
 
 class WatchDir extends React.Component {
@@ -10,6 +10,7 @@ class WatchDir extends React.Component {
   static propTypes = {
     dir: PropTypes.object.isRequired,
     onStartClick: PropTypes.func.isRequired,
+    isStarting: PropTypes.bool.isRequired,
     onStopClick: PropTypes.func.isRequired,
     onRemoveDirClick: PropTypes.func.isRequired,
     onToggleConfigClick: PropTypes.func.isRequired,
@@ -19,7 +20,7 @@ class WatchDir extends React.Component {
   }
 
   render() {
-    const { dir, packagesConfig } = this.props
+    const { dir, packagesConfig, isStarting } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -83,6 +84,22 @@ class WatchDir extends React.Component {
             >
               Open <i className="fa fa-external-link"></i>
             </a>
+
+            <a
+              href="#"
+              className="pull-right m-r"
+              onClick={removeDotRino}
+            >
+              Clear record
+            </a>
+            <a
+              href="#"
+              className="m-r pull-right"
+              onClick={onRemoveDirClick}
+            >
+              <span><i className="fa fa-trash"></i> Remove</span>
+            </a>
+
           </div>
           <div className="panel-body">
             <OverlayTrigger
@@ -97,72 +114,16 @@ class WatchDir extends React.Component {
               >
               </a>
             </OverlayTrigger>
+
             <a
               href="#"
-              className="m-l-sm btn btn-xs btn-danger pull-right"
-              onClick={removeDotRino}
+              className="m-l-sm btn btn-sm btn-default"
+              onClick={onToggleConfigClick}
+              disabled={dir.isStarted}
             >
-              Clear record
-            </a>
-            <a
-              href="#"
-              className="m-l-sm btn btn-xs btn-danger pull-right"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-trash"></i> Remove</span>
+              <span><i className="fa fa-save"></i> Save</span>
             </a>
 
-            {dir.isStarted &&
-              <a
-                href="#"
-                className="btn btn-sm btn-danger"
-                onClick={onStopClick}
-              >
-                Stop
-              </a>
-            }
-
-            {!dir.isStarted &&
-              <a
-                href="#"
-                className="btn btn-sm btn-success"
-                onClick={onStartClick}
-                data-dismiss="alert"
-              >
-                Start
-              </a>
-            }
-
-            {/*{dir.isConfigOpen &&
-              <a
-                href="#"
-                className="btn btn-sm btn-success disabled"
-                data-dismiss="alert"
-                disabled
-              >
-                Start
-              </a>
-            }*/}
-
-            {!dir.isStarted &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                onClick={onToggleConfigClick}
-              >
-                <span><i className="fa fa-save"></i> Save</span>
-              </a>
-            }
-
-            {/* {!dir.isStarted && !dir.isConfigOpen &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                onClick={onToggleConfigClick}
-              >
-                <span><i className="fa fa-cogs"></i> Setup</span>
-              </a>
-            } */}
 
             {firstTime && !dir.isConfigOpen ?
               <div
@@ -191,38 +152,55 @@ class WatchDir extends React.Component {
             />
           </div>
         </div>
+
+        <div className="m-b text-center">
+          {dir.isStarted && !isStarting &&
+            <a
+              href="#"
+              className="btn btn-danger"
+              onClick={onStopClick}
+            >
+              Stop
+            </a>
+          }
+
+          {dir.isStarted && isStarting &&
+            <a
+              href="#"
+              className="btn btn-default"
+              onClick={onStopClick}
+              disabled
+            >
+              Starting <i className="fa fa-spinner fa-spin"></i>
+            </a>
+          }
+
+          {!dir.isStarted &&
+            <a
+              href="#"
+              className="btn btn-success"
+              onClick={onStartClick}
+              data-dismiss="alert"
+            >
+              Start
+            </a>
+          }
+
+        </div>
+
         <div className="panel panel-default">
           <div className="panel-heading">
             Activity log
+            <div className="pull-right">{dir.processedFiles}/{dir.totalFiles} files processed</div>
           </div>
           <div className="panel-body">
-            {dir.isStarted ?
-              <div className="m-t configForm">
-                <div className="row">
-                  <div className="col-sm-12">
-                    {dir.processedFiles}/{dir.totalFiles} files processed
-                    {/* {dir.isStarted ?
-                      <a
-                        href="#"
-                        className="text-muted m-l-sm pull-right"
-                        onClick={onToggleLogsClick}
-                      >
-                      {dir.isLogsOpen ?
-                        <span className="text-muted"><i className="fa fa-compress"></i> close logs</span>
-                        :
-                        <span className="text-muted"><i className="fa fa-expand"></i> open logs</span>
-                        }
-                      </a>
-                    : null} */}
-
-                  </div>
-                  <div className="col-sm-12">
-                     {dir.isLogsOpen && <LogScroll history={dir.history} />}
-                  </div>
+            <div className="configForm">
+              <div className="row">
+                <div className="col-sm-12">
+                  <LogScroll history={dir.history} />
                 </div>
               </div>
-            : ''}
-
+            </div>
           </div>
         </div>
       </div>

@@ -40,115 +40,123 @@ class Sidebar extends React.Component {
     }
 
     return (
-      <ul className="list-group">
+      <div style={{ height: '100%' }}>
+        <div className="wrapper">
+          <ul className="list-group">
 
-        <li className="list-group-item list-group-item-heading">
-          <strong>Your Folders</strong>
-        </li>
+            <li className="list-group-item list-group-item-heading">
+              <strong>Your Folders</strong>
+            </li>
 
-        {watcher.dirs.map((dir, i) =>
-          <Link
-            key={`dira${i}`}
-            className={
-              location.pathname === '/' && ui.currentDir === i ?
-                'list-group-item active' :
-                'list-group-item'
+            {watcher.dirs.map((dir, i) =>
+              <Link
+                key={`dira${i}`}
+                className={
+                  location.pathname === '/' && ui.currentDir === i ?
+                    'list-group-item active' :
+                    'list-group-item'
+                }
+                style={{
+                  paddingLeft: '35px'
+                }}
+                to="/"
+                onClick={() => {
+                  dispatch(uiActions.setCurrentDir(i))
+                }}
+              >
+                <i className="fa fa-level-up fa-rotate-90"></i>{'  '}
+                <span>{pt.basename(dir.path)}/</span>
+              </Link>
+            )}
+
+
+            <Link
+              className="list-group-item"
+              to="/"
+              onClick={chooseFolder}
+            >
+              <i className="fa fa-plus"></i>{'  '}
+              <span>Add folder</span>
+            </Link>
+
+
+            <li className="list-group-item list-group-item-heading m-t">
+              <strong>Automate</strong>
+            </li>
+
+
+            <Link
+              to="/installed_packages"
+              className={
+                location.pathname === '/installed_packages' ?
+                  'list-group-item active' :
+                  'list-group-item'
+              }
+            >
+              <i className="fa fa-area-chart fa"></i>{'  '}
+              <span>Plugins</span>
+            </Link>
+
+
+            <a
+              href="#"
+              className="list-group-item"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.openExternal('http://docs.rinocloud.com/rinobot/')
+              }
+              }
+            >
+              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <span>Documentation</span>
+            </a>
+
+            <li className="list-group-item list-group-item-heading m-t">
+              <strong>User</strong>
+            </li>
+
+            {auth.isAuthenticating &&
+              <a
+                href="#"
+                onClick={onClickLogout}
+                className="list-group-item"
+              >
+                <i className="fa fa-spinner fa-spin"></i>{'  '}
+                <span>Logging out</span>
+              </a>
             }
-            style={{
-              paddingLeft: '35px'
-            }}
-            to="/"
-            onClick={() => {
-              dispatch(uiActions.setCurrentDir(i))
-            }}
-          >
-            <i className="fa fa-level-up fa-rotate-90"></i>{'  '}
-            <span>{pt.basename(dir.path)}/</span>
-          </Link>
-        )}
+            {!auth.isAuthenticating &&
+              <a
+                href="#"
+                onClick={onClickLogout}
+                className="list-group-item"
+              >
+                <i className="fa fa-sign-out"></i>{'  '}
+                <span>Logout {auth.username}</span>
+              </a>
+            }
 
 
-        <Link
-          className="list-group-item"
-          to="/"
-          onClick={chooseFolder}
-        >
-          <i className="fa fa-plus"></i>{'  '}
-          <span>Add folder</span>
-        </Link>
+            <a
+              className="list-group-item"
+              href={`https://${auth.project}.rinocloud.com/app/`}
+              onClick={openExternal}
+            >
+              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <span>Go to rinocloud</span>
+            </a>
+          </ul>
+        </div>
+        <div>
+          <ul className="list-group">
+            <li className="list-group-item list-group-item-heading m-t text-muted">
+              <small>Rinobot v{ui.rinobotVersion}</small>
+            </li>
+          </ul>
+        </div>
 
+      </div>
 
-        <li className="list-group-item list-group-item-heading m-t">
-          <strong>Automate</strong>
-        </li>
-
-
-        <Link
-          to="/installed_packages"
-          className={
-            location.pathname === '/installed_packages' ?
-              'list-group-item active' :
-              'list-group-item'
-          }
-        >
-          <i className="fa fa-line-chart fa"></i>{'  '}
-          <span>Plugins</span>
-        </Link>
-
-
-        <a
-          href="#"
-          className="list-group-item"
-          onClick={(e) => {
-            e.preventDefault()
-            shell.openExternal('http://docs.rinocloud.com/rinobot/')
-          }
-          }
-        >
-          <i className="fa fa-book fa-lg"></i>{'  '}
-          <span>Documentation</span>
-        </a>
-
-        <li className="list-group-item list-group-item-heading m-t">
-          <strong>User</strong>
-        </li>
-
-        {auth.isAuthenticating &&
-          <a
-            href="#"
-            onClick={onClickLogout}
-            className="list-group-item"
-          >
-            <i className="fa fa-spinner fa-spin"></i>{'  '}
-            <span>Logging out</span>
-          </a>
-        }
-        {!auth.isAuthenticating &&
-          <a
-            href="#"
-            onClick={onClickLogout}
-            className="list-group-item"
-          >
-            <i className="fa fa-sign-out"></i>{'  '}
-            <span>Logout {auth.username}</span>
-          </a>
-        }
-
-
-        <a
-          className="list-group-item"
-          href={`https://${auth.project}.rinocloud.com/app/`}
-          onClick={openExternal}
-        >
-          <i className="fa fa-external-link"></i>{'  '}
-          <span>Go to rinocloud</span>
-        </a>
-
-        <li className="list-group-item list-group-item-heading m-t text-muted">
-          <small>Rinobot v{ui.rinobotVersion}</small>
-        </li>
-
-      </ul>
     )
   }
 }

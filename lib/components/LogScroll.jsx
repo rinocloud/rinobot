@@ -2,6 +2,9 @@ import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
 import moment from 'moment.twitter'
+import { shell } from 'electron'
+
+const os = process.platform
 
 class LogScroll extends React.Component {
   static propTypes = {
@@ -21,85 +24,73 @@ class LogScroll extends React.Component {
     })
 
     logs = logs.slice(0, 50)
-
     return (
-      <div className="row">
-        <div className="col-sm-12">
-          <table
-            className="table m-t p-l"
-          >
-            <thead>
-              <tr>
-                <th>Filename</th>
-                <th>Processed</th>
-                <th>Tasks run</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            {_.map(logs, (l, i) => {
-              return (
-                <tr key={`hist-${i}`}>
-                  <td className="col-sm-4">
-                    {l.completed.length ?
-                      <i className="fa fa-2 fa-file-text-o"></i>
-                      :
-                      <i className="fa fa-2 fa-file-text-o text-muted"></i>
-                    }{'  '}
-                    <small>{pt.basename(l.filepath)}</small>
-                  </td>
-
-                  <td className="col-sm-1">
-                    <small className="text-muted">
-                      {`${moment(l.lastRun).twitter()} ago`}
+      <table className="table table-condensed">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Processed</th>
+            <th>Tasks run</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {_.map(logs, (l, i) => {
+            return (
+              <tr key={`hist-${i}`}>
+                <td className="col-sm-4">
+                  {l.completed.length ?
+                    <i className="fa fa-2 fa-file-text-o"></i>
+                    :
+                    <i className="fa fa-2 fa-file-text-o text-muted"></i>
+                  }{'  '}
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      shell.openItem(l.filepath)
+                    }}
+                  >
+                    <small>
+                      {pt.basename(l.filepath)}
                     </small>
-                  </td>
+                  </a>
+                </td>
 
-                  <td className="col-sm-3">
-                    {l.current && <small
+                <td className="col-sm-1">
+                  <small className="text-muted">
+                    {`${moment(l.lastRun).twitter()} ago`}
+                  </small>
+                </td>
+
+                <td className="col-sm-3">
+                  {l.current && <small
+                    style={{ maxHeight: '30px', overflowX: 'scroll' }}
+                  >
+                    <i
+                      className="fa fa-cog fa-spin"
+                      style={{ marginRight: '6px' }}
+                    ></i>
+                    {l.current}<br />
+                  </small>}
+                  {_.map(l.completed, (m, i) =>
+                    <small
+                      key={`msg${i}${l.lastRun}`}
                       style={{ maxHeight: '30px', overflowX: 'scroll' }}
                     >
                       <i
-                        className="fa fa-cog fa-spin"
+                        className="fa fa-level-up fa-rotate-90"
                         style={{ marginRight: '6px' }}
                       ></i>
-                      {l.current}<br />
-                    </small>}
-                    {_.map(l.completed, (m, i) =>
-                      <small
-                        key={`msg${i}${l.lastRun}`}
-                        style={{ maxHeight: '30px', overflowX: 'scroll' }}
-                      >
-                        <i
-                          className="fa fa-level-up fa-rotate-90"
-                          style={{ marginRight: '6px' }}
-                        ></i>
-                        {m.split(',')[0]}<br />
-                      </small>
-                    )}
-                  </td>
+                      {m.split(',')[0].replace('rinobot-plugin-', '')}<br />
+                    </small>
+                  )}
+                </td>
 
-                  {l.error &&
-                    <td className="col-sm-4">
-                      <small
-                        className="text-danger"
-                        style={{
-                          border: 'none',
-                          backgroundColor: 'white',
-                          fontFamily: 'monospace',
-                          fontSize: '0.7em',
-                          padding: 0,
-                        }}
-                      >
-                        {l.error.message}
-                      </small>
-                    </td>
-                  }
-
+                {l.error &&
                   <td className="col-sm-4">
-                  {!l.error && _.map(l.stdout, (m, i) =>
-                    <pre
-                      key={`e${i}`}
+                    <small
+                      className="text-danger"
                       style={{
                         border: 'none',
                         backgroundColor: 'white',
@@ -108,18 +99,33 @@ class LogScroll extends React.Component {
                         padding: 0,
                       }}
                     >
-                      {m}
-                    </pre>
-                  )}
+                      {l.error.message}
+                    </small>
                   </td>
+                }
 
-                </tr>
-              )
-            })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                <td className="col-sm-4">
+                {!l.error && _.map(l.stdout, (m, i) =>
+                  <pre
+                    key={`e${i}`}
+                    style={{
+                      border: 'none',
+                      backgroundColor: 'white',
+                      fontFamily: 'monospace',
+                      fontSize: '0.7em',
+                      padding: 0,
+                    }}
+                  >
+                    {m}
+                  </pre>
+                )}
+                </td>
+
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     )
   }
 }

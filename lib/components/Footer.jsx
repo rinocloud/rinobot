@@ -34,23 +34,22 @@ class Footer extends React.Component {
     )
 
     return (
-      <div className="footer main-container text-muted">
-        <div className="row">
-          <div className="col-sm-10">
-            {ui.pythonVersion === false ?
-              <span>
-                No python found, please install {pythonLink} to use plugins.
-              </span>
-            :
-            ''}
-            {pythonMajorVersion === '2' ?
-              <span>
-                Python {ui.pythonVersion} found, please install {pythonLink} to use plugins.
-              </span>
-            :
-            ''}
-          </div>
+      <div className="footer text-muted">
+        <div className="col-sm-10">
+          {ui.pythonVersion === false ?
+            <span>
+              No python found, please install {pythonLink} to use plugins.
+            </span>
+          :
+          ''}
+          {pythonMajorVersion === '2' ?
+            <span>
+              Python {ui.pythonVersion} found, please install {pythonLink} to use plugins.
+            </span>
+          :
+          ''}
         </div>
+
       </div>
     )
   }

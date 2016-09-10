@@ -35,6 +35,7 @@ const createWindow = (app, sentry) => { // eslint-disable-line
 
   rpc.on('watch', args => forkRpc.emit('watch', args))
   rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
+  rpc.on('unwatch all', args => forkRpc.emit('unwatch all', args))
 
   forkRpc.on('ready', () => rpc.emit('child process ready'))
 
