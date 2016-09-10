@@ -1,4 +1,3 @@
-
 import runPython from '../bot/runPython'
 import runMatlab from '../bot/runMatlab'
 import runR from '../bot/runR'
@@ -9,16 +8,26 @@ import mkdirp from 'mkdirp'
 import pt from 'path'
 import fs from 'fs'
 
+let subdir = 0
+let doOptionalTest = true
+let testCount = 1
+const mochaIt = it
+const testMatlab = false
+let fixturesPath = pt.join(__dirname, 'test-fixtures', subdir && subdir.toString() || '')
+
 export const checkForProgram = (program, cb) => {
-  // returns callback with values 2, 3 or false
   exec(program, (error, stdout) => {
     if (error) cb(false)
     cb(stdout)
   })
 }
 
-
 const getFixturePath = (subPath) =>
+  /*
+    creates a new unique folder for each test
+    and we can add files to that path using
+    getFixturePath('somefile.txt')
+  */
   pt.join(
     __dirname,
     'test-fixtures',
@@ -26,14 +35,11 @@ const getFixturePath = (subPath) =>
     subPath
   )
 
-
-let subdir = 0
-let doOptionalTest = true
-let testCount = 1
-const mochaIt = it
-let fixturesPath = getFixturePath('')
-
 if (!fs.readFileSync(__filename).toString().match(/\sit\.only\(/)) {
+  /*
+    We monkey patch the test 'it' function so that we can track
+    how many tests have run to create the new folders
+  */
   it = function() { // eslint-disable-line
     testCount++
     mochaIt.apply(this, arguments) // eslint-disable-line
@@ -45,6 +51,9 @@ if (!fs.readFileSync(__filename).toString().match(/\sit\.only\(/)) {
 }
 
 before(done => {
+  /*
+    lets delete the test-fixtures folder before the tests run
+  */
   let writtenCount = 0
   function wrote(err) {
     if (err) throw err
@@ -67,21 +76,27 @@ before(done => {
   })
 })
 
-beforeEach(function (done) {
-  this.timeout(20000)
-  checkForProgram(this.currentTest.title, (exists) => {
-    if (exists) {
-      doOptionalTest = true
-    } else {
-      doOptionalTest = false
-    }
-    subdir++
-    fixturesPath = getFixturePath('')
-    done()
-  })
-})
-
 describe('Tasks which run sub-processes', () => {
+  beforeEach(function (done) {
+    /*
+      For this batch of tests which run sub-processes
+      like python, R and matlab - we want to only run
+      the test if the corresponding program exists; so we
+      check before each test.
+    */
+    this.timeout(20000)
+    checkForProgram(this.currentTest.title, (exists) => {
+      if (exists) {
+        doOptionalTest = true
+      } else {
+        doOptionalTest = false
+      }
+      subdir++
+      fixturesPath = getFixturePath('')
+      done()
+    })
+  });
+
   (doOptionalTest ? it : it.skip)('python3 -V', done => {
     const codePath = getFixturePath(pt.join('folder w space', 'script with space.py'))
     const locals = {
@@ -140,7 +155,7 @@ describe('Tasks which run sub-processes', () => {
     })
   });
 
-  (doOptionalTest ? it : it.skip)('matlab -nosplash -nodesktop -nodisplay -r "exit;"', function (done) { // eslint-disable-line
+  (doOptionalTest && testMatlab ? it : it.skip)('matlab -nosplash -nodesktop -nodisplay -r "exit;"', function (done) { // eslint-disable-line
     this.timeout(20000)
 
     const codePath = getFixturePath(pt.join('folder w space', 'script_wo_space.m'))

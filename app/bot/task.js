@@ -18,14 +18,41 @@ import mergeHistory from './mergeHistory'
 import readHistory from './readHistory'
 
 export class Task {
+  /*
+    Rinobot Task
+
+    const task = new Task({
+      onComplete: function(){}
+      onLog: function(){}
+      onError: function(){}
+      filepath: absolute filepath
+      baseDir: the directory being watched by Rinobot
+      pluginsDir: absolute filepath to plugins
+      command: name of task to run
+      march: pattern to match file with
+      args: any arguments to the command
+      apiToken: Rinocloud api token
+    })
+
+    task.ready(() => {
+      if (!task.ignored) {
+        // task wasnt ignored so we run it
+        task.run()
+      } else {
+        // task was ignored
+        // can get the reason
+        console.log(task.reason)
+      }
+    })
+  */
+
   constructor(opts) {
     this.onComplete = () => opts.onComplete(this)
     this.onLog = (message) => opts.onLog(this, message)
 
-    this.onError = (err) => {
-      // should take task out of history
-      return opts.onError(this, err)
-    }
+    this.onError = (err) =>
+      // TODO: take task out of history
+      opts.onError(this, err)
 
     this.filepath = opts.filepath
     this.baseDir = opts.baseDir

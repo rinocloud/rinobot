@@ -1,7 +1,6 @@
 environment:
   nodejs_version: "6.4.0"
   matrix:
-    - PYTHON: "C:/Python27"
     - PYTHON: "C:/Python35"
 
 init:

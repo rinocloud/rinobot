@@ -52,13 +52,8 @@ export default (opts) => {
     if (err) {
       onError(err)
     } else {
-      const args = _.trim(swig.render(`${codePath} {{filepath}}`, { locals }))
-      const magicDelimiter = ',,,xxx123'
-      const tokens = _.map(args.split(/\\ /g).join(magicDelimiter).split(' '), (arg) =>
-        arg.split(new RegExp(magicDelimiter, 'g')).join('\ ') // eslint-disable-line
-      )
-
-      const child = spawn('python', tokens, { cwd })
+      const args = [codePath, locals.filepath]
+      const child = spawn('python', args, { cwd })
 
       child.on('error', (error) => {
         child.error = true
