@@ -23,8 +23,8 @@ const isOSX = process.platform === 'darwin'
 const createWindow = (app, sentry) => { // eslint-disable-line
   let win = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1200,
+    height: 800,
   })
 
   win.loadURL(`file://${__dirname}/app.html`)
