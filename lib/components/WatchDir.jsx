@@ -145,7 +145,7 @@ class WatchDir extends React.Component {
 
             <ConfigurePipeline
               // it has state - so give it some novel key
-              key={`configpipe-${dir.config.tasks[0].command}`}
+              key={`configpipe-${dir.config.tasks.length}`}
               dir={dir}
               onSetConfig={this.props.onSetConfig}
               packagesConfig={packagesConfig}

@@ -4,8 +4,6 @@ import pt from 'path'
 import moment from 'moment.twitter'
 import { shell } from 'electron'
 
-const os = process.platform
-
 class LogScroll extends React.Component {
   static propTypes = {
     history: PropTypes.object
@@ -25,7 +23,7 @@ class LogScroll extends React.Component {
 
     logs = logs.slice(0, 50)
     return (
-      <table className="table table-condensed">
+      <table className="table">
         <thead>
           <tr>
             <th>Filename</th>
@@ -35,6 +33,33 @@ class LogScroll extends React.Component {
           </tr>
         </thead>
         <tbody>
+
+          {logs.length === 0 && _.map(_.range(6), (l, i) => {
+            return (
+              <tr key={`pseudo-hist-${i}`}>
+                <td className="col-sm-4">
+                  <i className="pseudo-fa fa fa-2 fa-file-text-o text-muted"></i>
+                  {'  '}
+                  <span className="pseudo-log"></span>
+                </td>
+
+                <td className="col-sm-1">
+                  <span className="pseudo-log"></span>
+                </td>
+
+                <td className="col-sm-3">
+                  <span className="pseudo-log"></span>
+                </td>
+
+                <td className="col-sm-4">
+                </td>
+
+                <td className="col-sm-4">
+                </td>
+              </tr>
+            )
+          })}
+
           {_.map(logs, (l, i) => {
             return (
               <tr key={`hist-${i}`}>

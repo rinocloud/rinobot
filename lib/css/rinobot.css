@@ -163,3 +163,16 @@ html, body {
 .fa-small{
   font-size: 0.8em;
 }
+
+.pseudo-log{
+  display: inline-block;
+  background: rgba(0,0,0,0.06);
+  width: 80%;
+  height: 15px;
+  vertical-align: middle;
+}
+
+.pseudo-fa{
+  vertical-align: middle;
+  margin-right: 3px;
+}
