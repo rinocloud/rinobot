@@ -44,7 +44,7 @@ class TaskForm extends React.Component {
   }
 
   render() {
-    const { task, pop, packagesConfig } = this.props //eslint-disable-line
+    const { task, pop, registry, packagesConfig } = this.props //eslint-disable-line
     const openExternal = (e) => {
       e.preventDefault()
       shell.openExternal(e.target.href)
@@ -70,10 +70,9 @@ class TaskForm extends React.Component {
     )
 
     let installDeps = []
-
     if (packagesConfig && packagesConfig.dependencies) {
       installDeps = _.keys(packagesConfig.dependencies).map((dep) => ({
-        name: dep.replace('rinobot-plugin-', ''),
+        name: dep.replace('rinobot-plugin-', 'plugin: '),
         value: dep
       }))
     }
@@ -95,6 +94,12 @@ class TaskForm extends React.Component {
     )
 
     const isPluginCommand = _.map(installDeps, 'value').includes(task.command)
+
+    let pluginReadme = null
+    const pluginDetails = _.find(registry, { name: task.command })
+    if (pluginDetails) {
+      pluginReadme = pluginDetails.homepage
+    }
 
     let selectedValue = task.command || ''
     if (isCustomCommand) {
@@ -282,7 +287,7 @@ class TaskForm extends React.Component {
         </div>
 
         <div className="col-xs-12">
-          {task.command === 'upload' ?
+          {task.command === 'upload' &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/uploading_to_rinocloud.html"
               onClick={openExternal}
@@ -291,9 +296,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}uploading to rinocloud
             </a>
-          :
-          null}
-          {['copy', 'move'].includes(task.command) ?
+          }
+
+          {['copy', 'move'].includes(task.command) &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/copying_moving_files.html"
               onClick={openExternal}
@@ -302,9 +307,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}copy/move files
             </a>
-          :
-          null}
-          {task.command === 'matlab' ?
+          }
+
+          {task.command === 'matlab' &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_matlab.html"
               onClick={openExternal}
@@ -313,10 +318,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running matlab scripts
             </a>
-          :
-          null}
+          }
 
-          {task.command === 'python' ?
+          {task.command === 'python' &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_python.html"
               onClick={openExternal}
@@ -325,9 +329,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running python scripts
             </a>
-          : null}
+          }
 
-          {task.command === 'Rscript' ?
+          {task.command === 'Rscript' &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_r.html"
               onClick={openExternal}
@@ -336,9 +340,9 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running r scripts
             </a>
-          : null}
+          }
 
-          {task.command === 'custom' ?
+          {task.command === 'custom' &&
             <a
               href="http://docs.rinocloud.com/rinobot/tasks/running_custom_commands.html"
               onClick={openExternal}
@@ -347,7 +351,19 @@ class TaskForm extends React.Component {
               <i className="fa fa-question-circle-o m-r-sm"></i>
               {'  '}running custom commands
             </a>
-          : null}
+          }
+
+          {isPluginCommand &&
+            <a
+              href={pluginReadme}
+              onClick={openExternal}
+              className="text-muted"
+            >
+              <i className="fa fa-external-link m-r-sm"></i>{'  '}
+              Plugin docs
+            </a>
+          }
+
         </div>
       </div>
     )

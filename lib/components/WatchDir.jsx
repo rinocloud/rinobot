@@ -16,11 +16,12 @@ class WatchDir extends React.Component {
     onToggleConfigClick: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
-    packagesConfig: PropTypes.object
+    registry: PropTypes.array.isRequired,
+    packagesConfig: PropTypes.object.isRequired
   }
 
   render() {
-    const { dir, packagesConfig, isStarting } = this.props
+    const { dir, registry, packagesConfig, isStarting } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -149,6 +150,7 @@ class WatchDir extends React.Component {
               dir={dir}
               onSetConfig={this.props.onSetConfig}
               packagesConfig={packagesConfig}
+              registry={registry}
             />
           </div>
         </div>
