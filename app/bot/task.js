@@ -50,9 +50,13 @@ export class Task {
     this.onComplete = () => opts.onComplete(this)
     this.onLog = (message) => opts.onLog(this, message)
 
-    this.onError = (err) =>
+    this.onError = (err) => {
       // TODO: take task out of history
-      opts.onError(this, err)
+      this.removeCurrentTask(() => {
+        opts.onError(this, err)
+      })
+    }
+
 
     this.filepath = opts.filepath
     this.baseDir = opts.baseDir
@@ -148,6 +152,28 @@ export class Task {
         this.history = history
         cb()
       }
+    })
+  }
+
+  removeCurrentTask(cb) {
+    const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+    const lastRun = moment().toISOString()
+
+    readHistory(historyFilePath, this.filepath, (err, history) => {
+      if (err) return this.onError(err)
+
+      const completed = _.clone(history.completed)
+      completed.push(`${this.command},${this.args}`)
+
+      mergeHistory(historyFilePath, this.filepath,
+        {
+          lastRun,
+          current: null,
+        },
+      (er, _history) => {
+        this.history = _history
+        cb()
+      })
     })
   }
 

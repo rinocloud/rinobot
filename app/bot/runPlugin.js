@@ -69,7 +69,7 @@ export default (opts) => {
         if (code !== 0) {
           return onError(
             new Error, null(
-              `An error occured (code ${code}) while running "${codePath} ${args.split('  ')}"`))
+              `An error occured (code ${code}) while running "${codePath} ${args}"`))
         } else { // eslint-disable-line
           return onComplete()
         }

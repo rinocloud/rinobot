@@ -208,6 +208,7 @@ const taskIgnore = (index, task) => {
 }
 
 const taskError = (index, task, error) => {
+  forkRpc.emit('set history', { index, history: task.history })
   forkRpc.emit(
     'task error',
     {

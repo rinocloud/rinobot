@@ -37,7 +37,7 @@ export default (opts) => {
     if (code !== 0) {
       return onError(
         new Error(
-          `An error occured (code ${code}) while running "$MATLAB ${codePath.split('  ')}"`))
+          `An error occured (code ${code}) while running "$MATLAB ${codePath}"`))
     } else { // eslint-disable-line
       return onComplete()
     }
