@@ -34,7 +34,7 @@ class LogScroll extends React.Component {
         </thead>
         <tbody>
 
-          {logs.length === 0 && _.map(_.range(6), (l, i) => {
+          {logs.length === 0 && _.map(_.range(5), (l, i) => {
             return (
               <tr key={`pseudo-hist-${i}`}>
                 <td className="col-sm-4">
