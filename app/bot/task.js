@@ -5,6 +5,7 @@ import moment from 'moment'
 import fs from 'fs-extra'
 import _ from 'lodash'
 import pt from 'path'
+import { isMatch } from './utils'
 import runR from './runR'
 import runPlugin from './runPlugin'
 import runPython from './runPython'
@@ -108,7 +109,9 @@ export class Task {
       // do update of metadata
     }
 
-    if (!globule.isMatch(this.match, this.filename)) {
+    const passing = isMatch(this.match, this.filename)
+
+    if (!passing) {
       this.ignored = true
       this.reason = 'Filename doesnt match task glob'
     }

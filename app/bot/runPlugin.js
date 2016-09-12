@@ -65,17 +65,20 @@ export default (opts) => {
         return onError(error)
       })
 
+      let errLog = ''
       child.stdout.on('data', (b) => onLog(b.toString()))
+      child.stderr.on('data', (b) => {
+        errLog += b.toString()
+        onLog(b.toString())
+      })
 
-      child.stderr.on('data', (b) => onLog(b.toString()))
 
       child.on('close', (code) => {
         if (child.hasOwnProperty('error')) return
 
         if (code !== 0) {
           return onError(
-            new Error, null(
-              `An error occured (code ${code}) while running "${codePath} ${args}"`))
+            new Error(errLog))
         } else { // eslint-disable-line
           return onComplete()
         }

@@ -1,4 +1,5 @@
 import pt from 'path'
+import globule from 'globule'
 import _ from 'lodash'
 import { exec } from 'child_process'
 
@@ -29,4 +30,21 @@ export const checkPythonVersion = (cb) => {
       cb('python3')
     }
   })
+}
+
+export const isMatch = (match, filename) => {
+  const patterns = match.split(',')
+  let passing = false
+
+  _.each(patterns, (pattern) => {
+    if (globule.isMatch(pattern.replace('!', ''), filename)) {
+      passing = true
+    }
+
+    if (pattern[0] === '!' && globule.isMatch(pattern.replace('!', ''), filename)) {
+      passing = false
+    }
+  })
+
+  return passing
 }

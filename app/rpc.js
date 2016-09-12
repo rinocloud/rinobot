@@ -30,6 +30,7 @@ class Server {
     this.queue = []
     this.timer = null
     this.last = null
+    this.delayTime = 500
   }
 
   get wc() {
@@ -44,6 +45,7 @@ class Server {
     const payload = { ch, data }
     const task = () => {
       if (this.queue.length === 0) return
+      console.log('sending batch of messages', new Date().getTime())
       this.wc.send(this.id, { ch: 'batch', data: this.queue })
       this.queue = []
     }
@@ -54,8 +56,8 @@ class Server {
 
     this.queue.push(payload)
     const now = new Date().getTime()
-    if (this.last && now < this.last + 500) {
-      this.timer = setTimeout(task, 500)
+    if (this.last && now < this.last + this.delayTime) {
+      this.timer = setTimeout(task, this.delayTime)
     } else {
       this.last = now
       task()

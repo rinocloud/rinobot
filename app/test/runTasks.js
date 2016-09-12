@@ -80,7 +80,7 @@ before(done => {
   })
 })
 
-describe('Tasks which run sub-processes', () => {
+describe('runTasks', () => {
   beforeEach(function (done) {
     /*
       For this batch of tests which run sub-processes

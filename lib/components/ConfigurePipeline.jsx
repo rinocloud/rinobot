@@ -11,7 +11,7 @@ class ConfigurePipeline extends React.Component {
   static propTypes = {
     dir: PropTypes.object.isRequired,
     onSetConfig: PropTypes.func.isRequired,
-    packagesConfig: PropTypes.object.isRequired,
+    packagesConfig: PropTypes.object,
     registry: PropTypes.array.isRequired,
   }
 

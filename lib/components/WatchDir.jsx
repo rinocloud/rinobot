@@ -17,7 +17,7 @@ class WatchDir extends React.Component {
     removeDotRino: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
-    packagesConfig: PropTypes.object.isRequired
+    packagesConfig: PropTypes.object
   }
 
   render() {
