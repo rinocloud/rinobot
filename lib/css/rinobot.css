@@ -1,5 +1,6 @@
-.light-grey-background{
-  background-color: #f7f8fb;
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
 body {
@@ -9,13 +10,56 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-.bordered{
-  border: 1px solid #eeeeee;
-  border-radius: 4px;
+.container {
+  height: 100%;
+}
+
+.main-container .container-fluid{
+  margin-left: 160px;
+}
+
+.wrapper {
+  min-height: 100%;
+  margin-bottom: -50px;
+}
+
+.footer,
+.push {
+  height: 50px;
+}
+
+#root {
+  height: 100%;
+}
+
+#root > div{
+  height: 100%;
+}
+
+.fa-small{
+  font-size: 0.8em;
+}
+
+.fa-notification{
+  font-size: 0.7em;
+  vertical-align: super;
+  opacity: 0.8;
 }
 
 .m-l-sm{
   margin-left: 5px;
+}
+
+.m-b-sm{
+  margin-bottom: 5px;
+}
+
+.m-r-sm{
+  margin-right: 5px;
+}
+
+.m-t-sm{
+  margin-top: 5px;
 }
 
 .icon-brand{
@@ -29,18 +73,6 @@ body {
 .brand-link:focus,
 .brand-link:hover{
   text-decoration: none!important;
-}
-
-.task-remove-button {
-  margin-top: 22px;
-}
-
-.metadata-remove-button {
-  margin-top: 4px;
-}
-
-.m-t-sm{
-  margin-top: 5px;
 }
 
 .notification-container {
@@ -61,61 +93,15 @@ body {
   font-size: 11px;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-.container {
-  height: 100%;
-}
-
-.wrapper {
-  min-height: 100%;
-  /* Equal to height of footer */
-  /* But also accounting for potential margin-bottom of last child */
-  margin-bottom: -50px;
-}
-.footer,
-.push {
-  height: 50px;
-}
-
-#root {
-  height: 100%;
-}
-
-#root > div{
-  height: 100%;
-}
-
-.table > tbody > tr > td{
-  padding: 8px;
-  line-height: 1.4;
-  vertical-align: top;
-  border-top: none;
-}
-
-.rinobot-navbar{
-  height: 60px;
-  /*background-color: #933FAA;*/
-  padding: 20px;
-}
-
 .sidebar {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
-  /*background-color: #f7f8fb;*/
   width: 160px;
   background-color: white;
   border-right: 1px solid #dddddd;
   padding-top: 20px;
-}
-
-.main-container .container-fluid{
-  margin-left: 160px;
 }
 
 .sidebar .list-group-item{
@@ -160,11 +146,14 @@ html, body {
     z-index: 1;
 }
 
-.fa-small{
-  font-size: 0.8em;
+.log {
+  padding: 8px;
+  line-height: 1.4;
+  vertical-align: top;
+  border-top: none;
 }
 
-.pseudo-log{
+.log .pseudo{
   display: inline-block;
   background: rgba(0,0,0,0.06);
   width: 80%;
@@ -172,7 +161,7 @@ html, body {
   vertical-align: middle;
 }
 
-.pseudo-fa{
+.log .pseudo-fa{
   vertical-align: middle;
   margin-right: 3px;
 }

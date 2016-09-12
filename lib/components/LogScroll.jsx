@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
-import pt from 'path'
-import moment from 'moment.twitter'
-import { shell } from 'electron'
+import { Log } from './Log'
 
 class LogScroll extends React.Component {
   static propTypes = {
@@ -23,134 +21,35 @@ class LogScroll extends React.Component {
 
     logs = logs.slice(0, 50)
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Filename</th>
-            <th>Processed</th>
-            <th>Tasks run</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+      <div>
 
-          {logs.length === 0 && _.map(_.range(5), (l, i) => {
-            return (
-              <tr key={`pseudo-hist-${i}`}>
-                <td className="col-sm-4">
-                  <i className="pseudo-fa fa fa-2 fa-file-text-o text-muted"></i>
-                  {'  '}
-                  <span className="pseudo-log"></span>
-                </td>
+        {logs.length === 0 && _.map(_.range(4), (l, i) => {
+          return (
+            <div className="log row m-b-sm" key={`pseudo-hist-${i}`}>
+              <div className="col-sm-8">
+                <i className="pseudo-fa fa fa-2 fa-file-text-o text-muted"></i>
+                {'  '}
+                <span className="pseudo"></span>
+              </div>
 
-                <td className="col-sm-1">
-                  <span className="pseudo-log"></span>
-                </td>
+              <div className="col-sm-1">
+                <span className="pseudo"></span>
+              </div>
 
-                <td className="col-sm-3">
-                  <span className="pseudo-log"></span>
-                </td>
+              <div className="col-sm-3">
+                <span className="pseudo"></span>
+              </div>
+            </div>
+          )
+        })}
 
-                <td className="col-sm-4">
-                </td>
-
-                <td className="col-sm-4">
-                </td>
-              </tr>
-            )
-          })}
-
-          {_.map(logs, (l, i) => {
-            return (
-              <tr key={`hist-${i}`}>
-                <td className="col-sm-4">
-                  {l.completed.length ?
-                    <i className="fa fa-2 fa-file-text-o"></i>
-                    :
-                    <i className="fa fa-2 fa-file-text-o text-muted"></i>
-                  }{'  '}
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      shell.openItem(l.filepath)
-                    }}
-                  >
-                    <small>
-                      {pt.basename(l.filepath)}
-                    </small>
-                  </a>
-                </td>
-
-                <td className="col-sm-1">
-                  <small className="text-muted">
-                    {`${moment(l.lastRun).twitter()} ago`}
-                  </small>
-                </td>
-
-                <td className="col-sm-3">
-                  {l.current && <small
-                    style={{ maxHeight: '30px', overflowX: 'scroll' }}
-                  >
-                    <i
-                      className="fa fa-cog fa-spin"
-                      style={{ marginRight: '6px' }}
-                    ></i>
-                    {l.current}<br />
-                  </small>}
-                  {_.map(l.completed, (m, i) =>
-                    <small
-                      key={`msg${i}${l.lastRun}`}
-                      style={{ maxHeight: '30px', overflowX: 'scroll' }}
-                    >
-                      <i
-                        className="fa fa-level-up fa-rotate-90"
-                        style={{ marginRight: '6px' }}
-                      ></i>
-                      {m.split(',')[0].replace('rinobot-plugin-', '')}<br />
-                    </small>
-                  )}
-                </td>
-
-                {l.error &&
-                  <td className="col-sm-4">
-                    <small
-                      className="text-danger"
-                      style={{
-                        border: 'none',
-                        backgroundColor: 'white',
-                        fontFamily: 'monospace',
-                        fontSize: '0.7em',
-                        padding: 0,
-                      }}
-                    >
-                      {l.error.message}
-                    </small>
-                  </td>
-                }
-
-                <td className="col-sm-4">
-                {!l.error && _.map(l.stdout, (m, i) =>
-                  <pre
-                    key={`e${i}`}
-                    style={{
-                      border: 'none',
-                      backgroundColor: 'white',
-                      fontFamily: 'monospace',
-                      fontSize: '0.7em',
-                      padding: 0,
-                    }}
-                  >
-                    {m}
-                  </pre>
-                )}
-                </td>
-
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+        {_.map(logs, (l, i) =>
+          <Log
+            key={`hist-${i}`}
+            {...l}
+          />
+        )}
+      </div>
     )
   }
 }

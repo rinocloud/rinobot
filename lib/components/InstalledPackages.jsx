@@ -91,7 +91,7 @@ class InstalledPackages extends React.Component {
     }
 
     return (
-      <div className="row p-a">
+
         <div>
           <div className="panel panel-default">
             <div className="panel-heading">
@@ -215,8 +215,6 @@ class InstalledPackages extends React.Component {
             </div>
           </div>
         </div>
-      </div>
-
     )
   }
 }
