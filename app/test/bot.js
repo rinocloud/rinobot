@@ -161,10 +161,19 @@ describe('Tasks which run sub-processes', () => {
     const code = `
 import sys
 with open (sys.argv[1], "r") as myfile:
-  print(myfile.readlines())
+  for r in myfile.readlines():
+    print(r)
+print(sys.argv[2])
+print(sys.argv[3])
     `
+
+    let log = ''
     const packageJSON = JSON.stringify({ main: 'index.py' })
-    const onLog = (l) => { console.log(l) }
+    const onLog = (l) => { log += l }
+    const onComplete = () => {
+      assert.equal(log, '1\n\n2\n\n3\n\n--xmin=5\n--xmax=7\n')
+      done()
+    }
 
     mkdirp(pt.join(cwd, 'test-plugin'), err => {
       if (err) return done(err)
@@ -177,10 +186,11 @@ with open (sys.argv[1], "r") as myfile:
             runPlugin({
               pluginsDir: cwd,
               command: 'test-plugin',
-              locals,
+              filepath: locals.filepath,
+              args: '--xmin=5 --xmax=7',
               cwd,
               onLog,
-              onComplete: done,
+              onComplete,
               onError: done
             })
           })

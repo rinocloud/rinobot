@@ -30,7 +30,8 @@ export default (opts) => {
     runPlugin({
       pluginsDir: path to plugins directory,
       command: the plugin name,
-      locals: this.getLocals(),
+      filepath: path to file,
+      args: command args
       cwd: watched dir,
       onError: function(err){}
       onLog: function(log){}
@@ -40,7 +41,8 @@ export default (opts) => {
 
   const pluginsDir = opts.pluginsDir
   const command = opts.command
-  const locals = opts.locals
+  const filepath = opts.filepath
+  const args = opts.args
   const cwd = opts.cwd
 
   const onError = opts.onError
@@ -51,8 +53,12 @@ export default (opts) => {
     if (err) {
       onError(err)
     } else {
-      const args = [codePath, locals.filepath]
-      const child = spawn('python', args, { cwd })
+      let _args = [codePath, filepath]
+      if (args) {
+        _args = [..._args, ...args.split(' ')]
+      }
+
+      const child = spawn('python', _args, { cwd })
 
       child.on('error', (error) => {
         child.error = true

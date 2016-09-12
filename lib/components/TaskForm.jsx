@@ -21,10 +21,18 @@ class TaskForm extends React.Component {
     const { task, onChange } = this.props //eslint-disable-line
     return function (e, val = null) {
       e.preventDefault()
-      const state = {
+      let state = {
         ...task,
         [field]: val || e.target.value
       }
+
+      if (field === 'command') {
+        state = {
+          ...state,
+          args: ''
+        }
+      }
+
       onChange(state)
     }
   }
@@ -85,6 +93,8 @@ class TaskForm extends React.Component {
       !_.map(commandList, 'value').includes(task.command) ||
       task.command === 'custom'
     )
+
+    const isPluginCommand = _.map(installDeps, 'value').includes(task.command)
 
     let selectedValue = task.command || ''
     if (isCustomCommand) {
@@ -238,6 +248,20 @@ class TaskForm extends React.Component {
             </div>
             <div className="col-xs-3">
               <small>Insert command argument</small>
+              <input
+                type="text"
+                value={task.args || ''}
+                className="form-control input-sm"
+                onChange={this.handleChangeMatch('args')}
+              />
+            </div>
+          </div>
+        : null}
+
+        {isPluginCommand ?
+          <div>
+            <div className="col-xs-5">
+              <small>Extra args</small>
               <input
                 type="text"
                 value={task.args || ''}

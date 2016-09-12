@@ -169,7 +169,7 @@ class ConfigurePipeline extends React.Component {
                     <div className="p-l m-t row">
                       <div className="col-xs-12">
                         Any{'  '}
-                        <Link to="/installed_packages">Plugins</Link>{'  '}
+                        <Link to="/plugins">Plugins</Link>{'  '}
                         you install will automatically appear in the command list.
                       </div>
                     </div>

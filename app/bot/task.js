@@ -266,7 +266,8 @@ export class Task {
     runPlugin({
       pluginsDir: this.pluginsDir,
       command: this.command,
-      locals: this.getLocals(),
+      filepath: this.filepath,
+      args: this.args,
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,

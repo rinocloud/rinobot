@@ -8049,8 +8049,8 @@ module.exports =
 	  // eslint-disable-line
 	  var win = new _electron.BrowserWindow({
 	    show: false,
-	    width: 1024,
-	    height: 728
+	    width: 1200,
+	    height: 800
 	  });
 	
 	  win.loadURL('file://' + __dirname + '/app.html');
@@ -8069,6 +8069,9 @@ module.exports =
 	  });
 	  rpc.on('unwatch', function (args) {
 	    return forkRpc.emit('unwatch', args);
+	  });
+	  rpc.on('unwatch all', function (args) {
+	    return forkRpc.emit('unwatch all', args);
 	  });
 	
 	  forkRpc.on('ready', function () {

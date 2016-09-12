@@ -86,9 +86,9 @@ class Sidebar extends React.Component {
 
 
             <Link
-              to="/installed_packages"
+              to="/plugins"
               className={
-                location.pathname === '/installed_packages' ?
+                location.pathname === '/plugins' ?
                   'list-group-item active' :
                   'list-group-item'
               }
