@@ -17,3 +17,6 @@ test_script:
   - npm test
 
 build: off
+
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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

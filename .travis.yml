@@ -11,3 +11,6 @@ install:
 
 script:
   - npm test
+
+notifications:
+  slack: rinocloud:Um6KNIhyglzDkAFs5KY0Yvrw
