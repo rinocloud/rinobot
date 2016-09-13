@@ -7,7 +7,7 @@ import semver from 'semver'
 import * as pluginsActions from '../actions/plugins'
 
 
-class InstalledPackages extends React.Component {
+class Plugins extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -218,4 +218,4 @@ class InstalledPackages extends React.Component {
 
 export default connect((state) => ({
   plugins: state.plugins
-}))(InstalledPackages)
+}))(Plugins)

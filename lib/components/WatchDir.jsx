@@ -4,6 +4,16 @@ import { ConfigurePipeline } from './ConfigurePipeline'
 import { LogScroll } from './LogScroll'
 import { shell } from 'electron'
 
+const ClearRecord = (
+  <Popover
+    id="popover-trigger-hover-focus"
+  >
+    <small>
+      This will clear Rinobots logs for this folder, so you can re-run all tasks.
+      Click to learn more.
+    </small>
+  </Popover>
+)
 
 class WatchDir extends React.Component {
 
@@ -13,7 +23,7 @@ class WatchDir extends React.Component {
     isStarting: PropTypes.bool.isRequired,
     onStopClick: PropTypes.func.isRequired,
     onRemoveDirClick: PropTypes.func.isRequired,
-    onToggleConfigClick: PropTypes.func.isRequired,
+    onSaveConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     onSetConfig: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
@@ -43,9 +53,9 @@ class WatchDir extends React.Component {
       this.props.onRemoveDirClick()
     }
 
-    const onToggleConfigClick = (e) => {
+    const onSaveConfig = (e) => {
       e.preventDefault()
-      this.props.onToggleConfigClick()
+      this.props.onSaveConfig()
     }
 
     const openPluginHomepage = (e) => {
@@ -59,19 +69,6 @@ class WatchDir extends React.Component {
         this.props.removeDotRino()
       }
     }
-
-    const firstTime = dir.config === null;
-
-    const ClearRecord = (
-      <Popover
-        id="popover-trigger-hover-focus"
-      >
-        <small>
-          This will clear Rinobots logs for this folder, so you can re-run all tasks.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
 
     return (
       <div>
@@ -116,33 +113,27 @@ class WatchDir extends React.Component {
               </a>
             </OverlayTrigger>
 
-            <a
-              href="#"
-              className="m-l-sm btn btn-sm btn-default"
-              onClick={onToggleConfigClick}
-              disabled={dir.isStarted}
-            >
-              <span><i className="fa fa-save"></i> Save</span>
-            </a>
 
-
-            {firstTime && !dir.isConfigOpen ?
-              <div
-                className="m-t-sm"
-                role="alert"
+            {dir.isConfigDirty &&
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                onClick={onSaveConfig}
+                disabled={dir.isStarted}
               >
-                Select the folder's
-                <strong>'settings'</strong>
-                before you start to set up some tasks.
-                <br />
-                <a
-                  href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                  onClick={openExternal}
-                >
-                Tasks Getting Started guide
-                </a>
-              </div>
-            : null}
+                <span><i className="fa fa-save"></i> Save</span>
+              </a>
+            }
+
+            {!dir.isConfigDirty &&
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                disabled
+              >
+                <span><i className="fa fa-check"></i> Saved</span>
+              </a>
+            }
 
             <ConfigurePipeline
               // it has state - so give it some novel key
@@ -192,7 +183,7 @@ class WatchDir extends React.Component {
 
         <div className="panel panel-default">
           <div className="panel-heading">
-            Activity log
+            Activity
             <div className="pull-right">{dir.processedFiles}/{dir.totalFiles} files processed</div>
           </div>
           <div className="panel-body">

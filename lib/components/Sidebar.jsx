@@ -3,8 +3,8 @@ import * as authActions from '../actions/auth'
 const { dialog } = require('electron').remote
 import * as uiActions from '../actions/ui'
 import React, { PropTypes } from 'react'
-const { shell } = require('electron')
 import { Link } from 'react-router'
+import { shell } from 'electron'
 import pt from 'path'
 
 
@@ -79,11 +79,9 @@ class Sidebar extends React.Component {
               <span>Add folder</span>
             </Link>
 
-
             <li className="list-group-item list-group-item-heading m-t">
-              <strong>Automate</strong>
+              <strong>Automations</strong>
             </li>
-
 
             <Link
               to="/plugins"
@@ -94,22 +92,20 @@ class Sidebar extends React.Component {
               }
             >
               <i className="fa fa-area-chart fa"></i>{'  '}
-              <span>Plugins</span>
+              <span>Install</span>
             </Link>
 
-
-            <a
-              href="#"
-              className="list-group-item"
-              onClick={(e) => {
-                e.preventDefault()
-                shell.openExternal('http://docs.rinocloud.com/rinobot/')
-              }
+            <Link
+              to="/make"
+              className={
+                location.pathname === '/make' ?
+                  'list-group-item active' :
+                  'list-group-item'
               }
             >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
-              <span>Documentation</span>
-            </a>
+              <i className="fa fa-magic fa"></i>{'  '}
+              <span>Create</span>
+            </Link>
 
             <li className="list-group-item list-group-item-heading m-t">
               <strong>User</strong>
@@ -125,6 +121,7 @@ class Sidebar extends React.Component {
                 <span>Logging out</span>
               </a>
             }
+
             {!auth.isAuthenticating &&
               <a
                 href="#"
@@ -136,7 +133,6 @@ class Sidebar extends React.Component {
               </a>
             }
 
-
             <a
               className="list-group-item"
               href={`https://${auth.project}.rinocloud.com/app/`}
@@ -144,6 +140,19 @@ class Sidebar extends React.Component {
             >
               <i className="fa fa-external-link fa-small"></i>{'  '}
               <span>Go to rinocloud</span>
+            </a>
+
+            <a
+              href="#"
+              className="list-group-item"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.openExternal('http://docs.rinocloud.com/rinobot/')
+              }
+              }
+            >
+              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <span>Documentation</span>
             </a>
           </ul>
         </div>
