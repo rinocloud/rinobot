@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { shell } from 'electron'
 
 class MakePlugin extends React.Component {
 
@@ -36,6 +35,8 @@ class MakePlugin extends React.Component {
   }
 }
 
-export default connect((state) => ({
+const mapStateToProps = (state) => ({
   plugins: state.plugins
-}))(MakePlugin)
+})
+
+export default connect(mapStateToProps)(MakePlugin)

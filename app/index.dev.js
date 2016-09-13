@@ -70,8 +70,6 @@ const createWindow = (app, sentry) => { // eslint-disable-line
 
     if (!isDev && process.platform !== 'linux') {
       autoUpdater(win, rpc)
-    } else {
-      rpc.emit('log', 'ignoring auto updates during dev')
     }
   })
 

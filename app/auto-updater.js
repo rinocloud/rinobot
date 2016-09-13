@@ -18,12 +18,10 @@ function init(rpc) {
   autoUpdater.setFeedURL(`${FEED_URL}/${version}`)
 
   setTimeout(() => {
-    rpc.emit('log', 'checkForUpdates')
     autoUpdater.checkForUpdates()
   }, ms('10s'))
 
   setInterval(() => {
-    rpc.emit('log', 'checkForUpdates')
     autoUpdater.checkForUpdates()
   }, ms('5m'))
 
@@ -31,7 +29,6 @@ function init(rpc) {
 }
 
 module.exports = function (win, rpc) {
-  rpc.emit('log', 'in auto-updater')
   if (!isInit) init(rpc)
 
   const onupdate = (ev, releaseNotes, releaseName) => {

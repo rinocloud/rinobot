@@ -1,18 +1,24 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { Sidebar } from './Sidebar'
-import { Footer } from './Footer'
-import { Notifications } from './Notifications'
+import { bindActionCreators } from 'redux'
+
+import { Sidebar } from '../components/Sidebar'
+import { Footer } from '../components/Footer'
+import { Notifications } from '../components/Notifications'
+
+import * as watcherActions from '../actions/watcher'
+import * as authActions from '../actions/auth'
+import * as uiActions from '../actions/ui'
 
 export function requireAuthentication(Component) {
   class AuthenticatedComponent extends React.Component {
 
     static propTypes = {
-      dispatch: PropTypes.func.isRequired,
       auth: PropTypes.object.isRequired,
+      actions: PropTypes.object.isRequired,
       ui: PropTypes.object.isRequired,
-      watcher: PropTypes.object.isRequired,
+      watcher: PropTypes.array.isRequired,
       location: PropTypes.object.isRequired,
     }
 
@@ -30,30 +36,33 @@ export function requireAuthentication(Component) {
     }
 
     checkAuth(token) {
-      const { dispatch } = this.props
-
       if (!token) {
         const redirectAfterLogin = this.props.location.pathname
-        dispatch(push(`/login?next=${redirectAfterLogin}`))
+        this.props.actions.push(`/login?next=${redirectAfterLogin}`)
       }
     }
 
     render() {
-      const { auth, ui, dispatch, watcher, location } = this.props
+      const { actions, auth, ui, watcher, location } = this.props
       return (
         <div className="wrapper main-container">
           <Notifications
-            ui={ui}
-            dispatch={dispatch}
+            installUpdate={actions.installUpdate}
+            updateNotes={ui.updateNotes}
+            updateShowing={ui.updateShowing}
+            updateVersion={ui.updateVersion}
           />
 
           <div className="sidebar p-0 m-0">
             <Sidebar
-              location={location}
-              ui={ui}
+              pathname={location.pathname}
+              currentDir={ui.currentDir}
+              rinobotVersion={ui.rinobotVersion}
               watcher={watcher}
-              dispatch={dispatch}
               auth={auth}
+              logout={actions.logout}
+              setCurrentDir={actions.setCurrentDir}
+              addDir={actions.addDir}
             />
           </div>
 
@@ -61,7 +70,6 @@ export function requireAuthentication(Component) {
             className="container-fluid p-t"
             style={{ minHeight: '100vh', marginBottom: '-50px' }}
           >
-            {auth.statusText}
             {auth.access_token
                 ? <Component {...this.props} />
                 : null
@@ -73,9 +81,20 @@ export function requireAuthentication(Component) {
     }
   }
 
-  return connect((state) => ({
+  const mapStateToProps = (state) => ({
     auth: state.auth,
     ui: state.ui,
     watcher: state.watcher,
-  }))(AuthenticatedComponent)
+  })
+
+  const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators({
+      push,
+      ...watcherActions,
+      ...authActions,
+      ...uiActions
+    }, dispatch)
+  })
+
+  return connect(mapStateToProps, mapDispatchToProps)(AuthenticatedComponent)
 }

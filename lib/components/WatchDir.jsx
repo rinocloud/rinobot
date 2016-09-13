@@ -114,7 +114,7 @@ class WatchDir extends React.Component {
             </OverlayTrigger>
 
 
-            {dir.isConfigDirty &&
+            {dir.isSaved &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
@@ -125,7 +125,7 @@ class WatchDir extends React.Component {
               </a>
             }
 
-            {!dir.isConfigDirty &&
+            {!dir.isSaved &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"

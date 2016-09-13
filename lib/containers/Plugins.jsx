@@ -39,7 +39,7 @@ class Plugins extends React.Component {
   render() {
     const { dispatch, plugins } = this.props
 
-    let registry = _.map(plugins.pluginRegistry, p => {
+    let registry = _.map(plugins.registry, p => {
       const isInstalled = _.has(plugins.config.dependencies, p.name)
       let canUpdate = false
       if (isInstalled && p['dist-tags']) {
@@ -59,7 +59,7 @@ class Plugins extends React.Component {
       }
     })
 
-    // to get plugins.pluginRegistry latest version use:
+    // to get plugins.registry latest version use:
     // plugin['dist-tags'].latest
     // to get installed version from plugins.config.dependencies use:
     // name: version
@@ -216,6 +216,9 @@ class Plugins extends React.Component {
   }
 }
 
-export default connect((state) => ({
+const mapStateToProps = (state) => ({
   plugins: state.plugins
-}))(Plugins)
+})
+
+
+export default connect(mapStateToProps)(Plugins)

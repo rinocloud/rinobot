@@ -1,7 +1,4 @@
-import * as watcherActions from '../actions/watcher'
-import * as authActions from '../actions/auth'
 const { dialog } = require('electron').remote
-import * as uiActions from '../actions/ui'
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import { shell } from 'electron'
@@ -11,15 +8,24 @@ import pt from 'path'
 class Sidebar extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    watcher: PropTypes.object.isRequired,
-    ui: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
+    watcher: PropTypes.array.isRequired,
+    currentDir: PropTypes.number.isRequired,
+    rinobotVersion: PropTypes.string,
+    pathname: PropTypes.string.isRequired,
+    logout: PropTypes.func.isRequired,
+    addDir: PropTypes.func.isRequired,
+    setCurrentDir: PropTypes.func.isRequired,
   }
 
   render() {
-    const { dispatch, auth, ui, location, watcher } = this.props
+    const {
+      auth,
+      currentDir,
+      rinobotVersion,
+      pathname,
+      watcher
+    } = this.props
 
     const openExternal = (e) => {
       e.preventDefault()
@@ -28,14 +34,18 @@ class Sidebar extends React.Component {
 
     const onClickLogout = (e) => {
       e.preventDefault()
-      dispatch(authActions.logout())
+      this.props.logout()
+    }
+
+    const setCurrentDir = (index) => {
+      this.props.setCurrentDir(index)
     }
 
     const chooseFolder = (e) => {
       e.preventDefault()
       const paths = dialog.showOpenDialog({ properties: ['openDirectory', 'multiSelections'] })
       if (paths) {
-        dispatch(watcherActions.addDir(paths[0]))
+        this.props.addDir(paths[0])
       }
     }
 
@@ -48,11 +58,11 @@ class Sidebar extends React.Component {
               <strong>Your Folders</strong>
             </li>
 
-            {watcher.dirs.map((dir, i) =>
+            {watcher.map((dir, i) =>
               <Link
                 key={`dira${i}`}
                 className={
-                  location.pathname === '/' && ui.currentDir === i ?
+                  pathname === '/' && currentDir === i ?
                     'list-group-item active' :
                     'list-group-item'
                 }
@@ -60,9 +70,7 @@ class Sidebar extends React.Component {
                   paddingLeft: '35px'
                 }}
                 to="/"
-                onClick={() => {
-                  dispatch(uiActions.setCurrentDir(i))
-                }}
+                onClick={() => setCurrentDir(i)}
               >
                 <i className="fa fa-level-up fa-rotate-90"></i>{'  '}
                 <span>{pt.basename(dir.path)}/</span>
@@ -86,7 +94,7 @@ class Sidebar extends React.Component {
             <Link
               to="/plugins"
               className={
-                location.pathname === '/plugins' ?
+                pathname === '/plugins' ?
                   'list-group-item active' :
                   'list-group-item'
               }
@@ -98,7 +106,7 @@ class Sidebar extends React.Component {
             <Link
               to="/make"
               className={
-                location.pathname === '/make' ?
+                pathname === '/make' ?
                   'list-group-item active' :
                   'list-group-item'
               }
@@ -159,7 +167,7 @@ class Sidebar extends React.Component {
         <div>
           <ul className="list-group">
             <li className="list-group-item list-group-item-heading m-t text-muted">
-              <small>Rinobot v{ui.rinobotVersion}</small>
+              <small>Rinobot v{rinobotVersion}</small>
             </li>
           </ul>
         </div>
