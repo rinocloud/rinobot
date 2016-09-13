@@ -30,6 +30,44 @@ $ npm run start-hot # starts the electron window
 
 Let Eoin do the packaging for now
 
+## The rino.yaml file
+
+
+In the simplest case it only has a list of tasks inside a pipeline
+
+v1:
+
+```yaml
+tasks:
+  - command: 'rinobot-plugin-rebin'
+    match: '*.txt'
+    args: '--bin=4'
+  - command: 'rinobot-plugin-line-plot'
+    match: '*.txt'
+    args: '--xmax=4'
+```
+
+v2:
+
+```yaml
+pipelines:
+  # add a file and a list of tasks to run on it, and its children
+  - filename: '*.txt'
+    tasks:
+      - name: rinobot-plugin-normalize
+        args: '--xmin=3 --xmax={{key}}'
+
+      - name: rinobot-plugin-rebin
+        args:
+          - '--bin=3'
+          - '--bin=5'
+
+      - name: rinobot-plugin-line-plot
+
+metadata:
+  key: value
+```
+
 ## Maintainers
 
 - [Eoin Murray](https://github.com/eoinmurray)
@@ -38,16 +76,3 @@ Let Eoin do the packaging for now
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
-
-## Storage idea
-
-{
-  filepath: {
-    id - rinocloud id or null,
-    etag - file etag - calculated locally,
-    created - ISO date string
-    completed: [
-      task name - task argument - ISO date string,
-    ]
-  }
-}
