@@ -174,7 +174,8 @@ print(s)
     const onLog = (l) => { log += l }
     const onComplete = () => {
       // hopefully cross platform check
-      assert.equal(log.includes('1\n2\n3\n--xmin=5--xmax=7'), true)
+      console.log(log, '1\n2\n3\n--xmin=5--xmax=7')
+      assert(log.includes('1\n2\n3\n--xmin=5--xmax=7'))
       done()
     }
 
