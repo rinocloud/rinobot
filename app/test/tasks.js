@@ -180,7 +180,7 @@ print(s)
       console.log(_.trim(log))
       console.log('\n_.trim(comparison):')
       console.log(_.trim(comparison))
-      assert(_.trim(log).includes(_.trim(comparison)))
+      assert.equal(_.trim(log), _.trim(comparison))
       done()
     }
 
