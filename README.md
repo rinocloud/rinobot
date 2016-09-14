@@ -56,17 +56,30 @@ pipelines:
     tasks:
       - name: rinobot-plugin-normalize
         args: '--xmin=3 --xmax={{key}}'
-
       - name: rinobot-plugin-rebin
-        args:
-          - '--bin=3'
-          - '--bin=5'
-
+        args: '--bin=3'
       - name: rinobot-plugin-line-plot
 
 metadata:
   key: value
 ```
+
+## Pipeline algorithm
+
+filepath = 'file which has appeared in watched dir'
+
+for pipeline in pipelines
+  for task in pipeline.tasks
+    outputFile = runTask(task, filepath)
+    filepath = outputFile
+    # task will output a file in the temporary folder
+    # eg: .rino/tmp/test-normalized.txt
+    # when we run again, this time with the last output
+    # file as the input, it will create
+    # .rino/temp/test-normalized-rebinned-3.txt
+    # finally it will plot that, and we copy everything back
+    # to next to the original filepath
+
 
 ## Maintainers
 

@@ -160,18 +160,21 @@ describe('runTasks', () => {
     const packagePath = pt.join(cwd, 'test-plugin', 'package.json')
     const code = `
 import sys
+s = ''
 with open (sys.argv[1], "r") as myfile:
   for r in myfile.readlines():
-    print(r)
-print(sys.argv[2])
-print(sys.argv[3])
+    s = s + str(r)
+s = s + str(sys.argv[2])
+s = s + str(sys.argv[3])
+print(s)
     `
 
     let log = ''
     const packageJSON = JSON.stringify({ main: 'index.py' })
     const onLog = (l) => { log += l }
     const onComplete = () => {
-      assert.equal(log, '1\n\n2\n\n3\n\n--xmin=5\n--xmax=7\n')
+      // hopefully cross platform check
+      assert.equal(log.includes('1\n2\n3\n--xmin=5--xmax=7'), true)
       done()
     }
 
@@ -207,8 +210,14 @@ print(sys.argv[3])
     }
     const cwd = pt.dirname(codePath)
 
+    let log = ''
     const onLog = (l) => {
-      assert.equal(l.includes('hello'), true)
+      log += l
+    }
+
+    const onComplete = () => {
+      assert.equal(log.includes('hello'), true)
+      done()
     }
 
     const code = 'print("hello")'
@@ -223,7 +232,7 @@ print(sys.argv[3])
           cwd,
           onLog,
           onError: done,
-          onComplete: done
+          onComplete
         })
       })
     })

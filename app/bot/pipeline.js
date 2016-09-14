@@ -23,55 +23,8 @@
 
 import { Task } from './task'
 import async from 'async'
-
-
-const createPipeline = (opts) => {
-  const taskList = opts.config.tasks.map(task => callback => {
-    const t = new Task({
-      filepath: opts.filepath,
-      pluginsDir: opts.pluginsDir,
-      baseDir: opts.baseDir,
-      command: task.command,
-      match: task.match,
-      args: task.args,
-      apiToken: opts.apiToken,
-
-      onLog: (_task, message) => {
-        opts.onTaskLog(_task, message)
-      },
-
-      onComplete: (_task) => {
-        opts.onTaskComplete(_task)
-        setTimeout(() => { callback() })
-      },
-
-      onError: (_task, error) => {
-        opts.onTaskError(_task, error)
-        setTimeout(() => { callback() })
-      }
-
-    })
-
-    t.ready(() => {
-      if (!t.ignored) {
-        opts.onTaskStart(t)
-        t.run()
-      } else {
-        opts.onTaskIgnore(t)
-        setTimeout(() => { callback() })
-      }
-    })
-  })
-
-  queue.push(createQueue(taskList), (err) => {
-    if (err) {
-      return opts.onError(err)
-    }
-  })
-}
-
-
-export default createPipeline;
+import _ from 'lodash'
+import pt from 'path'
 
 
 export const jobCallback = (jobQueue, err) => {
@@ -86,11 +39,10 @@ export const jobCallback = (jobQueue, err) => {
 export const createQueue = (funcArray) => (pipelineCallback) => {
   const jobQueue = new async.queue(function (job, callback) { // eslint-disable-line
     job(callback)
-  }, 1);
+  }, 1)
 
   jobQueue.drain = pipelineCallback
   jobQueue.push(funcArray, jobCallback.bind(null, jobQueue))
-
   return jobQueue
 }
 
@@ -98,3 +50,52 @@ export const createQueue = (funcArray) => (pipelineCallback) => {
 export const queue = async.queue((job, callback) => {
   job(callback)
 }, 1)
+
+
+const createPipeline = (opts) => {
+  const taskList = _.flatMap(opts.config.pipelines, pipeline => {
+    const { filematch, tasks } = pipeline
+
+    return tasks.map(task => callback => {
+      const t = new Task({
+        filepath: opts.filepath,
+        pluginsDir: opts.pluginsDir,
+        baseDir: opts.baseDir,
+        command: task.name,
+        match: filematch,
+        args: task.args,
+        apiToken: opts.apiToken,
+        onLog: (_task, message) => {
+          opts.onTaskLog(_task, message)
+        },
+        onComplete: (_task) => {
+          opts.onTaskComplete(_task)
+          setTimeout(() => { callback() })
+        },
+        onError: (_task, error) => {
+          opts.onTaskError(_task, error)
+          setTimeout(() => { callback() })
+        }
+      })
+
+      t.ready(() => {
+        if (!t.ignored) {
+          opts.onTaskStart(t)
+          t.run()
+        } else {
+          opts.onTaskIgnore(t)
+          setTimeout(() => { callback() })
+        }
+      })
+    })
+  })
+
+  queue.push(createQueue(taskList), (err) => {
+    if (err) {
+      return opts.onError(err)
+    }
+  })
+}
+
+
+export default createPipeline
