@@ -175,12 +175,13 @@ print(s)
     const onLog = (l) => { log += l }
     const onComplete = () => {
       // hopefully cross platform check
-      const comparison = '1\n2\n3\n--xmin=5--xmax=7'
+      const comparison = '123--xmin=5--xmax=7'
       console.log('\n_.trim(log):')
-      console.log(_.trim(log))
-      console.log('\n_.trim(comparison):')
-      console.log(_.trim(comparison))
-      assert.equal(_.trim(log), _.trim(comparison))
+      console.log(_.trim(log).replace(/\r/g, '').replace(/\n/g, ''))
+      assert.equal(
+        _.trim(log).replace(/\r/g, '').replace(/\n/g, ''),
+        comparison,
+      )
       done()
     }
 
