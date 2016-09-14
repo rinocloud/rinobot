@@ -176,7 +176,11 @@ print(s)
     const onComplete = () => {
       // hopefully cross platform check
       const comparison = '1\n2\n3\n--xmin=5--xmax=7'
-      assert(_.trim(log).includes(comparison))
+      console.log('\n_.trim(log):')
+      console.log(_.trim(log))
+      console.log('\n_.trim(comparison):')
+      console.log(_.trim(comparison))
+      assert(_.trim(log).includes(_.trim(comparison)))
       done()
     }
 
