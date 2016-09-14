@@ -8,6 +8,7 @@ import assert from 'assert'
 import mkdirp from 'mkdirp'
 import pt from 'path'
 import fs from 'fs'
+import _ from 'lodash'
 
 let subdir = 0
 let doOptionalTest = true
@@ -128,7 +129,7 @@ describe('runTasks', () => {
     const cwd = pt.dirname(codePath)
 
     const onLog = (l) => {
-      assert.equal(l.includes('hello'), true)
+      assert(l.includes('hello'))
     }
 
     const code = 'print("hello")'
@@ -174,8 +175,8 @@ print(s)
     const onLog = (l) => { log += l }
     const onComplete = () => {
       // hopefully cross platform check
-      console.log(log, '1\n2\n3\n--xmin=5--xmax=7')
-      assert(log.includes('1\n2\n3\n--xmin=5--xmax=7'))
+      const comparison = '1\n2\n3\n--xmin=5--xmax=7'
+      assert(_.trim(log).includes(comparison))
       done()
     }
 
@@ -217,7 +218,7 @@ print(s)
     }
 
     const onComplete = () => {
-      assert.equal(log.includes('hello'), true)
+      assert(_.trim(log).includes('hello'))
       done()
     }
 
@@ -255,11 +256,8 @@ print(s)
     }
 
     const onComplete = () => {
-      if (log.includes(locals.filepath)) {
-        done()
-      } else {
-        done(new Error('Logs from matlab did not include required text '))
-      }
+      assert(_.trim(log).includes(locals.filepath))
+      done()
     }
 
     const code = 'disp(filepath)'
