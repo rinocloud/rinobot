@@ -201,7 +201,6 @@ const taskIgnore = (index, task) => {
       command: task.command,
       args: task.args,
       match: task.match,
-      reason: task.reason,
       datetime: moment().toISOString()
     }
   )

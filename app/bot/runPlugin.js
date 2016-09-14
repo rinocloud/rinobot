@@ -44,7 +44,7 @@ export default (opts) => {
   const filepath = opts.filepath
   const args = opts.args
   const cwd = opts.cwd
-
+  const prefix = opts.prefix || null
   const onError = opts.onError
   const onLog = opts.onLog
   const onComplete = opts.onComplete
@@ -56,6 +56,9 @@ export default (opts) => {
       let _args = [codePath, filepath]
       if (args) {
         _args = [..._args, ...args.split(' ')]
+      }
+      if (prefix) {
+        _args = [..._args, `--prefix=${prefix}`]
       }
 
       const child = spawn('python', _args, { cwd })

@@ -25,7 +25,7 @@ import { Task } from './task'
 import async from 'async'
 import _ from 'lodash'
 import pt from 'path'
-
+import { isMatch } from './utils'
 
 export const jobCallback = (jobQueue, err) => {
   if (err) {
@@ -53,47 +53,64 @@ export const queue = async.queue((job, callback) => {
 
 
 const createPipeline = (opts) => {
-  const taskList = _.flatMap(opts.config.pipelines, pipeline => {
-    const { filematch, tasks } = pipeline
+  const pipelines = opts.config.pipelines
 
-    return tasks.map(task => callback => {
-      const t = new Task({
-        filepath: opts.filepath,
+  _.map(pipelines, (pipeline) => {
+    const { filematch, tasks } = pipeline
+    let inputFile = opts.filepath
+    let _break = false
+    const taskList = _.map(tasks, (taskConfig, index) => finished => {
+      // break out of this task list map
+      if (_break) return finished()
+
+      let ignore = false
+      if (index === 0) {
+        if (!isMatch(filematch, pt.basename(inputFile))) {
+          ignore = true
+        }
+      }
+
+      const task = new Task({
+        filepath: inputFile,
         pluginsDir: opts.pluginsDir,
         baseDir: opts.baseDir,
-        command: task.name,
+        command: taskConfig.name,
         match: filematch,
-        args: task.args,
+        args: taskConfig.args,
         apiToken: opts.apiToken,
         onLog: (_task, message) => {
           opts.onTaskLog(_task, message)
         },
-        onComplete: (_task) => {
-          opts.onTaskComplete(_task)
-          setTimeout(() => { callback() })
+        onComplete: () => {
+          inputFile = pt.join(
+            pt.dirname(task.filepath),
+            task.outputFilename
+          )
+          opts.onTaskComplete(task)
+          setTimeout(() => { finished() })
         },
         onError: (_task, error) => {
           opts.onTaskError(_task, error)
-          setTimeout(() => { callback() })
+          _break = true
+          setTimeout(() => { finished(new Error('')) })
         }
       })
 
-      t.ready(() => {
-        if (!t.ignored) {
-          opts.onTaskStart(t)
-          t.run()
+      task.ready(() => {
+        if (!ignore && !task.ignore) {
+          opts.onTaskStart(task)
+          task.run()
         } else {
-          opts.onTaskIgnore(t)
-          setTimeout(() => { callback() })
+          opts.onTaskIgnore(task)
+          _break = true
+          setTimeout(() => { finished() })
         }
       })
     })
-  })
 
-  queue.push(createQueue(taskList), (err) => {
-    if (err) {
-      return opts.onError(err)
-    }
+    queue.push(createQueue(taskList), (err) => {
+      if (err) return opts.onError(err)
+    })
   })
 }
 

@@ -174,10 +174,7 @@ print(s)
     const packageJSON = JSON.stringify({ main: 'index.py' })
     const onLog = (l) => { log += l }
     const onComplete = () => {
-      // hopefully cross platform check
       const comparison = '123--xmin=5--xmax=7'
-      console.log('\n_.trim(log):')
-      console.log(_.trim(log).replace(/\r/g, '').replace(/\n/g, ''))
       assert.equal(
         _.trim(log).replace(/\r/g, '').replace(/\n/g, ''),
         comparison,
