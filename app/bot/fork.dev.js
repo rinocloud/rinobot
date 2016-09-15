@@ -70,6 +70,7 @@ forkRpc.on('unwatch all', () => {
 const add = (watcher, arg) => () => {
   const allFiles = flattenWatched(watcher.getWatched())
   forkRpc.emit('watcher set total files', { index: arg.index, numFiles: allFiles.length })
+
   _.each(allFiles, (filepath) => {
     if (!processedFiles[arg.index].includes(filepath)) {
       processFile(arg.index, { ...arg, filepath })
@@ -138,7 +139,6 @@ const finishedFile = (index, filepath) => {
 }
 
 const taskStart = (index, task) => {
-  console.log('task start')
   forkRpc.emit('set history', { index, history: task.history })
 
   forkRpc.emit(
@@ -156,7 +156,6 @@ const taskStart = (index, task) => {
 }
 
 const taskLog = (index, task, log) => {
-  console.log('task log')
   forkRpc.emit(
     'task log',
     {
@@ -201,7 +200,6 @@ const taskIgnore = (index, task) => {
       command: task.command,
       args: task.args,
       match: task.match,
-      reason: task.reason,
       datetime: moment().toISOString()
     }
   )

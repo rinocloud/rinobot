@@ -15,6 +15,7 @@ const createWindow = (app, sentry) => { // eslint-disable-line
     show: false,
     width: 1200,
     height: 800,
+    titleBarStyle: 'hidden'
   })
 
   win.loadURL(`file://${__dirname}/app.html`)

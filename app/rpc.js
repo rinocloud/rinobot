@@ -45,7 +45,6 @@ class Server {
     const payload = { ch, data }
     const task = () => {
       if (this.queue.length === 0) return
-      console.log('sending batch of messages', new Date().getTime())
       this.wc.send(this.id, { ch: 'batch', data: this.queue })
       this.queue = []
     }

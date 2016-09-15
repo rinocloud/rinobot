@@ -8,6 +8,7 @@ import assert from 'assert'
 import mkdirp from 'mkdirp'
 import pt from 'path'
 import fs from 'fs'
+import _ from 'lodash'
 
 let subdir = 0
 let doOptionalTest = true
@@ -128,7 +129,7 @@ describe('runTasks', () => {
     const cwd = pt.dirname(codePath)
 
     const onLog = (l) => {
-      assert.equal(l.includes('hello'), true)
+      assert(l.includes('hello'))
     }
 
     const code = 'print("hello")'
@@ -160,18 +161,24 @@ describe('runTasks', () => {
     const packagePath = pt.join(cwd, 'test-plugin', 'package.json')
     const code = `
 import sys
+s = ''
 with open (sys.argv[1], "r") as myfile:
   for r in myfile.readlines():
-    print(r)
-print(sys.argv[2])
-print(sys.argv[3])
+    s = s + str(r)
+s = s + str(sys.argv[2])
+s = s + str(sys.argv[3])
+print(s)
     `
 
     let log = ''
     const packageJSON = JSON.stringify({ main: 'index.py' })
     const onLog = (l) => { log += l }
     const onComplete = () => {
-      assert.equal(log, '1\n\n2\n\n3\n\n--xmin=5\n--xmax=7\n')
+      const comparison = '123--xmin=5--xmax=7'
+      assert.equal(
+        _.trim(log).replace(/\r/g, '').replace(/\n/g, ''),
+        comparison,
+      )
       done()
     }
 
@@ -207,8 +214,14 @@ print(sys.argv[3])
     }
     const cwd = pt.dirname(codePath)
 
+    let log = ''
     const onLog = (l) => {
-      assert.equal(l.includes('hello'), true)
+      log += l
+    }
+
+    const onComplete = () => {
+      assert(_.trim(log).includes('hello'))
+      done()
     }
 
     const code = 'print("hello")'
@@ -223,7 +236,7 @@ print(sys.argv[3])
           cwd,
           onLog,
           onError: done,
-          onComplete: done
+          onComplete
         })
       })
     })
@@ -245,11 +258,8 @@ print(sys.argv[3])
     }
 
     const onComplete = () => {
-      if (log.includes(locals.filepath)) {
-        done()
-      } else {
-        done(new Error('Logs from matlab did not include required text '))
-      }
+      assert(_.trim(log).includes(locals.filepath))
+      done()
     }
 
     const code = 'disp(filepath)'
