@@ -55,7 +55,7 @@ class Sidebar extends React.Component {
           <ul className="list-group">
 
             <li className="list-group-item list-group-item-heading">
-              <strong>Your Folders</strong>
+              <strong>My Folders</strong>
             </li>
 
             {watcher.map((dir, i) =>

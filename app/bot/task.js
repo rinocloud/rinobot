@@ -213,6 +213,8 @@ export class Task {
 
     if (globMatches.length > 0) {
       this.outputFilename = globMatches[0]
+    } else {
+      return this.onComplete()
     }
 
     const hiddenOpath = pt.join(pt.dirname(this.filepath),
