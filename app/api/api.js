@@ -179,6 +179,15 @@ export function fetchBreadcrumbs(id) {
   .then(processResponse)
 }
 
+
+export function s3_download(fileId, processResponse) {
+  return request
+  .post(config.base + '/api/1/files/download/')
+  .set('Content-Type', 'application/json')
+  .set('Authorization', 'Token ' + config.token)
+  .send({id: fileId})
+  .end(processResponse)
+}
 /*
 Invites
 */
@@ -405,3 +414,4 @@ export function multiPartUpload(path, data={}, progress, error, complete) {
     .then(complete)
     .catch(error)
 }
+
