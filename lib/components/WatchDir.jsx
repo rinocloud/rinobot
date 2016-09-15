@@ -280,7 +280,7 @@ class WatchDir extends React.Component {
             </a>
           </div>
 
-          <div className="panel-body">
+          <div className="panel-body config">
             {!isSaved &&
               <a
                 href="#"

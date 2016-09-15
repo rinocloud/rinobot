@@ -174,3 +174,27 @@ body {
   color: white;
   border: 1px solid #7E86A0;
 }
+
+.config .form-control {
+  border: 1px solid #eeeeee;
+  color: #999;
+}
+
+.config .form-control:focus {
+  border: 1px solid #cccccc;
+  color: #555;
+}
+
+.config .form-control-primary {
+  border: 1px solid #cccccc;
+  color: #555;
+}
+
+.config .form-control-primary:focus {
+  border: 1px solid #aaa;
+  color: #333;
+}
+
+.config a:hover, .config a:focus, .config a:visited, .config a:active{
+  text-decoration: none;
+}

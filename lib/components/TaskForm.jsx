@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
 
+import Select from 'react-select-plus'
+
 class TaskForm extends React.Component {
 
   static propTypes = {
@@ -24,13 +26,12 @@ class TaskForm extends React.Component {
     let installDeps = []
     if (packagesConfig && packagesConfig.dependencies) {
       installDeps = _.keys(packagesConfig.dependencies).map((dep) => ({
-        name: dep.replace('rinobot-plugin-', 'plugin: '),
+        label: dep.replace('rinobot-plugin-', ''),
         value: dep
       }))
     }
 
     const commandList = [
-      { name: 'select an automation', value: null },
       { name: 'rinocloud upload', value: 'upload' },
       { name: 'copy', value: 'copy' },
       { name: 'move', value: 'move' },
@@ -41,10 +42,37 @@ class TaskForm extends React.Component {
       ...installDeps
     ]
 
+    const selectOpts = [
+      {
+        label: 'Default',
+        options: [
+          { label: 'rinocloud upload', value: 'upload' },
+          { label: 'copy', value: 'copy' },
+          { label: 'move', value: 'move' },
+          { label: 'matlab', value: 'matlab' },
+          { label: 'python', value: 'python' },
+          { label: 'Rscript', value: 'Rscript' },
+          { label: 'custom', value: 'custom' },
+        ]
+      },
+      {
+        label: (
+          <span>
+          Plugins:
+          <small className="text-muted m-l">Installed plugins appear here</small>
+          </span>
+        ),
+        options: installDeps
+      }
+    ]
+
     const isCustomCommand = (
-      !_.map(commandList, 'value').includes(name) ||
-      name === 'custom'
+      (
+        !_.map(commandList, 'value').includes(name) ||
+        name === 'custom'
+      ) && name !== null
     )
+
 
     const isPluginCommand = _.map(installDeps, 'value').includes(name)
 
@@ -55,35 +83,27 @@ class TaskForm extends React.Component {
     }
 
     let selectedValue = name || ''
-    if (isCustomCommand) {
-      selectedValue = 'custom'
-    }
 
     const changeArgs = (e) => {
       e.preventDefault()
       this.props.onChangeArgs(e.target.value)
     }
 
-    const changeName = (e) => {
-      e.preventDefault()
-      this.props.onChangeName(e.target.value)
+    const changeName = (item) => {
+      if (item) this.props.onChangeName(item.value)
+      else this.props.onChangeName(null)
     }
 
     return (
       <div className="row m-l m-t">
-        <div className="col-xs-3">
-          <select
+        <div className="col-xs-4">
+          <Select
             type="text"
             value={selectedValue || ''}
-            className="form-control"
+            options={selectOpts}
             onChange={changeName}
-          >
-            {commandList.map((c) =>
-              <option key={c.value} value={c.value}>
-                {c.name}
-              </option>
-            )}
-          </select>
+            placeholder="Select automation..."
+          />
         </div>
 
         {name === 'upload' &&
@@ -159,10 +179,13 @@ class TaskForm extends React.Component {
             <div className="col-xs-2">
               <input
                 type="text"
-                value={name !== 'custom' ? name : ''}
+                value={name || ''}
                 placeholder="Command to run"
                 className="form-control input-sm"
-                onChange={changeName}
+                onChange={(e) => {
+                  e.preventDefault()
+                  changeName({ value: e.target.value })
+                }}
               />
             </div>
             <div className="col-xs-3">
