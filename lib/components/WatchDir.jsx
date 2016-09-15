@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { shell } from 'electron'
-import { TaskForm } from './TaskForm'
+import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
 import { LogScroll } from './LogScroll'
+import pt from 'path'
+import update from 'react-addons-update'
 
 
 const ClearRecord = (
@@ -12,11 +14,11 @@ const ClearRecord = (
     id="popover-trigger-hover-focus"
   >
     <small>
-      This will clear Rinobots logs for this folder, so you can re-run all tasks.
-      Click to learn more.
+      This will clear Rinobots logs for this folder, so you can re-run all pipelines.
     </small>
   </Popover>
 )
+
 
 class WatchDir extends React.Component {
 
@@ -28,95 +30,201 @@ class WatchDir extends React.Component {
     onRemoveDirClick: PropTypes.func.isRequired,
     onSaveConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
-    onSetConfig: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
     packagesConfig: PropTypes.object
   }
 
   constructor(props) {
     super(props)
-    this.handleChangeArrayObject = this.handleChangeArrayObject.bind(this)
-    this.handleRemoveArrayObject = this.handleRemoveArrayObject.bind(this)
-    this.handleAddTask = this.handleAddTask.bind(this)
-    this.handleAddMetadata = this.handleAddMetadata.bind(this)
-    this.handleFormDataChange = this.handleFormDataChange.bind(this)
+
+    this.onSaveConfig = this.onSaveConfig.bind(this)
+    this.addPipeline = this.addPipeline.bind(this)
+    this.removePipeline = this.removePipeline.bind(this)
+    this.addPipelineTask = this.addPipelineTask.bind(this)
+    this.removePipelineTask = this.removePipelineTask.bind(this)
+    this.changePipelineMatch = this.changePipelineMatch.bind(this)
+    this.changePipelineTaskName = this.changePipelineTaskName.bind(this)
+    this.changePipelineTaskArgs = this.changePipelineTaskArgs.bind(this)
+
+    this.addMetadata = this.addMetadata.bind(this)
+    this.removeMetadata = this.removeMetadata.bind(this)
+    this.changeMetadataField = this.changeMetadataField.bind(this)
+    this.changeMetadataValue = this.changeMetadataValue.bind(this)
 
     this.state = {
-      formData: props.dir.config
+      formData: props.dir.config,
+      isSaved: true,
     }
   }
 
-  handleFormDataChange() {
-    this.props.onSetConfig(this.state.formData)
+  componentWillReceiveProps(nextProps) {
+    this.setState({ formData: nextProps.dir.config, isSaved: true })
   }
 
-  handleChangeArrayObject(field) {
-    const self = this
-    return function (index, obj) {
-      self.setState({
-        formData: {
-          ...self.state.formData,
-          [field]: [
-            ...self.state.formData[field].slice(0, index),
-            obj,
-            ...self.state.formData[field].slice(index + 1)
-          ]
-        }
-      }, self.handleFormDataChange)
-    }
+  onSaveConfig() {
+    this.props.onSaveConfig(this.state.formData)
+    this.setState({ isSaved: true })
   }
 
-  handleRemoveArrayObject(field) {
-    const self = this
-    return function (index) {
-      self.setState({
-        formData: {
-          ...self.state.formData,
-          [field]: [
-            ...self.state.formData[field].slice(0, index),
-            ...self.state.formData[field].slice(index + 1)
-          ]
-        }
-      }, self.handleFormDataChange)
-    }
-  }
-
-  handleAddTask(e) {
-    e.preventDefault()
-    const tasks = this.state.formData.tasks
-    this.setState({
+  addPipeline() {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
       formData: {
-        ...this.state.formData,
-        tasks: [
-          ...tasks,
-          { match: '*', command: 'upload' }
-        ]
+        pipelines: {
+          $push: [{
+            filematch: null,
+            tasks: []
+          }]
+        }
       }
-    })
+    }))
   }
 
-  handleAddMetadata(e) {
-    e.preventDefault()
-    const metadata = this.state.formData.metadata
-    this.setState({
+  removePipeline(index) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
       formData: {
-        ...this.state.formData,
-        metadata: [
-          ...metadata,
-          { field: '', value: '' }
-        ]
+        pipelines: {
+          $splice: [[index, 1]]
+        }
       }
-    })
+    }))
+  }
+
+  addPipelineTask(index) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              $push: [{
+                name: null,
+                args: null
+              }]
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  removePipelineTask(index, taskIndex) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              $splice: [[taskIndex, 1]]
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineMatch(index, newMatch) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            filematch: { $set: newMatch }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineTaskName(index, taskIndex, name) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              [taskIndex]: {
+                name: { $set: name }
+              }
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineTaskArgs(index, taskIndex, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              [taskIndex]: {
+                args: { $set: args }
+              }
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  addMetadata() {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        metadata: {
+          $push: [{
+            field: null,
+            value: null
+          }]
+        }
+      }
+    }))
+  }
+
+  removeMetadata(index) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        metadata: {
+          $splice: [[index, 1]]
+        }
+      }
+    }))
+  }
+
+  changeMetadataField(index, field) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        metadata: {
+          [index]: {
+            field: { $set: field }
+          }
+        }
+      }
+    }))
+  }
+
+  changeMetadataValue(index, value) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        metadata: {
+          [index]: {
+            value: { $set: value }
+          }
+        }
+      }
+    }))
   }
 
   render() {
     const { dir, registry, packagesConfig, isStarting } = this.props
-    const { formData } = this.state
-
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
+    const { formData, isSaved } = this.state
 
     const onStartClick = (e) => {
       e.preventDefault()
@@ -133,16 +241,6 @@ class WatchDir extends React.Component {
       this.props.onRemoveDirClick()
     }
 
-    const onSaveConfig = (e) => {
-      e.preventDefault()
-      this.props.onSaveConfig()
-    }
-
-    const openPluginHomepage = (e) => {
-      e.preventDefault()
-      shell.showItemInFolder(dir.path)
-    }
-
     const removeDotRino = (e) => {
       e.preventDefault()
       if (confirm("All data will be re-processed next time. Are you sure you want to do this?")) { // eslint-disable-line
@@ -153,59 +251,50 @@ class WatchDir extends React.Component {
     return (
       <div>
         <div className="panel panel-default">
+
           <div className="panel-heading">
-            {dir.path}
+            My folder: <strong>{pt.basename(dir.path)}</strong>
             <a
               href="#"
-              onClick={openPluginHomepage}
               className="pull-right"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.showItemInFolder(dir.path)
+              }}
             >
               Open <i className="fa fa-external-link"></i>
             </a>
 
-            <a
-              href="#"
-              className="pull-right m-r"
-              onClick={removeDotRino}
-            >
-              Clear record
-            </a>
-            <a
-              href="#"
-              className="m-r pull-right"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-trash"></i> Remove</span>
-            </a>
-
-          </div>
-          <div className="panel-body">
             <OverlayTrigger
               trigger={['hover']}
               placement="bottom"
               overlay={ClearRecord}
             >
-              <a
-                className="fa fa-question-circle-o pull-right m-t-sm fa-lg text-muted"
-                href="http://docs.rinocloud.com/rinobot/introduction/clearing_rinobot_records.html"
-                onClick={openExternal}
-              >
+              <a href="#" className="pull-right m-r" onClick={removeDotRino}>
+                Reset history
               </a>
             </OverlayTrigger>
 
+            <a href="#" className="m-r pull-right" onClick={onRemoveDirClick} >
+              <span><i className="fa fa-trash"></i> Remove</span>
+            </a>
+          </div>
 
-            {dir.isSaved &&
+          <div className="panel-body">
+            {!isSaved &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
-                onClick={onSaveConfig}
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.onSaveConfig()}}
                 disabled={dir.isStarted}
               >
                 <span><i className="fa fa-save"></i> Save</span>
               </a>
             }
 
-            {!dir.isSaved &&
+            {isSaved &&
               <a
                 href="#"
                 className="m-l-sm btn btn-sm btn-default"
@@ -215,57 +304,65 @@ class WatchDir extends React.Component {
               </a>
             }
 
-            <form className="form form-horizontal">
-              <div className="row">
-                <div className="p-l m-t row">
-                  <div className="col-xs-12">
-                    Any{'  '}
-                    <Link to="/plugins">Plugins</Link>{'  '}
-                    you install will automatically appear in the command list.
-                  </div>
-                </div>
+            {formData.pipelines.map((o, index) =>
+              <div className="p-l m-t" key={`pipeline-${index}`}>
+                <PipelineForm
+                  pipeline={o}
+                  packagesConfig={packagesConfig}
+                  registry={registry}
 
-                {formData.tasks.map((o, i) =>
-                  <div className="p-l m-t" key={`taskdiv${i}`}>
-                    <TaskForm
-                      key={`task${i}`}
-                      pop={i === 0}
-                      task={o}
-                      packagesConfig={packagesConfig}
-                      onChange={(obj) => this.handleChangeArrayObject('tasks')(i, obj)}
-                      onRemove={() => this.handleRemoveArrayObject('tasks')(i)}
-                      registry={registry}
-                    />
-                  </div>
-                )}
-
-                <button
-                  className="m-l btn btn-xs btn-success"
-                  onClick={this.handleAddTask}
-                >
-                  Add task <i className="fa fa-plus"> </i>
-                </button>
+                  onChangeMatch={(match) =>
+                    this.changePipelineMatch(index, match)}
+                  onChangeTaskName={(taskIndex, name) =>
+                    this.changePipelineTaskName(index, taskIndex, name)}
+                  onChangeTaskArgs={(taskIndex, args) =>
+                    this.changePipelineTaskArgs(index, taskIndex, args)}
+                  onAddTask={() =>
+                    this.addPipelineTask(index)}
+                  onRemoveTask={(taskIndex) =>
+                    this.removePipelineTask(index, taskIndex)}
+                  onRemove={() => this.removePipeline(index)}
+                />
               </div>
+            )}
 
-              <div className="m-t">
-                {formData.metadata.map((o, index) =>
-                  <div className="p-l m-t" key={`metadiv${index}`}>
-                    <MetadataForm
-                      key={`meta${index}`}
-                      object={o}
-                      onChange={(obj) => this.handleChangeArrayObject('metadata')(index, obj)}
-                      onRemove={() => this.handleRemoveArrayObject('metadata')(index)}
-                    />
-                  </div>
-                )}
-                <button
-                  className="m-l btn btn-xs btn-success"
-                  onClick={this.handleAddMetadata}
-                >
-                  Add Metadata <i className="fa fa-plus"></i>
-                </button>
+            <div className="m-t">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.addPipeline()
+                }}
+              >
+                Add pipeline
+              </a>
+            </div>
+
+            {formData.metadata.map((o, index) =>
+              <div className="p-l m-t" key={`metadata-${index}`}>
+                <MetadataForm
+                  field={o.field}
+                  value={o.value}
+                  onChangeField={(field) =>
+                    this.changeMetadataField(index, field)}
+                  onChangeValue={(value) =>
+                    this.changeMetadataValue(index, value)}
+                  onRemove={() => this.removeMetadata(index)}
+                />
               </div>
-            </form>
+            )}
+
+            <div className="m-t">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.addMetadata()
+                }}
+              >
+                Add metadata
+              </a>
+            </div>
           </div>
         </div>
 
@@ -301,7 +398,6 @@ class WatchDir extends React.Component {
               Start
             </a>
           }
-
         </div>
 
         <div className="panel panel-default">

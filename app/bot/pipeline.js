@@ -82,10 +82,15 @@ const createPipeline = (opts) => {
           opts.onTaskLog(_task, message)
         },
         onComplete: () => {
-          inputFile = pt.join(
-            pt.dirname(task.filepath),
-            task.outputFilename
-          )
+          if (task.outputFilename) {
+            inputFile = pt.join(
+              pt.dirname(task.filepath),
+              task.outputFilename
+            )
+          } else {
+            _break = true
+          }
+
           opts.onTaskComplete(task)
           setTimeout(() => { finished() })
         },

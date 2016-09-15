@@ -1,73 +1,25 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
-const { dialog } = require('electron').remote;
-const { shell } = require('electron')
 
 class TaskForm extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.handleChangeMatch = this.handleChangeMatch.bind(this)
-    this.handleRemoveClick = this.handleRemoveClick.bind(this)
-
-    this.state = {
-      extraArgs: true
-    }
+  static propTypes = {
+    registry: PropTypes.array,
+    packagesConfig: PropTypes.object,
+    name: PropTypes.string,
+    args: PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.array,
+    ]),
+    onChangeName: PropTypes.func.isRequired,
+    onChangeArgs: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
   }
 
-  handleChangeMatch(field) {
-    const { task, onChange } = this.props //eslint-disable-line
-    return function (e, val = null) {
-      e.preventDefault()
-      let state = {
-        ...task,
-        [field]: val || e.target.value
-      }
-
-      if (field === 'command') {
-        state = {
-          ...state,
-          args: ''
-        }
-      }
-
-      onChange(state)
-    }
-  }
-
-  handleRemoveClick(e) {
-    const { onRemove } = this.props //eslint-disable-line
-    e.preventDefault()
-    onRemove()
-  }
 
   render() {
-    const { task, pop, registry, packagesConfig } = this.props //eslint-disable-line
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
-
-    const CommandToRunPopover = (
-      <Popover id="popover-trigger-hover-focus">
-        <small>
-          These are actions that will happen when files appear in the folder.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
-
-    const MatchPopover = (
-      <Popover id="popover-trigger-hover-focus">
-        <small>
-          This lets you choose only certain filetypes to run tasks on. <code>*</code>
-          means everything, but <code>*.txt</code> would only work on 'txt' files.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
+    const { name, args, registry, packagesConfig } = this.props //eslint-disable-line
 
     let installDeps = []
     if (packagesConfig && packagesConfig.dependencies) {
@@ -78,6 +30,7 @@ class TaskForm extends React.Component {
     }
 
     const commandList = [
+      { name: 'select an automation', value: null },
       { name: 'rinocloud upload', value: 'upload' },
       { name: 'copy', value: 'copy' },
       { name: 'move', value: 'move' },
@@ -89,46 +42,41 @@ class TaskForm extends React.Component {
     ]
 
     const isCustomCommand = (
-      !_.map(commandList, 'value').includes(task.command) ||
-      task.command === 'custom'
+      !_.map(commandList, 'value').includes(name) ||
+      name === 'custom'
     )
 
-    const isPluginCommand = _.map(installDeps, 'value').includes(task.command)
+    const isPluginCommand = _.map(installDeps, 'value').includes(name)
 
     let pluginReadme = null
-    const pluginDetails = _.find(registry, { name: task.command })
+    const pluginDetails = _.find(registry, { name })
     if (pluginDetails) {
       pluginReadme = pluginDetails.homepage
     }
 
-    let selectedValue = task.command || ''
+    let selectedValue = name || ''
     if (isCustomCommand) {
       selectedValue = 'custom'
     }
 
+    const changeArgs = (e) => {
+      e.preventDefault()
+      this.props.onChangeArgs(e.target.value)
+    }
+
+    const changeName = (e) => {
+      e.preventDefault()
+      this.props.onChangeName(e.target.value)
+    }
+
     return (
-      <div className="form-group">
-        <div className="col-xs-4">
-          <small>Select command to run</small>
-          {pop ?
-            <OverlayTrigger
-              trigger={['hover']}
-              placement="right"
-              overlay={CommandToRunPopover}
-            >
-              <a
-                className="fa fa-question-circle-o m-l-sm text-muted"
-                href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                onClick={openExternal}
-              >
-              </a>
-            </OverlayTrigger>
-          : null}
+      <div className="row m-l m-t">
+        <div className="col-xs-3">
           <select
             type="text"
-            value={selectedValue}
+            value={selectedValue || ''}
             className="form-control"
-            onChange={this.handleChangeMatch('command')}
+            onChange={changeName}
           >
             {commandList.map((c) =>
               <option key={c.value} value={c.value}>
@@ -136,53 +84,23 @@ class TaskForm extends React.Component {
               </option>
             )}
           </select>
-
         </div>
 
-        <div className="col-xs-2">
-          <small> Add file to match </small>
-          {pop ?
-            <OverlayTrigger
-              trigger={['hover']}
-              placement="right"
-              overlay={MatchPopover}
-            >
-              <a
-                className="fa fa-question-circle-o m-l-sm text-muted"
-                href="http://docs.rinocloud.com/rinobot/tasks/matching_files.html"
-                onClick={openExternal}
-              >
-              </a>
-            </OverlayTrigger>
-          :
-            null
-          }
-          <input
-            key={'myMatch${i}'}
-            type="text"
-            value={task.match || ''}
-            className="form-control input-sm"
-            onChange={this.handleChangeMatch('match')}
-          />
-        </div>
-
-        {task.command === 'upload' || task.command === null ?
-          <div className="col-xs-4">
-            <small>Upload to</small>
+        {name === 'upload' &&
+          <div className="col-xs-3">
             <input
               placeholder="target folder in rinocloud"
               type="text"
-              value={task.args || ''}
+              value={args || ''}
               className="form-control input-sm"
-              onChange={this.handleChangeMatch('args')}
+              onChange={changeArgs}
             />
           </div>
-        : null}
+        }
 
-        {['copy', 'move'].includes(task.command) ?
+        {['copy', 'move'].includes(name) &&
           <div className="col-xs-5">
             <div className="col-xs-2">
-              <br />
               <button
                 className="btn btn-sm btn-default"
                 style={{ border: 'none' }}
@@ -191,7 +109,6 @@ class TaskForm extends React.Component {
               </button>
             </div>
             <div className="col-xs-4">
-              <br />
               <a
                 href="#"
                 className="btn btn-default btn-sm"
@@ -199,7 +116,7 @@ class TaskForm extends React.Component {
                   e.preventDefault()
                   const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
                   if (paths) {
-                    this.handleChangeMatch('args')(e, paths[0])
+                    changeArgs(e, paths[0])
                   }
                 }}
               >
@@ -207,163 +124,82 @@ class TaskForm extends React.Component {
               </a>
             </div>
             <div className="col-xs-6">
-             <br />
               <input
                 type="text"
-                value={task.args || ''}
+                value={args || ''}
                 className="form-control input-sm"
-                onChange={this.handleChangeMatch('args')}
+                onChange={changeArgs}
                 placeholder="or type a location"
               />
             </div>
           </div>
-        : null}
-      {['python', 'Rscript', 'matlab'].includes(task.command) ?
-        <div className="col-xs-4">
-          <div>
-            <br />
-          </div>
-          <a
-            href="#"
-            className="btn btn-default btn-sm"
-            onClick={(e) => {
-              e.preventDefault()
-              const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
-              if (paths) {
-                this.handleChangeMatch('args')(e, paths[0])
-              }
-            }}
-          >
-            Select {task.command === 'Rscript' ? 'R' : task.command} file
-            {task.args ? ` (${pt.basename(task.args)})` : ''}
-          </a>
-        </div>
-        : null}
+        }
 
-        {isCustomCommand ?
+        {['python', 'Rscript', 'matlab'].includes(name) &&
+          <div className="col-xs-4">
+            <a
+              href="#"
+              className="btn btn-default btn-sm"
+              onClick={(e) => {
+                e.preventDefault()
+                const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
+                if (paths) {
+                  changeArgs('args')(e, paths[0])
+                }
+              }}
+            >
+              Select {name === 'Rscript' ? 'R' : name} file
+              {args ? ` (${pt.basename(args)})` : ''}
+            </a>
+          </div>
+        }
+
+        {isCustomCommand &&
           <div>
             <div className="col-xs-2">
-              <small>Command to run</small>
               <input
                 type="text"
-                value={task.command || ''}
+                value={name !== 'custom' ? name : ''}
+                placeholder="Command to run"
                 className="form-control input-sm"
-                onChange={this.handleChangeMatch('command')}
+                onChange={changeName}
               />
             </div>
             <div className="col-xs-3">
-              <small>Insert command argument</small>
               <input
                 type="text"
-                value={task.args || ''}
+                value={args || ''}
+                placeholder="Command arguments"
                 className="form-control input-sm"
-                onChange={this.handleChangeMatch('args')}
+                onChange={changeArgs}
               />
             </div>
           </div>
-        : null}
+        }
 
-        {isPluginCommand ?
-          <div>
-            <div className="col-xs-5">
-              <small>Extra args</small>
-              <input
-                type="text"
-                value={task.args || ''}
-                className="form-control input-sm"
-                onChange={this.handleChangeMatch('args')}
-              />
-            </div>
+        {isPluginCommand &&
+          <div className="col-xs-5">
+            <input
+              type="text"
+              placeholder="extra parameters for plugin"
+              value={args || ''}
+              className="form-control input-sm"
+              onChange={changeArgs}
+            />
           </div>
-        : null}
+        }
 
-        <div className="col-xs-1 pull-right">
-          <button
-            className="fa fa-trash task-remove-button btn btn-xs btn-danger"
-            onClick={this.handleRemoveClick}
+        <div className="col-xs-2">
+          <a
+            href="#"
+            className="m-l"
+            onClick={(e) => {
+              e.preventDefault()
+              this.props.onRemove()
+            }}
           >
-            <i className="fa fa-lg-trash"></i>
-          </button>
-        </div>
-
-        <div className="col-xs-12">
-          {task.command === 'upload' &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/uploading_to_rinocloud.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}uploading to rinocloud
-            </a>
-          }
-
-          {['copy', 'move'].includes(task.command) &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/copying_moving_files.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}copy/move files
-            </a>
-          }
-
-          {task.command === 'matlab' &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/running_matlab.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}running matlab scripts
-            </a>
-          }
-
-          {task.command === 'python' &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/running_python.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}running python scripts
-            </a>
-          }
-
-          {task.command === 'Rscript' &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/running_r.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}running r scripts
-            </a>
-          }
-
-          {task.command === 'custom' &&
-            <a
-              href="http://docs.rinocloud.com/rinobot/tasks/running_custom_commands.html"
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-question-circle-o m-r-sm"></i>
-              {'  '}running custom commands
-            </a>
-          }
-
-          {isPluginCommand &&
-            <a
-              href={pluginReadme}
-              onClick={openExternal}
-              className="text-muted"
-            >
-              <i className="fa fa-external-link m-r-sm"></i>{'  '}
-              Plugin docs
-            </a>
-          }
-
+            remove task
+          </a>
         </div>
       </div>
     )
