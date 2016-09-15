@@ -37,7 +37,7 @@ class MetadataForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            remove metadata
+            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
           </a>
         </div>
       </div>

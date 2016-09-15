@@ -21,9 +21,10 @@ class PipelineForm extends React.Component {
     const { pipeline, registry, packagesConfig } = this.props //eslint-disable-line
 
     return (
-      <div className="row">
-        <div className="row">
+      <div className="row m-l">
+        <div className="row m-t">
           <div className="col-xs-4">
+            <h7>Type of file to match</h7>
             <input
               className="form-control"
               placeholder="trigger file"
@@ -36,18 +37,18 @@ class PipelineForm extends React.Component {
           </div>
           <a
             href="#"
-            className="m-l"
             onClick={(e) => {
               e.preventDefault()
               this.props.onRemove()
             }}
           >
-            remove pipeline
+            <i className="m-l m-t fa fa-lg fa-remove btn-red-x"></i>
           </a>
         </div>
-
+        <ul className="experiences m-t">
         {_.map(pipeline.tasks, (task, index) => {
           return (
+            <li>
             <TaskForm
               key={`task-${index}`}
               registry={registry}
@@ -58,20 +59,20 @@ class PipelineForm extends React.Component {
               onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
               onRemove={() => { this.props.onRemoveTask(index) }}
             />
+            </li>
           )
         })}
-
-        <div className="row p-t">
+        </ul>
+        <div className="row text-muted m-l">
           <a
             href="#"
-            className="m-l"
+            className="fa fa-plus btn btn-info btn-sm"
             onClick={(e) => {
               e.preventDefault()
               this.props.onAddTask()
             }}
-          >
+          /> {'  '}
             Add task
-          </a>
         </div>
       </div>
     )

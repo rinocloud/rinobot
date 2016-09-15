@@ -55,7 +55,7 @@ class Sidebar extends React.Component {
           <ul className="list-group">
 
             <li className="list-group-item list-group-item-heading">
-              <strong>My Folders</strong>
+              <h6><strong>My Folders</strong></h6>
             </li>
 
             {watcher.map((dir, i) =>
@@ -88,7 +88,7 @@ class Sidebar extends React.Component {
             </Link>
 
             <li className="list-group-item list-group-item-heading m-t">
-              <strong>Automations</strong>
+              <h6><strong>Automations</strong></h6>
             </li>
 
             <Link
@@ -116,7 +116,7 @@ class Sidebar extends React.Component {
             </Link>
 
             <li className="list-group-item list-group-item-heading m-t">
-              <strong>User</strong>
+              <h6><strong>User</strong></h6>
             </li>
 
             {auth.isAuthenticating &&

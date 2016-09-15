@@ -253,16 +253,16 @@ class WatchDir extends React.Component {
         <div className="panel panel-default">
 
           <div className="panel-heading">
-            My folder: <strong>{pt.basename(dir.path)}</strong>
+            <h6>My folder name: </h6>
+            <strong>{pt.basename(dir.path)}</strong> {'  '}
             <a
               href="#"
-              className="pull-right"
               onClick={(e) => {
                 e.preventDefault()
                 shell.showItemInFolder(dir.path)
               }}
             >
-              Open <i className="fa fa-external-link"></i>
+              <i className="fa fa-external-link"></i>
             </a>
 
             <OverlayTrigger
@@ -270,42 +270,28 @@ class WatchDir extends React.Component {
               placement="bottom"
               overlay={ClearRecord}
             >
-              <a href="#" className="pull-right m-r" onClick={removeDotRino}>
+              <a
+                href="#"
+                className="pull-right m-r btn btn-xs btn-default btn-red"
+                onClick={removeDotRino}
+              >
                 Reset history
               </a>
             </OverlayTrigger>
 
-            <a href="#" className="m-r pull-right" onClick={onRemoveDirClick} >
+            <a
+              href="#"
+              className="m-r pull-right btn btn-xs btn-default btn-red"
+              onClick={onRemoveDirClick}
+            >
               <span><i className="fa fa-trash"></i> Remove</span>
             </a>
           </div>
-
-          <div className="panel-body">
-            {!isSaved &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.onSaveConfig()}}
-                disabled={dir.isStarted}
-              >
-                <span><i className="fa fa-save"></i> Save</span>
-              </a>
-            }
-
-            {isSaved &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                disabled
-              >
-                <span><i className="fa fa-check"></i> Saved</span>
-              </a>
-            }
+          <h6 className="m-l m-t "> Automation File</h6>
+          <div className="panel-body m-l">
 
             {formData.pipelines.map((o, index) =>
-              <div className="p-l m-t" key={`pipeline-${index}`}>
+              <div className="p-l" key={`pipeline-${index}`}>
                 <PipelineForm
                   pipeline={o}
                   packagesConfig={packagesConfig}
@@ -325,17 +311,17 @@ class WatchDir extends React.Component {
                 />
               </div>
             )}
-
-            <div className="m-t">
+            <hr/ >
+            <div className="m-t text-muted">
               <a
                 href="#"
+                className="m-l fa fa-plus btn btn-info btn-sm"
                 onClick={(e) => {
                   e.preventDefault()
                   this.addPipeline()
                 }}
-              >
-                Add pipeline
-              </a>
+              /> {'  '}
+                Automate pipeline
             </div>
 
             {formData.metadata.map((o, index) =>
@@ -352,20 +338,44 @@ class WatchDir extends React.Component {
               </div>
             )}
 
-            <div className="m-t">
+            <div className="m-t text-muted">
               <a
                 href="#"
+                className="m-l fa fa-plus btn btn-info btn-sm"
                 onClick={(e) => {
                   e.preventDefault()
                   this.addMetadata()
                 }}
-              >
+              /> {'  '}
                 Add metadata
+            </div>
+            <div className="text-center">
+            {!isSaved &&
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.onSaveConfig()
+                }}
+                disabled={dir.isStarted}
+              >
+                <span><i className="fa fa-save"></i> Save</span>
               </a>
+            }
+
+            {isSaved &&
+              <a
+                href="#"
+                className="m-l-sm btn btn-sm btn-default"
+                disabled
+              >
+                <span><i className="fa fa-check"></i> Saved</span>
+              </a>
+            }
             </div>
           </div>
         </div>
-
         <div className="m-b text-center">
           {dir.isStarted && !isStarting &&
             <a
@@ -399,7 +409,7 @@ class WatchDir extends React.Component {
             </a>
           }
         </div>
-
+      {dir.isStarted && !isStarting &&
         <div className="panel panel-default">
           <div className="panel-heading">
             Activity
@@ -415,6 +425,7 @@ class WatchDir extends React.Component {
             </div>
           </div>
         </div>
+      }
       </div>
 
     )

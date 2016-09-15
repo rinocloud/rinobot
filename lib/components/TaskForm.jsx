@@ -198,7 +198,7 @@ class TaskForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            remove task
+            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
           </a>
         </div>
       </div>
