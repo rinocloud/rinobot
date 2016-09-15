@@ -54,7 +54,6 @@ export const queue = async.queue((job, callback) => {
 
 const createPipeline = (opts) => {
   const pipelines = opts.config.pipelines
-
   _.map(pipelines, (pipeline) => {
     const { filematch, tasks } = pipeline
     let inputFile = opts.filepath
@@ -77,6 +76,7 @@ const createPipeline = (opts) => {
         command: taskConfig.name,
         match: filematch,
         args: taskConfig.args,
+        logOnly: ignore,
         apiToken: opts.apiToken,
         onLog: (_task, message) => {
           opts.onTaskLog(_task, message)
@@ -97,7 +97,7 @@ const createPipeline = (opts) => {
       })
 
       task.ready(() => {
-        if (!ignore && !task.ignore) {
+        if (!ignore && !task.ignored) {
           opts.onTaskStart(task)
           task.run()
         } else {

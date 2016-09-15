@@ -63,7 +63,7 @@ export class Task {
     this.apiToken = opts.apiToken || null
 
     this.readyFunc = () => {}
-    this.ignored = false
+    this.ignored = opts.logOnly || false
     this.relativePath = pt.relative(this.baseDir, this.filepath)
 
     this.filename = pt.basename(this.filepath)
@@ -112,7 +112,7 @@ export class Task {
     })
   }
 
-  get taskString() {
+  taskString() {
     return `${this.command},${this.args}`
   }
 
@@ -127,8 +127,7 @@ export class Task {
         return this.onError(err)
       }
       if (!history) return cb()
-
-      if (history.completed.includes(this.taskString)) {
+      if (history.completed.includes(this.taskString())) {
         this.ignored = true
       }
       cb()
@@ -176,6 +175,7 @@ export class Task {
       called when task finishes successfully, we update `lastRun`, add the command to
       the completed tasks list, and unset current task.
     */
+
     const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
     const lastRun = moment().toISOString()
 
@@ -183,7 +183,7 @@ export class Task {
       if (err) return this.onError(err)
 
       const completed = _.has(history, 'completed') ? _.clone(history.completed) : []
-      completed.push(this.taskString)
+      completed.push(this.taskString())
 
       mergeHistory(historyFilePath, this.filepath,
         {
@@ -230,15 +230,16 @@ export class Task {
           {
             lastRun,
             etag,
-            completed: [this.taskString],
+            completed: [this.taskString()],
             current: null
           },
         (er) => {
           if (er) return this.onError(er)
-          fs.rename(hiddenOpath, Opath, (er) => { // eslint-disable-line
+          fs.copy(hiddenOpath, Opath, (er) => { // eslint-disable-line
             if (er) return this.onError(er)
             this.outputFilename = pt.basename(Opath)
             this.onComplete()
+            setTimeout(() => fs.unlink(hiddenOpath), 500)
           })
         })
       })

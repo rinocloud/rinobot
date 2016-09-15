@@ -13,4 +13,5 @@ script:
   - npm test
 
 notifications:
+  email: false
   slack: rinocloud:Um6KNIhyglzDkAFs5KY0Yvrw
