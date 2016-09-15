@@ -15,23 +15,19 @@
     "dev:fork": "cross-env NODE_ENV=development node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress --watch",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/index.dev",
     "start": "cross-env NODE_ENV=production electron ./app",
-
     "build": "npm run build:lib && npm run build:app && npm run build:fork",
     "build:app": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress",
     "build:lib": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.js --progress",
     "build:fork": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress",
-
     "dist": "build",
     "dist:win": "build --platform win",
     "dist:osx": "build --platform darwin",
     "release": "npm run build && npm run dist:osx && npm run dist:win",
-
     "docs:clean": "rimraf _book",
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",
     "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:rinocloud/rinobot gh-pages --force",
-
     "test": "node ./node_modules/mocha/bin/mocha --require babel-register --recursive ./app/test/"
   },
   "dependencies": {
@@ -47,6 +43,7 @@
     "react-redux": "^4.4.5",
     "react-router": "^2.4.1",
     "react-router-redux": "^4.0.4",
+    "react-select-plus": "^1.0.0-beta14.patch1",
     "redux": "^3.5.2",
     "redux-actions": "^0.9.1",
     "redux-batched-actions": "^0.1.3",
