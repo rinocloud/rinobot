@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { Popover, OverlayTrigger } from 'react-bootstrap'
-import { Link } from 'react-router'
 import { shell } from 'electron'
 import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
@@ -255,8 +254,8 @@ class WatchDir extends React.Component {
       <div>
         <div className="panel panel-default">
           <div className="panel-heading">
-            <h6 className="block-title">My folder: </h6>
-            <strong>{pt.basename(dir.path)}</strong> {'  '}
+            <span className="block-title">My folder:{'  '}</span>
+            {pt.basename(dir.path)} {'  '}
             <a
               href="#"
               onClick={(e) => {
@@ -289,125 +288,140 @@ class WatchDir extends React.Component {
               <span><i className="fa fa-trash"></i> Remove</span>
             </a>
           </div>
-          <h6
-            className="block-title text-center"
-            style={{ color: '#666' }}
-          >
-            Automation Pipeline
-          </h6>
           <div className="panel-body config">
-            <div className="row row-centered">
-              <div className="col-centered">
-              {formData.pipelines.map((o, index) =>
-                <div className="p-l" key={`pipeline-${index}`}>
-                  <PipelineForm
-                    pipeline={o}
-                    packagesConfig={packagesConfig}
-                    registry={registry}
 
-                    onChangeMatch={(match) =>
-                      this.changePipelineMatch(index, match)}
-                    onChangeTaskName={(taskIndex, name) =>
-                      this.changePipelineTaskName(index, taskIndex, name)}
-                    onChangeTaskArgs={(taskIndex, args) =>
-                      this.changePipelineTaskArgs(index, taskIndex, args)}
-                    onAddTask={() =>
-                      this.addPipelineTask(index)}
-                    onRemoveTask={(taskIndex) =>
-                      this.removePipelineTask(index, taskIndex)}
-                    onRemove={() => this.removePipeline(index)}
-                  />
-                  {formData.metadata.length === 0 ?
-                    null
-                  :
-                    <h6
-                      className="text-center m-t m-r-lg"
-                      style={{ color: '#666' }}
-                    >
-                    My Metadata
-                    </h6>
-                  }
-                  {formData.metadata.map((o, index) =>
-                    <div className="p-l m-t text-center" key={`metadata-${index}`}>
-                      <MetadataForm
-                        field={o.field}
-                        value={o.value}
-                        onChangeField={(field) =>
-                          this.changeMetadataField(index, field)}
-                        onChangeValue={(value) =>
-                          this.changeMetadataValue(index, value)}
-                        onRemove={() => this.removeMetadata(index)}
-                      />
-                    </div>
-                  )}
-                </div>
-          )}
-            {formData.pipelines.length === 0 ?
-              null
-              :
-
-              <div className="row">
-                <div className="col-md-2 col-md-push-10">
-                  <a
-                    href="#"
-                    className="fa fa-plus btn btn-default btn-blue-meta"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.addMetadata()
-                    }}
-                  > {'  '}
-                    <small>Metadata</small>
-                  </a>
-                </div>
-                <div className="col-md-12 m-t-sm">
-                  <div className="col-md-2 col-md-push-10 m-l">
-              {!isSaved &&
-                <a
-                  href="#"
-                  className=" btn btn-sm btn-default"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    this.onSaveConfig()
-                  }}
-                  disabled={dir.isStarted}
+            <div className="row">
+              <div className="col-sm-12 text-center">
+                <h6
+                  className="block-title"
+                  style={{ color: '#666' }}
                 >
-                  <span><i className="fa fa-save"></i> Save</span>
-                </a>
-              }
-
-              {isSaved &&
-                <a
-                  href="#"
-                  className="btn btn-sm btn-default"
-                  disabled
-                >
-                  <span><i className="fa fa-check"></i> Saved</span>
-                </a>
-              }
-                  </div>
-                </div>
-              </div>
-              }
+                  Automation Pipeline
+                </h6>
               </div>
             </div>
-            <div className="row row-centered">
-              <div className="col-xs-2 col-centered m-l-sm">
 
+            {formData.pipelines.map((o, index) =>
+              <PipelineForm
+                key={`pipeline-${index}`}
+                pipeline={o}
+                packagesConfig={packagesConfig}
+                registry={registry}
+
+                onChangeMatch={(match) =>
+                  this.changePipelineMatch(index, match)}
+                onChangeTaskName={(taskIndex, name) =>
+                  this.changePipelineTaskName(index, taskIndex, name)}
+                onChangeTaskArgs={(taskIndex, args) =>
+                  this.changePipelineTaskArgs(index, taskIndex, args)}
+                onAddTask={() =>
+                  this.addPipelineTask(index)}
+                onRemoveTask={(taskIndex) =>
+                  this.removePipelineTask(index, taskIndex)}
+                onRemove={() => this.removePipeline(index)}
+              />
+            )}
+
+            <div className="row">
+              <div className="col-sm-12 text-center m-t">
                 <a
                   href="#"
-                  className="m-l-sm btn-sm"
+                  className="btn-sm"
+                  style={{
+                    fontSize: '1.4em'
+                  }}
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
                   }}
                 >
-                  <i className="fa fa-plus fa-3x btn-blue m-l"></i>
+                  <i className="fa fa-plus text-muted"></i>
+                  <small style={{ color: '#999', marginLeft: '5px' }}>
+                    Add a pipeline
+                  </small>
                 </a>
-                {/* <small> Automate pipeline </small>*/}
               </div>
             </div>
+
+            {formData.metadata.length !== 0 &&
+              <div className="row">
+                <div className="col-sm-12 text-center">
+                  <h6
+                    className="block-title"
+                    style={{ color: '#666' }}
+                  >
+                    My Metadata
+                  </h6>
+                </div>
+              </div>
+            }
+
+            {formData.metadata.map((o, index) =>
+              <MetadataForm
+                key={`metadata-${index}`}
+                field={o.field}
+                value={o.value}
+                onChangeField={(field) =>
+                  this.changeMetadataField(index, field)}
+                onChangeValue={(value) =>
+                  this.changeMetadataValue(index, value)}
+                onRemove={() => this.removeMetadata(index)}
+              />
+            )}
+
+            {formData.pipelines.length !== 0 &&
+              <div className="row">
+                <div className="col-md-2 col-md-push-10">
+                  <a
+                    href="#"
+                    className="btn btn-default btn-blue-meta"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.addMetadata()
+                    }}
+                  >
+                    <i className="fa fa-plus" />{'  '}
+                    <small>Metadata</small>
+                  </a>
+                </div>
+              </div>
+            }
+
+            {formData.pipelines.length !== 0 && !isSaved &&
+              <div className="row">
+                <div className="col-md-2 col-md-push-10 m-l">
+                  <a
+                    href="#"
+                    className=" btn btn-sm btn-default"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.onSaveConfig()
+                    }}
+                    disabled={dir.isStarted}
+                  >
+                    <span><i className="fa fa-save"></i> Save</span>
+                  </a>
+                </div>
+              </div>
+            }
+
+            {isSaved &&
+              <div className="row">
+                <div className="col-md-2 col-md-push-10 m-l">
+                  <a
+                    href="#"
+                    className="btn btn-sm btn-default"
+                    disabled
+                  >
+                    <span><i className="fa fa-check"></i> Saved</span>
+                  </a>
+                </div>
+              </div>
+            }
           </div>
-        </div>
+        </div> {/* Panel finished */}
+
+
         <div className="row">
           <div className="m-b pull-right">
             {dir.isStarted && !isStarting &&
@@ -443,24 +457,26 @@ class WatchDir extends React.Component {
             }
           </div>
         </div>
-      {dir.isStarted && !isStarting &&
-        <div className="panel panel-default m-t">
-          <div className="panel-heading">
-            Activity
-            <div className="pull-right">{dir.processedFiles}/{dir.totalFiles} files processed</div>
-          </div>
-          <div className="panel-body">
-            <div className="configForm">
-              <div className="row">
-                <div className="col-sm-12">
-                  <LogScroll history={dir.history} />
+
+        {dir.isStarted && !isStarting &&
+          <div className="panel panel-default m-t">
+            <div className="panel-heading">
+              Activity
+              <div className="pull-right">
+                {dir.processedFiles}/{dir.totalFiles} files processed
+              </div>
+            </div>
+            <div className="panel-body">
+              <div className="configForm">
+                <div className="row">
+                  <div className="col-sm-12">
+                    <LogScroll history={dir.history} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      }
-
+        }
       </div>
     )
   }

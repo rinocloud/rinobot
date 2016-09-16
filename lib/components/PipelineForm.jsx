@@ -21,8 +21,8 @@ class PipelineForm extends React.Component {
     const { pipeline, registry, packagesConfig } = this.props //eslint-disable-line
 
     return (
-      <div className="container">
-        <div className="row-centered ">
+      <div className="row">
+        <div className="row row-centered m-t m-b">
           <div className="col-xs-4 col-centered">
             <input
               className="form-control form-control-primary"
@@ -34,6 +34,7 @@ class PipelineForm extends React.Component {
               }}
             />
           </div>
+
           <a
             href="#"
             onClick={(e) => {
@@ -43,16 +44,21 @@ class PipelineForm extends React.Component {
           >
             <i className="m-l m-t fa fa-lg fa-remove btn-red-x"></i>
           </a>
-          {pipeline.tasks.length === 0 ?
-            null
-          :
-          <h6
-            className="text-center m-t m-r-lg"
-            style={{ color: '#666' }}
-          >
-          My Pipeline Form</h6>
-        }
         </div>
+
+        {pipeline.tasks.length !== 0 &&
+          <div className="row">
+            <div className="col-sm-12 text-center">
+              <h6
+                className="block-title"
+                style={{ color: '#999' }}
+              >
+                Setup a task
+              </h6>
+            </div>
+          </div>
+        }
+
         {_.map(pipeline.tasks, (task, index) => {
           return (
             <div>
@@ -66,46 +72,40 @@ class PipelineForm extends React.Component {
                 onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
                 onRemove={() => { this.props.onRemoveTask(index) }}
               />
-              <div className="row row-centered">
-                <div className="col-xs-2 col-centered">
-                  {(index === pipeline.tasks.length - 1) &&
-                    <a
-                      href="#"
-                      className="btn btn-sm"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.props.onAddTask()
-                      }}
-                    >
-                      <i className="fa fa-plus-circle fa-3x btn-blue" />
-                    </a>
-                  }
-
+              <div className="row">
+                <div className="col-sm-12 text-center m-t">
                   {index !== pipeline.tasks.length - 1 &&
-                    <i className="m-l fa fa-arrow-down fa-x" />
+                    <i className="fa fa-arrow-down text-muted"></i>
                   }
                 </div>
               </div>
             </div>
           )
         })}
-        <div className="row row-centered">
-          <div className="col-xs-2 col-centered">
-            {pipeline.tasks.length === 0 &&
-              <a
-                href="#"
-                className="btn btn-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.props.onAddTask()
-                }}
-              >
-                <i className="fa fa-plus-circle fa-3x btn-blue" />
-              </a>
-            }
 
+        <div className="row">
+          <div className="col-sm-12 text-center m-t">
+            <a
+              href="#"
+              className="btn-sm"
+              style={{
+                fontSize: '1.4em'
+              }}
+              onClick={(e) => {
+                e.preventDefault()
+                this.props.onAddTask()
+              }}
+            >
+              <i className="fa fa-plus text-muted"></i>
+              <small style={{ color: '#999', marginLeft: '5px' }}>
+                Add a Task
+              </small>
+            </a>
           </div>
         </div>
+
+        <hr />
+
       </div>
     )
   }

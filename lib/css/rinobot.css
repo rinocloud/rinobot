@@ -179,6 +179,7 @@ body {
   border: 1px solid #eeeeee;
   color: #999;
 }
+
 .btn-red:hover {
  color: #fd0042 ;
 }
@@ -187,7 +188,7 @@ body {
  background-color: #ffffff;
 }
 .btn-red-x {
- color: #ccc;
+ color: #eee;
  background-color: #ffffff;
 }
 
@@ -349,4 +350,13 @@ body {
 
 .config a:hover, .config a:focus, .config a:visited, .config a:active{
   text-decoration: none;
+}
+
+span.block-title{
+  color: #bbbbbb;
+  text-transform: uppercase;
+}
+
+.panel-heading{
+  font-weight: 500;
 }

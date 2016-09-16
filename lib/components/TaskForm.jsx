@@ -59,7 +59,7 @@ class TaskForm extends React.Component {
         label: (
           <span>
           Plugins:
-          <small className="text-muted m-l">Installed plugins appear here</small>
+            <small className="text-muted m-l">Installed plugins appear here</small>
           </span>
         ),
         options: installDeps
@@ -96,123 +96,123 @@ class TaskForm extends React.Component {
 
     return (
       <div className="row m-t">
-        <div className="col-xs-4">
-          <Select
-            type="text"
-            value={selectedValue || ''}
-            options={selectOpts}
-            onChange={changeName}
-            placeholder="Select automation..."
-          />
-        </div>
-
-        {name === 'upload' &&
-          <div className="col-xs-3">
-            <input
-              placeholder="target folder in rinocloud"
-              type="text"
-              value={args || ''}
-              className="form-control input-sm"
-              onChange={changeArgs}
-            />
-          </div>
-        }
-
-        {['copy', 'move'].includes(name) &&
-          <div className="col-xs-5">
-            <div className="col-xs-2">
-              <button
-                className="btn btn-sm btn-default"
-                style={{ border: 'none' }}
-              >
-                to
-              </button>
+        <div className="col-xs-12">
+          <div className="row-centered">
+            <div
+              className={
+                selectedValue ? 'col-xs-4 col-xs-offset-2' : 'col-xs-4 col-centered'
+              }
+            >
+              <div style={{ textAlign: 'left' }}>
+                <Select
+                  type="text"
+                  value={selectedValue || ''}
+                  options={selectOpts}
+                  onChange={changeName}
+                  placeholder="Select automation..."
+                />
+              </div>
             </div>
+          </div>
+
+          {isPluginCommand &&
+            <div className="col-xs-4">
+              <input
+                type="text"
+                placeholder="extra parameters for plugin"
+                value={args || ''}
+                className="form-control input-sm"
+                onChange={changeArgs}
+              />
+            </div>
+          }
+
+          {name === 'upload' &&
+            <div className="col-xs-4">
+              <input
+                placeholder="target folder in rinocloud"
+                type="text"
+                value={args || ''}
+                className="form-control input-sm"
+                onChange={changeArgs}
+              />
+            </div>
+          }
+
+          {['copy', 'move'].includes(name) &&
+            <div className="col-xs-5">
+              <div className="col-xs-4">
+                <a
+                  href="#"
+                  className="btn btn-default btn-sm"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                    if (paths) {
+                      changeArgs(e, paths[0])
+                    }
+                  }}
+                >
+                  Select folder
+                </a>
+              </div>
+              <div className="col-xs-6">
+                <input
+                  type="text"
+                  value={args || ''}
+                  className="form-control input-sm"
+                  onChange={changeArgs}
+                  placeholder="or type a location"
+                />
+              </div>
+            </div>
+          }
+
+          {['python', 'Rscript', 'matlab'].includes(name) &&
             <div className="col-xs-4">
               <a
                 href="#"
                 className="btn btn-default btn-sm"
                 onClick={(e) => {
                   e.preventDefault()
-                  const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                  const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
                   if (paths) {
-                    changeArgs(e, paths[0])
+                    changeArgs('args')(e, paths[0])
                   }
                 }}
               >
-                Select folder
+                Select {name === 'Rscript' ? 'R' : name} file
+                {args ? ` (${pt.basename(args)})` : ''}
               </a>
             </div>
-            <div className="col-xs-6">
-              <input
-                type="text"
-                value={args || ''}
-                className="form-control input-sm"
-                onChange={changeArgs}
-                placeholder="or type a location"
-              />
+          }
+
+          {isCustomCommand &&
+            <div>
+              <div className="col-xs-2">
+                <input
+                  type="text"
+                  value={name || ''}
+                  placeholder="Command to run"
+                  className="form-control input-sm"
+                  onChange={(e) => {
+                    e.preventDefault()
+                    changeName({ value: e.target.value })
+                  }}
+                />
+              </div>
+              <div className="col-xs-3">
+                <input
+                  type="text"
+                  value={args || ''}
+                  placeholder="Command arguments"
+                  className="form-control input-sm"
+                  onChange={changeArgs}
+                />
+              </div>
             </div>
-          </div>
-        }
+          }
 
-        {['python', 'Rscript', 'matlab'].includes(name) &&
-          <div className="col-xs-4">
-            <a
-              href="#"
-              className="btn btn-default btn-sm"
-              onClick={(e) => {
-                e.preventDefault()
-                const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
-                if (paths) {
-                  changeArgs('args')(e, paths[0])
-                }
-              }}
-            >
-              Select {name === 'Rscript' ? 'R' : name} file
-              {args ? ` (${pt.basename(args)})` : ''}
-            </a>
-          </div>
-        }
-
-        {isCustomCommand &&
-          <div>
-            <div className="col-xs-2">
-              <input
-                type="text"
-                value={name || ''}
-                placeholder="Command to run"
-                className="form-control input-sm"
-                onChange={(e) => {
-                  e.preventDefault()
-                  changeName({ value: e.target.value })
-                }}
-              />
-            </div>
-            <div className="col-xs-3">
-              <input
-                type="text"
-                value={args || ''}
-                placeholder="Command arguments"
-                className="form-control input-sm"
-                onChange={changeArgs}
-              />
-            </div>
-          </div>
-        }
-
-        {isPluginCommand &&
-          <div className="col-xs-5">
-            <input
-              type="text"
-              placeholder="extra parameters for plugin"
-              value={args || ''}
-              className="form-control input-sm"
-              onChange={changeArgs}
-            />
-          </div>
-        }
-
-        <div className="col-xs-2 pull-right">
           <a
             href="#"
             onClick={(e) => {
@@ -220,8 +220,9 @@ class TaskForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            <i className="fa fa-lg fa-remove m-l btn-red-x m-r"></i>
+            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
           </a>
+
         </div>
       </div>
     )
