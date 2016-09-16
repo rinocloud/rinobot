@@ -93,7 +93,9 @@ class Plugins extends React.Component {
     return (
       <div className="panel panel-default plugins">
         <div className="panel-heading">
+          <h6 className="block-title">
           Plugins{'  '}
+          </h6>
           {plugins.isSearching ?
             <small className="text-muted">
               <i className="fa fa-spinner fa-spin"></i>

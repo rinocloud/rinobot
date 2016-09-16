@@ -31,7 +31,8 @@ class WatchDir extends React.Component {
     onSaveConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
-    packagesConfig: PropTypes.object
+    packagesConfig: PropTypes.object,
+    isPipeline: PropTypes.bool,
   }
 
   constructor(props) {
@@ -54,11 +55,12 @@ class WatchDir extends React.Component {
     this.state = {
       formData: props.dir.config,
       isSaved: true,
+      isPipeline: true,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ formData: nextProps.dir.config, isSaved: true })
+    this.setState({ formData: nextProps.dir.config, isSaved: true, })
   }
 
   onSaveConfig() {
@@ -69,6 +71,7 @@ class WatchDir extends React.Component {
   addPipeline() {
     this.setState(update(this.state, {
       isSaved: { $set: false },
+      isPipeline: { $set: false },
       formData: {
         pipelines: {
           $push: [{
@@ -251,9 +254,8 @@ class WatchDir extends React.Component {
     return (
       <div>
         <div className="panel panel-default">
-
           <div className="panel-heading">
-            <h6>My folder name: </h6>
+            <h6 className="block-title">My folder: </h6>
             <strong>{pt.basename(dir.path)}</strong> {'  '}
             <a
               href="#"
@@ -287,130 +289,162 @@ class WatchDir extends React.Component {
               <span><i className="fa fa-trash"></i> Remove</span>
             </a>
           </div>
-          <h6 className="m-l m-t "> Automation File</h6>
-          <div className="panel-body m-l">
+          <h6
+            className="block-title text-center"
+            style={{ color: '#666' }}
+          >
+            Automation Pipeline
+          </h6>
+          <div className="panel-body config">
+            <div className="row row-centered">
+              <div className="col-centered">
+              {formData.pipelines.map((o, index) =>
+                <div className="p-l" key={`pipeline-${index}`}>
+                  <PipelineForm
+                    pipeline={o}
+                    packagesConfig={packagesConfig}
+                    registry={registry}
 
-            {formData.pipelines.map((o, index) =>
-              <div className="p-l" key={`pipeline-${index}`}>
-                <PipelineForm
-                  pipeline={o}
-                  packagesConfig={packagesConfig}
-                  registry={registry}
+                    onChangeMatch={(match) =>
+                      this.changePipelineMatch(index, match)}
+                    onChangeTaskName={(taskIndex, name) =>
+                      this.changePipelineTaskName(index, taskIndex, name)}
+                    onChangeTaskArgs={(taskIndex, args) =>
+                      this.changePipelineTaskArgs(index, taskIndex, args)}
+                    onAddTask={() =>
+                      this.addPipelineTask(index)}
+                    onRemoveTask={(taskIndex) =>
+                      this.removePipelineTask(index, taskIndex)}
+                    onRemove={() => this.removePipeline(index)}
+                  />
+                  {formData.metadata.length === 0 ?
+                    null
+                  :
+                    <h6
+                      className="text-center m-t m-r-lg"
+                      style={{ color: '#666' }}
+                    >
+                    My Metadata
+                    </h6>
+                  }
+                  {formData.metadata.map((o, index) =>
+                    <div className="p-l m-t text-center" key={`metadata-${index}`}>
+                      <MetadataForm
+                        field={o.field}
+                        value={o.value}
+                        onChangeField={(field) =>
+                          this.changeMetadataField(index, field)}
+                        onChangeValue={(value) =>
+                          this.changeMetadataValue(index, value)}
+                        onRemove={() => this.removeMetadata(index)}
+                      />
+                    </div>
+                  )}
+                </div>
+          )}
+            {formData.pipelines.length === 0 ?
+              null
+              :
 
-                  onChangeMatch={(match) =>
-                    this.changePipelineMatch(index, match)}
-                  onChangeTaskName={(taskIndex, name) =>
-                    this.changePipelineTaskName(index, taskIndex, name)}
-                  onChangeTaskArgs={(taskIndex, args) =>
-                    this.changePipelineTaskArgs(index, taskIndex, args)}
-                  onAddTask={() =>
-                    this.addPipelineTask(index)}
-                  onRemoveTask={(taskIndex) =>
-                    this.removePipelineTask(index, taskIndex)}
-                  onRemove={() => this.removePipeline(index)}
-                />
+              <div className="row">
+                <div className="col-md-2 col-md-push-10">
+                  <a
+                    href="#"
+                    className="fa fa-plus btn btn-default btn-blue-meta"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.addMetadata()
+                    }}
+                  > {'  '}
+                    <small>Metadata</small>
+                  </a>
+                </div>
+                <div className="col-md-12 m-t-sm">
+                  <div className="col-md-2 col-md-push-10 m-l">
+              {!isSaved &&
+                <a
+                  href="#"
+                  className=" btn btn-sm btn-default"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.onSaveConfig()
+                  }}
+                  disabled={dir.isStarted}
+                >
+                  <span><i className="fa fa-save"></i> Save</span>
+                </a>
+              }
+
+              {isSaved &&
+                <a
+                  href="#"
+                  className="btn btn-sm btn-default"
+                  disabled
+                >
+                  <span><i className="fa fa-check"></i> Saved</span>
+                </a>
+              }
+                  </div>
+                </div>
               </div>
-            )}
-            <hr/ >
-            <div className="m-t text-muted">
-              <a
-                href="#"
-                className="m-l fa fa-plus btn btn-info btn-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.addPipeline()
-                }}
-              /> {'  '}
-                Automate pipeline
-            </div>
-
-            {formData.metadata.map((o, index) =>
-              <div className="p-l m-t" key={`metadata-${index}`}>
-                <MetadataForm
-                  field={o.field}
-                  value={o.value}
-                  onChangeField={(field) =>
-                    this.changeMetadataField(index, field)}
-                  onChangeValue={(value) =>
-                    this.changeMetadataValue(index, value)}
-                  onRemove={() => this.removeMetadata(index)}
-                />
+              }
               </div>
-            )}
-
-            <div className="m-t text-muted">
-              <a
-                href="#"
-                className="m-l fa fa-plus btn btn-info btn-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.addMetadata()
-                }}
-              /> {'  '}
-                Add metadata
             </div>
-            <div className="text-center">
-            {!isSaved &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.onSaveConfig()
-                }}
-                disabled={dir.isStarted}
-              >
-                <span><i className="fa fa-save"></i> Save</span>
-              </a>
-            }
+            <div className="row row-centered">
+              <div className="col-xs-2 col-centered m-l-sm">
 
-            {isSaved &&
-              <a
-                href="#"
-                className="m-l-sm btn btn-sm btn-default"
-                disabled
-              >
-                <span><i className="fa fa-check"></i> Saved</span>
-              </a>
-            }
+                <a
+                  href="#"
+                  className="m-l-sm btn-sm"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.addPipeline()
+                  }}
+                >
+                  <i className="fa fa-plus fa-3x btn-blue m-l"></i>
+                </a>
+                {/* <small> Automate pipeline </small>*/}
+              </div>
             </div>
           </div>
         </div>
-        <div className="m-b text-center">
-          {dir.isStarted && !isStarting &&
-            <a
-              href="#"
-              className="btn btn-danger"
-              onClick={onStopClick}
-            >
-              Stop
-            </a>
-          }
+        <div className="row">
+          <div className="m-b pull-right">
+            {dir.isStarted && !isStarting &&
+              <a
+                href="#"
+                className="m-r btn btn-danger m-t"
+                onClick={onStopClick}
+              >
+                Stop
+              </a>
+            }
 
-          {dir.isStarted && isStarting &&
-            <a
-              href="#"
-              className="btn btn-default"
-              onClick={onStopClick}
-              disabled
-            >
-              Starting <i className="fa fa-spinner fa-spin"></i>
-            </a>
-          }
+            {dir.isStarted && isStarting &&
+              <a
+                href="#"
+                className="m-r btn btn-default m-t"
+                onClick={onStopClick}
+                disabled
+              >
+                Starting <i className="m-l-sm fa fa-spinner fa-spin"></i>
+              </a>
+            }
 
-          {!dir.isStarted &&
-            <a
-              href="#"
-              className="btn btn-success"
-              onClick={onStartClick}
-              data-dismiss="alert"
-            >
-              Start
-            </a>
-          }
+            {!dir.isStarted &&
+              <a
+                href="#"
+                className="m-r btn btn-success m-t"
+                onClick={onStartClick}
+                data-dismiss="alert"
+              >
+                Start
+              </a>
+            }
+          </div>
         </div>
       {dir.isStarted && !isStarting &&
-        <div className="panel panel-default">
+        <div className="panel panel-default m-t">
           <div className="panel-heading">
             Activity
             <div className="pull-right">{dir.processedFiles}/{dir.totalFiles} files processed</div>
@@ -426,8 +460,8 @@ class WatchDir extends React.Component {
           </div>
         </div>
       }
-      </div>
 
+      </div>
     )
   }
 }

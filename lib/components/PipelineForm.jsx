@@ -21,13 +21,12 @@ class PipelineForm extends React.Component {
     const { pipeline, registry, packagesConfig } = this.props //eslint-disable-line
 
     return (
-      <div className="row m-l">
-        <div className="row m-t">
-          <div className="col-xs-4">
-            <h7>Type of file to match</h7>
+      <div className="container">
+        <div className="row-centered ">
+          <div className="col-xs-4 col-centered">
             <input
-              className="form-control"
-              placeholder="trigger file"
+              className="form-control form-control-primary"
+              placeholder="Type of file to match"
               value={pipeline.filematch || ''}
               onChange={(e) => {
                 e.preventDefault()
@@ -44,35 +43,68 @@ class PipelineForm extends React.Component {
           >
             <i className="m-l m-t fa fa-lg fa-remove btn-red-x"></i>
           </a>
+          {pipeline.tasks.length === 0 ?
+            null
+          :
+          <h6
+            className="text-center m-t m-r-lg"
+            style={{ color: '#666' }}
+          >
+          My Pipeline Form</h6>
+        }
         </div>
-        <ul className="experiences m-t">
         {_.map(pipeline.tasks, (task, index) => {
           return (
-            <li>
-            <TaskForm
-              key={`task-${index}`}
-              registry={registry}
-              packagesConfig={packagesConfig}
-              name={task.name}
-              args={task.args}
-              onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
-              onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
-              onRemove={() => { this.props.onRemoveTask(index) }}
-            />
-            </li>
+            <div>
+              <TaskForm
+                key={`task-${index}`}
+                registry={registry}
+                packagesConfig={packagesConfig}
+                name={task.name}
+                args={task.args}
+                onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
+                onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
+                onRemove={() => { this.props.onRemoveTask(index) }}
+              />
+              <div className="row row-centered">
+                <div className="col-xs-2 col-centered">
+                  {(index === pipeline.tasks.length - 1) &&
+                    <a
+                      href="#"
+                      className="btn btn-sm"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.props.onAddTask()
+                      }}
+                    >
+                      <i className="fa fa-plus-circle fa-3x btn-blue" />
+                    </a>
+                  }
+
+                  {index !== pipeline.tasks.length - 1 &&
+                    <i className="m-l fa fa-arrow-down fa-x" />
+                  }
+                </div>
+              </div>
+            </div>
           )
         })}
-        </ul>
-        <div className="row text-muted m-l">
-          <a
-            href="#"
-            className="fa fa-plus btn btn-info btn-sm"
-            onClick={(e) => {
-              e.preventDefault()
-              this.props.onAddTask()
-            }}
-          /> {'  '}
-            Add task
+        <div className="row row-centered">
+          <div className="col-xs-2 col-centered">
+            {pipeline.tasks.length === 0 &&
+              <a
+                href="#"
+                className="btn btn-sm"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.props.onAddTask()
+                }}
+              >
+                <i className="fa fa-plus-circle fa-3x btn-blue" />
+              </a>
+            }
+
+          </div>
         </div>
       </div>
     )
