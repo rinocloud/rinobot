@@ -48,17 +48,16 @@ class PipelineForm extends React.Component {
 
         {_.map(pipeline.tasks, (task, index) => {
           return (
-            <div>
-            <TaskForm
-              key={`task-${index}`}
-              registry={registry}
-              packagesConfig={packagesConfig}
-              name={task.name}
-              args={task.args}
-              onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
-              onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
-              onRemove={() => { this.props.onRemoveTask(index) }}
-            />
+            <div key={`task-${index}`}>
+              <TaskForm
+                registry={registry}
+                packagesConfig={packagesConfig}
+                name={task.name}
+                args={task.args}
+                onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
+                onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
+                onRemove={() => { this.props.onRemoveTask(index) }}
+              />
               <div className="row m-l">
                 <div className="text-center m-t col-xs-4">
                   {(index === pipeline.tasks.length - 1) &&
@@ -70,7 +69,7 @@ class PipelineForm extends React.Component {
                         this.props.onAddTask()
                       }}
                     >
-                      <i className="fa fa-plus fa-2x" />
+                      <i className="fa fa-plus" />
                     </a>
                   }
 
@@ -94,10 +93,9 @@ class PipelineForm extends React.Component {
                   this.props.onAddTask()
                 }}
               >
-                <i className="fa fa-plus fa-2x" />
+                <i className="fa fa-plus" />
                 <small
-                  style={{ verticalAlign: 'super' }}
-                  className="m-l text-muted"
+                  className="m-l-sm text-muted"
                 >
                   (Add task)
                 </small>

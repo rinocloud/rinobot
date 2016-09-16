@@ -97,7 +97,7 @@ const createPipeline = (opts) => {
         onError: (_task, error) => {
           opts.onTaskError(_task, error)
           _break = true
-          setTimeout(() => { finished(new Error('')) })
+          setTimeout(() => { finished() })
         }
       })
 

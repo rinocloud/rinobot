@@ -287,7 +287,8 @@ class WatchDir extends React.Component {
                 className="m-l-sm btn btn-sm btn-default"
                 onClick={(e) => {
                   e.preventDefault()
-                  this.onSaveConfig()}}
+                  this.onSaveConfig()
+                }}
                 disabled={dir.isStarted}
               >
                 <span><i className="fa fa-save"></i> Save</span>
