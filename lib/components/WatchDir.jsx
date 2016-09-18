@@ -296,7 +296,7 @@ class WatchDir extends React.Component {
                   className="block-title"
                   style={{ color: '#666' }}
                 >
-                  Automation Pipeline
+                  Automation Pipeline {'  '}
                 </h6>
               </div>
             </div>
@@ -337,7 +337,7 @@ class WatchDir extends React.Component {
                 >
                   <i className="fa fa-plus text-muted"></i>
                   <small style={{ color: '#999', marginLeft: '5px' }}>
-                    Add a pipeline
+                  Add a pipeline {'  '}
                   </small>
                 </a>
               </div>
@@ -348,9 +348,9 @@ class WatchDir extends React.Component {
                 <div className="col-sm-12 text-center">
                   <h6
                     className="block-title"
-                    style={{ color: '#666' }}
+                    style={{ color: '#999' }}
                   >
-                    My Metadata
+                    Extra Metadata
                   </h6>
                 </div>
               </div>
@@ -371,17 +371,22 @@ class WatchDir extends React.Component {
 
             {formData.pipelines.length !== 0 &&
               <div className="row">
-                <div className="col-md-2 col-md-push-10">
+                <div className="col-md-3 col-md-push-9">
                   <a
                     href="#"
-                    className="btn btn-default btn-blue-meta"
+                    className="btn-sm"
+                    style={{
+                      fontSize: '1.4em'
+                    }}
                     onClick={(e) => {
                       e.preventDefault()
                       this.addMetadata()
                     }}
                   >
-                    <i className="fa fa-plus" />{'  '}
-                    <small>Metadata</small>
+                    <i className="fa fa-plus text-muted"></i>
+                    <small style={{ color: '#999', marginLeft: '5px' }}>
+                      Add Metadata {'  '}
+                    </small>
                   </a>
                 </div>
               </div>

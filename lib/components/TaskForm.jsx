@@ -116,8 +116,9 @@ class TaskForm extends React.Component {
           </div>
 
           {isPluginCommand &&
-            <div className="col-xs-4">
+            <div className="col-xs-4" >
               <input
+                style={{borderRadius: '4px'}}
                 type="text"
                 placeholder="extra parameters for plugin"
                 value={args || ''}
@@ -130,6 +131,7 @@ class TaskForm extends React.Component {
           {name === 'upload' &&
             <div className="col-xs-4">
               <input
+                style={{ borderRadius: '4px' }}
                 placeholder="target folder in rinocloud"
                 type="text"
                 value={args || ''}
@@ -143,6 +145,7 @@ class TaskForm extends React.Component {
             <div className="col-xs-5">
               <div className="col-xs-4">
                 <a
+                  style={{ borderRadius: '4px' }}
                   href="#"
                   className="btn btn-default btn-sm"
                   onClick={(e) => {
@@ -158,6 +161,7 @@ class TaskForm extends React.Component {
               </div>
               <div className="col-xs-6">
                 <input
+                  style={{ borderRadius: '4px' }}
                   type="text"
                   value={args || ''}
                   className="form-control input-sm"
@@ -171,6 +175,7 @@ class TaskForm extends React.Component {
           {['python', 'Rscript', 'matlab'].includes(name) &&
             <div className="col-xs-4">
               <a
+                style={{ borderRadius: '4px' }}
                 href="#"
                 className="btn btn-default btn-sm"
                 onClick={(e) => {
@@ -191,6 +196,7 @@ class TaskForm extends React.Component {
             <div>
               <div className="col-xs-2">
                 <input
+                  style={{ borderRadius: '4px' }}
                   type="text"
                   value={name || ''}
                   placeholder="Command to run"
@@ -203,6 +209,7 @@ class TaskForm extends React.Component {
               </div>
               <div className="col-xs-3">
                 <input
+                  style={{ borderRadius: '4px' }}
                   type="text"
                   value={args || ''}
                   placeholder="Command arguments"
@@ -220,7 +227,7 @@ class TaskForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
+            <i className="m-l fa fa-lg fa-remove btn-red-x position-x-task"></i>
           </a>
 
         </div>

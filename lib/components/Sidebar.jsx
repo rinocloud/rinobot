@@ -50,7 +50,7 @@ class Sidebar extends React.Component {
     }
 
     return (
-      <div style={{ height: '100%' }}>
+      <div style={{ height: '99%' }}>
         <div className="wrapper">
           <h6 className="m-l">
             <strong>Rinobot</strong>
@@ -167,7 +167,7 @@ class Sidebar extends React.Component {
           </ul>
         </div>
         <div>
-          <ul className="list-group m-b">
+          <ul className="list-group">
             <li className="list-group-item list-group-item-heading text-muted">
               <small>Rinobot v{rinobotVersion}</small>
             </li>

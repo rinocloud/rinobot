@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import _ from 'lodash'
 
-
 class PipelineForm extends React.Component {
 
   static propTypes = {
@@ -42,7 +41,7 @@ class PipelineForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            <i className="m-l m-t fa fa-lg fa-remove btn-red-x"></i>
+            <i className="fa fa-lg fa-remove btn-red-x position-x-file"></i>
           </a>
         </div>
 
@@ -98,7 +97,7 @@ class PipelineForm extends React.Component {
             >
               <i className="fa fa-plus text-muted"></i>
               <small style={{ color: '#999', marginLeft: '5px' }}>
-                Add a Task
+                Add Task
               </small>
             </a>
           </div>
