@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
+import { Popover, OverlayTrigger } from 'react-bootstrap'
+const { shell } = require('electron')
 
 import Select from 'react-select-plus'
 
@@ -94,8 +96,36 @@ class TaskForm extends React.Component {
       else this.props.onChangeName(null)
     }
 
+    const CommandUpload = (
+      <Popover id="popover-trigger-hover-focus">
+        <small>
+          These are actions that will happen when files appear in the folder.
+          Click to learn more.
+        </small>
+      </Popover>
+    )
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
+
     return (
       <div className="row m-t">
+      {name === 'upload' &&
+        <OverlayTrigger
+          trigger={['hover']}
+          placement="bottom"
+          overlay={CommandUpload}
+        >
+          <a
+            className="fa fa-question-circle-o text-muted m-r"
+            style={{ marginRight: '100px' }}
+            href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+            onClick={openExternal}
+          >
+          </a>
+        </OverlayTrigger>
+      }
         <div className="col-xs-12">
           <div className="row-centered">
             <div
@@ -114,11 +144,10 @@ class TaskForm extends React.Component {
               </div>
             </div>
           </div>
-
           {isPluginCommand &&
             <div className="col-xs-4" >
               <input
-                style={{borderRadius: '4px'}}
+                style={{ borderRadius: '4px' }}
                 type="text"
                 placeholder="extra parameters for plugin"
                 value={args || ''}
@@ -219,17 +248,18 @@ class TaskForm extends React.Component {
               </div>
             </div>
           }
-
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              this.props.onRemove()
-            }}
-          >
-            <i className="m-l fa fa-lg fa-remove btn-red-x position-x-task"></i>
-          </a>
-
+        </div>
+        <div className="col-xs-1 col-xs-offset-11">
+        <a
+          className=" position-x-task"
+          href="#"
+          onClick={(e) => {
+            e.preventDefault()
+            this.props.onRemove()
+          }}
+        >
+          <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
+        </a>
         </div>
       </div>
     )

@@ -52,8 +52,8 @@ class Sidebar extends React.Component {
     return (
       <div style={{ height: '99%' }}>
         <div className="wrapper">
-          <h6 className="m-l">
-            <strong>Rinobot</strong>
+          <h6 className="m-l" style={{ color: '#443276'}}>
+            <strong>My Rinobot</strong>
           </h6>
           <ul className="list-group">
             <li className="list-group-item list-group-item-heading">

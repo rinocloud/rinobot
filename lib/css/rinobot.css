@@ -191,19 +191,28 @@ body {
  color: #eee;
  background-color: #ffffff;
 }
+.btn-Metask {
+  border-color: #238eaf;
+  background-color: #fff;
+  color: #238eaf;
+  font-size: 3em;
+}
+.btn-Metask:hover {
+  border-color: #238eaf;
+  background-color:#fff;
+  color:  #29aad1;
+  font-size: 3em;
+}
 
-.btn-blue {
-  color: #31b0d5;
+.btn-start {
+  border-color: #49925d;
+  background-color: #80BF91;
+  color: #fff;
 }
-.btn-blue:hover{
-  color:#ccc;
-}
-.btn-blue-meta {
-  color: #31b0d5;
-}
-.btn-blue-meta:hover{
-  color:#666;
-  background: #31b0d5;
+.btn-start {
+  border-color: #49925d;
+  background-color: #49925d;
+  color: #fff;
 }
 
 .row-centered {
@@ -215,21 +224,27 @@ body {
     /* reset the text-align */
     text-align:left;
     /* inline-block space fix */
-    margin-right:-4px;
-}
-
-.position-x-task{
-  position: absolute;
-  right: 120px;
-  top: 10px;
+    right:-4px;
 }
 
 .position-x-file{
   position: absolute;
-  right: 126px;
-  font-size:1.5em;
+  right: 90px;
+  font-size: 1.2em;
+
 }
 
+.position-x-task{
+  position: absolute;;
+  right: 90px;
+  bottom: 10px;
+
+}
+
+.position-x-meta{
+  position: absolute;
+  right: 72px;
+}
 
 .config .form-control {
   border: 1px solid #eeeeee;

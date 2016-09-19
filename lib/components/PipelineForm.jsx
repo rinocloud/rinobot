@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import _ from 'lodash'
+import { Popover, OverlayTrigger } from 'react-bootstrap'
+import { shell } from 'electron'
 
 class PipelineForm extends React.Component {
 
@@ -19,10 +21,50 @@ class PipelineForm extends React.Component {
   render() {
     const { pipeline, registry, packagesConfig } = this.props //eslint-disable-line
 
+    const fileOverlay = (
+      <Popover
+        id="popover-trigger-hover-focus"
+      >
+        <small>
+          This lets you specify on certain filetypes to run a pipeline of tasks on. <code>*</code>
+          means everything, but <code>*.txt</code> would only work on 'txt' files.
+          Click to learn more.
+        </small>
+      </Popover>
+    )
+
+    const TaskOverlay = (
+      <Popover
+        id="popover-trigger-hover-focus"
+      >
+        <small>
+          These are actions that will happen when files appear in the folder.
+          Click to learn more.
+        </small>
+      </Popover>
+    )
+
+    const openExternal = (e) => {
+      e.preventDefault()
+      shell.openExternal(e.target.href)
+    }
+
     return (
       <div className="row">
         <div className="row row-centered m-t m-b">
           <div className="col-xs-4 col-centered">
+            <OverlayTrigger
+              trigger={['hover']}
+              placement="right"
+              overlay={fileOverlay}
+            >
+              <a
+                className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
+                href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                onClick={openExternal}
+              >
+              </a>
+            </OverlayTrigger>
             <input
               className="form-control form-control-primary"
               placeholder="Type of file to match"
@@ -35,16 +77,16 @@ class PipelineForm extends React.Component {
           </div>
 
           <a
+            className="position-x-file"
             href="#"
             onClick={(e) => {
               e.preventDefault()
               this.props.onRemove()
             }}
           >
-            <i className="fa fa-lg fa-remove btn-red-x position-x-file"></i>
+            <i className="fa fa-lg fa-remove btn-red-x m-t"></i>
           </a>
         </div>
-
         {pipeline.tasks.length !== 0 &&
           <div className="row">
             <div className="col-sm-12 text-center">
@@ -52,7 +94,21 @@ class PipelineForm extends React.Component {
                 className="block-title"
                 style={{ color: '#999' }}
               >
-                Setup a task
+                Setup a task {'  '}
+                <span>
+                  <OverlayTrigger
+                    trigger={['hover']}
+                    placement="bottom"
+                    overlay={TaskOverlay}
+                  >
+                    <a
+                      className="fa fa-question-circle-o m-t-sm text-muted"
+                      href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                      onClick={openExternal}
+                    >
+                    </a>
+                  </OverlayTrigger>
+                </span>
               </h6>
             </div>
           </div>
@@ -84,27 +140,23 @@ class PipelineForm extends React.Component {
 
         <div className="row">
           <div className="col-sm-12 text-center m-t">
-            <a
+            <spam
               href="#"
-              className="btn-sm"
-              style={{
-                fontSize: '1.4em'
-              }}
+              className="btn-Metask m-t m-b fa fa-plus-circle"
               onClick={(e) => {
                 e.preventDefault()
                 this.props.onAddTask()
               }}
             >
-              <i className="fa fa-plus text-muted"></i>
-              <small style={{ color: '#999', marginLeft: '5px' }}>
-                Add Task
-              </small>
-            </a>
+            </spam>
+            <small style={{ marginLeft: '5px' }}>
+            Add Task
+            </small>
+
           </div>
         </div>
 
         <hr />
-
       </div>
     )
   }

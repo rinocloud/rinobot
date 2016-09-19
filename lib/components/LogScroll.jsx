@@ -29,15 +29,15 @@ class LogScroll extends React.Component {
               <div className="col-sm-8">
                 <i className="pseudo-fa fa fa-2 fa-file-text-o text-muted"></i>
                 {'  '}
-                <span className="pseudo"></span>
+                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
               </div>
 
               <div className="col-sm-1">
-                <span className="pseudo"></span>
+                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
               </div>
 
               <div className="col-sm-3">
-                <span className="pseudo"></span>
+                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
               </div>
             </div>
           )

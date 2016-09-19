@@ -18,6 +18,35 @@ const ClearRecord = (
   </Popover>
 )
 
+const MetadataOverlay = (
+  <Popover
+    id="popover-trigger-hover-focus"
+  >
+    <small>
+      You can add information to your data adding metadata, they can also be referenced in task arguments.
+      Click to learn more.
+    </small>
+  </Popover>
+)
+
+
+const PipelineOverlay = (
+  <Popover
+    id="popover-trigger-hover-focus"
+  >
+    <small>
+      This is where you can add a flow of tasks for your file or a specific file you can select.
+      Click to learn more.
+    </small>
+  </Popover>
+)
+
+
+const openExternal = (e) => {
+  e.preventDefault()
+  shell.openExternal(e.target.href)
+}
+
 
 class WatchDir extends React.Component {
 
@@ -253,10 +282,11 @@ class WatchDir extends React.Component {
     return (
       <div>
         <div className="panel panel-default">
-          <div className="panel-heading">
+          <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
             <span className="block-title">My folder:{'  '}</span>
             {pt.basename(dir.path)} {'  '}
             <a
+              className="text-muted"
               href="#"
               onClick={(e) => {
                 e.preventDefault()
@@ -297,6 +327,18 @@ class WatchDir extends React.Component {
                   style={{ color: '#666' }}
                 >
                   Automation Pipeline {'  '}
+                  <OverlayTrigger
+                    trigger={['hover']}
+                    placement="right"
+                    overlay={PipelineOverlay}
+                  >
+                    <a
+                      className="fa fa-question-circle-o m-t-sm text-muted"
+                      href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                      onClick={openExternal}
+                    >
+                    </a>
+                  </OverlayTrigger>
                 </h6>
               </div>
             </div>
@@ -323,23 +365,20 @@ class WatchDir extends React.Component {
             )}
 
             <div className="row">
-              <div className="col-sm-12 text-center m-t">
-                <a
+              <div className="col-sm-12 text-center m-t m-l-sm">
+                <spam
                   href="#"
-                  className="btn-sm"
-                  style={{
-                    fontSize: '1.4em'
-                  }}
+                  className="btn-Metask m-t m-b fa fa-plus-circle m-l-sm"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
                   }}
                 >
-                  <i className="fa fa-plus text-muted"></i>
-                  <small style={{ color: '#999', marginLeft: '5px' }}>
-                  Add a pipeline {'  '}
-                  </small>
-                </a>
+                </spam>
+                <small style={{ marginLeft: '5px'}}>
+                Add Pipeline
+                </small>
+
               </div>
             </div>
 
@@ -350,7 +389,21 @@ class WatchDir extends React.Component {
                     className="block-title"
                     style={{ color: '#999' }}
                   >
-                    Extra Metadata
+                    Extra Metadata {'  '}
+                    <span>
+                      <OverlayTrigger
+                        trigger={['hover']}
+                        placement="bottom"
+                        overlay={MetadataOverlay}
+                      >
+                        <a
+                          className="fa fa-question-circle-o m-t-sm text-muted"
+                          href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                          onClick={openExternal}
+                        >
+                        </a>
+                      </OverlayTrigger>
+                    </span>
                   </h6>
                 </div>
               </div>
@@ -371,23 +424,19 @@ class WatchDir extends React.Component {
 
             {formData.pipelines.length !== 0 &&
               <div className="row">
-                <div className="col-md-3 col-md-push-9">
-                  <a
+                <div className="col-sm-12 col-sm-push-10">
+                  <spam
                     href="#"
-                    className="btn-sm"
-                    style={{
-                      fontSize: '1.4em'
-                    }}
+                    className="btn-Metask m-t m-b fa fa-plus-circle"
                     onClick={(e) => {
                       e.preventDefault()
                       this.addMetadata()
                     }}
                   >
-                    <i className="fa fa-plus text-muted"></i>
-                    <small style={{ color: '#999', marginLeft: '5px' }}>
-                      Add Metadata {'  '}
-                    </small>
-                  </a>
+                  </spam>
+                  <small style={{ marginLeft: '5px' }}>
+                  Add Metadata
+                  </small>
                 </div>
               </div>
             }
@@ -453,7 +502,8 @@ class WatchDir extends React.Component {
             {!dir.isStarted &&
               <a
                 href="#"
-                className="m-r btn btn-success m-t"
+                className="m-r btn btn-start m-t"
+                style={{ color: '#fff' }}
                 onClick={onStartClick}
                 data-dismiss="alert"
               >
@@ -465,7 +515,7 @@ class WatchDir extends React.Component {
 
         {dir.isStarted && !isStarting &&
           <div className="panel panel-default m-t">
-            <div className="panel-heading">
+            <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
               Activity
               <div className="pull-right">
                 {dir.processedFiles}/{dir.totalFiles} files processed

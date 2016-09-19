@@ -5,10 +5,10 @@ class MetadataForm extends React.Component {
   render() {
     const { field, value } = this.props
     return (
-      <div className="row m-t m-l-sm">
-        <div className="col-xs-12 m-l m-t-sm">
-          <div className="row-centered m-l-lg">
-            <div className="col-xs-4 col-centered m-l-lg">
+      <div className="row m-t">
+        <div className="col-xs-12 m-t-sm">
+          <div className="row-centered">
+            <div className="col-xs-4 col-centered">
               <input
                 style={{ borderRadius: '4px' }}
                 className="form-control"
@@ -32,17 +32,16 @@ class MetadataForm extends React.Component {
                 }}
               />
             </div>
-            <div className="col-xs-2 pull-right">
               <a
+                className="position-x-meta"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault()
                   this.props.onRemove()
                 }}
               >
-                <i className="fa fa-lg fa-remove btn-red-x position-x-task"></i>
+                <i className="fa fa-lg fa-remove btn-red-x"></i>
               </a>
-            </div>
           </div>
         </div>
       </div>
