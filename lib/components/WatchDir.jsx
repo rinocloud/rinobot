@@ -282,7 +282,7 @@ class WatchDir extends React.Component {
     return (
       <div>
         <div className="panel panel-default">
-          <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+          <div className="panel-heading">
             <span className="block-title">My folder:{'  '}</span>
             {pt.basename(dir.path)} {'  '}
             <a
@@ -334,7 +334,7 @@ class WatchDir extends React.Component {
                   >
                     <a
                       className="fa fa-question-circle-o m-t-sm text-muted"
-                      href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                      href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
                       onClick={openExternal}
                     >
                     </a>
@@ -342,7 +342,6 @@ class WatchDir extends React.Component {
                 </h6>
               </div>
             </div>
-
             {formData.pipelines.map((o, index) =>
               <PipelineForm
                 key={`pipeline-${index}`}
@@ -363,27 +362,25 @@ class WatchDir extends React.Component {
                 onRemove={() => this.removePipeline(index)}
               />
             )}
-
             <div className="row">
-              <div className="col-sm-12 text-center m-t m-l-sm">
-                <spam
+              <div className="col-sm-12 text-center m-t">
+                <a
                   href="#"
-                  className="btn-Metask m-t m-b fa fa-plus-circle m-l-sm"
+                  className="btn-Metask m-t m-b-sm"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
                   }}
                 >
-                </spam>
-                <small style={{ marginLeft: '5px'}}>
-                Add Pipeline
-                </small>
-
+                  <i className="fa fa-plus-circle" />
+                  <br />
+                  <small>Add Pipeline</small>
+                </a>
               </div>
             </div>
 
             {formData.metadata.length !== 0 &&
-              <div className="row">
+              <div className="row m-t m-l">
                 <div className="col-sm-12 text-center">
                   <h6
                     className="block-title"
@@ -424,93 +421,86 @@ class WatchDir extends React.Component {
 
             {formData.pipelines.length !== 0 &&
               <div className="row">
-                <div className="col-sm-12 col-sm-push-10">
-                  <spam
+                <div className="col-sm-12 text-center m-t">
+                  <a
                     href="#"
-                    className="btn-Metask m-t m-b fa fa-plus-circle"
+                    className="btn-Metask m-t m-b-sm"
                     onClick={(e) => {
                       e.preventDefault()
                       this.addMetadata()
                     }}
                   >
-                  </spam>
-                  <small style={{ marginLeft: '5px' }}>
-                  Add Metadata
-                  </small>
-                </div>
-              </div>
-            }
-
-            {formData.pipelines.length !== 0 && !isSaved &&
-              <div className="row">
-                <div className="col-md-2 col-md-push-10 m-l">
-                  <a
-                    href="#"
-                    className=" btn btn-sm btn-default"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.onSaveConfig()
-                    }}
-                    disabled={dir.isStarted}
-                  >
-                    <span><i className="fa fa-save"></i> Save</span>
+                    <i className="fa fa-plus-circle m-t" />
+                    <br />
+                    <small className="m-r-sm">Add Metadata</small>
                   </a>
                 </div>
               </div>
             }
 
-            {isSaved &&
-              <div className="row">
-                <div className="col-md-2 col-md-push-10 m-l">
-                  <a
-                    href="#"
-                    className="btn btn-sm btn-default"
-                    disabled
-                  >
-                    <span><i className="fa fa-check"></i> Saved</span>
-                  </a>
-                </div>
-              </div>
-            }
           </div>
         </div> {/* Panel finished */}
 
-
-        <div className="row">
-          <div className="m-b pull-right">
-            {dir.isStarted && !isStarting &&
-              <a
-                href="#"
-                className="m-r btn btn-danger m-t"
-                onClick={onStopClick}
-              >
-                Stop
-              </a>
-            }
-
-            {dir.isStarted && isStarting &&
-              <a
-                href="#"
-                className="m-r btn btn-default m-t"
-                onClick={onStopClick}
-                disabled
-              >
-                Starting <i className="m-l-sm fa fa-spinner fa-spin"></i>
-              </a>
-            }
-
-            {!dir.isStarted &&
-              <a
-                href="#"
-                className="m-r btn btn-start m-t"
-                style={{ color: '#fff' }}
-                onClick={onStartClick}
-                data-dismiss="alert"
-              >
-                Start
-              </a>
-            }
+        {formData.pipelines.length !== 0 && !isSaved &&
+          <div className="row row-centered m-t-lg">
+            <a
+              href="#"
+              className="btn btn-default"
+              onClick={(e) => {
+                e.preventDefault()
+                this.onSaveConfig()
+              }}
+              disabled={dir.isStarted}
+            >
+              <span><i className="fa fa-save"></i> Save</span>
+            </a>
           </div>
+        }
+
+        {isSaved &&
+          <div className="row row-centered m-t-lg">
+            <a
+              href="#"
+              className="btn btn-sm btn-default"
+              disabled
+            >
+              <span><i className="fa fa-check"></i> Saved</span>
+            </a>
+          </div>
+        }
+        <div className="row row-centered">
+          {dir.isStarted && !isStarting &&
+            <a
+              href="#"
+              className=" btn btn-danger m-t"
+              onClick={onStopClick}
+            >
+              Stop
+            </a>
+          }
+
+          {dir.isStarted && isStarting &&
+            <a
+              href="#"
+              className="btn btn-default m-t"
+              onClick={onStopClick}
+              disabled
+            >
+              Starting <i className="m-l-sm fa fa-spinner fa-spin"></i>
+            </a>
+          }
+
+          {!dir.isStarted &&
+            <a
+              href="#"
+              className="btn btn-start m-t"
+              style={{ color: '#fff' }}
+              onClick={onStartClick}
+              data-dismiss="alert"
+            >
+              Start
+            </a>
+          }
         </div>
 
         {dir.isStarted && !isStarting &&

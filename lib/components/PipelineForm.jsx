@@ -59,6 +59,7 @@ class PipelineForm extends React.Component {
               overlay={fileOverlay}
             >
               <a
+                style={{ top: '19px' }}
                 className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
                 href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
                 onClick={openExternal}
@@ -103,7 +104,7 @@ class PipelineForm extends React.Component {
                   >
                     <a
                       className="fa fa-question-circle-o m-t-sm text-muted"
-                      href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                      href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
                       onClick={openExternal}
                     >
                     </a>
@@ -137,25 +138,23 @@ class PipelineForm extends React.Component {
             </div>
           )
         })}
-
         <div className="row">
           <div className="col-sm-12 text-center m-t">
-            <spam
+            <a
               href="#"
-              className="btn-Metask m-t m-b fa fa-plus-circle"
+              className="btn-Metask m-t m-b-sm"
               onClick={(e) => {
                 e.preventDefault()
                 this.props.onAddTask()
               }}
             >
-            </spam>
-            <small style={{ marginLeft: '5px' }}>
-            Add Task
-            </small>
+              <i className="fa fa-plus-circle" />
+              <br />
+              <small>Add Task</small>
+            </a>
 
           </div>
         </div>
-
         <hr />
       </div>
     )

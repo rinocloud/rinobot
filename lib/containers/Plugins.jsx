@@ -92,7 +92,7 @@ class Plugins extends React.Component {
 
     return (
       <div className="panel panel-default plugins">
-        <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+        <div className="panel-heading">
           <h6 className="block-title">
           Plugins{'  '}
           </h6>

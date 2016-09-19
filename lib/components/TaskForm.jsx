@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
-const { shell } = require('electron')
+import { Popover, OverlayTrigger, Alert } from 'react-bootstrap'
+import { shell } from 'electron'
 
 import Select from 'react-select-plus'
 
@@ -95,38 +95,43 @@ class TaskForm extends React.Component {
       if (item) this.props.onChangeName(item.value)
       else this.props.onChangeName(null)
     }
-
-    const CommandUpload = (
-      <Popover id="popover-trigger-hover-focus">
-        <small>
-          These are actions that will happen when files appear in the folder.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
-
+   //
+  //   const commandUpload = (
+  //     <Popover
+  //       id="popover-trigger-hover-focus"
+  //     >
+  //       <small>
+  //         Upload lskfnaps asdalsdkjpa aspfkasf
+  //       </small>
+  //     </Popover>
+  //   )
+   //
+  //   const openExternal = (e) => {
+  //     e.preventDefault()
+  //     shell.openExternal(e.target.href)
+  //  }
+  //   const alertInstance = (
+  //     <Alert style={{ backgroundColor:'#eee' , height: '10px', width: '100%', marginBottom: '' }}>
+  //       <strong>Copy</strong> the files to a slected folder.
+  //     </Alert>
+  //   )
     return (
       <div className="row m-t">
-      {name === 'upload' &&
-        <OverlayTrigger
-          trigger={['hover']}
-          placement="bottom"
-          overlay={CommandUpload}
-        >
-          <a
-            className="fa fa-question-circle-o text-muted m-r"
-            style={{ marginRight: '100px' }}
-            href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
-            onClick={openExternal}
-          >
-          </a>
-        </OverlayTrigger>
-      }
         <div className="col-xs-12">
+        {/*{name === 'upload' &&
+          <OverlayTrigger
+            trigger={['hover']}
+            placement="bottom"
+            overlay={commandUpload}
+          >
+            <a
+              className="fa fa-question-circle-o text-muted position-question"
+              href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
+              onClick={openExternal}
+            >
+            </a>
+          </OverlayTrigger>
+      }*/}
           <div className="row-centered">
             <div
               className={
@@ -200,7 +205,6 @@ class TaskForm extends React.Component {
               </div>
             </div>
           }
-
           {['python', 'Rscript', 'matlab'].includes(name) &&
             <div className="col-xs-4">
               <a
@@ -250,17 +254,22 @@ class TaskForm extends React.Component {
           }
         </div>
         <div className="col-xs-1 col-xs-offset-11">
-        <a
-          className=" position-x-task"
-          href="#"
-          onClick={(e) => {
-            e.preventDefault()
-            this.props.onRemove()
-          }}
-        >
-          <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
-        </a>
+          <a
+            className="position-x-task"
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              this.props.onRemove()
+            }}
+          >
+            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
+          </a>
         </div>
+        {/*{['copy', 'move'].includes(name) &&
+          <div className="m-t col-xs-7 col-xs-offset-3 text-muted">
+          {alertInstance}
+          </div>
+        }*/}
       </div>
     )
   }

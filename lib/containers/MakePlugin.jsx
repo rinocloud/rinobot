@@ -12,7 +12,7 @@ class MakePlugin extends React.Component {
     const { dispatch, plugins } = this.props
     return (
       <div className="panel panel-default plugins">
-        <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+        <div className="panel-heading">
           Make a plugin
         </div>
 

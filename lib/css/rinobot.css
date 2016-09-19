@@ -192,16 +192,19 @@ body {
  background-color: #ffffff;
 }
 .btn-Metask {
-  border-color: #238eaf;
   background-color: #fff;
-  color: #238eaf;
-  font-size: 3em;
+  color: #999;
+  font-size: 1.2em;
 }
-.btn-Metask:hover {
-  border-color: #238eaf;
-  background-color:#fff;
-  color:  #29aad1;
-  font-size: 3em;
+
+.btn-Metask i{
+  font-size: 1.5em;
+}
+
+.btn-Metask:hover,
+.btn-Metask:focus,
+.btn-Metask:visited {
+  color:  #7C87A8;
 }
 
 .btn-start {
@@ -231,19 +234,23 @@ body {
   position: absolute;
   right: 90px;
   font-size: 1.2em;
-
 }
 
 .position-x-task{
   position: absolute;;
   right: 90px;
   bottom: 10px;
-
 }
 
 .position-x-meta{
   position: absolute;
   right: 72px;
+}
+
+.position-question{
+  position: absolute;
+  left: 180px;
+
 }
 
 .config .form-control {
