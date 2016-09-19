@@ -45,6 +45,9 @@ class Log extends React.Component {
 
     const { extraOpen } = this.state
     const hasStdout = stdout.length > 0
+
+    if (pt.basename(filepath).startsWith('.')) return null
+
     return (
       <div className="row log">
         <div className="col-sm-12">

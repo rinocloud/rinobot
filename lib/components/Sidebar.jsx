@@ -27,11 +27,6 @@ class Sidebar extends React.Component {
       watcher
     } = this.props
 
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
-
     const onClickLogout = (e) => {
       e.preventDefault()
       this.props.logout()
@@ -53,7 +48,7 @@ class Sidebar extends React.Component {
       <div style={{ height: '99%' }}>
         <div className="wrapper">
           <h6 className="m-l">
-            <strong>My Rinobot</strong>
+            <strong>Rinobot</strong>
           </h6>
           <ul className="list-group">
             <li className="list-group-item list-group-item-heading">
@@ -105,18 +100,6 @@ class Sidebar extends React.Component {
               <span>Install</span>
             </Link>
 
-            <Link
-              to="/make"
-              className={
-                pathname === '/make' ?
-                  'list-group-item active' :
-                  'list-group-item'
-              }
-            >
-              <i className="fa fa-magic fa"></i>{'  '}
-              <span>Create</span>
-            </Link>
-
             <li className="list-group-item list-group-item-heading m-t">
               <h6><strong>User</strong></h6>
             </li>
@@ -145,11 +128,14 @@ class Sidebar extends React.Component {
 
             <a
               className="list-group-item"
-              href={`https://${auth.project}.rinocloud.com/app/`}
-              onClick={openExternal}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.openExternal(`https://${auth.project}.rinocloud.com/app/`)
+              }}
             >
               <i className="fa fa-external-link fa-small"></i>{'  '}
-              <span>Go to rinocloud</span>
+              <span>My rinocloud</span>
             </a>
 
             <a

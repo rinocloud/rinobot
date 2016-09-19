@@ -13,6 +13,8 @@ class PipelineForm extends React.Component {
     onChangeMatch: PropTypes.func.isRequired,
     onChangeTaskName: PropTypes.func.isRequired,
     onChangeTaskArgs: PropTypes.func.isRequired,
+    onChangeTaskKeep: PropTypes.func.isRequired,
+    onChangeIncomingOnly: PropTypes.func.isRequired,
     onAddTask: PropTypes.func.isRequired,
     onRemoveTask: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
@@ -51,15 +53,15 @@ class PipelineForm extends React.Component {
 
     return (
       <div className="row">
-        <div className="row row-centered m-t m-b">
+        <div className="row row-centered m-b">
           <div className="col-xs-4 col-centered">
             <OverlayTrigger
               trigger={['hover']}
-              placement="right"
+              placement="bottom"
               overlay={fileOverlay}
             >
               <a
-                style={{ top: '19px' }}
+                style={{ top: '25px', left: '-3px' }}
                 className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
                 href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
                 onClick={openExternal}
@@ -76,40 +78,54 @@ class PipelineForm extends React.Component {
               }}
             />
           </div>
-
           <a
-            className="position-x-file"
+            className="pipeline-position-x-file"
             href="#"
             onClick={(e) => {
               e.preventDefault()
               this.props.onRemove()
             }}
           >
-            <i className="fa fa-lg fa-remove btn-red-x m-t"></i>
+            <i className="fa fa-lg fa-remove btn-red-x"></i>
           </a>
         </div>
+        <div className="row">
+          <div className="config-incoming-checkbox">
+            only operate on incoming files{'  '}
+            <input
+              key={`incoming_only${pipeline.incoming_only.toString()}`}
+              type="checkbox"
+              onClick={(e) => {
+                e.preventDefault()
+                this.props.onChangeIncomingOnly(e.target.checked)
+              }}
+              defaultChecked={pipeline.incoming_only}
+            />
+          </div>
+        </div>
+
+        <br />
+
         {pipeline.tasks.length !== 0 &&
-          <div className="row">
+          <div className="row row-centered">
             <div className="col-sm-12 text-center">
               <h6
                 className="block-title"
                 style={{ color: '#999' }}
               >
                 Setup a task {'  '}
-                <span>
-                  <OverlayTrigger
-                    trigger={['hover']}
-                    placement="bottom"
-                    overlay={TaskOverlay}
+                <OverlayTrigger
+                  trigger={['hover']}
+                  placement="bottom"
+                  overlay={TaskOverlay}
+                >
+                  <a
+                    className="fa fa-question-circle-o m-t-sm text-muted"
+                    href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
+                    onClick={openExternal}
                   >
-                    <a
-                      className="fa fa-question-circle-o m-t-sm text-muted"
-                      href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                      onClick={openExternal}
-                    >
-                    </a>
-                  </OverlayTrigger>
-                </span>
+                  </a>
+                </OverlayTrigger>
               </h6>
             </div>
           </div>
@@ -117,16 +133,18 @@ class PipelineForm extends React.Component {
 
         {_.map(pipeline.tasks, (task, index) => {
           return (
-            <div>
+            <div key={`task-${index}`}>
               <TaskForm
-                key={`task-${index}`}
                 registry={registry}
                 packagesConfig={packagesConfig}
                 name={task.name}
                 args={task.args}
-                onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
-                onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
+                keep={task.keep}
+                onChangeName={name => { this.props.onChangeTaskName(index, name) }}
+                onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
+                onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
                 onRemove={() => { this.props.onRemoveTask(index) }}
+
               />
               <div className="row">
                 <div className="col-sm-12 text-center m-t">
@@ -139,18 +157,17 @@ class PipelineForm extends React.Component {
           )
         })}
         <div className="row">
-          <div className="col-sm-12 text-center m-t">
+          <div className="col-sm-12 m-t-sm text-center">
             <a
               href="#"
-              className="btn-Metask m-t m-b-sm"
+              className="btn-add-task"
               onClick={(e) => {
                 e.preventDefault()
                 this.props.onAddTask()
               }}
             >
-              <i className="fa fa-plus-circle" />
-              <br />
-              <small>Add Task</small>
+              <i className="fa fa-plus m-r-sm" />
+              <span>Add Task</span>
             </a>
 
           </div>

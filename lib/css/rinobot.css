@@ -16,7 +16,7 @@ body {
 }
 
 .main-container .container-fluid{
-  margin-left: 160px;
+  margin-left: 180px;
 }
 
 .wrapper {
@@ -99,7 +99,7 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 160px;
+  width: 180px;
   background-color: #7C87A8;
   padding-top: 40px;
 }
@@ -175,11 +175,6 @@ body {
   border: 1px solid #7E86A0;
 }
 
-.config .form-control {
-  border: 1px solid #eeeeee;
-  color: #999;
-}
-
 .btn-red:hover {
  color: #fd0042 ;
 }
@@ -191,21 +186,68 @@ body {
  color: #eee;
  background-color: #ffffff;
 }
-.btn-Metask {
+
+
+.btn-add-folder {
+  background-color: #7C87A8;
+  color: white;
+  font-size: 1.4em;
+  border: 1px solid #7C87A8;
+  padding: 10px;
+}
+
+.btn-add-folder span{
+  margin-left: 10px;
+}
+.btn-add-folder:hover,
+.btn-add-folder:focus,
+.btn-add-folder:visited {
+  color:  white;
+}
+
+
+.btn-add-task {
+  background-color: #fff;
+  color: #999;
+  font-size: 1em;
+}
+.btn-add-task i{
+  font-size: 1.2em;
+}
+.btn-add-task:hover,
+.btn-add-task:focus,
+.btn-add-task:visited {
+  color:  #7C87A8;
+}
+
+.btn-add-pipeline {
   background-color: #fff;
   color: #999;
   font-size: 1.2em;
 }
-
-.btn-Metask i{
-  font-size: 1.5em;
+.btn-add-pipeline i{
+  font-size: 1.4em;
 }
-
-.btn-Metask:hover,
-.btn-Metask:focus,
-.btn-Metask:visited {
+.btn-add-pipeline:hover,
+.btn-add-pipeline:focus,
+.btn-add-pipeline:visited {
   color:  #7C87A8;
 }
+
+.btn-add-metadata {
+  background-color: #fff;
+  color: #999;
+  font-size: 1em;
+}
+.btn-add-metadata i{
+  font-size: 1.2em;
+}
+.btn-add-metadata:hover,
+.btn-add-metadata:focus,
+.btn-add-metadata:visited {
+  color:  #7C87A8;
+}
+
 
 .btn-start {
   border-color: #49925d;
@@ -230,16 +272,18 @@ body {
     right:-4px;
 }
 
-.position-x-file{
-  position: absolute;
-  right: 90px;
-  font-size: 1.2em;
+.pipeline-position-x-file {
+    font-size: 1.2em;
+    float: right;
+    position: relative;
+    top: 20px;
+    right: 40px;
 }
 
 .position-x-task{
-  position: absolute;;
-  right: 90px;
-  bottom: 10px;
+  position: relative;
+  top: -28px;
+  left: 11px;
 }
 
 .position-x-meta{
@@ -253,9 +297,17 @@ body {
 
 }
 
-.config .form-control {
+.config .form-control, .config .input-group-addon {
   border: 1px solid #eeeeee;
   color: #999;
+  height: 36px;
+}
+
+.config .input-group-addon {
+  border: 1px solid #eeeeee;
+  color: #999;
+  height: 36px;
+  text-decoration: underline;
 }
 
 .config .form-control:focus {
@@ -273,9 +325,33 @@ body {
   color: #333;
 }
 
+.config .input-group-addon{
+  border-right: none;
+}
+
+.config .input-group-addon a{
+  color: #888;
+}
+
+
 .config a:hover, .config a:focus, .config a:visited, .config a:active{
   text-decoration: none;
 }
+
+.config .config-checkbox{
+  margin: 0;
+  height: 36px;
+  padding-top: 8px;
+  color: #ddd;
+}
+
+.config .config-incoming-checkbox{
+  margin: 0;
+  color: #ddd;
+  text-align: center;
+  font-size: 0.9em;
+}
+
 
 span.block-title{
   color: #bbbbbb;

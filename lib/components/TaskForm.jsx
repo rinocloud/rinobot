@@ -3,7 +3,6 @@ import _ from 'lodash'
 import pt from 'path'
 import { Popover, OverlayTrigger, Alert } from 'react-bootstrap'
 import { shell } from 'electron'
-
 import Select from 'react-select-plus'
 
 class TaskForm extends React.Component {
@@ -18,12 +17,14 @@ class TaskForm extends React.Component {
     ]),
     onChangeName: PropTypes.func.isRequired,
     onChangeArgs: PropTypes.func.isRequired,
+    onChangeKeep: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
   }
 
 
   render() {
-    const { name, args, registry, packagesConfig } = this.props //eslint-disable-line
+    const { name, args, keep, registry, packagesConfig } = this.props //eslint-disable-line
+
 
     let installDeps = []
     if (packagesConfig && packagesConfig.dependencies) {
@@ -61,7 +62,7 @@ class TaskForm extends React.Component {
         label: (
           <span>
           Plugins:
-            <small className="text-muted m-l">Installed plugins appear here</small>
+          <small className="text-muted m-l">Installed plugins appear here</small>
           </span>
         ),
         options: installDeps
@@ -95,49 +96,12 @@ class TaskForm extends React.Component {
       if (item) this.props.onChangeName(item.value)
       else this.props.onChangeName(null)
     }
-   //
-  //   const commandUpload = (
-  //     <Popover
-  //       id="popover-trigger-hover-focus"
-  //     >
-  //       <small>
-  //         Upload lskfnaps asdalsdkjpa aspfkasf
-  //       </small>
-  //     </Popover>
-  //   )
-   //
-  //   const openExternal = (e) => {
-  //     e.preventDefault()
-  //     shell.openExternal(e.target.href)
-  //  }
-  //   const alertInstance = (
-  //     <Alert style={{ backgroundColor:'#eee' , height: '10px', width: '100%', marginBottom: '' }}>
-  //       <strong>Copy</strong> the files to a slected folder.
-  //     </Alert>
-  //   )
+
     return (
-      <div className="row m-t">
-        <div className="col-xs-12">
-        {/*{name === 'upload' &&
-          <OverlayTrigger
-            trigger={['hover']}
-            placement="bottom"
-            overlay={commandUpload}
-          >
-            <a
-              className="fa fa-question-circle-o text-muted position-question"
-              href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-              onClick={openExternal}
-            >
-            </a>
-          </OverlayTrigger>
-      }*/}
+      <div className="row-centered m-t">
+        <div className="col-xs-10 col-centered">
           <div className="row-centered">
-            <div
-              className={
-                selectedValue ? 'col-xs-4 col-xs-offset-2' : 'col-xs-4 col-centered'
-              }
-            >
+            <div className={selectedValue ? 'col-xs-4 col-xs-offset-2' : 'col-xs-4 col-centered'}>
               <div style={{ textAlign: 'left' }}>
                 <Select
                   type="text"
@@ -148,114 +112,130 @@ class TaskForm extends React.Component {
                 />
               </div>
             </div>
-          </div>
-          {isPluginCommand &&
-            <div className="col-xs-4" >
-              <input
-                style={{ borderRadius: '4px' }}
-                type="text"
-                placeholder="extra parameters for plugin"
-                value={args || ''}
-                className="form-control input-sm"
-                onChange={changeArgs}
-              />
-            </div>
-          }
-
-          {name === 'upload' &&
-            <div className="col-xs-4">
-              <input
-                style={{ borderRadius: '4px' }}
-                placeholder="target folder in rinocloud"
-                type="text"
-                value={args || ''}
-                className="form-control input-sm"
-                onChange={changeArgs}
-              />
-            </div>
-          }
-
-          {['copy', 'move'].includes(name) &&
-            <div className="col-xs-5">
+            {selectedValue &&
               <div className="col-xs-4">
-                <a
-                  style={{ borderRadius: '4px' }}
-                  href="#"
-                  className="btn btn-default btn-sm"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
-                    if (paths) {
-                      changeArgs(e, paths[0])
-                    }
-                  }}
-                >
-                  Select folder
-                </a>
-              </div>
-              <div className="col-xs-6">
-                <input
-                  style={{ borderRadius: '4px' }}
-                  type="text"
-                  value={args || ''}
-                  className="form-control input-sm"
-                  onChange={changeArgs}
-                  placeholder="or type a location"
-                />
-              </div>
-            </div>
-          }
-          {['python', 'Rscript', 'matlab'].includes(name) &&
-            <div className="col-xs-4">
-              <a
-                style={{ borderRadius: '4px' }}
-                href="#"
-                className="btn btn-default btn-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
-                  if (paths) {
-                    changeArgs('args')(e, paths[0])
-                  }
-                }}
-              >
-                Select {name === 'Rscript' ? 'R' : name} file
-                {args ? ` (${pt.basename(args)})` : ''}
-              </a>
-            </div>
-          }
+                {isPluginCommand &&
+                  <input
+                    style={{ borderRadius: '4px' }}
+                    type="text"
+                    placeholder="extra parameters for plugin"
+                    value={args || ''}
+                    className="form-control input-sm"
+                    onChange={changeArgs}
+                  />
+                }
 
-          {isCustomCommand &&
-            <div>
+                {name === 'upload' &&
+                  <input
+                    style={{ borderRadius: '4px' }}
+                    placeholder="target folder in rinocloud"
+                    type="text"
+                    value={args || ''}
+                    className="form-control input-sm"
+                    onChange={changeArgs}
+                  />
+                }
+
+                {['copy', 'move'].includes(name) &&
+                  <div className="form-group">
+                    <div className="input-group">
+                      <span
+                        className="input-group-addon"
+                        style={{ backgroundColor: 'white' }}
+                      >
+                        <a
+
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                            if (paths) {
+                              changeArgs(e, paths[0])
+                            }
+                          }}
+                        >
+                          Select folder
+                        </a>
+                      </span>
+                      <input
+                        type="text"
+                        value={args || ''}
+                        className="form-control"
+                        onChange={changeArgs}
+                        placeholder="or type a location"
+                      />
+                    </div>
+                  </div>
+                }
+
+                {['python', 'Rscript', 'matlab'].includes(name) &&
+                  <a
+                    style={{ borderRadius: '4px' }}
+                    href="#"
+                    className="btn btn-default btn-sm"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const paths = dialog.showOpenDialog({ properties: ['openFile'] }) // eslint-disable-line
+                      if (paths) {
+                        changeArgs('args')(e, paths[0])
+                      }
+                    }}
+                  >
+                    Select {name === 'Rscript' ? 'R' : name} file
+                    {args ? ` (${pt.basename(args)})` : ''}
+                  </a>
+                }
+
+                {isCustomCommand &&
+                  <div>
+                    <div className="col-xs-6">
+                      <input
+                        style={{ borderRadius: '4px' }}
+                        type="text"
+                        value={name || ''}
+                        placeholder="Command to run"
+                        className="form-control input-sm"
+                        onChange={(e) => {
+                          e.preventDefault()
+                          changeName({ value: e.target.value })
+                        }}
+                      />
+                    </div>
+                    <div className="col-xs-6">
+                      <input
+                        style={{ borderRadius: '4px' }}
+                        type="text"
+                        value={args || ''}
+                        placeholder="Command arguments"
+                        className="form-control input-sm"
+                        onChange={changeArgs}
+                      />
+                    </div>
+                  </div>
+                }
+              </div>
+
+
+            }
+
+            {name !== null &&
               <div className="col-xs-2">
-                <input
-                  style={{ borderRadius: '4px' }}
-                  type="text"
-                  value={name || ''}
-                  placeholder="Command to run"
-                  className="form-control input-sm"
-                  onChange={(e) => {
-                    e.preventDefault()
-                    changeName({ value: e.target.value })
-                  }}
-                />
+                <div className="text-muted config-checkbox">
+                  keep file{'  '}
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      this.props.onChangeKeep(e.target.checked)
+                    }}
+                    defaultChecked={keep}
+                  />
+                </div>
               </div>
-              <div className="col-xs-3">
-                <input
-                  style={{ borderRadius: '4px' }}
-                  type="text"
-                  value={args || ''}
-                  placeholder="Command arguments"
-                  className="form-control input-sm"
-                  onChange={changeArgs}
-                />
-              </div>
-            </div>
-          }
-        </div>
-        <div className="col-xs-1 col-xs-offset-11">
+            }
+          </div>
+
           <a
-            className="position-x-task"
+            className="position-x-task pull-right"
             href="#"
             onClick={(e) => {
               e.preventDefault()
@@ -264,12 +244,9 @@ class TaskForm extends React.Component {
           >
             <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
           </a>
+
         </div>
-        {/*{['copy', 'move'].includes(name) &&
-          <div className="m-t col-xs-7 col-xs-offset-3 text-muted">
-          {alertInstance}
-          </div>
-        }*/}
+
       </div>
     )
   }

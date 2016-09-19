@@ -15,8 +15,12 @@ import runUpload from './runUpload'
 import runCopy from './runCopy'
 import runMove from './runMove'
 import hashFile from './hashFile'
-import mergeHistory from './mergeHistory'
-import readHistory from './readHistory'
+import {
+  addCreated,
+  mergeHistory,
+  readHistory
+} from './history'
+
 
 export class Task {
   /*
@@ -61,6 +65,7 @@ export class Task {
     this.match = opts.match
     this.args = opts.args || ''
     this.apiToken = opts.apiToken || null
+    this.keep = opts.keep
 
     this.readyFunc = () => {}
     this.ignored = opts.logOnly || false
@@ -74,7 +79,7 @@ export class Task {
         we will add this file to the history so that this
         task command wont get run on it again.
     */
-    this.outputPrefix = `.${shortid.generate().substring(0, 7)}`
+    this.outputPrefix = `.${shortid.generate().substring(0, 7)}.rino.`
     this.outputFilename = null
 
     series([
@@ -220,31 +225,53 @@ export class Task {
     const hiddenOpath = pt.join(pt.dirname(this.filepath),
       this.outputFilename)
 
-    const Opath = pt.join(
-      pt.dirname(this.filepath), this.outputFilename.substring(8))
+    const removePrefix = (name) => {
+      if (name.substring(8, 14) === '.rino.') {
+        return removePrefix(name.substring(14))
+      }
 
-    this.createHash(hiddenOpath, Opath, this.command,
-      (err, etag) => {
-        if (err) return this.onError(err)
-        const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
-        const lastRun = moment().toISOString()
-        mergeHistory(historyFilePath, Opath,
-          {
-            lastRun,
-            etag,
-            completed: [this.taskString()],
-            current: null
-          },
-        (er) => {
-          if (er) return this.onError(er)
-          fs.copy(hiddenOpath, Opath, (er) => { // eslint-disable-line
+      return name
+    }
+
+    let Opath = hiddenOpath
+    if (this.keep) {
+      Opath = pt.join(pt.dirname(this.filepath), removePrefix(this.outputFilename))
+    }
+
+    const createdFilePath = pt.join(this.baseDir, '.rino', 'created.json')
+    addCreated(createdFilePath, Opath, (e, created) => {
+      this.createdList = created
+
+      if (e) return this.onError(e)
+      this.createHash(hiddenOpath, Opath, this.command,
+        (err, etag) => {
+          if (err) return this.onError(err)
+          const historyFilePath = pt.join(this.baseDir, '.rino', 'history.json')
+          const lastRun = moment().toISOString()
+          mergeHistory(historyFilePath, Opath,
+            {
+              lastRun,
+              etag,
+              completed: [this.taskString()],
+              current: null
+            },
+          (er) => {
             if (er) return this.onError(er)
-            this.outputFilename = pt.basename(Opath)
-            this.onComplete()
-            setTimeout(() => fs.unlink(hiddenOpath), 500)
+
+            if (this.keep) {
+              fs.copy(hiddenOpath, Opath, (er) => { // eslint-disable-line
+                if (er) return this.onError(er)
+                this.outputFilename = pt.basename(Opath)
+                this.onComplete()
+                setTimeout(() => fs.unlink(hiddenOpath), 500)
+              })
+            } else {
+              this.outputFilename = pt.basename(hiddenOpath)
+              this.onComplete()
+            }
           })
         })
-      })
+    })
   }
 
   run() {

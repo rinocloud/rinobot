@@ -80,8 +80,7 @@ export default (opts) => {
         if (child.hasOwnProperty('error')) return
 
         if (code !== 0) {
-          return onError(
-            new Error(errLog))
+          return onError(new Error(errLog))
         } else { // eslint-disable-line
           return onComplete()
         }

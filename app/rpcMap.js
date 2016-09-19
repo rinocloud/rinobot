@@ -37,5 +37,4 @@ export default (rpc, forkRpc, sentry) => {
     rpc.emit('unexpected error', error)
     sentry.captureException(new JSONError(error))
   })
-
 }

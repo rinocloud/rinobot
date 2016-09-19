@@ -23,7 +23,8 @@ const MetadataOverlay = (
     id="popover-trigger-hover-focus"
   >
     <small>
-      You can add information to your data adding metadata, they can also be referenced in task arguments.
+      You can add information to your data adding metadata, they can also be
+      referenced in task arguments.
       Click to learn more.
     </small>
   </Popover>
@@ -47,9 +48,7 @@ const openExternal = (e) => {
   shell.openExternal(e.target.href)
 }
 
-
 class WatchDir extends React.Component {
-
   static propTypes = {
     dir: PropTypes.object.isRequired,
     onStartClick: PropTypes.func.isRequired,
@@ -59,8 +58,7 @@ class WatchDir extends React.Component {
     onSaveConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
-    packagesConfig: PropTypes.object,
-    isPipeline: PropTypes.bool,
+    packagesConfig: PropTypes.object
   }
 
   constructor(props) {
@@ -83,12 +81,11 @@ class WatchDir extends React.Component {
     this.state = {
       formData: props.dir.config,
       isSaved: true,
-      isPipeline: true,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ formData: nextProps.dir.config, isSaved: true, })
+    this.setState({ formData: nextProps.dir.config, isSaved: true })
   }
 
   onSaveConfig() {
@@ -99,11 +96,11 @@ class WatchDir extends React.Component {
   addPipeline() {
     this.setState(update(this.state, {
       isSaved: { $set: false },
-      isPipeline: { $set: false },
       formData: {
         pipelines: {
           $push: [{
             filematch: null,
+            incoming_only: true,
             tasks: []
           }]
         }
@@ -131,7 +128,8 @@ class WatchDir extends React.Component {
             tasks: {
               $push: [{
                 name: null,
-                args: null
+                args: null,
+                keep: true
               }]
             }
           }
@@ -196,6 +194,36 @@ class WatchDir extends React.Component {
                 args: { $set: args }
               }
             }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineTaskKeep(index, taskIndex, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              [taskIndex]: {
+                keep: { $set: args }
+              }
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineIncomingOnly(index, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            incoming_only: { $set: args }
           }
         }
       }
@@ -343,30 +371,34 @@ class WatchDir extends React.Component {
               </div>
             </div>
             {formData.pipelines.map((o, index) =>
-              <PipelineForm
-                key={`pipeline-${index}`}
-                pipeline={o}
-                packagesConfig={packagesConfig}
-                registry={registry}
-
-                onChangeMatch={(match) =>
-                  this.changePipelineMatch(index, match)}
-                onChangeTaskName={(taskIndex, name) =>
-                  this.changePipelineTaskName(index, taskIndex, name)}
-                onChangeTaskArgs={(taskIndex, args) =>
-                  this.changePipelineTaskArgs(index, taskIndex, args)}
-                onAddTask={() =>
-                  this.addPipelineTask(index)}
-                onRemoveTask={(taskIndex) =>
-                  this.removePipelineTask(index, taskIndex)}
-                onRemove={() => this.removePipeline(index)}
-              />
+              <div className="m-t" key={`pipeline-${index}`}>
+                <PipelineForm
+                  pipeline={o}
+                  packagesConfig={packagesConfig}
+                  registry={registry}
+                  onChangeMatch={(match) =>
+                    this.changePipelineMatch(index, match)}
+                  onChangeTaskName={(taskIndex, name) =>
+                    this.changePipelineTaskName(index, taskIndex, name)}
+                  onChangeTaskArgs={(taskIndex, args) =>
+                    this.changePipelineTaskArgs(index, taskIndex, args)}
+                  onChangeTaskKeep={(taskIndex, args) =>
+                    this.changePipelineTaskKeep(index, taskIndex, args)}
+                  onChangeIncomingOnly={args =>
+                    this.changePipelineIncomingOnly(index, args)}
+                  onAddTask={() =>
+                    this.addPipelineTask(index)}
+                  onRemoveTask={(taskIndex) =>
+                    this.removePipelineTask(index, taskIndex)}
+                  onRemove={() => this.removePipeline(index)}
+                />
+              </div>
             )}
             <div className="row">
               <div className="col-sm-12 text-center m-t">
                 <a
                   href="#"
-                  className="btn-Metask m-t m-b-sm"
+                  className="btn-add-pipeline"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
@@ -374,7 +406,14 @@ class WatchDir extends React.Component {
                 >
                   <i className="fa fa-plus-circle" />
                   <br />
-                  <small>Add Pipeline</small>
+                  <small>
+                    {formData.pipelines.length > 0 &&
+                      'Add another Pipeline'
+                    }
+                    {formData.pipelines.length === 0 &&
+                      'Add Pipeline'
+                    }
+                  </small>
                 </a>
               </div>
             </div>
@@ -424,15 +463,15 @@ class WatchDir extends React.Component {
                 <div className="col-sm-12 text-center m-t">
                   <a
                     href="#"
-                    className="btn-Metask m-t m-b-sm"
+                    className="btn-add-metadata"
                     onClick={(e) => {
                       e.preventDefault()
                       this.addMetadata()
                     }}
                   >
-                    <i className="fa fa-plus-circle m-t" />
+                    <i className="fa fa-plus m-t" />
                     <br />
-                    <small className="m-r-sm">Add Metadata</small>
+                    <small className="m-r-sm">Add extra Metadata</small>
                   </a>
                 </div>
               </div>
@@ -441,11 +480,13 @@ class WatchDir extends React.Component {
           </div>
         </div> {/* Panel finished */}
 
-        {formData.pipelines.length !== 0 && !isSaved &&
-          <div className="row row-centered m-t-lg">
+
+        <div className="row row-centered m-t-lg">
+
+          {!isSaved &&
             <a
               href="#"
-              className="btn btn-default"
+              className="btn btn-default m-r-sm"
               onClick={(e) => {
                 e.preventDefault()
                 this.onSaveConfig()
@@ -454,27 +495,25 @@ class WatchDir extends React.Component {
             >
               <span><i className="fa fa-save"></i> Save</span>
             </a>
-          </div>
-        }
+          }
 
-        {isSaved &&
-          <div className="row row-centered m-t-lg">
+          {isSaved &&
             <a
               href="#"
-              className="btn btn-sm btn-default"
+              className="btn btn-default m-r-sm"
               disabled
             >
               <span><i className="fa fa-check"></i> Saved</span>
             </a>
-          </div>
-        }
-        <div className="row row-centered">
+          }
+
           {dir.isStarted && !isStarting &&
             <a
               href="#"
-              className=" btn btn-danger m-t"
+              className=" btn btn-danger"
               onClick={onStopClick}
             >
+              <i className="m-r-sm fa fa-stop-circle-o" />
               Stop
             </a>
           }
@@ -482,25 +521,28 @@ class WatchDir extends React.Component {
           {dir.isStarted && isStarting &&
             <a
               href="#"
-              className="btn btn-default m-t"
+              className="btn btn-default"
               onClick={onStopClick}
               disabled
             >
-              Starting <i className="m-l-sm fa fa-spinner fa-spin"></i>
+              <i className="m-r-sm fa fa-spinner fa-spin"></i>
+              Starting
             </a>
           }
 
           {!dir.isStarted &&
             <a
               href="#"
-              className="btn btn-start m-t"
+              className="btn btn-start"
               style={{ color: '#fff' }}
               onClick={onStartClick}
               data-dismiss="alert"
             >
               Start
+              <i className="m-l-sm fa fa-arrow-right" />
             </a>
           }
+
         </div>
 
         {dir.isStarted && !isStarting &&
