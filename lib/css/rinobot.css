@@ -16,7 +16,7 @@ body {
 }
 
 .main-container .container-fluid{
-  margin-left: 160px;
+  margin-left: 180px;
 }
 
 .wrapper {
@@ -99,7 +99,7 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 160px;
+  width: 180px;
   background-color: #7C87A8;
   padding-top: 40px;
 }

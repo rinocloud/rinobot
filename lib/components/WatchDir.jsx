@@ -73,6 +73,7 @@ class WatchDir extends React.Component {
         pipelines: {
           $push: [{
             filematch: null,
+            incoming_only: true,
             tasks: []
           }]
         }
@@ -100,7 +101,8 @@ class WatchDir extends React.Component {
             tasks: {
               $push: [{
                 name: null,
-                args: null
+                args: null,
+                keep: true
               }]
             }
           }
@@ -165,6 +167,36 @@ class WatchDir extends React.Component {
                 args: { $set: args }
               }
             }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineTaskKeep(index, taskIndex, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              [taskIndex]: {
+                keep: { $set: args }
+              }
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineIncomingOnly(index, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            incoming_only: { $set: args }
           }
         }
       }
@@ -318,6 +350,10 @@ class WatchDir extends React.Component {
                     this.changePipelineTaskName(index, taskIndex, name)}
                   onChangeTaskArgs={(taskIndex, args) =>
                     this.changePipelineTaskArgs(index, taskIndex, args)}
+                  onChangeTaskKeep={(taskIndex, args) =>
+                    this.changePipelineTaskKeep(index, taskIndex, args)}
+                  onChangeIncomingOnly={args =>
+                    this.changePipelineIncomingOnly(index, args)}
                   onAddTask={() =>
                     this.addPipelineTask(index)}
                   onRemoveTask={(taskIndex) =>
@@ -335,7 +371,7 @@ class WatchDir extends React.Component {
                   this.addPipeline()
                 }}
               >
-                Add pipeline
+                + pipeline
               </a>
             </div>
 

@@ -1,12 +1,12 @@
 import { app, BrowserWindow } from 'electron'
 import { createSentry } from './analytics'
-import createBot, { checkPythonVersion } from './bot/'
+import createBot, { checkPythonVersion, updateRinobotPlugin } from './bot/'
 import autoUpdater from './auto-updater'
 import isDev from 'electron-is-dev'
 import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
-import rpcMap from './rpcMap'
+import rpcMap, { JSONError } from './rpcMap'
 
 const isOSX = process.platform === 'darwin'
 
@@ -33,6 +33,13 @@ const createWindow = (app, sentry) => { // eslint-disable-line
     rpc.emit('rinobot version', { version: _package.version })
     checkPythonVersion((version) => {
       rpc.emit('python version', { version })
+    })
+
+    updateRinobotPlugin((error) => {
+      if (error) {
+        rpc.emit('unexpected error', error)
+        sentry.captureException(new JSONError(error))
+      }
     })
 
     if (!isDev && process.platform !== 'linux') {

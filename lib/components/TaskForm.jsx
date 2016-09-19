@@ -16,12 +16,13 @@ class TaskForm extends React.Component {
     ]),
     onChangeName: PropTypes.func.isRequired,
     onChangeArgs: PropTypes.func.isRequired,
+    onChangeKeep: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
   }
 
 
   render() {
-    const { name, args, registry, packagesConfig } = this.props //eslint-disable-line
+    const { name, args, keep, registry, packagesConfig } = this.props //eslint-disable-line
 
     let installDeps = []
     if (packagesConfig && packagesConfig.dependencies) {
@@ -106,8 +107,9 @@ class TaskForm extends React.Component {
           />
         </div>
 
-        {name === 'upload' &&
-          <div className="col-xs-3">
+        <div className="col-xs-3">
+
+          {name === 'upload' &&
             <input
               placeholder="target folder in rinocloud"
               type="text"
@@ -115,48 +117,46 @@ class TaskForm extends React.Component {
               className="form-control input-sm"
               onChange={changeArgs}
             />
-          </div>
-        }
+          }
 
-        {['copy', 'move'].includes(name) &&
-          <div className="col-xs-5">
-            <div className="col-xs-2">
-              <button
-                className="btn btn-sm btn-default"
-                style={{ border: 'none' }}
-              >
-                to
-              </button>
+          {['copy', 'move'].includes(name) &&
+            <div>
+              <div className="col-xs-2">
+                <button
+                  className="btn btn-sm btn-default"
+                  style={{ border: 'none' }}
+                >
+                  to
+                </button>
+              </div>
+              <div className="col-xs-4">
+                <a
+                  href="#"
+                  className="btn btn-default btn-sm"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
+                    if (paths) {
+                      changeArgs(e, paths[0])
+                    }
+                  }}
+                >
+                  Select folder
+                </a>
+              </div>
+              <div className="col-xs-6">
+                <input
+                  type="text"
+                  value={args || ''}
+                  className="form-control input-sm"
+                  onChange={changeArgs}
+                  placeholder="or type a location"
+                />
+              </div>
             </div>
-            <div className="col-xs-4">
-              <a
-                href="#"
-                className="btn btn-default btn-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  const paths = dialog.showOpenDialog({ properties: ['openDirectory'] }) // eslint-disable-line
-                  if (paths) {
-                    changeArgs(e, paths[0])
-                  }
-                }}
-              >
-                Select folder
-              </a>
-            </div>
-            <div className="col-xs-6">
-              <input
-                type="text"
-                value={args || ''}
-                className="form-control input-sm"
-                onChange={changeArgs}
-                placeholder="or type a location"
-              />
-            </div>
-          </div>
-        }
+          }
 
-        {['python', 'Rscript', 'matlab'].includes(name) &&
-          <div className="col-xs-4">
+          {['python', 'Rscript', 'matlab'].includes(name) &&
             <a
               href="#"
               className="btn btn-default btn-sm"
@@ -171,37 +171,35 @@ class TaskForm extends React.Component {
               Select {name === 'Rscript' ? 'R' : name} file
               {args ? ` (${pt.basename(args)})` : ''}
             </a>
-          </div>
-        }
+          }
 
-        {isCustomCommand &&
-          <div>
-            <div className="col-xs-2">
-              <input
-                type="text"
-                value={name || ''}
-                placeholder="Command to run"
-                className="form-control input-sm"
-                onChange={(e) => {
-                  e.preventDefault()
-                  changeName({ value: e.target.value })
-                }}
-              />
+          {isCustomCommand &&
+            <div>
+              <div className="col-xs-2">
+                <input
+                  type="text"
+                  value={name || ''}
+                  placeholder="Command to run"
+                  className="form-control input-sm"
+                  onChange={(e) => {
+                    e.preventDefault()
+                    changeName({ value: e.target.value })
+                  }}
+                />
+              </div>
+              <div className="col-xs-3">
+                <input
+                  type="text"
+                  value={args || ''}
+                  placeholder="Command arguments"
+                  className="form-control input-sm"
+                  onChange={changeArgs}
+                />
+              </div>
             </div>
-            <div className="col-xs-3">
-              <input
-                type="text"
-                value={args || ''}
-                placeholder="Command arguments"
-                className="form-control input-sm"
-                onChange={changeArgs}
-              />
-            </div>
-          </div>
-        }
+          }
 
-        {isPluginCommand &&
-          <div className="col-xs-5">
+          {isPluginCommand &&
             <input
               type="text"
               placeholder="extra parameters for plugin"
@@ -209,10 +207,21 @@ class TaskForm extends React.Component {
               className="form-control input-sm"
               onChange={changeArgs}
             />
-          </div>
-        }
+          }
+        </div>
 
-        <div className="col-xs-2">
+        <div className="col-xs-1">
+          keep{'  '}
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              this.props.onChangeKeep(e.target.checked)
+            }}
+            defaultChecked={keep}
+          />
+        </div>
+
+        <div className="col-xs-1">
           <a
             href="#"
             className="m-l"
@@ -221,7 +230,7 @@ class TaskForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            remove task
+            [x]
           </a>
         </div>
       </div>

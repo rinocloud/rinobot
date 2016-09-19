@@ -1,11 +1,16 @@
 import _package from './package'
 import raven from 'raven'
 import isDev from 'electron-is-dev'
+import PrettyError from 'pretty-error'
+
+const pe = new PrettyError()
 
 export const createSentry = () => {
   if (isDev) {
     return {
-      captureException: (e) => console.error(e)
+      captureException: (e) => {
+        console.log(pe.render(e))
+      }
     }
   }
 

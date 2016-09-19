@@ -12,6 +12,8 @@ class PipelineForm extends React.Component {
     onChangeMatch: PropTypes.func.isRequired,
     onChangeTaskName: PropTypes.func.isRequired,
     onChangeTaskArgs: PropTypes.func.isRequired,
+    onChangeTaskKeep: PropTypes.func.isRequired,
+    onChangeIncomingOnly: PropTypes.func.isRequired,
     onAddTask: PropTypes.func.isRequired,
     onRemoveTask: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
@@ -42,8 +44,22 @@ class PipelineForm extends React.Component {
               this.props.onRemove()
             }}
           >
-            remove pipeline
+            [x]
           </a>
+
+          <span className="m-l">
+            incoming only{'  '}
+            <input
+              key={`incoming_only${pipeline.incoming_only.toString()}`}
+              type="checkbox"
+              onClick={(e) => {
+                e.preventDefault()
+                this.props.onChangeIncomingOnly(e.target.checked)
+              }}
+              defaultChecked={pipeline.incoming_only}
+            />
+          </span>
+
         </div>
 
         {_.map(pipeline.tasks, (task, index) => {
@@ -54,8 +70,10 @@ class PipelineForm extends React.Component {
                 packagesConfig={packagesConfig}
                 name={task.name}
                 args={task.args}
-                onChangeName={(name) => { this.props.onChangeTaskName(index, name) }}
-                onChangeArgs={(args) => { this.props.onChangeTaskArgs(index, args) }}
+                keep={task.keep}
+                onChangeName={name => { this.props.onChangeTaskName(index, name) }}
+                onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
+                onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
                 onRemove={() => { this.props.onRemoveTask(index) }}
               />
               <div className="row m-l">

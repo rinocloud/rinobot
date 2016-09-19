@@ -103,18 +103,6 @@ class Sidebar extends React.Component {
               <span>Install</span>
             </Link>
 
-            <Link
-              to="/make"
-              className={
-                pathname === '/make' ?
-                  'list-group-item active' :
-                  'list-group-item'
-              }
-            >
-              <i className="fa fa-magic fa"></i>{'  '}
-              <span>Create</span>
-            </Link>
-
             <li className="list-group-item list-group-item-heading m-t">
               <strong>User</strong>
             </li>
@@ -143,11 +131,14 @@ class Sidebar extends React.Component {
 
             <a
               className="list-group-item"
-              href={`https://${auth.project}.rinocloud.com/app/`}
-              onClick={openExternal}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.openExternal(`https://${auth.project}.rinocloud.com/app/`)
+              }}
             >
               <i className="fa fa-external-link fa-small"></i>{'  '}
-              <span>Go to rinocloud</span>
+              <span>My rinocloud</span>
             </a>
 
             <a
