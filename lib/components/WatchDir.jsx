@@ -295,7 +295,6 @@ class WatchDir extends React.Component {
             >
               <i className="fa fa-external-link"></i>
             </a>
-
             <OverlayTrigger
               trigger={['hover']}
               placement="bottom"
@@ -303,7 +302,7 @@ class WatchDir extends React.Component {
             >
               <a
                 href="#"
-                className="pull-right m-r btn btn-xs btn-default btn-red"
+                className="pull-right btn btn-xs btn-default btn-red"
                 onClick={removeDotRino}
               >
                 Reset history
@@ -312,16 +311,16 @@ class WatchDir extends React.Component {
 
             <a
               href="#"
-              className="m-r pull-right btn btn-xs btn-default btn-red"
+              className="btn btn-xs btn-default btn-red pull-right"
               onClick={onRemoveDirClick}
             >
-              <span><i className="fa fa-trash"></i> Remove</span>
+              <span><i className="fa fa-trash"></i> Remove </span>
             </a>
           </div>
           <div className="panel-body config">
 
-            <div className="row">
-              <div className="col-sm-12 text-center">
+            {/* <div className="row">
+              <div className="col-sm-12">
                 <h6
                   className="block-title"
                   style={{ color: '#666' }}
@@ -341,7 +340,7 @@ class WatchDir extends React.Component {
                   </OverlayTrigger>
                 </h6>
               </div>
-            </div>
+            </div>*/}
             {formData.pipelines.map((o, index) =>
               <PipelineForm
                 key={`pipeline-${index}`}
@@ -363,28 +362,28 @@ class WatchDir extends React.Component {
               />
             )}
             <div className="row">
-              <div className="col-sm-12 text-center m-t">
+              <div className="col-sm-12">
                 <a
                   href="#"
-                  className="btn-Metask m-t m-b-sm"
+                  className="btn-Metask"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
                   }}
                 >
-                  <i className="fa fa-plus-circle" />
-                  <br />
-                  <small>Add Pipeline</small>
+                  <i className="fa fa-plus" />
+                  {'  '}
+                  <small className="text-muted">Add Pipeline</small>
                 </a>
               </div>
             </div>
 
-            {formData.metadata.length !== 0 &&
-              <div className="row m-t m-l">
-                <div className="col-sm-12 text-center">
+            {/*{formData.metadata.length !== 0 &&
+              <div className="row">
+                <div className="col-sm-12">
                   <h6
                     className="block-title"
-                    style={{ color: '#999' }}
+                    style={{ color: '#666' }}
                   >
                     Extra Metadata {'  '}
                     <span>
@@ -394,7 +393,7 @@ class WatchDir extends React.Component {
                         overlay={MetadataOverlay}
                       >
                         <a
-                          className="fa fa-question-circle-o m-t-sm text-muted"
+                          className="fa fa-question-circle-otext-muted"
                           href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
                           onClick={openExternal}
                         >
@@ -405,7 +404,7 @@ class WatchDir extends React.Component {
                 </div>
               </div>
             }
-
+*/}
             {formData.metadata.map((o, index) =>
               <MetadataForm
                 key={`metadata-${index}`}
@@ -421,18 +420,17 @@ class WatchDir extends React.Component {
 
             {formData.pipelines.length !== 0 &&
               <div className="row">
-                <div className="col-sm-12 text-center m-t">
+                <div className="col-sm-12 m-t-sm">
                   <a
                     href="#"
-                    className="btn-Metask m-t m-b-sm"
+                    className="btn-Metask"
                     onClick={(e) => {
                       e.preventDefault()
                       this.addMetadata()
                     }}
                   >
-                    <i className="fa fa-plus-circle m-t" />
-                    <br />
-                    <small className="m-r-sm">Add Metadata</small>
+                    <i className="fa fa-plus-circle" />
+                    <small>Add Metadata</small>
                   </a>
                 </div>
               </div>
@@ -442,7 +440,7 @@ class WatchDir extends React.Component {
         </div> {/* Panel finished */}
 
         {formData.pipelines.length !== 0 && !isSaved &&
-          <div className="row row-centered m-t-lg">
+          <div className="row row-centered">
             <a
               href="#"
               className="btn btn-default"
@@ -458,7 +456,7 @@ class WatchDir extends React.Component {
         }
 
         {isSaved &&
-          <div className="row row-centered m-t-lg">
+          <div className="row row-centered">
             <a
               href="#"
               className="btn btn-sm btn-default"

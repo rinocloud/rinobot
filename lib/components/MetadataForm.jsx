@@ -5,10 +5,10 @@ class MetadataForm extends React.Component {
   render() {
     const { field, value } = this.props
     return (
-      <div className="row m-t">
+      <div className="row">
         <div className="col-xs-12 m-t-sm">
-          <div className="row-centered">
-            <div className="col-xs-4 col-centered">
+          <div className="row">
+            <div className="col-xs-4">
               <input
                 style={{ borderRadius: '4px' }}
                 className="form-control"
@@ -20,7 +20,7 @@ class MetadataForm extends React.Component {
                 }}
               />
             </div>
-            <div className="col-xs-4 col-centered">
+            <div className="col-xs-4">
               <input
                 style={{ borderRadius: '4px' }}
                 className="form-control"

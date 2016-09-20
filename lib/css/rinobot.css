@@ -232,19 +232,19 @@ body {
 
 .position-x-file{
   position: absolute;
-  right: 90px;
+  right: 88px;
   font-size: 1.2em;
 }
 
 .position-x-task{
   position: absolute;;
   right: 90px;
-  bottom: 10px;
+  color: black;
 }
 
 .position-x-meta{
   position: absolute;
-  right: 72px;
+  right: 73px;
 }
 
 .position-question{
