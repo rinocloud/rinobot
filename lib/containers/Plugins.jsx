@@ -92,8 +92,8 @@ class Plugins extends React.Component {
 
     return (
       <div className="panel panel-default plugins">
-        <div className="panel-heading">
-          <h6 className="block-title">
+        <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+          <h6 className="block-title" style={{ color: '#4D243D' }}>
           Plugins{'  '}
           </h6>
           {plugins.isSearching ?
@@ -116,7 +116,7 @@ class Plugins extends React.Component {
                 />
                 <br />
                 <input type="submit" value="Search" className="btn btn-xs btn-primary" /> {'  '}
-                <a onClick={this.clearSearchTerm} className="btn btn-xs btn-default">Clear</a>
+                <a onClick={this.clearSearchTerm} className="btn btn-xs btn-default btn-plugins">Clear</a>
               </form>
 
             </div>
@@ -136,6 +136,7 @@ class Plugins extends React.Component {
                       }}
                     >
                       <a
+                        style={{ color: '#4D243D' }}
                         onClick={openExternal}
                         href={el.homepage}
                       >{el.name.replace('rinobot-plugin-', '')}</a>
@@ -162,7 +163,7 @@ class Plugins extends React.Component {
                       <span>
                         <a
                           href="#"
-                          className="btn btn-xs btn-default"
+                          className="btn btn-xs btn-default btn-plugins"
                           onClick={(e) => {
                             e.preventDefault()
                             onClickUninstall(el, i)
@@ -173,7 +174,7 @@ class Plugins extends React.Component {
                         {el.canUpdate ? // eslint-disable-line
                           <a
                             href="#"
-                            className="btn btn-xs btn-default"
+                            className="btn btn-xs btn-default btn-plugins"
                             onClick={(e) => {
                               e.preventDefault()
                               onClickUpdate(el, i)

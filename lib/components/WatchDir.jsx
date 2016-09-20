@@ -282,8 +282,8 @@ class WatchDir extends React.Component {
     return (
       <div>
         <div className="panel panel-default">
-          <div className="panel-heading">
-            <span className="block-title">My folder:{'  '}</span>
+          <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+            <span className="block-title" style={{ color: '#4D243D' }}>My folder:{'  '}</span>
             {pt.basename(dir.path)} {'  '}
             <a
               className="text-muted"
@@ -361,31 +361,48 @@ class WatchDir extends React.Component {
                 onRemove={() => this.removePipeline(index)}
               />
             )}
-            <div className="row">
+          {formData.pipelines.length === 0 &&
+            <div className="row row-centered">
               <div className="col-sm-12">
                 <a
                   href="#"
-                  className="btn-Metask"
+                  className="btn-Pipe"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addPipeline()
                   }}
                 >
-                  <i className="fa fa-plus" />
-                  {'  '}
-                  <small className="text-muted">Add Pipeline</small>
+                  <h3 style={{ color: '#666' }}>Add a <strong>Pipeline</strong> in 2 steps</h3>
+                  {'  '}<i className="fa fa-plus" />
                 </a>
               </div>
             </div>
-
+          }
+          {formData.pipelines.length !== 0 &&
+            <div className="row row-centered">
+              <div className="col-sm-12">
+                <a
+                  href="#"
+                  className="btn-Pipe"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.addPipeline()
+                  }}
+                >
+                <i className="fa fa-plus" />{'  '}
+                  <small style={{color:'#666'}}>More <strong>Pipelines</strong></small>
+                </a>
+              </div>
+            </div>
+          }
             {/*{formData.metadata.length !== 0 &&
               <div className="row">
                 <div className="col-sm-12">
-                  <h6
+                  <h3
                     className="block-title"
                     style={{ color: '#666' }}
                   >
-                    Extra Metadata {'  '}
+                    3. Extra Metadata {'  '}
                     <span>
                       <OverlayTrigger
                         trigger={['hover']}
@@ -400,7 +417,7 @@ class WatchDir extends React.Component {
                         </a>
                       </OverlayTrigger>
                     </span>
-                  </h6>
+                  </h3>
                 </div>
               </div>
             }

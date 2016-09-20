@@ -100,7 +100,7 @@ body {
   bottom: 0;
   left: 0;
   width: 160px;
-  background-color: #7C87A8;
+  background-color: #4D243D;
   padding-top: 40px;
 }
 
@@ -120,7 +120,7 @@ body {
 }
 
 .sidebar .list-group-item:hover{
-  background-color: #737d9c;
+  background-color: #824670;
   color: #fff;
 }
 
@@ -140,7 +140,7 @@ body {
 .sidebar .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   z-index: 2;
   background-color: #E1E4EF;
-  color: #7C87A8;
+  color: #4D243D;
   border-color: #808FBF;
   z-index: 1;
 }
@@ -204,6 +204,21 @@ body {
 .btn-Metask:hover,
 .btn-Metask:focus,
 .btn-Metask:visited {
+  color:  #31b0d5;
+}
+.btn-Pipe {
+  background-color: #fff;
+  color: #31b0d5;
+  font-size: 1.2em;
+}
+
+.btn-Pipe i{
+  font-size: 1.5em;
+}
+
+.btn-Pipe:hover,
+.btn-Pipe:focus,
+.btn-Pipe:visited {
   color:  #7C87A8;
 }
 
@@ -216,6 +231,10 @@ body {
   border-color: #49925d;
   background-color: #49925d;
   color: #fff;
+}
+
+.btn-plugins:hover{
+  background-color:#E1E4EF;
 }
 
 .row-centered {

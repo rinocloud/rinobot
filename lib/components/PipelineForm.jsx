@@ -69,18 +69,20 @@ class PipelineForm extends React.Component {
     return (
       <div className="row">
         <div className="col-xs-12 m-b">
+          <h4> 1. File type </h4>
           <div className="col-xs-3">
             <div className="input-group">
-              <span className="input-group-btn">
-                <button className="btn btn-sm btn-info" type="button">Yes</button>
-              </span>
               <div
                 type="text"
                 className="form-control form-control-primar"
                 placeholder="All type of Files"
               >Click for all type of file</div>
+              <span className="input-group-addon">
+                <input type="radio" aria-label="Radio button for following text input" />
+              </span>
             </div>
           </div>
+
           <div className="col-xs-1 m-t-sm">
             <strong> or </strong>
           </div>
@@ -109,14 +111,10 @@ class PipelineForm extends React.Component {
           </a>
 
         </div>
-        {/* {pipeline.tasks.length !== 0 &&
+        {pipeline.tasks.length ===0  &&
           <div className="row">
             <div className="col-sm-12 m-t">
-              <h6
-                className="block-title"
-                style={{ color: '#666' }}
-              >
-                My tasks {'  '}
+              <h4 className="m-l-sm"> 2. Task {'  '}
                 <span>
                   <OverlayTrigger
                     trigger={['hover']}
@@ -124,6 +122,7 @@ class PipelineForm extends React.Component {
                     overlay={TaskOverlay}
                   >
                     <a
+                      style={{ fontSize: '0.8em'}}
                       className="fa fa-question-circle-o text-muted"
                       href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
                       onClick={openExternal}
@@ -131,14 +130,14 @@ class PipelineForm extends React.Component {
                     </a>
                   </OverlayTrigger>
                 </span>
-              </h6>
+              </h4>
             </div>
           </div>
-        }*/}
+        }
 
         {_.map(pipeline.tasks, (task, index) => {
           return (
-            <div>
+            <div className="m-l-lg">
               <TaskForm
                 key={`task-${index}`}
                 registry={registry}
@@ -160,7 +159,7 @@ class PipelineForm extends React.Component {
           )
         })}
         <div className="row">
-          <div className="col-sm-12 m-l-sm">
+          <div className="col-sm-12">
             <a
               href="#"
               className="btn-Metask"
@@ -170,8 +169,8 @@ class PipelineForm extends React.Component {
               }}
             >
               <i className="fa fa-plus-circle m-l-sm m-t-sm" />
+              <small className="text-muted"> Task</small>
               {/*<br />*/}
-              <small>Add Task</small>
             </a>
 
           </div>

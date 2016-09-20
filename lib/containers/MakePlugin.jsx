@@ -12,8 +12,10 @@ class MakePlugin extends React.Component {
     const { dispatch, plugins } = this.props
     return (
       <div className="panel panel-default plugins">
-        <div className="panel-heading">
+        <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+          <h6 className="block-title" style={{ color: '#4D243D' }}>
           Make a plugin
+          </h6>
         </div>
 
         <div className="panel-body">
@@ -24,7 +26,9 @@ class MakePlugin extends React.Component {
               <a
                 href="http://docs.rinocloud.com/rinobot/plugins/creating_a_plugin.html"
               >
-                making a plugin
+                <strong style={{ color:'#5bc0de'}}>
+                  making a plugin
+                </strong>
               </a>
               .
             </div>
