@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
+import { Tabs, Tab, Popover, OverlayTrigger } from 'react-bootstrap'
 import { shell } from 'electron'
 import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
@@ -308,252 +308,401 @@ class WatchDir extends React.Component {
     }
 
     return (
-      <div>
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <span className="block-title">My folder:{'  '}</span>
-            {pt.basename(dir.path)} {'  '}
-            <a
-              className="text-muted"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                shell.showItemInFolder(dir.path)
-              }}
-            >
-              <i className="fa fa-external-link"></i>
-            </a>
+      <Tabs defaultActiveKey={2} id="uncontrolled-tab-example">
+        <Tab eventKey={1} title="Setup">
 
-            <OverlayTrigger
-              trigger={['hover']}
-              placement="bottom"
-              overlay={ClearRecord}
-            >
+          <div className="panel panel-default m-t">
+            <div className="panel-heading">
+              <span className="block-title">My folder:{'  '}</span>
+              {pt.basename(dir.path)} {'  '}
               <a
+                className="text-muted"
                 href="#"
-                className="pull-right m-r btn btn-xs btn-default btn-red"
-                onClick={removeDotRino}
+                onClick={(e) => {
+                  e.preventDefault()
+                  shell.showItemInFolder(dir.path)
+                }}
               >
-                Reset history
+                <i className="fa fa-external-link"></i>
               </a>
-            </OverlayTrigger>
 
-            <a
-              href="#"
-              className="m-r pull-right btn btn-xs btn-default btn-red"
-              onClick={onRemoveDirClick}
-            >
-              <span><i className="fa fa-trash"></i> Remove</span>
-            </a>
-          </div>
-          <div className="panel-body config">
-
-            <div className="row">
-              <div className="col-sm-12 text-center">
-                <h6
-                  className="block-title"
-                  style={{ color: '#666' }}
-                >
-                  Automation Pipeline {'  '}
-                  <OverlayTrigger
-                    trigger={['hover']}
-                    placement="right"
-                    overlay={PipelineOverlay}
-                  >
-                    <a
-                      className="fa fa-question-circle-o m-t-sm text-muted"
-                      href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                      onClick={openExternal}
-                    >
-                    </a>
-                  </OverlayTrigger>
-                </h6>
-              </div>
-            </div>
-            {formData.pipelines.map((o, index) =>
-              <div className="m-t" key={`pipeline-${index}`}>
-                <PipelineForm
-                  pipeline={o}
-                  packagesConfig={packagesConfig}
-                  registry={registry}
-                  onChangeMatch={(match) =>
-                    this.changePipelineMatch(index, match)}
-                  onChangeTaskName={(taskIndex, name) =>
-                    this.changePipelineTaskName(index, taskIndex, name)}
-                  onChangeTaskArgs={(taskIndex, args) =>
-                    this.changePipelineTaskArgs(index, taskIndex, args)}
-                  onChangeTaskKeep={(taskIndex, args) =>
-                    this.changePipelineTaskKeep(index, taskIndex, args)}
-                  onChangeIncomingOnly={args =>
-                    this.changePipelineIncomingOnly(index, args)}
-                  onAddTask={() =>
-                    this.addPipelineTask(index)}
-                  onRemoveTask={(taskIndex) =>
-                    this.removePipelineTask(index, taskIndex)}
-                  onRemove={() => this.removePipeline(index)}
-                />
-              </div>
-            )}
-            <div className="row">
-              <div className="col-sm-12 text-center m-t">
+              <OverlayTrigger
+                trigger={['hover']}
+                placement="bottom"
+                overlay={ClearRecord}
+              >
                 <a
                   href="#"
-                  className="btn-add-pipeline"
+                  className="pull-right m-r btn btn-xs btn-default btn-red"
+                  onClick={removeDotRino}
+                >
+                  Reset history
+                </a>
+              </OverlayTrigger>
+
+              <a
+                href="#"
+                className="m-r pull-right btn btn-xs btn-default btn-red"
+                onClick={onRemoveDirClick}
+              >
+                <span><i className="fa fa-trash"></i> Remove</span>
+              </a>
+            </div>
+            <div className="panel-body config">
+
+            <div className="row row-centered m-t">
+              {!isSaved &&
+                <a
+                  href="#"
+                  className="btn btn-default m-r-sm"
                   onClick={(e) => {
                     e.preventDefault()
-                    this.addPipeline()
+                    this.onSaveConfig()
                   }}
+                  disabled={dir.isStarted}
                 >
-                  <i className="fa fa-plus-circle" />
-                  <br />
-                  <small>
-                    {formData.pipelines.length > 0 &&
-                      'Add another Pipeline'
-                    }
-                    {formData.pipelines.length === 0 &&
-                      'Add Pipeline'
-                    }
-                  </small>
+                  <span><i className="fa fa-save"></i> Save</span>
                 </a>
-              </div>
+              }
+
+              {isSaved &&
+                <a
+                  href="#"
+                  className="btn btn-default m-r-sm"
+                  disabled
+                >
+                  <span><i className="fa fa-check"></i> Saved</span>
+                </a>
+              }
+
+              {dir.isStarted && !isStarting &&
+                <a
+                  href="#"
+                  className=" btn btn-danger"
+                  onClick={onStopClick}
+                >
+                  <i className="m-r-sm fa fa-stop-circle-o" />
+                  Stop
+                </a>
+              }
+
+              {dir.isStarted && isStarting &&
+                <a
+                  href="#"
+                  className="btn btn-default"
+                  onClick={onStopClick}
+                  disabled
+                >
+                  <i className="m-r-sm fa fa-spinner fa-spin"></i>
+                  Starting
+                </a>
+              }
+
+              {!dir.isStarted &&
+                <a
+                  href="#"
+                  className="btn btn-start"
+                  style={{ color: '#fff' }}
+                  onClick={onStartClick}
+                  data-dismiss="alert"
+                >
+                  Start
+                  <i className="m-l-sm fa fa-arrow-right" />
+                </a>
+              }
             </div>
 
-            {formData.metadata.length !== 0 &&
-              <div className="row m-t m-l">
+
+              <div className="row m-t">
                 <div className="col-sm-12 text-center">
                   <h6
                     className="block-title"
-                    style={{ color: '#999' }}
+                    style={{ color: '#666' }}
                   >
-                    Extra Metadata {'  '}
-                    <span>
-                      <OverlayTrigger
-                        trigger={['hover']}
-                        placement="bottom"
-                        overlay={MetadataOverlay}
+                    Automation Pipeline {'  '}
+                    <OverlayTrigger
+                      trigger={['hover']}
+                      placement="right"
+                      overlay={PipelineOverlay}
+                    >
+                      <a
+                        className="fa fa-question-circle-o m-t-sm text-muted"
+                        href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
+                        onClick={openExternal}
                       >
-                        <a
-                          className="fa fa-question-circle-o m-t-sm text-muted"
-                          href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
-                          onClick={openExternal}
-                        >
-                        </a>
-                      </OverlayTrigger>
-                    </span>
+                      </a>
+                    </OverlayTrigger>
                   </h6>
                 </div>
               </div>
-            }
-
-            {formData.metadata.map((o, index) =>
-              <MetadataForm
-                key={`metadata-${index}`}
-                field={o.field}
-                value={o.value}
-                onChangeField={(field) =>
-                  this.changeMetadataField(index, field)}
-                onChangeValue={(value) =>
-                  this.changeMetadataValue(index, value)}
-                onRemove={() => this.removeMetadata(index)}
-              />
-            )}
-
-            {formData.pipelines.length !== 0 &&
+              {formData.pipelines.map((o, index) =>
+                <div className="m-t" key={`pipeline-${index}`}>
+                  <PipelineForm
+                    pipeline={o}
+                    packagesConfig={packagesConfig}
+                    registry={registry}
+                    onChangeMatch={(match) =>
+                      this.changePipelineMatch(index, match)}
+                    onChangeTaskName={(taskIndex, name) =>
+                      this.changePipelineTaskName(index, taskIndex, name)}
+                    onChangeTaskArgs={(taskIndex, args) =>
+                      this.changePipelineTaskArgs(index, taskIndex, args)}
+                    onChangeTaskKeep={(taskIndex, args) =>
+                      this.changePipelineTaskKeep(index, taskIndex, args)}
+                    onChangeIncomingOnly={args =>
+                      this.changePipelineIncomingOnly(index, args)}
+                    onAddTask={() =>
+                      this.addPipelineTask(index)}
+                    onRemoveTask={(taskIndex) =>
+                      this.removePipelineTask(index, taskIndex)}
+                    onRemove={() => this.removePipeline(index)}
+                  />
+                </div>
+              )}
               <div className="row">
                 <div className="col-sm-12 text-center m-t">
                   <a
                     href="#"
-                    className="btn-add-metadata"
+                    className="btn-add-pipeline"
                     onClick={(e) => {
                       e.preventDefault()
-                      this.addMetadata()
+                      this.addPipeline()
                     }}
                   >
-                    <i className="fa fa-plus m-t" />
+                    <i className="fa fa-plus-circle" />
                     <br />
-                    <small className="m-r-sm">Add extra Metadata</small>
+                    <small>
+                      {formData.pipelines.length > 0 &&
+                        'Add another Pipeline'
+                      }
+                      {formData.pipelines.length === 0 &&
+                        'Add Pipeline'
+                      }
+                    </small>
                   </a>
                 </div>
               </div>
+
+              {formData.metadata.length !== 0 &&
+                <div className="row m-t m-l">
+                  <div className="col-sm-12 text-center">
+                    <h6
+                      className="block-title"
+                      style={{ color: '#999' }}
+                    >
+                      Extra Metadata {'  '}
+                      <span>
+                        <OverlayTrigger
+                          trigger={['hover']}
+                          placement="bottom"
+                          overlay={MetadataOverlay}
+                        >
+                          <a
+                            className="fa fa-question-circle-o m-t-sm text-muted"
+                            href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                            onClick={openExternal}
+                          >
+                          </a>
+                        </OverlayTrigger>
+                      </span>
+                    </h6>
+                  </div>
+                </div>
+              }
+
+              {formData.metadata.map((o, index) =>
+                <MetadataForm
+                  key={`metadata-${index}`}
+                  field={o.field}
+                  value={o.value}
+                  onChangeField={(field) =>
+                    this.changeMetadataField(index, field)}
+                  onChangeValue={(value) =>
+                    this.changeMetadataValue(index, value)}
+                  onRemove={() => this.removeMetadata(index)}
+                />
+              )}
+
+              {formData.pipelines.length !== 0 &&
+                <div className="row">
+                  <div className="col-sm-12 text-center m-t">
+                    <a
+                      href="#"
+                      className="btn-add-metadata"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.addMetadata()
+                      }}
+                    >
+                      <i className="fa fa-plus m-t" />
+                      <br />
+                      <small className="m-r-sm">Add extra Metadata</small>
+                    </a>
+                  </div>
+                </div>
+              }
+
+            </div>
+          </div> {/* Panel finished */}
+
+          <div className="row row-centered m-t-lg m-b-lg p-b-lg">
+
+            {!isSaved &&
+              <a
+                href="#"
+                className="btn btn-default m-r-sm"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.onSaveConfig()
+                }}
+                disabled={dir.isStarted}
+              >
+                <span><i className="fa fa-save"></i> Save</span>
+              </a>
+            }
+
+            {isSaved &&
+              <a
+                href="#"
+                className="btn btn-default m-r-sm"
+                disabled
+              >
+                <span><i className="fa fa-check"></i> Saved</span>
+              </a>
+            }
+
+            {dir.isStarted && !isStarting &&
+              <a
+                href="#"
+                className=" btn btn-danger"
+                onClick={onStopClick}
+              >
+                <i className="m-r-sm fa fa-stop-circle-o" />
+                Stop
+              </a>
+            }
+
+            {dir.isStarted && isStarting &&
+              <a
+                href="#"
+                className="btn btn-default"
+                onClick={onStopClick}
+                disabled
+              >
+                <i className="m-r-sm fa fa-spinner fa-spin"></i>
+                Starting
+              </a>
+            }
+
+            {!dir.isStarted &&
+              <a
+                href="#"
+                className="btn btn-start"
+                style={{ color: '#fff' }}
+                onClick={onStartClick}
+                data-dismiss="alert"
+              >
+                Start
+                <i className="m-l-sm fa fa-arrow-right" />
+              </a>
             }
 
           </div>
-        </div> {/* Panel finished */}
 
-
-        <div className="row row-centered m-t-lg">
-
-          {!isSaved &&
-            <a
-              href="#"
-              className="btn btn-default m-r-sm"
-              onClick={(e) => {
-                e.preventDefault()
-                this.onSaveConfig()
-              }}
-              disabled={dir.isStarted}
-            >
-              <span><i className="fa fa-save"></i> Save</span>
-            </a>
-          }
-
-          {isSaved &&
-            <a
-              href="#"
-              className="btn btn-default m-r-sm"
-              disabled
-            >
-              <span><i className="fa fa-check"></i> Saved</span>
-            </a>
-          }
-
-          {dir.isStarted && !isStarting &&
-            <a
-              href="#"
-              className=" btn btn-danger"
-              onClick={onStopClick}
-            >
-              <i className="m-r-sm fa fa-stop-circle-o" />
-              Stop
-            </a>
-          }
-
-          {dir.isStarted && isStarting &&
-            <a
-              href="#"
-              className="btn btn-default"
-              onClick={onStopClick}
-              disabled
-            >
-              <i className="m-r-sm fa fa-spinner fa-spin"></i>
-              Starting
-            </a>
-          }
-
-          {!dir.isStarted &&
-            <a
-              href="#"
-              className="btn btn-start"
-              style={{ color: '#fff' }}
-              onClick={onStartClick}
-              data-dismiss="alert"
-            >
-              Start
-              <i className="m-l-sm fa fa-arrow-right" />
-            </a>
-          }
-
-        </div>
-
-        {dir.isStarted && !isStarting &&
+        </Tab>
+        <Tab eventKey={2} title="Activity">
           <div className="panel panel-default m-t">
-            <div className="panel-heading" style={{ backgroundColor: '#E1E4EF' }}>
+            <div className="panel-heading">
               Activity
               <div className="pull-right">
                 {dir.processedFiles}/{dir.totalFiles} files processed
               </div>
+              <OverlayTrigger
+                trigger={['hover']}
+                placement="bottom"
+                overlay={ClearRecord}
+              >
+                <a
+                  href="#"
+                  className="pull-right m-r btn btn-xs btn-default btn-red"
+                  onClick={removeDotRino}
+                >
+                  Reset history
+                </a>
+              </OverlayTrigger>
+
+              <a
+                href="#"
+                className="m-r pull-right btn btn-xs btn-default btn-red"
+                onClick={onRemoveDirClick}
+              >
+                <span><i className="fa fa-trash"></i> Remove</span>
+              </a>
+
             </div>
             <div className="panel-body">
+
+              <div className="row row-centered">
+                {!isSaved &&
+                  <a
+                    href="#"
+                    className="btn btn-default m-r-sm"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.onSaveConfig()
+                    }}
+                    disabled={dir.isStarted}
+                  >
+                    <span><i className="fa fa-save"></i> Save</span>
+                  </a>
+                }
+
+                {isSaved &&
+                  <a
+                    href="#"
+                    className="btn btn-default m-r-sm"
+                    disabled
+                  >
+                    <span><i className="fa fa-check"></i> Saved</span>
+                  </a>
+                }
+
+                {dir.isStarted && !isStarting &&
+                  <a
+                    href="#"
+                    className=" btn btn-danger"
+                    onClick={onStopClick}
+                  >
+                    <i className="m-r-sm fa fa-stop-circle-o" />
+                    Stop
+                  </a>
+                }
+
+                {dir.isStarted && isStarting &&
+                  <a
+                    href="#"
+                    className="btn btn-default"
+                    onClick={onStopClick}
+                    disabled
+                  >
+                    <i className="m-r-sm fa fa-spinner fa-spin"></i>
+                    Starting
+                  </a>
+                }
+
+                {!dir.isStarted &&
+                  <a
+                    href="#"
+                    className="btn btn-start"
+                    style={{ color: '#fff' }}
+                    onClick={onStartClick}
+                    data-dismiss="alert"
+                  >
+                    Start
+                    <i className="m-l-sm fa fa-arrow-right" />
+                  </a>
+                }
+              </div>
               <div className="configForm">
                 <div className="row">
                   <div className="col-sm-12">
@@ -563,8 +712,8 @@ class WatchDir extends React.Component {
               </div>
             </div>
           </div>
-        }
-      </div>
+        </Tab>
+      </Tabs>
     )
   }
 }

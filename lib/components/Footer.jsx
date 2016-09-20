@@ -38,13 +38,13 @@ class Footer extends React.Component {
         <div className="col-sm-10 col-sm-offset-2 m-t p-t-sm">
           {ui.pythonVersion === false ?
             <span>
-              No python found, please install {pythonLink} to use plugins.
+              {/*No python found, please install {pythonLink} to use plugins.*/}
             </span>
           :
           ''}
           {pythonMajorVersion === '2' ?
             <span>
-              Python {ui.pythonVersion} found, please install {pythonLink} to use plugins.
+              {/*Python {ui.pythonVersion} found, please install {pythonLink} to use plugins.*/}
             </span>
           :
           ''}

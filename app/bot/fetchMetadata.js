@@ -14,11 +14,19 @@ const exts = ['.json', '.yaml', '.yml']
 
 export default (fpath, cb) => {
   const fpathNoExt = fpath.substr(0, fpath.lastIndexOf('.'))
-  const noextGlobs = exts.map((ext) => fpathNoExt + ext)
-  const wiextGlobs = exts.map((ext) => fpath + ext)
-  const globs = noextGlobs.concat(wiextGlobs)
+  const globs = [].concat(
+    exts.map((ext) => fpathNoExt + ext),
+    exts.map((ext) => fpath + ext),
+    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), '.' + pt.basename(fpathNoExt) + ext)),
+    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), '.' + pt.basename(fpathNoExt) + ext)),
+  )
+
   const globResults = globule.find(globs)
-  if (!globResults.length) { return cb(null, null) }
+
+  if (!globResults.length) {
+    console.log('Didnt find anything')
+    return cb(null, null)
+  }
 
   if (globResults.length > 1) {
     return cb(

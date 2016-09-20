@@ -80,7 +80,7 @@ class Log extends React.Component {
               >
                 {pt.basename(filepath)}
                 {!error && hasStdout &&
-                  <i className="fa fa-notification fa-exclamation-circle text-danger" />}
+                  <i className="fa fa-notificatio fa-exclamatio-circle text-danger" />}
               </a>
               <a href="#" onClick={this.toggleExtra}>
                 {error && !extraOpen &&
@@ -110,7 +110,10 @@ class Log extends React.Component {
                   style={{ marginRight: '6px' }}
                 ></i>
                 {current}
-              </small>}
+                <br />
+              </small>
+            }
+
               {_.map(completed, (m, i) =>
                 <small
                   key={`msg${i}${lastRun}`}

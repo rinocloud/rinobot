@@ -8064,6 +8064,13 @@ module.exports =
 	      rpc.emit('python version', { version: version });
 	    });
 	
+	    (0, _bot.updateRinobotPlugin)(function (error) {
+	      if (error) {
+	        rpc.emit('unexpected error', error);
+	        sentry.captureException(new _rpcMap.JSONError(error));
+	      }
+	    });
+	
 	    if (!_electronIsDev2.default && process.platform !== 'linux') {
 	      (0, _autoUpdater2.default)(win, rpc);
 	    }
@@ -25300,7 +25307,7 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.checkPythonVersion = undefined;
+	exports.updateRinobotPlugin = exports.checkPythonVersion = undefined;
 	
 	var _child_process = __webpack_require__(441);
 	
@@ -25336,6 +25343,12 @@ module.exports =
 	    } else {
 	      cb('3');
 	    }
+	  });
+	};
+	
+	var updateRinobotPlugin = exports.updateRinobotPlugin = function updateRinobotPlugin(cb) {
+	  (0, _child_process.exec)('pip install rinobot-plugin --upgrade', function (error) {
+	    if (error) cb(error);else cb();
 	  });
 	};
 	

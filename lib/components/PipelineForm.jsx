@@ -111,9 +111,9 @@ class PipelineForm extends React.Component {
             <div className="col-sm-12 text-center">
               <h6
                 className="block-title"
-                style={{ color: '#999' }}
+                style={{ color: '#ccc' }}
               >
-                Setup a task {'  '}
+                TASKS
                 <OverlayTrigger
                   trigger={['hover']}
                   placement="bottom"
