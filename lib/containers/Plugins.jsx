@@ -40,16 +40,15 @@ class Plugins extends React.Component {
     const { dispatch, plugins } = this.props
 
     let registry = _.map(plugins.registry, p => {
-      const isInstalled = _.has(plugins.installed.dependencies, p.name)
+      const isInstalled = _.map(plugins.installed, 'name').includes(p.name)
       let canUpdate = false
       if (isInstalled && p.version) {
-        const currentVersion = plugins.installed.dependencies[p.name]
+        const currentPlugin = _.find(plugins.installed, { name: p.name })
         const registryVersion = p.version
-
-        if (semver.validRange(currentVersion)) {
-          canUpdate = semver.gtr(registryVersion, currentVersion)
+        if (semver.validRange(currentPlugin.version)) {
+          canUpdate = semver.gtr(registryVersion, currentPlugin.version)
         } else {
-          canUpdate = semver.lt(currentVersion, registryVersion)
+          canUpdate = semver.lt(currentPlugin.version, registryVersion)
         }
       }
       return {
@@ -175,7 +174,13 @@ class Plugins extends React.Component {
                               onClickUpdate(el, i)
                             }}
                           >
-                            Update to v{el.version}
+                            {
+                              el.isInstalling
+                              ?
+                              'Updating'
+                              :
+                              `Update to v${el.version}`
+                            }
                           </a>
                           :
                           <span className=" text-muted">
@@ -191,7 +196,10 @@ class Plugins extends React.Component {
                   <small className="text-muted">
                     {el.isInstalled ?
                       <span>
-                        Your version: v{plugins.installed.dependencies[el.name]}
+                        Your version: v
+                        {
+                          _.find(plugins.installed, { name: el.name }).version
+                        }
                       </span>
                       :
                       <span>

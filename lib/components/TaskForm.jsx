@@ -23,22 +23,20 @@ class TaskForm extends React.Component {
   render() {
     const { name, args, keep, registry, installedPlugins } = this.props //eslint-disable-line
 
+    const changeArgs = (e) => {
+      e.preventDefault()
+      this.props.onChangeArgs(e.target.value)
+    }
+
+    const changeName = (item) => {
+      if (item) this.props.onChangeName(item.value)
+      else this.props.onChangeName(null)
+    }
+
     const installDeps = installedPlugins.map((dep) => ({
       label: dep.name.replace('rinobot-plugin-', ''),
       value: dep.name
     }))
-
-
-    const commandList = [
-      { name: 'rinocloud upload', value: 'upload' },
-      { name: 'copy', value: 'copy' },
-      { name: 'move', value: 'move' },
-      { name: 'matlab', value: 'matlab' },
-      { name: 'python', value: 'python' },
-      { name: 'Rscript', value: 'Rscript' },
-      { name: 'custom', value: 'custom' },
-      ...installDeps
-    ]
 
     const selectOpts = [
       {
@@ -57,7 +55,7 @@ class TaskForm extends React.Component {
         label: (
           <span>
           Plugins:
-          <small className="text-muted m-l">Installed plugins appear here</small>
+            <small className="text-muted m-l">Installed plugins appear here</small>
           </span>
         ),
         options: installDeps
@@ -66,31 +64,16 @@ class TaskForm extends React.Component {
 
     const isCustomCommand = (
       (
-        !_.map(commandList, 'value').includes(name) ||
+        !_.map(selectOpts[0].options, 'value').includes(name) ||
         name === 'custom'
       ) && name !== null
     )
 
-
     const isPluginCommand = _.map(installDeps, 'value').includes(name)
+    const selectedValue = name || ''
 
-    let pluginReadme = null
-    const pluginDetails = _.find(registry, { name })
-    if (pluginDetails) {
-      pluginReadme = pluginDetails.homepage
-    }
-
-    let selectedValue = name || ''
-
-    const changeArgs = (e) => {
-      e.preventDefault()
-      this.props.onChangeArgs(e.target.value)
-    }
-
-    const changeName = (item) => {
-      if (item) this.props.onChangeName(item.value)
-      else this.props.onChangeName(null)
-    }
+    // now have access to the options of each installed plugin
+    _.each(installedPlugins, (i) => console.log(i.name, i.options))
 
     return (
       <div className="row-centered m-t">
