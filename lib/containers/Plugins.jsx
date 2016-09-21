@@ -40,11 +40,11 @@ class Plugins extends React.Component {
     const { dispatch, plugins } = this.props
 
     let registry = _.map(plugins.registry, p => {
-      const isInstalled = _.has(plugins.config.dependencies, p.name)
+      const isInstalled = _.has(plugins.installed.dependencies, p.name)
       let canUpdate = false
-      if (isInstalled && p['dist-tags']) {
-        const currentVersion = plugins.config.dependencies[p.name]
-        const registryVersion = p['dist-tags'].latest
+      if (isInstalled && p.version) {
+        const currentVersion = plugins.installed.dependencies[p.name]
+        const registryVersion = p.version
 
         if (semver.validRange(currentVersion)) {
           canUpdate = semver.gtr(registryVersion, currentVersion)
@@ -59,11 +59,7 @@ class Plugins extends React.Component {
       }
     })
 
-    // to get plugins.registry latest version use:
-    // plugin['dist-tags'].latest
-    // to get installed version from plugins.config.dependencies use:
-    // name: version
-    registry.sort((x, y) => { // eslint-disable-line
+    registry.sort((x, y) => {
       return (x.isInstalled === y.isInstalled) ? 0 : x.isInstalled ? -1 : 1 // eslint-disable-line
     })
 
@@ -179,7 +175,7 @@ class Plugins extends React.Component {
                               onClickUpdate(el, i)
                             }}
                           >
-                            Update to v{el['dist-tags'].latest}
+                            Update to v{el.version}
                           </a>
                           :
                           <span className=" text-muted">
@@ -195,13 +191,13 @@ class Plugins extends React.Component {
                   <small className="text-muted">
                     {el.isInstalled ?
                       <span>
-                        Your version: v{plugins.config.dependencies[el.name]}
+                        Your version: v{plugins.installed.dependencies[el.name]}
                       </span>
                       :
                       <span>
-                        v{el['dist-tags'] ? el['dist-tags'].latest : ''}
-                        {' '} updated by {el.author && el.author.name} {' '}
-                        {el.time && moment(el.time.modified).fromNow()}
+                        v{el.version}
+                        {' '} updated by {el && el.author} {' '}
+                        {moment(el.modified).fromNow()}
                       </span>
                     }
                   </small>

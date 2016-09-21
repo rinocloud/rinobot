@@ -1,15 +1,13 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import pt from 'path'
-import { Popover, OverlayTrigger, Alert } from 'react-bootstrap'
-import { shell } from 'electron'
 import Select from 'react-select-plus'
 
 class TaskForm extends React.Component {
 
   static propTypes = {
     registry: PropTypes.array,
-    packagesConfig: PropTypes.object,
+    installedPlugins: PropTypes.array,
     name: PropTypes.string,
     args: PropTypes.oneOfType([
       React.PropTypes.string,
@@ -23,16 +21,13 @@ class TaskForm extends React.Component {
 
 
   render() {
-    const { name, args, keep, registry, packagesConfig } = this.props //eslint-disable-line
+    const { name, args, keep, registry, installedPlugins } = this.props //eslint-disable-line
 
+    const installDeps = installedPlugins.map((dep) => ({
+      label: dep.name.replace('rinobot-plugin-', ''),
+      value: dep.name
+    }))
 
-    let installDeps = []
-    if (packagesConfig && packagesConfig.dependencies) {
-      installDeps = _.keys(packagesConfig.dependencies).map((dep) => ({
-        label: dep.replace('rinobot-plugin-', ''),
-        value: dep
-      }))
-    }
 
     const commandList = [
       { name: 'rinocloud upload', value: 'upload' },

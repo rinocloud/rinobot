@@ -8,7 +8,7 @@ class PipelineForm extends React.Component {
 
   static propTypes = {
     registry: PropTypes.array,
-    packagesConfig: PropTypes.object,
+    installedPlugins: PropTypes.array,
     pipeline: PropTypes.object.isRequired,
     onChangeMatch: PropTypes.func.isRequired,
     onChangeTaskName: PropTypes.func.isRequired,
@@ -21,7 +21,7 @@ class PipelineForm extends React.Component {
   }
 
   render() {
-    const { pipeline, registry, packagesConfig } = this.props //eslint-disable-line
+    const { pipeline, registry, installedPlugins } = this.props //eslint-disable-line
 
     const fileOverlay = (
       <Popover
@@ -136,7 +136,7 @@ class PipelineForm extends React.Component {
             <div key={`task-${index}`}>
               <TaskForm
                 registry={registry}
-                packagesConfig={packagesConfig}
+                installedPlugins={installedPlugins}
                 name={task.name}
                 args={task.args}
                 keep={task.keep}

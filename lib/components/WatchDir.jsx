@@ -58,7 +58,7 @@ class WatchDir extends React.Component {
     onSaveConfig: PropTypes.func.isRequired,
     removeDotRino: PropTypes.func.isRequired,
     registry: PropTypes.array.isRequired,
-    packagesConfig: PropTypes.object
+    installedPlugins: PropTypes.array
   }
 
   constructor(props) {
@@ -282,7 +282,7 @@ class WatchDir extends React.Component {
   }
 
   render() {
-    const { dir, registry, packagesConfig, isStarting } = this.props
+    const { dir, registry, installedPlugins, isStarting } = this.props
     const { formData, isSaved } = this.state
 
     const onStartClick = (e) => {
@@ -308,7 +308,7 @@ class WatchDir extends React.Component {
     }
 
     return (
-      <Tabs defaultActiveKey={2} id="uncontrolled-tab-example">
+      <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
         <Tab eventKey={1} title="Setup">
 
           <div className="panel panel-default m-t">
@@ -439,7 +439,7 @@ class WatchDir extends React.Component {
                 <div className="m-t" key={`pipeline-${index}`}>
                   <PipelineForm
                     pipeline={o}
-                    packagesConfig={packagesConfig}
+                    installedPlugins={installedPlugins}
                     registry={registry}
                     onChangeMatch={(match) =>
                       this.changePipelineMatch(index, match)}
