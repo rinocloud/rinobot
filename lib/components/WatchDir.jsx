@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Tabs, Tab, Popover, OverlayTrigger } from 'react-bootstrap'
+import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { shell } from 'electron'
 import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
@@ -412,7 +412,7 @@ class WatchDir extends React.Component {
         <div className="main config">
           <div className="row">
             <div className="col-sm-10 col-sm-offset-1">
-              <div className="row m-t">
+              <div className="row m-t m-b">
                 <div className="col-sm-4">
                   <h6
                     className="block-title"
@@ -436,87 +436,76 @@ class WatchDir extends React.Component {
               </div>
 
               {formData.pipelines.map((o, index) =>
-                <PipelineForm
-                  key={`pipeline-${index}`}
-                  pipeline={o}
-                  installedPlugins={installedPlugins}
-                  registry={registry}
-                  onChangeMatch={(match) =>
-                    this.changePipelineMatch(index, match)}
-                  onChangeTaskName={(taskIndex, name) =>
-                    this.changePipelineTaskName(index, taskIndex, name)}
-                  onChangeTaskArgs={(taskIndex, args) =>
-                    this.changePipelineTaskArgs(index, taskIndex, args)}
-                  onChangeTaskKeep={(taskIndex, args) =>
-                    this.changePipelineTaskKeep(index, taskIndex, args)}
-                  onChangeIncomingOnly={args =>
-                    this.changePipelineIncomingOnly(index, args)}
-                  onAddTask={() =>
-                    this.addPipelineTask(index)}
-                  onRemoveTask={(taskIndex) =>
-                    this.removePipelineTask(index, taskIndex)}
-                  onRemove={() => this.removePipeline(index)}
-                />
-              )}
-
-              <div className="row">
-                <div className="col-sm-4 m-t">
-                  <a
-                    href="#"
-                    className="btn-add-pipeline"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.addPipeline()
-                    }}
-                  >
-                    <i className="fa fa-plus-circle" />
-                  </a>
-                </div>
-              </div>
-
-              {/*{formData.metadata.length !== 0 &&
-                <div className="row m-t m-l">
-                  <div className="col-sm-12">
-                    <h6
-                      className="block-title"
-                      style={{ color: '#999' }}
-                    >
-                      Extra Metadata {'  '}
-                      <span>
-                        <OverlayTrigger
-                          trigger={['hover']}
-                          placement="bottom"
-                          overlay={MetadataOverlay}
-                        >
-                          <a
-                            className="fa fa-question-circle-o m-t-sm text-muted"
-                            href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
-                            onClick={openExternal}
-                          >
-                          </a>
-                        </OverlayTrigger>
-                      </span>
-                    </h6>
+                <div className="row pipeline" key={`pipeline-${index}`}>
+                  <div className="sf_wrapper col-xs-1  col-xs-1-sm">
+                    <div
+                      className={
+                        index === 0 ? 'grey_horz grey_horz_first' : 'grey_horz'
+                      }
+                    ></div>
+                  </div>
+                  <div className="col-xs-11">
+                    <PipelineForm
+                      pipeline={o}
+                      installedPlugins={installedPlugins}
+                      registry={registry}
+                      onChangeMatch={(match) =>
+                        this.changePipelineMatch(index, match)}
+                      onChangeTaskName={(taskIndex, name) =>
+                        this.changePipelineTaskName(index, taskIndex, name)}
+                      onChangeTaskArgs={(taskIndex, args) =>
+                        this.changePipelineTaskArgs(index, taskIndex, args)}
+                      onChangeTaskKeep={(taskIndex, args) =>
+                        this.changePipelineTaskKeep(index, taskIndex, args)}
+                      onChangeIncomingOnly={args =>
+                        this.changePipelineIncomingOnly(index, args)}
+                      onAddTask={() =>
+                        this.addPipelineTask(index)}
+                      onRemoveTask={(taskIndex) =>
+                        this.removePipelineTask(index, taskIndex)}
+                      onRemove={() => this.removePipeline(index)}
+                    />
                   </div>
                 </div>
-              }*/}
+              )}
 
-              {/*{formData.metadata.map((o, index) =>
-                <MetadataForm
-                  key={`metadata-${index}`}
-                  field={o.field}
-                  value={o.value}
-                  onChangeField={(field) =>
-                    this.changeMetadataField(index, field)}
-                  onChangeValue={(value) =>
-                    this.changeMetadataValue(index, value)}
-                  onRemove={() => this.removeMetadata(index)}
-                />
-              )}*/}
+              <a
+                href="#"
+                className={
+                  formData.pipelines.length === 0 ?
+                    'btn-add-pipeline m-l'
+                  :
+                    'btn-add-pipeline'
+                }
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.addPipeline()
+                }}
+              >
+                <i className="fa fa-plus-circle m-r-sm" />
+                {formData.pipelines.length === 0 && 'Add pipeline'}
+              </a>
 
-              {/*{formData.pipelines.length !== 0 &&
+              {formData.metadata.map((o, index) =>
+                <div className="row m-t" key={`metadata-${index}`}>
+                  <div className="col-xs-1 col-xs-1-sm col-xs-11" />
+                  <div className="col-xs-11">
+                    <MetadataForm
+                      field={o.field}
+                      value={o.value}
+                      onChangeField={(field) =>
+                        this.changeMetadataField(index, field)}
+                      onChangeValue={(value) =>
+                        this.changeMetadataValue(index, value)}
+                      onRemove={() => this.removeMetadata(index)}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {formData.pipelines.length !== 0 &&
                 <div className="row">
-                  <div className="col-sm-12 m-t">
+                  <div className="col-sm-12">
                     <a
                       href="#"
                       className="btn-add-metadata"
@@ -525,28 +514,46 @@ class WatchDir extends React.Component {
                         this.addMetadata()
                       }}
                     >
-                      <i className="fa fa-plus m-t" />
-                      <br />
-                      <small className="m-r-sm">Add extra Metadata</small>
+                      <i className="fa fa-plus m-t" />{'  '}
+                      <small className="">Add metadata</small>
                     </a>
                   </div>
                 </div>
-              }*/}
+              }
             </div>
           </div>
 
-          {dir.isStarted &&
-            <div className="col-sm-12 p-a plugins">
-              <div className="row">
-                <div className="pull-right m-r-lg">
-                  {dir.processedFiles}/{dir.totalFiles} files processed
-                </div>
-              </div>
 
-              <LogScroll history={dir.history} />
+          {dir.isStarted &&
+            <div className="row m-a p-l-lg p-r-lg">
+              <hr />
             </div>
           }
 
+          {dir.isStarted &&
+            <div className="row plugins">
+              <div className="col-sm-10 col-sm-offset-1">
+                <div className="row m-b">
+                  <div className="col-sm-6">
+                    <h6 className="block-title" style={{ color: '#666' }}>
+                      Activity
+                      <span
+                        className="text-muted m-l"
+                        style={{
+                          textTransform: 'lowercase'
+                        }}
+                      >
+                        {dir.processedFiles}/{dir.totalFiles} files processed
+                      </span>
+
+                    </h6>
+                  </div>
+                </div>
+
+                <LogScroll history={dir.history} />
+              </div>
+            </div>
+          }
         </div>
       </div>
     )

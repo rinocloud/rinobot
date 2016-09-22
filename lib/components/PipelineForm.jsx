@@ -52,9 +52,8 @@ class PipelineForm extends React.Component {
     }
 
     return (
-      <div className="row pipeline">
+      <div className="row">
         <div className="col-xs-12">
-
           <div className="row m-b">
             <div className="col-xs-4">
               <OverlayTrigger
@@ -97,7 +96,7 @@ class PipelineForm extends React.Component {
           {_.map(pipeline.tasks, (task, index) => {
             return (
               <div className="row" key={`task-${index}`}>
-                <div className="col-xs-11 col-xs-offset-1">
+                <div className="col-xs-11 col-xs-offset-1 col-xs-offset-1-sm">
                   <div className="row">
                     <div className="col-xs-12">
                       <TaskForm
@@ -126,23 +125,43 @@ class PipelineForm extends React.Component {
           })}
 
           <div className="row">
-            <div className="col-xs-11 col-xs-offset-1">
-              <div className="row">
-                <div className="col-xs-4 text-center m-t-sm m-b-sm">
-                  <a
-                    href="#"
-                    className="btn-add-task"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.props.onAddTask()
-                    }}
-                  >
-                    <i className="fa fa-plus" />
-                    {/*<span>Add Task</span>*/}
-                  </a>
+            {pipeline.tasks.length === 0 &&
+              <div className="col-xs-12 col-xs-offset-">
+                <div className="row">
+                  <div className="col-xs-4 text-center m-t-sm m-b-sm">
+                    <a
+                      href="#"
+                      className="btn-add-task"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.props.onAddTask()
+                      }}
+                    >
+                      <i className="fa fa-plus" />{'  '}
+                      Add task
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            }
+            {pipeline.tasks.length !== 0 &&
+              <div className="col-xs-11 col-xs-offset-1-sm">
+                <div className="row">
+                  <div className="col-xs-4 text-center m-t-sm m-b-sm">
+                    <a
+                      href="#"
+                      className="btn-add-task"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.props.onAddTask()
+                      }}
+                    >
+                      <i className="fa fa-plus" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>

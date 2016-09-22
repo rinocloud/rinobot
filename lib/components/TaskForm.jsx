@@ -203,7 +203,7 @@ class TaskForm extends React.Component {
             {selectedValue && isPluginCommand &&
               <div className="col-xs-2">
                 <div className="text-muted config-checkbox">
-                  keep file{'  '}
+                  save output{'  '}
                   <input
                     type="checkbox"
                     onChange={(e) => {
@@ -217,7 +217,7 @@ class TaskForm extends React.Component {
 
             <div
               className={
-                selectedValue ?
+                selectedValue ? // eslint-disable-line
                   isPluginCommand ?
                   'col-xs-1' : 'col-xs-1 col-xs-offset-2'
                   : 'col-xs-1 col-xs-offset-7'
