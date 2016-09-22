@@ -85,7 +85,7 @@ class Sidebar extends React.Component {
             </Link>
 
             <li className="list-group-item list-group-item-heading m-t">
-              <h6><strong>Automations</strong></h6>
+              <h6><strong>Plugins</strong></h6>
             </li>
 
             <Link
@@ -96,7 +96,7 @@ class Sidebar extends React.Component {
                   'list-group-item'
               }
             >
-              <i className="fa fa-area-chart fa"></i>{'  '}
+              <i className="fa fa-bolt"></i>{'  '}
               <span>Install</span>
             </Link>
 

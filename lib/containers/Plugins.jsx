@@ -26,9 +26,7 @@ class Plugins extends React.Component {
     dispatch(pluginsActions.fetchRegistry())
   }
 
-  setSearchTerm(e) {
-    e.preventDefault()
-    const val = e.target.searchInput.value
+  setSearchTerm(val) {
     this.setState({ searchTerm: val === '' ? null : val })
   }
 
@@ -39,7 +37,7 @@ class Plugins extends React.Component {
   render() {
     const { dispatch, plugins } = this.props
 
-    let registry = _.map(plugins.registry, p => {
+    let registry = _.map(plugins.registry, (p, originalIndex) => {
       const isInstalled = _.map(plugins.installed, 'name').includes(p.name)
       let canUpdate = false
       if (isInstalled && p.version) {
@@ -54,12 +52,22 @@ class Plugins extends React.Component {
       return {
         ...p,
         isInstalled,
-        canUpdate
+        canUpdate,
+        index: originalIndex
       }
     })
 
     registry.sort((x, y) => {
-      return (x.isInstalled === y.isInstalled) ? 0 : x.isInstalled ? -1 : 1 // eslint-disable-line
+      if (x.isInstalled === y.isInstalled) {
+        if (x.downloads > y.downloads) {
+          return -1
+        }
+        return 1
+      }
+      if (x.isInstalled) {
+        return -1
+      }
+      return 1
     })
 
     if (this.state.searchTerm) {
@@ -86,120 +94,101 @@ class Plugins extends React.Component {
     }
 
     return (
-      <div className="panel panel-default plugins">
-        <div className="panel-heading">
-          <h6 className="block-title">
-          Plugins{'  '}
-          </h6>
-          {plugins.isSearching ?
-            <small className="text-muted">
-              <i className="fa fa-spinner fa-spin"></i>
-              {'  '}checking for updates
-            </small>
-          : ''}
+      <div className="col-sm-12 p-a plugins">
+        <h3>Plugins</h3>
+        {plugins.isSearching ?
+          <small className="text-muted">
+            <i className="fa fa-spinner fa-spin"></i>
+            {'  '}checking for updates
+          </small>
+        : ''}
+
+        <div className="row m-b">
+          <form className="col-sm-6">
+            <input
+              className="form-control"
+              name="searchInput"
+              type="text"
+              placeholder="Search for plugin"
+              onChange={(e) => {
+                e.preventDefault()
+                const val = e.target.value
+                this.setSearchTerm(val)
+              }}
+            />
+          </form>
+
+        </div>
+        <div className="row">
+          {plugins.statusText}
         </div>
 
-        <div className="panel-body">
-          <div className="col-sm-12">
-            <div className="row m-b">
-              <form className="form col-sm-8 p-a-0" onSubmit={this.setSearchTerm} >
-                <input
-                  className="form-control"
-                  name="searchInput"
-                  type="text"
-                  placeholder="Search for plugin"
-                />
-                <br />
-                <input type="submit" value="Search" className="btn btn-xs btn-primary" /> {'  '}
-                <a onClick={this.clearSearchTerm} className="btn btn-xs btn-default">Clear</a>
-              </form>
-
-            </div>
-            <div className="row">
-              {plugins.statusText}
-            </div>
-
-            {_.map(registry, (el, i) => {
-              return (
-                <div className="row" key={`plugin${i}`}>
-                  <div className="m-b">
-                    <span
-                      className="m-r lead"
-                      style={{
-                        fontWeight: 500,
-                        verticalAlign: 'bottom'
+        <table className="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Plugin</th>
+              <th>Description</th>
+              <th>Downloads last month</th>
+            </tr>
+          </thead>
+          <tbody>
+          {_.map(registry, (el, i) => {
+            return (
+              <tr className="m-a-sm" key={`plugin${i}`}>
+                <td style={{minWidth: '80px'}}>
+                  {!el.isInstalled &&
+                    <a
+                      href="#"
+                      className="btn btn-xs btn-primary"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        onClickInstall(el, el.index)
                       }}
                     >
-                      <a
-                        onClick={openExternal}
-                        href={el.homepage}
-                      >{el.name.replace('rinobot-plugin-', '')}</a>
-                    </span>
-                    {!el.isInstalled ?
-                      <a
-                        href="#"
-                        className="btn btn-xs btn-primary"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          onClickInstall(el, i)
-                        }}
-                      >
-                        {
-                          el.isInstalling
-                          ?
-                          'Installing'
-                          :
-                          'Install'
-                        }
-                      </a>
+                      {el.isInstalling && 'Installing'}
+                      {!el.isInstalling && 'Install'}
+                    </a>
+                  }
 
-                      :
-                      <span>
-                        <a
-                          href="#"
-                          className="btn btn-xs btn-default"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            onClickUninstall(el, i)
-                          }}
-                        >
-                          Uninstall
-                        </a>{'  '}
-                        {el.canUpdate ? // eslint-disable-line
-                          <a
-                            href="#"
-                            className="btn btn-xs btn-default"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              onClickUpdate(el, i)
-                            }}
-                          >
-                            {
-                              el.isInstalling
-                              ?
-                              'Updating'
-                              :
-                              `Update to v${el.version}`
-                            }
-                          </a>
-                          :
-                          <span className=" text-muted">
-                            up to date
-                          </span>
-                        }
-                      </span>
-                      }
-                  </div>
+                  {el.isInstalled &&
+                    <a
+                      href="#"
+                      className="btn btn-xs btn-default"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        onClickUninstall(el, el.index)
+                      }}
+                    >
+                      Uninstall
+                    </a>
+                  }
 
-                  <div>{el.description}</div>
+                  {el.canUpdate &&
+                    <a
+                      href="#"
+                      className="btn btn-xs btn-default"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        onClickUpdate(el, el.index)
+                      }}
+                    >
+                      {el.isInstalling && 'Updating'}
+                      {!el.isInstalling && `Update to v${el.version}`}
+                    </a>
+                  }
+                </td>
 
+                <td>
+                  <a
+                    onClick={openExternal}
+                    href={el.homepage}
+                  >{el.name.replace('rinobot-plugin-', '')}</a>
+                  <br />
                   <small className="text-muted">
                     {el.isInstalled ?
                       <span>
-                        Your version: v
-                        {
-                          _.find(plugins.installed, { name: el.name }).version
-                        }
+                        v{_.find(plugins.installed, { name: el.name }).version}
                       </span>
                       :
                       <span>
@@ -209,14 +198,19 @@ class Plugins extends React.Component {
                       </span>
                     }
                   </small>
-                  <hr />
-                </div>
-              )
-            }
-            )}
+                </td>
 
-          </div>
-        </div>
+                <td>{el.description}</td>
+
+                <td className="text-muted">{el.downloads}</td>
+              </tr>
+            )
+          }
+          )}
+
+          </tbody>
+        </table>
+
       </div>
     )
   }
