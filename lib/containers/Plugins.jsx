@@ -97,7 +97,7 @@ class Plugins extends React.Component {
       <div className="col-sm-12 p-a plugins">
         <h3>Plugins</h3>
         {plugins.isSearching ?
-          <small className="text-muted">
+          <small className="text-muted pull-right">
             <i className="fa fa-spinner fa-spin"></i>
             {'  '}checking for updates
           </small>

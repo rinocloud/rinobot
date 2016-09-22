@@ -308,53 +308,26 @@ class WatchDir extends React.Component {
     }
 
     return (
-      <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-        <Tab eventKey={1} title="Setup">
-
-          <div className="panel panel-default m-t">
-            <div className="panel-heading">
-              <span className="block-title">My folder:{'  '}</span>
-              {pt.basename(dir.path)} {'  '}
+      <div>
+        <div className="header">
+          <div className="row">
+            <div className="col-sm-12">
               <a
-                className="text-muted"
+                className="text-muted m-r"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault()
                   shell.showItemInFolder(dir.path)
                 }}
               >
-                <i className="fa fa-external-link"></i>
+                {pt.basename(dir.path)}/
+                <i className="m-l-sm fa fa-external-link"></i>
               </a>
 
-              <OverlayTrigger
-                trigger={['hover']}
-                placement="bottom"
-                overlay={ClearRecord}
-              >
-                <a
-                  href="#"
-                  className="pull-right m-r btn btn-xs btn-default btn-red"
-                  onClick={removeDotRino}
-                >
-                  Reset history
-                </a>
-              </OverlayTrigger>
-
-              <a
-                href="#"
-                className="m-r pull-right btn btn-xs btn-default btn-red"
-                onClick={onRemoveDirClick}
-              >
-                <span><i className="fa fa-trash"></i> Remove</span>
-              </a>
-            </div>
-            <div className="panel-body config">
-
-            <div className="row row-centered m-t">
               {!isSaved &&
                 <a
                   href="#"
-                  className="btn btn-default m-r-sm"
+                  className="btn btn-xs btn-default m-r-sm"
                   onClick={(e) => {
                     e.preventDefault()
                     this.onSaveConfig()
@@ -368,7 +341,7 @@ class WatchDir extends React.Component {
               {isSaved &&
                 <a
                   href="#"
-                  className="btn btn-default m-r-sm"
+                  className="btn btn-xs btn-default m-r-sm"
                   disabled
                 >
                   <span><i className="fa fa-check"></i> Saved</span>
@@ -378,7 +351,7 @@ class WatchDir extends React.Component {
               {dir.isStarted && !isStarting &&
                 <a
                   href="#"
-                  className=" btn btn-danger"
+                  className="btn btn-xs btn-danger"
                   onClick={onStopClick}
                 >
                   <i className="m-r-sm fa fa-stop-circle-o" />
@@ -389,7 +362,7 @@ class WatchDir extends React.Component {
               {dir.isStarted && isStarting &&
                 <a
                   href="#"
-                  className="btn btn-default"
+                  className="btn btn-xs btn-default"
                   onClick={onStopClick}
                   disabled
                 >
@@ -401,18 +374,44 @@ class WatchDir extends React.Component {
               {!dir.isStarted &&
                 <a
                   href="#"
-                  className="btn btn-start"
+                  className="btn btn-xs btn-start"
                   style={{ color: '#fff' }}
                   onClick={onStartClick}
                   data-dismiss="alert"
                 >
                   Start
-                  <i className="m-l-sm fa fa-arrow-right" />
+                  <i className="m-l-sm fa fa-play-circle-o" />
                 </a>
               }
+
+              <OverlayTrigger
+                trigger={['hover']}
+                placement="bottom"
+                overlay={ClearRecord}
+              >
+                <a
+                  href="#"
+                  className="pull-right btn btn-xs btn-default btn-red text-muted"
+                  onClick={removeDotRino}
+                >
+                  Reset history
+                </a>
+              </OverlayTrigger>
+
+              <a
+                href="#"
+                className="pull-right m-r-sm btn btn-xs btn-default btn-red text-muted"
+                onClick={onRemoveDirClick}
+              >
+                <span><i className="fa fa-trash"></i> Remove</span>
+              </a>
             </div>
+          </div>
+        </div>
 
-
+        <div className="main">
+          <div className="m-t-lg">
+            <div className="config">
               <div className="row m-t">
                 <div className="col-sm-12 text-center">
                   <h6
@@ -543,177 +542,22 @@ class WatchDir extends React.Component {
               }
 
             </div>
-          </div> {/* Panel finished */}
-
-          <div className="row row-centered m-t-lg m-b-lg p-b-lg">
-
-            {!isSaved &&
-              <a
-                href="#"
-                className="btn btn-default m-r-sm"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.onSaveConfig()
-                }}
-                disabled={dir.isStarted}
-              >
-                <span><i className="fa fa-save"></i> Save</span>
-              </a>
-            }
-
-            {isSaved &&
-              <a
-                href="#"
-                className="btn btn-default m-r-sm"
-                disabled
-              >
-                <span><i className="fa fa-check"></i> Saved</span>
-              </a>
-            }
-
-            {dir.isStarted && !isStarting &&
-              <a
-                href="#"
-                className=" btn btn-danger"
-                onClick={onStopClick}
-              >
-                <i className="m-r-sm fa fa-stop-circle-o" />
-                Stop
-              </a>
-            }
-
-            {dir.isStarted && isStarting &&
-              <a
-                href="#"
-                className="btn btn-default"
-                onClick={onStopClick}
-                disabled
-              >
-                <i className="m-r-sm fa fa-spinner fa-spin"></i>
-                Starting
-              </a>
-            }
-
-            {!dir.isStarted &&
-              <a
-                href="#"
-                className="btn btn-start"
-                style={{ color: '#fff' }}
-                onClick={onStartClick}
-                data-dismiss="alert"
-              >
-                Start
-                <i className="m-l-sm fa fa-arrow-right" />
-              </a>
-            }
-
           </div>
 
-        </Tab>
-        <Tab eventKey={2} title="Activity">
-          <div className="panel panel-default m-t">
-            <div className="panel-heading">
-              Activity
-              <div className="pull-right">
-                {dir.processedFiles}/{dir.totalFiles} files processed
-              </div>
-              <OverlayTrigger
-                trigger={['hover']}
-                placement="bottom"
-                overlay={ClearRecord}
-              >
-                <a
-                  href="#"
-                  className="pull-right m-r btn btn-xs btn-default btn-red"
-                  onClick={removeDotRino}
-                >
-                  Reset history
-                </a>
-              </OverlayTrigger>
-
-              <a
-                href="#"
-                className="m-r pull-right btn btn-xs btn-default btn-red"
-                onClick={onRemoveDirClick}
-              >
-                <span><i className="fa fa-trash"></i> Remove</span>
-              </a>
-
-            </div>
-            <div className="panel-body">
-
-              <div className="row row-centered">
-                {!isSaved &&
-                  <a
-                    href="#"
-                    className="btn btn-default m-r-sm"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.onSaveConfig()
-                    }}
-                    disabled={dir.isStarted}
-                  >
-                    <span><i className="fa fa-save"></i> Save</span>
-                  </a>
-                }
-
-                {isSaved &&
-                  <a
-                    href="#"
-                    className="btn btn-default m-r-sm"
-                    disabled
-                  >
-                    <span><i className="fa fa-check"></i> Saved</span>
-                  </a>
-                }
-
-                {dir.isStarted && !isStarting &&
-                  <a
-                    href="#"
-                    className=" btn btn-danger"
-                    onClick={onStopClick}
-                  >
-                    <i className="m-r-sm fa fa-stop-circle-o" />
-                    Stop
-                  </a>
-                }
-
-                {dir.isStarted && isStarting &&
-                  <a
-                    href="#"
-                    className="btn btn-default"
-                    onClick={onStopClick}
-                    disabled
-                  >
-                    <i className="m-r-sm fa fa-spinner fa-spin"></i>
-                    Starting
-                  </a>
-                }
-
-                {!dir.isStarted &&
-                  <a
-                    href="#"
-                    className="btn btn-start"
-                    style={{ color: '#fff' }}
-                    onClick={onStartClick}
-                    data-dismiss="alert"
-                  >
-                    Start
-                    <i className="m-l-sm fa fa-arrow-right" />
-                  </a>
-                }
-              </div>
-              <div className="configForm">
-                <div className="row">
-                  <div className="col-sm-12">
-                    <LogScroll history={dir.history} />
-                  </div>
+          {dir.isStarted &&
+            <div className="col-sm-12 p-a plugins">
+              <div className="row">
+                <div className="pull-right m-r-lg">
+                  {dir.processedFiles}/{dir.totalFiles} files processed
                 </div>
               </div>
+
+              <LogScroll history={dir.history} />
             </div>
-          </div>
-        </Tab>
-      </Tabs>
+          }
+
+        </div>
+      </div>
     )
   }
 }

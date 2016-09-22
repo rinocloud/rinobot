@@ -64,10 +64,14 @@ class TaskForm extends React.Component {
 
     const isCustomCommand = (
       (
-        !_.map(selectOpts[0].options, 'value').includes(name) ||
-        name === 'custom'
-      ) && name !== null
+        !_.map(selectOpts[0].options, 'value').includes(name) &&
+        !_.map(installDeps, 'value').includes(name) &&
+        name !== null
+      ) ||
+      name === 'custom'
     )
+
+    console.log(isCustomCommand)
 
     const isPluginCommand = _.map(installDeps, 'value').includes(name)
     const selectedValue = name || ''

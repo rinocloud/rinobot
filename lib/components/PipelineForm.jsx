@@ -89,11 +89,11 @@ class PipelineForm extends React.Component {
             <i className="fa fa-lg fa-remove btn-red-x"></i>
           </a>
         </div>
-        <div className="row">
+        {/*<div className="row">
           <div className="config-incoming-checkbox">
             only operate on incoming files{'  '}
             <input
-              key={`incoming_only${pipeline.incoming_only.toString()}`}
+              key={`incoming_only${pipeline.incoming_only && pipeline.incoming_only.toString()}`}
               type="checkbox"
               onClick={(e) => {
                 e.preventDefault()
@@ -102,9 +102,8 @@ class PipelineForm extends React.Component {
               defaultChecked={pipeline.incoming_only}
             />
           </div>
-        </div>
+        </div>*/}
 
-        <br />
 
         {pipeline.tasks.length !== 0 &&
           <div className="row row-centered">
@@ -172,7 +171,7 @@ class PipelineForm extends React.Component {
 
           </div>
         </div>
-        <hr />
+
       </div>
     )
   }

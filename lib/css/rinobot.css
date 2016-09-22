@@ -361,3 +361,30 @@ span.block-title{
 .panel-heading{
   font-weight: 500;
 }
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 180px;
+    padding: 20px 20px;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #e1e1ec;
+    cursor: text;
+    z-index: 5;
+    margin-bottom: 100px;
+    -webkit-app-region: drag;
+    /*box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);*/
+}
+
+.header .btn{
+  /*color: #777;*/
+}
+
+.header .btn-red{
+  border:none;
+}
+
+.main {
+  margin-top: 60px;
+}
