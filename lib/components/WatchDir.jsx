@@ -409,11 +409,11 @@ class WatchDir extends React.Component {
           </div>
         </div>
 
-        <div className="main">
-          <div className="m-t-lg">
-            <div className="config">
+        <div className="main config">
+          <div className="row">
+            <div className="col-sm-10 col-sm-offset-1">
               <div className="row m-t">
-                <div className="col-sm-12 text-center">
+                <div className="col-sm-4">
                   <h6
                     className="block-title"
                     style={{ color: '#666' }}
@@ -434,32 +434,33 @@ class WatchDir extends React.Component {
                   </h6>
                 </div>
               </div>
+
               {formData.pipelines.map((o, index) =>
-                <div className="m-t" key={`pipeline-${index}`}>
-                  <PipelineForm
-                    pipeline={o}
-                    installedPlugins={installedPlugins}
-                    registry={registry}
-                    onChangeMatch={(match) =>
-                      this.changePipelineMatch(index, match)}
-                    onChangeTaskName={(taskIndex, name) =>
-                      this.changePipelineTaskName(index, taskIndex, name)}
-                    onChangeTaskArgs={(taskIndex, args) =>
-                      this.changePipelineTaskArgs(index, taskIndex, args)}
-                    onChangeTaskKeep={(taskIndex, args) =>
-                      this.changePipelineTaskKeep(index, taskIndex, args)}
-                    onChangeIncomingOnly={args =>
-                      this.changePipelineIncomingOnly(index, args)}
-                    onAddTask={() =>
-                      this.addPipelineTask(index)}
-                    onRemoveTask={(taskIndex) =>
-                      this.removePipelineTask(index, taskIndex)}
-                    onRemove={() => this.removePipeline(index)}
-                  />
-                </div>
+                <PipelineForm
+                  key={`pipeline-${index}`}
+                  pipeline={o}
+                  installedPlugins={installedPlugins}
+                  registry={registry}
+                  onChangeMatch={(match) =>
+                    this.changePipelineMatch(index, match)}
+                  onChangeTaskName={(taskIndex, name) =>
+                    this.changePipelineTaskName(index, taskIndex, name)}
+                  onChangeTaskArgs={(taskIndex, args) =>
+                    this.changePipelineTaskArgs(index, taskIndex, args)}
+                  onChangeTaskKeep={(taskIndex, args) =>
+                    this.changePipelineTaskKeep(index, taskIndex, args)}
+                  onChangeIncomingOnly={args =>
+                    this.changePipelineIncomingOnly(index, args)}
+                  onAddTask={() =>
+                    this.addPipelineTask(index)}
+                  onRemoveTask={(taskIndex) =>
+                    this.removePipelineTask(index, taskIndex)}
+                  onRemove={() => this.removePipeline(index)}
+                />
               )}
+
               <div className="row">
-                <div className="col-sm-12 text-center m-t">
+                <div className="col-sm-4 m-t">
                   <a
                     href="#"
                     className="btn-add-pipeline"
@@ -469,22 +470,13 @@ class WatchDir extends React.Component {
                     }}
                   >
                     <i className="fa fa-plus-circle" />
-                    <br />
-                    <small>
-                      {formData.pipelines.length > 0 &&
-                        'Add another Pipeline'
-                      }
-                      {formData.pipelines.length === 0 &&
-                        'Add Pipeline'
-                      }
-                    </small>
                   </a>
                 </div>
               </div>
 
-              {formData.metadata.length !== 0 &&
+              {/*{formData.metadata.length !== 0 &&
                 <div className="row m-t m-l">
-                  <div className="col-sm-12 text-center">
+                  <div className="col-sm-12">
                     <h6
                       className="block-title"
                       style={{ color: '#999' }}
@@ -507,9 +499,9 @@ class WatchDir extends React.Component {
                     </h6>
                   </div>
                 </div>
-              }
+              }*/}
 
-              {formData.metadata.map((o, index) =>
+              {/*{formData.metadata.map((o, index) =>
                 <MetadataForm
                   key={`metadata-${index}`}
                   field={o.field}
@@ -520,11 +512,11 @@ class WatchDir extends React.Component {
                     this.changeMetadataValue(index, value)}
                   onRemove={() => this.removeMetadata(index)}
                 />
-              )}
+              )}*/}
 
-              {formData.pipelines.length !== 0 &&
+              {/*{formData.pipelines.length !== 0 &&
                 <div className="row">
-                  <div className="col-sm-12 text-center m-t">
+                  <div className="col-sm-12 m-t">
                     <a
                       href="#"
                       className="btn-add-metadata"
@@ -539,8 +531,7 @@ class WatchDir extends React.Component {
                     </a>
                   </div>
                 </div>
-              }
-
+              }*/}
             </div>
           </div>
 

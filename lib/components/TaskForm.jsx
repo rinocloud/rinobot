@@ -80,11 +80,12 @@ class TaskForm extends React.Component {
     _.each(installedPlugins, (i) => console.log(i.name, i.options))
 
     return (
-      <div className="row-centered m-t">
-        <div className="col-xs-10 col-centered">
-          <div className="row-centered">
-            <div className={selectedValue ? 'col-xs-4 col-xs-offset-2' : 'col-xs-4 col-centered'}>
-              <div style={{ textAlign: 'left' }}>
+      <div className="row">
+        <div className="col-xs-12">
+          <div className="row">
+
+            <div className="col-xs-4">
+              <div>
                 <Select
                   type="text"
                   value={selectedValue || ''}
@@ -94,8 +95,9 @@ class TaskForm extends React.Component {
                 />
               </div>
             </div>
+
             {selectedValue &&
-              <div className="col-xs-4">
+              <div className="col-xs-5">
                 {isPluginCommand &&
                   <input
                     style={{ borderRadius: '4px' }}
@@ -119,7 +121,7 @@ class TaskForm extends React.Component {
                 }
 
                 {['copy', 'move'].includes(name) &&
-                  <div className="form-group">
+                  <div className="form-group m-b-0">
                     <div className="input-group">
                       <span
                         className="input-group-addon"
@@ -196,11 +198,9 @@ class TaskForm extends React.Component {
                   </div>
                 }
               </div>
-
-
             }
 
-            {name !== null &&
+            {selectedValue && isPluginCommand &&
               <div className="col-xs-2">
                 <div className="text-muted config-checkbox">
                   keep file{'  '}
@@ -214,21 +214,29 @@ class TaskForm extends React.Component {
                 </div>
               </div>
             }
+
+            <div
+              className={
+                selectedValue ?
+                  isPluginCommand ?
+                  'col-xs-1' : 'col-xs-1 col-xs-offset-2'
+                  : 'col-xs-1 col-xs-offset-7'
+              }
+            >
+              <a
+                href="#"
+                className="task-position-x-file"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.props.onRemove()
+                }}
+              >
+                <i className="fa fa-remove btn-red-x"></i>
+              </a>
+            </div>
+
           </div>
-
-          <a
-            className="position-x-task pull-right"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              this.props.onRemove()
-            }}
-          >
-            <i className="m-l fa fa-lg fa-remove btn-red-x"></i>
-          </a>
-
         </div>
-
       </div>
     )
   }

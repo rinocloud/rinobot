@@ -52,126 +52,99 @@ class PipelineForm extends React.Component {
     }
 
     return (
-      <div className="row">
-        <div className="row row-centered m-b">
-          <div className="col-xs-4 col-centered">
-            <OverlayTrigger
-              trigger={['hover']}
-              placement="bottom"
-              overlay={fileOverlay}
-            >
-              <a
-                style={{ top: '25px', left: '-3px' }}
-                className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
-                href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
-                onClick={openExternal}
-              >
-              </a>
-            </OverlayTrigger>
-            <input
-              className="form-control form-control-primary"
-              placeholder="Type of file to match"
-              value={pipeline.filematch || ''}
-              onChange={(e) => {
-                e.preventDefault()
-                this.props.onChangeMatch(e.target.value)
-              }}
-            />
-          </div>
-          <a
-            className="pipeline-position-x-file"
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              this.props.onRemove()
-            }}
-          >
-            <i className="fa fa-lg fa-remove btn-red-x"></i>
-          </a>
-        </div>
-        {/*<div className="row">
-          <div className="config-incoming-checkbox">
-            only operate on incoming files{'  '}
-            <input
-              key={`incoming_only${pipeline.incoming_only && pipeline.incoming_only.toString()}`}
-              type="checkbox"
-              onClick={(e) => {
-                e.preventDefault()
-                this.props.onChangeIncomingOnly(e.target.checked)
-              }}
-              defaultChecked={pipeline.incoming_only}
-            />
-          </div>
-        </div>*/}
+      <div className="row pipeline">
+        <div className="col-xs-12">
 
-
-        {pipeline.tasks.length !== 0 &&
-          <div className="row row-centered">
-            <div className="col-sm-12 text-center">
-              <h6
-                className="block-title"
-                style={{ color: '#ccc' }}
+          <div className="row m-b">
+            <div className="col-xs-4">
+              <OverlayTrigger
+                trigger={['hover']}
+                placement="bottom"
+                overlay={fileOverlay}
               >
-                TASKS
-                <OverlayTrigger
-                  trigger={['hover']}
-                  placement="bottom"
-                  overlay={TaskOverlay}
+                <a
+                  style={{ top: '25px', left: '-7px' }}
+                  className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
+                  href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
+                  onClick={openExternal}
                 >
-                  <a
-                    className="fa fa-question-circle-o m-t-sm text-muted"
-                    href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                    onClick={openExternal}
-                  >
-                  </a>
-                </OverlayTrigger>
-              </h6>
+                </a>
+              </OverlayTrigger>
+              <input
+                className="form-control form-control-primary"
+                placeholder="Type of file to match"
+                value={pipeline.filematch || ''}
+                onChange={(e) => {
+                  e.preventDefault()
+                  this.props.onChangeMatch(e.target.value)
+                }}
+              />
+            </div>
+            <div className="col-xs-1 col-xs-offset-7">
+              <a
+                className="pipeline-position-x-file"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.props.onRemove()
+                }}
+              >
+                <i className="fa fa-remove btn-red-x"></i>
+              </a>
             </div>
           </div>
-        }
 
-        {_.map(pipeline.tasks, (task, index) => {
-          return (
-            <div key={`task-${index}`}>
-              <TaskForm
-                registry={registry}
-                installedPlugins={installedPlugins}
-                name={task.name}
-                args={task.args}
-                keep={task.keep}
-                onChangeName={name => { this.props.onChangeTaskName(index, name) }}
-                onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
-                onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
-                onRemove={() => { this.props.onRemoveTask(index) }}
+          {_.map(pipeline.tasks, (task, index) => {
+            return (
+              <div className="row" key={`task-${index}`}>
+                <div className="col-xs-11 col-xs-offset-1">
+                  <div className="row">
+                    <div className="col-xs-12">
+                      <TaskForm
+                        registry={registry}
+                        installedPlugins={installedPlugins}
+                        name={task.name}
+                        args={task.args}
+                        keep={task.keep}
+                        onChangeName={name => { this.props.onChangeTaskName(index, name) }}
+                        onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
+                        onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
+                        onRemove={() => { this.props.onRemoveTask(index) }}
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-xs-4 text-center m-t-sm m-b-sm">
+                      {index !== pipeline.tasks.length - 1 &&
+                        <i className="fa fa-arrow-down text-muted"></i>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
 
-              />
+          <div className="row">
+            <div className="col-xs-11 col-xs-offset-1">
               <div className="row">
-                <div className="col-sm-12 text-center m-t">
-                  {index !== pipeline.tasks.length - 1 &&
-                    <i className="fa fa-arrow-down text-muted"></i>
-                  }
+                <div className="col-xs-4 text-center m-t-sm m-b-sm">
+                  <a
+                    href="#"
+                    className="btn-add-task"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.props.onAddTask()
+                    }}
+                  >
+                    <i className="fa fa-plus" />
+                    {/*<span>Add Task</span>*/}
+                  </a>
                 </div>
               </div>
             </div>
-          )
-        })}
-        <div className="row">
-          <div className="col-sm-12 m-t-sm text-center">
-            <a
-              href="#"
-              className="btn-add-task"
-              onClick={(e) => {
-                e.preventDefault()
-                this.props.onAddTask()
-              }}
-            >
-              <i className="fa fa-plus m-r-sm" />
-              <span>Add Task</span>
-            </a>
-
           </div>
         </div>
-
       </div>
     )
   }
