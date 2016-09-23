@@ -531,7 +531,7 @@ class WatchDir extends React.Component {
           }
 
           {dir.isStarted &&
-            <div className="row plugins">
+            <div className="row plugins m-b-lg">
               <div className="col-sm-10 col-sm-offset-1">
                 <div className="row m-b">
                   <div className="col-sm-6">
