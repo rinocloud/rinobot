@@ -4,7 +4,10 @@ import 'superagent-queue'
 import uploader from './uploader'
 import superagent from 'superagent'
 import promisePlugin from 'superagent-promise-plugin'
+const superagentQueue = require('superagent-d2l-queue')
+const SAqueue = superagentQueue.makeQueue()
 const request = promisePlugin.patch(superagent)
+require('superagent-retry')(superagent)
 
 export let log = (s) => { // eslint-disable-line
   console.log(s)
@@ -116,6 +119,26 @@ export function getAncestors(id) {
   .then(processResponse)
 }
 
+
+export function getChildrenSync(id, limit=20, offset=0) {
+  return request
+  .post(config.base + '/api/1/files/children/')
+  .set('Authorization', 'Token ' + config.token)
+  .send({id: id, limit: limit, offset: offset})
+  //.use(superagentQueue({queue:SAqueue, retryEnabled: true}))
+  .retry(5)
+  .then(processResponse)
+}
+
+export function getAncestorsSync(id) {
+  return request
+  .post(config.base + '/api/1/files/ancestors/')
+  .set('Authorization', 'Token ' + config.token)
+  .send({id: id})
+  //.use(superagentQueue({queue:SAqueue, retryEnabled: true}))
+  .retry(5)
+  .then(processResponse)
+}
 /*
 Update routes
 */
@@ -183,11 +206,13 @@ export function fetchBreadcrumbs(id) {
 export function s3_download(fileId, processResponse) {
   return request
   .post(config.base + '/api/1/files/download/')
-  .set('Content-Type', 'application/json')
   .set('Authorization', 'Token ' + config.token)
   .send({id: fileId})
+  //.queue('download')
+  .use(superagentQueue({queue:SAqueue, retryEnabled: true, retryNotifier: ()=>{console.log('Retrying to download ' + fileId)}}))
   .end(processResponse)
 }
+
 /*
 Invites
 */

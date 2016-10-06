@@ -14,7 +14,7 @@ export default (opts) => {
 const remoteList = (id) => {
 	let pathBase = ''
 	return api
-		.getAncestors(id)
+		.getAncestorsSync(id)
 		.then((payload, err) => {
 			_(payload).forEach((parent) => {
 					let parentJSON = JSON.stringify(parent)
@@ -45,7 +45,7 @@ const remoteList = (id) => {
 const remoteDirList = (id, pathBase) => {
 	
 	return api
-		.getChildren(id, 1000000, 0)
+		.getChildrenSync(id, 1000000, 0)
 		.then((payload, err) => {
 			let childrenJSON = JSON.stringify(payload)
 			childrenJSON = JSON.parse(childrenJSON)
@@ -60,7 +60,7 @@ const remoteDirList = (id, pathBase) => {
 						return {
 							name : pathBase + record.name,
 							id : record.id,
-							updated_on : record.updated_on,
+							created_on : record.created_on,
 							etag : record.etag
 							}
 						/*ss[pathBase + record.name] = {

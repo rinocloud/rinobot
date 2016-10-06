@@ -35,10 +35,10 @@ export default (historyFilePath, targetFilepath, obj, cb) => {
         }
       }
 
-      fs.writeFile(historyFilePath, JSON.stringify(history, null, 2), (err) => { // eslint-disable-line
+      fs.writeFileSync(historyFilePath, JSON.stringify(history, null, 2)) // eslint-disable-line
         if (err) cb(err)
         else cb()
-      })
+      
     })
   })
 }
