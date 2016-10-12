@@ -1,5 +1,6 @@
 import { Task } from '../bot/task'
-import createPipeline, { createQueue, queue } from '../bot/pipeline'
+import createPipeline from '../bot/pipeline'
+import async from 'async'
 import { isMatch } from '../bot/utils'
 import rimraf from 'rimraf'
 import assert from 'assert'
@@ -171,7 +172,7 @@ describe('Pipeline', () => {
               pt.dirname(task.filepath),
               task.outputFilename
             )
-            finished()
+            finished(true)
           },
           onError: () => {}
         })
@@ -190,9 +191,20 @@ describe('Pipeline', () => {
         })
       })
 
-      queue.push(createQueue(taskList), (err) => {
-        if (err) return done(err)
+      const queue = async.queue((job, callback) => {
+        job(callback)
+      }, 1)
+
+      queue.drain = () => {
         done()
+      };
+
+      queue.push(taskList, (_continue) => {
+        if (_.isError(_continue) || _continue === false) {
+          const drain = queue.drain
+          queue.kill()
+          drain(_continue)
+        }
       })
     })
   })

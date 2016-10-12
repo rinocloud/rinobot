@@ -6,126 +6,110 @@ import { isMatch } from './utils'
 import { readCreated } from './history'
 
 
-export const jobCallback = (jobQueue, err) => {
-  if (err) {
-    const drain = jobQueue.drain
-    jobQueue.kill()
-    drain(err)
-  }
+export const queue = async.queue((job, callback) => job(callback), 1)
+
+
+const createTaskQueue = (pipeline, opts) => {
+  const { filematch, tasks } = pipeline
+  let inputFile = opts.filepath
+
+  const taskList = _.map(tasks, (taskConfig) => finished => {
+    // let badMatch = false
+    // if (index === 0) {
+    //   if (!isMatch(filematch, pt.basename(inputFile))) {
+    //     badMatch = true
+    //   }
+    // }
+
+    const onLog = (_task, message) => {
+      opts.onTaskLog(_task, message)
+    }
+
+    const onComplete = () => {
+      if (task.outputFilename) {
+        inputFile = pt.join(
+          pt.dirname(task.filepath),
+          task.outputFilename
+        )
+        opts.onTaskComplete(task)
+        setTimeout(() => { finished(true) })
+      } else {
+        opts.onTaskComplete(task)
+        setTimeout(() => { finished(false) })
+      }
+    }
+
+    const onError = (_task, error) => {
+      opts.onTaskError(_task, error)
+      setTimeout(() => { finished(false) })
+    }
+
+    const taskProcess = (task) => {
+      if (/* !badMatch && */ !task.ignored) {
+        opts.onTaskStart(task)
+        task.run()
+      } else if (/* !badMatch && */ task.ignored) {
+        opts.onTaskIgnore(task)
+        setTimeout(() => { finished(true) })
+      }
+      // else {
+      //   opts.onTaskIgnore(task)
+      //   setTimeout(() => { finished(false) })
+      // }
+    }
+
+    const task = new Task({
+      filepath: inputFile,
+      pluginsDir: opts.pluginsDir,
+      baseDir: opts.baseDir,
+      command: taskConfig.name,
+      match: filematch,
+      keep: taskConfig.keep,
+      args: taskConfig.args,
+      apiToken: opts.apiToken,
+      onLog,
+      onComplete,
+      onError
+    })
+
+    task.ready(() => {
+      taskProcess(task)
+    })
+  })
+
+  return taskList
 }
-
-
-export const createQueue = (funcArray) => (pipelineCallback) => {
-  const jobQueue = new async.queue(function (job, callback) { // eslint-disable-line
-    job(callback)
-  }, 1)
-
-  jobQueue.drain = pipelineCallback
-  jobQueue.push(funcArray, jobCallback.bind(null, jobQueue))
-  return jobQueue
-}
-
-
-export const queue = async.queue((job, callback) => {
-  job(callback)
-}, 1)
 
 
 const createPipeline = (opts) => {
-  /*
-    Usage
-
-      createPipeline(options)
-
-    Where `options` contains
-
-      createPipeline({
-        pluginsDir: directory to plugins
-        apiToken: rinobot api access token
-        filepath: path to current file
-        baseDir: dir being watched by rinobot
-        config: config containing a list of tasks and metadata only
-        onTaskStart: (task) => {},
-        onTaskLog: (task, log) => {},
-        onTaskComplete: (task) => {},
-        onTaskIgnore: (task) => {},
-        onTaskError: (task, error) => {},
-        onError: (error) => {}
-      })
-  */
-
   const createdFilePath = pt.join(opts.baseDir, '.rino', 'created.json')
   const pipelines = opts.config.pipelines
 
   readCreated(createdFilePath, (err, createdList) => {
     _.map(pipelines, (pipeline) => {
-      let inputFile = opts.filepath
-      if (createdList && createdList.includes(inputFile) && pipeline.incoming_only) {
+      if (
+        createdList &&
+        createdList.includes(opts.filepath) &&
+        pipeline.incoming_only
+      ) {
         return
       }
 
-      const { filematch, tasks } = pipeline
-      let _break = false
+      if (!isMatch(pipeline.filematch, pt.basename(opts.filepath))) {
+        /*
+          TODO: return proper onTaskIgnore
+        */
+        return
+      }
 
-      const taskList = _.map(tasks, (taskConfig, index) => finished => {
-        if (_break) return finished()
+      const taskList = createTaskQueue(pipeline, opts)
 
-        let badMatch = false
-        if (index === 0) {
-          if (!isMatch(filematch, pt.basename(inputFile))) {
-            badMatch = true
-          }
+      queue.push(taskList, (_continue) => {
+        if (_.isError(_continue) || _continue === false) {
+          const drain = queue.drain
+          queue.kill()
+          drain(_continue)
         }
-
-        const task = new Task({
-          filepath: inputFile,
-          pluginsDir: opts.pluginsDir,
-          baseDir: opts.baseDir,
-          command: taskConfig.name,
-          match: filematch,
-          keep: taskConfig.keep,
-          args: taskConfig.args,
-          logOnly: badMatch,
-          apiToken: opts.apiToken,
-          onLog: (_task, message) => {
-            opts.onTaskLog(_task, message)
-          },
-          onComplete: () => {
-            if (task.outputFilename) {
-              inputFile = pt.join(
-                pt.dirname(task.filepath),
-                task.outputFilename
-              )
-            } else {
-              _break = true
-            }
-            opts.onTaskComplete(task)
-            setTimeout(() => { finished() })
-          },
-          onError: (_task, error) => {
-            opts.onTaskError(_task, error)
-            _break = true
-            setTimeout(() => { finished() })
-          }
-        })
-
-        task.ready(() => {
-          if (!badMatch && !task.ignored) {
-            opts.onTaskStart(task)
-            task.run()
-          } else if (!badMatch && task.ignored) {
-            opts.onTaskIgnore(task)
-            setTimeout(() => { finished() })
-          } else {
-            opts.onTaskIgnore(task)
-            setTimeout(() => { finished() })
-            _break = true
-          }
-        })
-      })
-
-      queue.push(createQueue(taskList), (er) => {
-        if (er) return opts.onError(er)
       })
     })
   })
