@@ -14,6 +14,7 @@ class PipelineForm extends React.Component {
     onChangeTaskName: PropTypes.func.isRequired,
     onChangeTaskArgs: PropTypes.func.isRequired,
     onChangeTaskKeep: PropTypes.func.isRequired,
+    onChangeTaskFlow: PropTypes.func.isRequired,
     onChangeIncomingOnly: PropTypes.func.isRequired,
     onAddTask: PropTypes.func.isRequired,
     onRemoveTask: PropTypes.func.isRequired,
@@ -97,6 +98,44 @@ class PipelineForm extends React.Component {
             return (
               <div className="row" key={`task-${index}`}>
                 <div className="col-xs-11 col-xs-offset-1 col-xs-offset-1-sm">
+                  {index > 0 &&
+                    <div className="row">
+                      <div className="col-xs-4 text-center m-t m-b">
+                        <div
+                          className="toggle btn-group btn-group-xs m-t-sm m-b-sm"
+                          role="group"
+                          aria-label="..."
+                        >
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              this.props.onChangeTaskFlow(index, 'then')
+                            }}
+                            className={
+                              'btn-flow ' // eslint-disable-line
+                              + (pipeline.tasks[index].flow === 'then' && 'active') // eslint-disable-line
+                            }
+                          >
+                            THEN
+                          </a>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              this.props.onChangeTaskFlow(index, 'and')
+                            }}
+                            className={
+                              'btn-flow ' // eslint-disable-line
+                              + (pipeline.tasks[index].flow === 'and' && 'active') // eslint-disable-line
+                            }
+                          >
+                            AND
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  }
                   <div className="row">
                     <div className="col-xs-12">
                       <TaskForm
@@ -110,13 +149,6 @@ class PipelineForm extends React.Component {
                         onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
                         onRemove={() => { this.props.onRemoveTask(index) }}
                       />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-xs-4 text-center m-t-sm m-b-sm">
-                      {index !== pipeline.tasks.length - 1 &&
-                        <i className="fa fa-arrow-down text-muted"></i>
-                      }
                     </div>
                   </div>
                 </div>

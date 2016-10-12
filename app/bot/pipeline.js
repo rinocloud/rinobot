@@ -5,6 +5,7 @@ import pt from 'path'
 import { isMatch } from './utils'
 import { readCreated } from './history'
 
+
 export const jobCallback = (jobQueue, err) => {
   if (err) {
     const drain = jobQueue.drain
@@ -58,18 +59,15 @@ const createPipeline = (opts) => {
 
   readCreated(createdFilePath, (err, createdList) => {
     _.map(pipelines, (pipeline) => {
-      const { filematch, tasks } = pipeline
       let inputFile = opts.filepath
+      if (createdList && createdList.includes(inputFile) && pipeline.incoming_only) {
+        return
+      }
 
-      if (
-        createdList &&
-        createdList.includes(inputFile) &&
-        pipeline.incoming_only
-      ) return
-
+      const { filematch, tasks } = pipeline
       let _break = false
+
       const taskList = _.map(tasks, (taskConfig, index) => finished => {
-        // break out of this task list map
         if (_break) return finished()
 
         let badMatch = false
@@ -101,7 +99,6 @@ const createPipeline = (opts) => {
             } else {
               _break = true
             }
-
             opts.onTaskComplete(task)
             setTimeout(() => { finished() })
           },
@@ -127,8 +124,8 @@ const createPipeline = (opts) => {
         })
       })
 
-      queue.push(createQueue(taskList), (err) => {
-        if (err) return opts.onError(err)
+      queue.push(createQueue(taskList), (er) => {
+        if (er) return opts.onError(er)
       })
     })
   })

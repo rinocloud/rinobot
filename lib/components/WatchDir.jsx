@@ -18,19 +18,6 @@ const ClearRecord = (
   </Popover>
 )
 
-const MetadataOverlay = (
-  <Popover
-    id="popover-trigger-hover-focus"
-  >
-    <small>
-      You can add information to your data adding metadata, they can also be
-      referenced in task arguments.
-      Click to learn more.
-    </small>
-  </Popover>
-)
-
-
 const PipelineOverlay = (
   <Popover
     id="popover-trigger-hover-focus"
@@ -72,6 +59,7 @@ class WatchDir extends React.Component {
     this.changePipelineMatch = this.changePipelineMatch.bind(this)
     this.changePipelineTaskName = this.changePipelineTaskName.bind(this)
     this.changePipelineTaskArgs = this.changePipelineTaskArgs.bind(this)
+    this.changePipelineTaskFlow = this.changePipelineTaskFlow.bind(this)
 
     this.addMetadata = this.addMetadata.bind(this)
     this.removeMetadata = this.removeMetadata.bind(this)
@@ -129,7 +117,8 @@ class WatchDir extends React.Component {
               $push: [{
                 name: null,
                 args: null,
-                keep: true
+                keep: true,
+                flow: 'then'
               }]
             }
           }
@@ -209,6 +198,23 @@ class WatchDir extends React.Component {
             tasks: {
               [taskIndex]: {
                 keep: { $set: args }
+              }
+            }
+          }
+        }
+      }
+    }))
+  }
+
+  changePipelineTaskFlow(index, taskIndex, args) {
+    this.setState(update(this.state, {
+      isSaved: { $set: false },
+      formData: {
+        pipelines: {
+          [index]: {
+            tasks: {
+              [taskIndex]: {
+                flow: { $set: args }
               }
             }
           }
@@ -457,6 +463,8 @@ class WatchDir extends React.Component {
                         this.changePipelineTaskArgs(index, taskIndex, args)}
                       onChangeTaskKeep={(taskIndex, args) =>
                         this.changePipelineTaskKeep(index, taskIndex, args)}
+                      onChangeTaskFlow={(taskIndex, args) =>
+                        this.changePipelineTaskFlow(index, taskIndex, args)}
                       onChangeIncomingOnly={args =>
                         this.changePipelineIncomingOnly(index, args)}
                       onAddTask={() =>

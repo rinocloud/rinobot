@@ -71,8 +71,6 @@ class TaskForm extends React.Component {
       name === 'custom'
     )
 
-    console.log(isCustomCommand)
-
     const isPluginCommand = _.map(installDeps, 'value').includes(name)
     const selectedValue = name || ''
 

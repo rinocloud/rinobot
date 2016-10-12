@@ -64,47 +64,49 @@ metadata:
   key: value
 ```
 
-## Pipeline algorithm
+## Pipeline sequence algorithm
 
-filepath = 'file which has appeared in watched dir'
-
-```javascript
-
-_.map(pipelines, (pipeline) => {
-  let inputFile = 'file/picked/up/by/rinobot.txt'
-  _.map(pipeline.tasks, (task, index) => {
-    let ignore = false
-    if (index === 0) {
-      if (!match(task.filematch, inputFile)) {
-        ignore = true
-      }
-    }
-    const t = createTask(inputFile, options)
-    t.onComplete(() => {
-      inputFile = t.outputFile
-      done()
-    })
-    t.ready(function(){
-      if (!t.ignored && !ignore) {
-        // t.doIgnore now does all normal checks
-        // except for pattern matching
-        t.run()
-      } else {
-        done()
-      }
-    })
-  })
-})
-
-
+```python
+tasks = [
+  {
+    name: rebin,
+    args: 2,
+    flow: None
+  },
+  {
+    name: rebin,
+    args: 5,
+    flow: and
+  },
+  {
+    name: plot,
+    flow: then
+  },
+  {
+    name: copy,
+    flow: then
+  }
+]
 ```
 
-task will output a file in the temporary folder eg:
-`.rino/tmp/test-normalized.txt` when we run again, this time with the last output
-file as the input, it will create `.rino/temp/test-normalized-rebinned-3.txt`
-finally it will plot that, and we copy everything back to next to the original
-filepath
+```python
+inputFiles = [givenFile]
 
+for (task, index) in enumerate(tasks)
+  if task.flow == "and" or task.flow is None:
+    outputFile = runTask(inputFiles[0])
+    inputFiles.append(outputFile)
+
+  else:
+    oldInputFiles = inputFiles
+    inputFiles = []
+    for oldInputFile in oldInputFiles
+      outputFile = runTask(oldInputFile)
+      inputFiles.append(outputFile)
+
+  if tasks[index + 1] and tasks[index + 1].flow == "then":
+    inputFiles.pop(0)
+```
 
 ## Maintainers
 

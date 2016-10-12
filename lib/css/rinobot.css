@@ -465,3 +465,46 @@ span.block-title{
 .config .col-xs-offset-1-sm{
   margin-left: 4%;
 }
+
+.config .btn-flow{
+  padding: 7px;
+  color: #555;
+  min-width: auto!important;
+  width: 25px;
+  font-size: 11px;
+  border: 1px solid #bdc7d2;
+  font-weight: 500;
+}
+
+.btn-flow.active {
+    color: #6a7084;
+    background-color: #e6e7ec;
+    background-image: -webkit-linear-gradient(#e2e3e9 0,#ebecf0 100%);
+    background-image: linear-gradient(#e2e3e9 0,#ebecf0 100%);
+    box-shadow: inset 0 0 0 1px #d9d8dd;
+}
+
+.btn-flow:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+.btn-flow:first-child {
+    border-radius: 3px 0 0 3px;
+    border-right: 0;
+}
+
+.config .btn-flow:focus,
+.config .btn-flow:hover,
+.config .btn-flow:visited,
+.config .btn-flow:active{
+  outline: none;
+  background-color: #fafafa;
+}
+
+.config .btn-flow .active:focus,
+.config .btn-flow .active:hover,
+.config .btn-flow .active:visited,
+.config .btn-flow .active:active{
+  outline: none;
+  background-color: #fafafa;
+}
