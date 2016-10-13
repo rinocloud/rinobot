@@ -22,6 +22,12 @@ import {
 } from './history'
 
 
+export const createTask = (opts) =>
+  new Task({
+    ...opts
+  })
+
+
 export class Task {
   /*
     Rinobot Task
@@ -34,7 +40,6 @@ export class Task {
       baseDir: the directory being watched by Rinobot
       pluginsDir: absolute filepath to plugins
       command: name of task to run
-      march: pattern to match file with
       args: any arguments to the command
       apiToken: Rinocloud api token
     })
@@ -53,8 +58,8 @@ export class Task {
     this.onLog = (message) => opts.onLog && opts.onLog(this, message)
 
     this.onError = (err) =>
-      opts.onError && this.removeHistory(() => {
-        opts.onError(this, err)
+      opts.onComplete && this.removeHistory(() => {
+        opts.onComplete(this, err)
       })
 
     this.filepath = opts.filepath
@@ -62,7 +67,6 @@ export class Task {
     this.pluginsDir = opts.pluginsDir || ''
 
     this.command = opts.command
-    this.match = opts.match
     this.args = opts.args || ''
     this.apiToken = opts.apiToken || null
     this.keep = opts.keep
@@ -96,7 +100,7 @@ export class Task {
       this.isRepeat.bind(this),
       this.initHistory.bind(this)
     ], () => {
-      this.readyFunc()
+      this.readyFunc(this)
     })
   }
 

@@ -1,4 +1,4 @@
-import { Task } from './task'
+import { createTask } from './task'
 import async from 'async'
 import _ from 'lodash'
 import pt from 'path'
@@ -9,75 +9,77 @@ import { readCreated } from './history'
 export const queue = async.queue((job, callback) => job(callback), 1)
 
 
-const createTaskQueue = (pipeline, opts) => {
-  const { filematch, tasks } = pipeline
-  let inputFile = opts.filepath
-
-  const taskList = _.map(tasks, (taskConfig) => finished => {
-    // let badMatch = false
-    // if (index === 0) {
-    //   if (!isMatch(filematch, pt.basename(inputFile))) {
-    //     badMatch = true
-    //   }
-    // }
-
-    const onLog = (_task, message) => {
-      opts.onTaskLog(_task, message)
+export const sortTasks = (tasks) => {
+  const sortedTasks = []
+  let currentRow = []
+  _.each(tasks, (task, index) => {
+    let nextTask = null
+    if (index < tasks.length - 1) {
+      nextTask = tasks[index + 1]
     }
-
-    const onComplete = () => {
-      if (task.outputFilename) {
-        inputFile = pt.join(
-          pt.dirname(task.filepath),
-          task.outputFilename
-        )
-        opts.onTaskComplete(task)
-        setTimeout(() => { finished(true) })
-      } else {
-        opts.onTaskComplete(task)
-        setTimeout(() => { finished(false) })
-      }
+    currentRow.push(task)
+    if (nextTask && (nextTask.flow === 'then' || nextTask.flow === null)) {
+      sortedTasks.push(currentRow)
+      currentRow = []
+    } else if (!nextTask) {
+      sortedTasks.push(currentRow)
     }
-
-    const onError = (_task, error) => {
-      opts.onTaskError(_task, error)
-      setTimeout(() => { finished(false) })
-    }
-
-    const taskProcess = (task) => {
-      if (/* !badMatch && */ !task.ignored) {
-        opts.onTaskStart(task)
-        task.run()
-      } else if (/* !badMatch && */ task.ignored) {
-        opts.onTaskIgnore(task)
-        setTimeout(() => { finished(true) })
-      }
-      // else {
-      //   opts.onTaskIgnore(task)
-      //   setTimeout(() => { finished(false) })
-      // }
-    }
-
-    const task = new Task({
-      filepath: inputFile,
-      pluginsDir: opts.pluginsDir,
-      baseDir: opts.baseDir,
-      command: taskConfig.name,
-      match: filematch,
-      keep: taskConfig.keep,
-      args: taskConfig.args,
-      apiToken: opts.apiToken,
-      onLog,
-      onComplete,
-      onError
-    })
-
-    task.ready(() => {
-      taskProcess(task)
-    })
   })
 
-  return taskList
+  return sortedTasks
+}
+
+
+const createTaskQueue = (pipeline, opts, callback) => {
+  const sortedTasks = sortTasks(pipeline.tasks)
+  let inputFiles = [opts.filepath]
+
+  const taskList = _.flatMap(sortedTasks, (taskBatch) => {
+    const outputFiles = []
+    const batch = _.flatMap(taskBatch, (taskConfig) => { // eslint-disable-line
+      return _.flatMap(inputFiles, (inputFile) => finished => {
+        const onComplete = (task, err) => {
+          if (err) {
+            opts.onTaskError(task, err)
+            return setTimeout(() => { finished(false) })
+          }
+          opts.onTaskComplete(task)
+          if (task.outputFilename) {
+            const outputFile = pt.join(pt.dirname(task.filepath), task.outputFilename)
+            outputFiles.push(outputFile)
+            setTimeout(() => { finished(true) })
+          } else {
+            setTimeout(() => { finished(false) })
+          }
+        }
+
+        createTask({
+          filepath: inputFile,
+          pluginsDir: opts.pluginsDir,
+          baseDir: opts.baseDir,
+          apiToken: opts.apiToken,
+          onLog: opts.onTaskLog,
+          command: taskConfig.name,
+          keep: taskConfig.keep,
+          args: taskConfig.args,
+          onComplete
+        })
+        .ready((task) => {
+          if (!task.ignored) {
+            opts.onTaskStart(task)
+            task.run()
+          } else {
+            opts.onTaskIgnore(task)
+            setTimeout(() => { finished(true) })
+          }
+        })
+      }) // eslint-disable-line
+    })
+    inputFiles = outputFiles
+    return batch
+  })
+
+  callback(taskList)
 }
 
 
@@ -96,20 +98,18 @@ const createPipeline = (opts) => {
       }
 
       if (!isMatch(pipeline.filematch, pt.basename(opts.filepath))) {
-        /*
-          TODO: return proper onTaskIgnore
-        */
+        /* TODO: return proper onTaskIgnore */
         return
       }
 
-      const taskList = createTaskQueue(pipeline, opts)
-
-      queue.push(taskList, (_continue) => {
-        if (_.isError(_continue) || _continue === false) {
-          const drain = queue.drain
-          queue.kill()
-          drain(_continue)
-        }
+      createTaskQueue(pipeline, opts, (taskList) => {
+        queue.push(taskList, (_continue) => {
+          if (_.isError(_continue) || _continue === false) {
+            const drain = queue.drain
+            queue.kill()
+            drain(_continue)
+          }
+        })
       })
     })
   })

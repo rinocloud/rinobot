@@ -67,45 +67,55 @@ metadata:
 ## Pipeline sequence algorithm
 
 ```python
-tasks = [
-  {
-    name: rebin,
-    args: 2,
-    flow: None
-  },
-  {
-    name: rebin,
-    args: 5,
-    flow: and
-  },
-  {
-    name: plot,
-    flow: then
-  },
-  {
-    name: copy,
-    flow: then
-  }
-]
+tasks = [{
+    "name": "rebin2",
+    "flow": "then"
+},{
+    "name": "rebin4",
+    "flow": "and"
+},{
+    "name": "plot",
+    "flow": "then",
+},{
+    "name": "replot1",
+    "flow": "then",
+},{
+    "name": "replot2",
+    "flow": "and",
+},{
+    "name": "fin",
+    "flow": "then",
+}]
 ```
 
 ```python
-inputFiles = [givenFile]
+sortedTasks = []
+currentRow = []
+for index, t in enumerate(tasks):
+    nextTask = None
+    if index < len(tasks) - 1:
+        nextTask = tasks[index + 1]
 
-for (task, index) in enumerate(tasks)
-  if task.flow == "and" or task.flow is None:
-    outputFile = runTask(inputFiles[0])
-    inputFiles.append(outputFile)
+    currentRow.append(t)
 
-  else:
-    oldInputFiles = inputFiles
-    inputFiles = []
-    for oldInputFile in oldInputFiles
-      outputFile = runTask(oldInputFile)
-      inputFiles.append(outputFile)
+    if nextTask and nextTask["flow"] == "then":
+        sortedTasks.append(currentRow)
+        currentRow = []
+    elif not nextTask:
+        sortedTasks.append(currentRow)
 
-  if tasks[index + 1] and tasks[index + 1].flow == "then":
-    inputFiles.pop(0)
+inputFiles = ["data.txt"]
+
+for tasks in sortedTasks:
+    outputFiles = []
+
+    for task in tasks:
+        for inputFile in inputFiles:
+            outputFile = runTask(inputFile, task)
+            outputFiles.append(outputFile)
+
+    inputFiles = outputFiles
+
 ```
 
 ## Maintainers

@@ -279,4 +279,56 @@ describe('Pipeline', () => {
       onTaskComplete: onComplete,
     })
   })
+
+  it('should run correct flow', (done) => {
+    const config = {
+      pipelines: [
+        {
+          filematch: '*.txt',
+          tasks: [
+            {
+              name: 'rinobot-plugin-normalize',
+              args: '--column=2 --algo=max',
+              flow: 'then'
+            },
+            {
+              name: 'rinobot-plugin-normalize',
+              args: '--column=3 --algo=sum',
+              flow: 'and'
+            },
+            {
+              name: 'rinobot-plugin-shift',
+              args: '--column=2 --shift=20',
+              flow: 'then'
+            },
+          ]
+        }
+      ]
+    }
+
+    fs.copySync(
+      getTemplatePath(pt.join('data', 'test.txt')),
+      getFixturePath('flow.txt')
+    )
+
+    let doneCount = 0
+    const onComplete = () => {
+      console.log('onComplete')
+      doneCount += 1
+      if (doneCount === 3) done()
+    }
+
+    createPipeline({
+      pluginsDir: getTemplatePath(''),
+      filepath: getFixturePath('flow.txt'),
+      baseDir: getFixturePath(''),
+      config,
+      onTaskStart: () => {},
+      onTaskLog: () => {},
+      onTaskError: () => {},
+      onTaskIgnore: () => {},
+      onError: () => {},
+      onTaskComplete: onComplete,
+    })
+  })
 })
