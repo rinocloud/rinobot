@@ -1,39 +1,11 @@
 import React, { PropTypes } from 'react'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
 import { shell } from 'electron'
+import update from 'react-addons-update'
+import pt from 'path'
 import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
 import { LogScroll } from './LogScroll'
-import pt from 'path'
-import update from 'react-addons-update'
 
-
-const ClearRecord = (
-  <Popover
-    id="popover-trigger-hover-focus"
-  >
-    <small>
-      This will clear Rinobots logs for this folder, so you can re-run all pipelines.
-    </small>
-  </Popover>
-)
-
-const PipelineOverlay = (
-  <Popover
-    id="popover-trigger-hover-focus"
-  >
-    <small>
-      This is where you can add a flow of tasks for your file or a specific file you can select.
-      Click to learn more.
-    </small>
-  </Popover>
-)
-
-
-const openExternal = (e) => {
-  e.preventDefault()
-  shell.openExternal(e.target.href)
-}
 
 class WatchDir extends React.Component {
   static propTypes = {
@@ -409,6 +381,36 @@ class WatchDir extends React.Component {
         </div>
 
         <div className="main config p-l p-r">
+          <div className="row m-b">
+            <div className="col-sm-12">
+              {formData.pipelines.length !== 0 &&
+                <a
+                  href="#"
+                  className="btn btn-sm btn-default pull-right"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.addMetadata()
+                  }}
+                >
+                  <i className="fa fa-plus-circle m-r-sm" />
+                  Add Metadata
+                </a>
+              }
+              <a
+                href="#"
+                className="btn btn-sm btn-add-pipeline pull-right m-r-sm"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.addPipeline()
+                }}
+              >
+                <i className="fa fa-bolt m-r-sm" />
+                New Pipeline
+              </a>
+            </div>
+          </div>
+
+
           <div className="row">
             <div className="col-sm-12">
               {formData.pipelines.map((o, index) =>
@@ -440,23 +442,6 @@ class WatchDir extends React.Component {
                 </div>
               )}
 
-              <h4>
-                <strong>
-                  <a
-                    href="#"
-                    className="btn-add-metadata"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.addPipeline()
-                    }}
-                  >
-                    <i className="fa fa-plus-circle m-r-sm" />
-                    New Pipeline
-                  </a>
-                </strong>
-              </h4>
-
-
               {formData.metadata.map((o, index) =>
                 <div className="row m-t" key={`metadata-${index}`}>
                   <div className="col-xs-1 col-xs-1-sm col-xs-11" />
@@ -473,44 +458,15 @@ class WatchDir extends React.Component {
                   </div>
                 </div>
               )}
-
-              {formData.pipelines.length !== 0 &&
-                <div className="row">
-                  <div className="col-sm-12">
-                    <h4>
-                      <strong>
-                        <a
-                          href="#"
-                          className="btn-add-metadata"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            this.addMetadata()
-                          }}
-                        >
-                          <i className="fa fa-plus-circle m-r-sm" />
-                          Add Metadata
-                        </a>
-                      </strong>
-                    </h4>
-                  </div>
-                </div>
-              }
             </div>
           </div>
 
-
           {dir.isStarted &&
-            <div className="row m-a p-l-lg p-r-lg">
-              <hr />
-            </div>
-          }
-
-          {dir.isStarted &&
-            <div className="row plugins m-b-lg">
-              <div className="col-sm-10 col-sm-offset-1">
+            <div className="row plugins m-b-lg m-t">
+              <div className="col-sm-12 col-sm-offset-">
                 <div className="row m-b">
                   <div className="col-sm-6">
-                    <h6 className="block-title" style={{ color: '#666' }}>
+                    <strong>
                       Activity
                       <span
                         className="text-muted m-l"
@@ -521,7 +477,7 @@ class WatchDir extends React.Component {
                         {dir.processedFiles}/{dir.totalFiles} files processed
                       </span>
 
-                    </h6>
+                    </strong>
                   </div>
                 </div>
 

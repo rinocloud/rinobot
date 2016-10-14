@@ -1,3 +1,10 @@
+$font-family: 'Karla', sans-serif;
+
+$primary-color: #7C87A8;
+$primary-dark: #737d9c;
+$panel-color: rgba(124,135,168, 1);
+$white: #f7f8fb;
+
 html, body {
   height: 100%;
   margin: 0;
@@ -9,11 +16,11 @@ body {
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
   font-weight: 400;
-  font-family: 'Karla', sans-serif;
+  font-family: $font-family;
 }
 
 h1, h2, h3, h4, h5, h6{
-  font-family: 'Karla', sans-serif;
+  font-family: $font-family;
 }
 
 .container {
@@ -90,7 +97,6 @@ h1, h2, h3, h4, h5, h6{
 .notification {
   display: inline-block;
   cursor: default;
-  webkit-user-select: none;
   background: rgba(255, 255, 255, .2);
   padding: 8px 14px 9px;
   margin-left: 10px;
@@ -99,13 +105,17 @@ h1, h2, h3, h4, h5, h6{
   font-size: 11px;
 }
 
+/*
+  * Sidebar
+*/
+
 .sidebar {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   width: 200px;
-  background-color: #7C87A8;
+  background-color: $primary-color;
   padding-top: 40px;
 }
 
@@ -113,7 +123,7 @@ h1, h2, h3, h4, h5, h6{
   background-color: inherit;
   border: none;
   padding: 6px 25px;
-  color: #f7f8fb;
+  color: $white;
 }
 
 .sidebar .active a {
@@ -125,7 +135,7 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .sidebar .list-group-item:hover{
-  background-color: #737d9c;
+  background-color: $primary-dark;
   color: #fff;
 }
 
@@ -144,12 +154,17 @@ h1, h2, h3, h4, h5, h6{
 
 .sidebar .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   z-index: 2;
-  /*background-color: #E1E4EF;*/
-  /*color: #7C87A8;*/
-  text-decoration: underline;
+  background-color: #E1E4EF;
+  color: $primary-color;
+  background-color: $primary-dark;
+  color: #fff;
   border-color: #808FBF;
   z-index: 1;
 }
+
+/*
+  * Logs
+*/
 
 .log {
   padding: 8px;
@@ -173,6 +188,10 @@ h1, h2, h3, h4, h5, h6{
   margin-right: 3px;
 }
 
+/*
+  * Plugins
+*/
+
 .plugins a{
   color: #7E86A0;
 }
@@ -183,36 +202,27 @@ h1, h2, h3, h4, h5, h6{
   border: 1px solid #7E86A0;
 }
 
-.btn-red:hover {
- color: #fd0042 ;
-}
-.btn-red-x:hover {
- color: #fd0042 ;
- background-color: #ffffff;
-}
-.btn-red-x {
- color: #eee;
- background-color: #ffffff;
-}
-
+/*
+  * Buttons
+*/
 
 .btn-add-folder {
-  background-color: #7C87A8;
+  background-color: $primary-color;
   color: white;
   font-size: 1.4em;
-  border: 1px solid #7C87A8;
+  border: 1px solid $primary-color;
   padding: 10px;
 }
 
 .btn-add-folder span{
   margin-left: 10px;
 }
+
 .btn-add-folder:hover,
 .btn-add-folder:focus,
 .btn-add-folder:visited {
   color:  white;
 }
-
 
 .btn-add-task {
   background-color: #fff;
@@ -228,67 +238,38 @@ h1, h2, h3, h4, h5, h6{
 .btn-add-task:hover,
 .btn-add-task:focus,
 .btn-add-task:visited {
-  color:  #7C87A8;
+  color:  $primary-color;
 }
 
-.btn-add-pipeline {
-  background-color: #fff;
-  color: #999;
-  font-size: 1.2em;
-}
-.btn-add-pipeline i{
-  font-size: 1.4em;
-}
-.btn-add-pipeline:hover,
-.btn-add-pipeline:focus,
-.btn-add-pipeline:visited {
-  color:  #7C87A8;
+.btn-add-pipeline{
+  background-color: $primary-color;
+  color: #fafafa;
 }
 
-.btn-add-metadata {
-  background-color: #fff;
-  color: #555;
-  font-size: 1em;
-}
-.btn-add-metadata i{
-  font-size: 1.2em;
-}
-.btn-add-metadata:hover,
-.btn-add-metadata:focus,
-.btn-add-metadata:visited {
-  color:  #7C87A8;
+.btn-add-pipeline:hover{
+  color: #ccc;
+  text-decoration: underline;
 }
 
+.btn-add-pipeline:visited{
+  color: #fafafa;
+}
+
+.btn-add-pipeline:focus{
+  color: #fafafa;
+  text-decoration: underline;
+}
 
 .btn-start {
   border-color: #49925d;
   background-color: #80BF91;
   color: #fff;
 }
+
 .btn-start {
   border-color: #49925d;
   background-color: #49925d;
   color: #fff;
-}
-
-.row-centered {
-    text-align:center;
-}
-.col-centered {
-    display:inline-block;
-    float:none;
-    /* reset the text-align */
-    text-align:left;
-    /* inline-block space fix */
-    right:-4px;
-}
-
-.pipeline-position-x-file {
-    font-size: 1.2em;
-    float: right;
-    position: relative;
-    top: 20px;
-    right: 40px;
 }
 
 .task-position-x-file{
@@ -297,12 +278,7 @@ h1, h2, h3, h4, h5, h6{
   position: relative;
   top: 7px;
   right: 3px;
-}
-
-.position-x-task{
-  position: relative;
-  top: -28px;
-  left: 11px;
+  color: #999;
 }
 
 .position-x-meta{
@@ -310,25 +286,9 @@ h1, h2, h3, h4, h5, h6{
   right: 72px;
 }
 
-.pipeline-metadata-x-file {
-    font-size: 1.2em;
-    float: right;
-    position: relative;
-    top: 6px;
-    right: 40px;
-}
-
-
-.position-question{
-  position: absolute;
-  left: 200px;
-
-}
-
 .config .form-control, .config .input-group-addon {
   border: 1px solid #eeeeee;
   color: #999;
-  /*height: 36px;*/
 }
 
 .config .input-group-addon {
@@ -361,7 +321,6 @@ h1, h2, h3, h4, h5, h6{
   color: #888;
 }
 
-
 .config a:hover, .config a:focus, .config a:visited, .config a:active{
   text-decoration: none;
 }
@@ -379,7 +338,6 @@ h1, h2, h3, h4, h5, h6{
   text-align: center;
   font-size: 0.9em;
 }
-
 
 span.block-title{
   color: #bbbbbb;
@@ -410,21 +368,12 @@ span.block-title{
   vertical-align: sub;
 }
 
-.header .btn{
-  /*color: #777;*/
-}
-
-.header .btn-red{
-  border:none;
-}
-
 .main {
   margin-top: 80px;
 }
 
 .pipeline{
   height: 100%;
-  /*border-left: 1px solid #bfcfda;*/
 }
 
 .sf_wrapper {
@@ -458,18 +407,6 @@ span.block-title{
   height: 100%;
   width: 1px;
   background: #bfcfda;
-}
-
-.btn-add-pipeline{
-  position: relative;
-  left: -19px;
-  top: -2px;
-}
-
-.btn-add-metadata{
-  position: relative;
-  /*left: -16px;*/
-  top: -2px;
 }
 
 .config .btn-flow{
@@ -521,9 +458,6 @@ span.block-title{
   padding-left: 15px;
 }
 
-.row-and{
-}
-
 .sf_wrapper_task {
   padding: 0px;
   float: left;
@@ -553,14 +487,12 @@ span.block-title{
   height: 50px;
 }
 
-
 .grey_horz_task_last{
-  /*border-left: 0;*/
   height: 50px;
 }
 
 .row-flow{
-  margin-left: -69px;
+  margin-left: -70px;
 }
 
 .row-task{
@@ -571,45 +503,31 @@ span.block-title{
   padding-bottom: 35px;
 }
 
-
 .config .panel-primary {
   border-radius: 2px;
-  border-color: rgba(124,135,168, 1);
+  border-color: $panel-color;
 }
 
 .config .panel-heading {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  background-color: rgba(124,135,168, 1);
+  background-color: $panel-color;
   border-color: rgba(124,135,168, 0);
 }
 
-.config .panel-heading .form-control{
-  /*width: 200px;*/
-  /*border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;*/
-}
-
-.config .btn {
+.config .panel-heading .btn {
   border-radius: 2px;
   color: #fff;
   border-color: #ccc;
-  background-color: rgba(124,135,168, 1);
+  background-color: $panel-color;
 }
 
 .config .form-filematch input, .config .form-filematch input:focus{
-  /*background-color: inherit;*/
-  /*border: 1px solid rgba(124,135,168, 1);*/
   outline: none;
-  /*color: #fafafa;*/
-  font-weight: 600;
   margin-left: 0px;
 }
 
 .config .form-filematch input::-webkit-input-placeholder {
-  /*color: #fafafa;*/
 }
 
 .config .form-filematch label {
@@ -618,12 +536,3 @@ span.block-title{
   padding-top: 5px;
   width: 13%;
 }
-/*
-.config .form-filematch .col-xs-8{
-  padding-left: 0px;
-}
-
-.config .form-filematch .col-xs-2{
-  width: 20%;
-  padding-right: 0px;
-}*/

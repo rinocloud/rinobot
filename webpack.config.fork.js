@@ -6,7 +6,7 @@ const isProd = nodeEnv === 'production'
 
 export default {
   target: 'node',
-  devtool: 'source-map',
+  devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
   devServer: {
     stats: 'errors-only',
   },
