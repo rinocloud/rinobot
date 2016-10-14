@@ -4,11 +4,16 @@ html, body {
 }
 
 body {
-  font-size: 14px;
-  font-weight: 400;
-  min-width: 770px;
   -webkit-font-smoothing: antialiased;
-  background-color: #ffffff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  font-weight: 400;
+  font-family: 'Karla', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6{
+  font-family: 'Karla', sans-serif;
 }
 
 .container {
@@ -16,7 +21,7 @@ body {
 }
 
 .main-container .container-fluid{
-  margin-left: 180px;
+  margin-left: 200px;
 }
 
 .wrapper {
@@ -99,7 +104,7 @@ body {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 180px;
+  width: 200px;
   background-color: #7C87A8;
   padding-top: 40px;
 }
@@ -139,8 +144,9 @@ body {
 
 .sidebar .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
   z-index: 2;
-  background-color: #E1E4EF;
-  color: #7C87A8;
+  /*background-color: #E1E4EF;*/
+  /*color: #7C87A8;*/
+  text-decoration: underline;
   border-color: #808FBF;
   z-index: 1;
 }
@@ -212,6 +218,9 @@ body {
   background-color: #fff;
   color: #999;
   font-size: 1em;
+  position: relative;
+  left: 52px;
+  top: 25px;
 }
 .btn-add-task i{
   font-size: 1.2em;
@@ -238,7 +247,7 @@ body {
 
 .btn-add-metadata {
   background-color: #fff;
-  color: #999;
+  color: #555;
   font-size: 1em;
 }
 .btn-add-metadata i{
@@ -312,14 +321,14 @@ body {
 
 .position-question{
   position: absolute;
-  left: 180px;
+  left: 200px;
 
 }
 
 .config .form-control, .config .input-group-addon {
   border: 1px solid #eeeeee;
   color: #999;
-  height: 36px;
+  /*height: 36px;*/
 }
 
 .config .input-group-addon {
@@ -384,16 +393,21 @@ span.block-title{
 .header {
     position: fixed;
     top: 0;
-    left: 180px;
+    left: 200px;
     padding: 20px 20px;
     right: 0;
     background: #fff;
     border-bottom: 1px solid #e1e1ec;
     cursor: text;
     z-index: 5;
-    margin-bottom: 100px;
     -webkit-app-region: drag;
-    /*box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);*/
+}
+
+.header-link{
+  font-size: 1.2em;
+  margin-top: -6px;
+  color: #333;
+  vertical-align: sub;
 }
 
 .header .btn{
@@ -405,12 +419,12 @@ span.block-title{
 }
 
 .main {
-  margin-top: 60px;
+  margin-top: 80px;
 }
 
 .pipeline{
   height: 100%;
-  border-left: 1px solid #bfcfda;
+  /*border-left: 1px solid #bfcfda;*/
 }
 
 .sf_wrapper {
@@ -454,16 +468,8 @@ span.block-title{
 
 .btn-add-metadata{
   position: relative;
-  left: -16px;
+  /*left: -16px;*/
   top: -2px;
-}
-
-.config .col-xs-1-sm {
-  width: 2%;
-}
-
-.config .col-xs-offset-1-sm{
-  margin-left: 4%;
 }
 
 .config .btn-flow{
@@ -474,6 +480,7 @@ span.block-title{
   font-size: 11px;
   border: 1px solid #bdc7d2;
   font-weight: 500;
+
 }
 
 .btn-flow.active {
@@ -508,3 +515,115 @@ span.block-title{
   outline: none;
   background-color: #fafafa;
 }
+
+.row-task {
+  margin-left: 0px;
+  padding-left: 15px;
+}
+
+.row-and{
+}
+
+.sf_wrapper_task {
+  padding: 0px;
+  float: left;
+  width: 0;
+  position: relative;
+  min-height: 1px;
+}
+
+.grey_horz_task {
+  position: absolute;
+  top: 87px;
+  left: -16px;
+  width: 100px;
+  height: 106px;
+  border-left: 1px solid #bfcfda;
+  border-top: 1px solid #bfcfda;
+  display: block;
+  opacity: 0.5;
+}
+
+.grey_horz_task_first {
+  top: 18px;
+}
+
+.grey_horz_task_only {
+  top: 18px;
+  height: 50px;
+}
+
+
+.grey_horz_task_last{
+  /*border-left: 0;*/
+  height: 50px;
+}
+
+.row-flow{
+  margin-left: -69px;
+}
+
+.row-task{
+  margin-left: 50px;
+}
+
+.config .panel-body{
+  padding-bottom: 35px;
+}
+
+
+.config .panel-primary {
+  border-radius: 2px;
+  border-color: rgba(124,135,168, 1);
+}
+
+.config .panel-heading {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  background-color: rgba(124,135,168, 1);
+  border-color: rgba(124,135,168, 0);
+}
+
+.config .panel-heading .form-control{
+  /*width: 200px;*/
+  /*border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;*/
+}
+
+.config .btn {
+  border-radius: 2px;
+  color: #fff;
+  border-color: #ccc;
+  background-color: rgba(124,135,168, 1);
+}
+
+.config .form-filematch input, .config .form-filematch input:focus{
+  /*background-color: inherit;*/
+  /*border: 1px solid rgba(124,135,168, 1);*/
+  outline: none;
+  /*color: #fafafa;*/
+  font-weight: 600;
+  margin-left: 0px;
+}
+
+.config .form-filematch input::-webkit-input-placeholder {
+  /*color: #fafafa;*/
+}
+
+.config .form-filematch label {
+  text-align: right;
+  margin-bottom: 0;
+  padding-top: 5px;
+  width: 13%;
+}
+/*
+.config .form-filematch .col-xs-8{
+  padding-left: 0px;
+}
+
+.config .form-filematch .col-xs-2{
+  width: 20%;
+  padding-right: 0px;
+}*/

@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
 import { TaskForm } from './TaskForm'
 import _ from 'lodash'
-import { Popover, OverlayTrigger } from 'react-bootstrap'
-import { shell } from 'electron'
 
 class PipelineForm extends React.Component {
 
@@ -24,177 +22,165 @@ class PipelineForm extends React.Component {
   render() {
     const { pipeline, registry, installedPlugins } = this.props //eslint-disable-line
 
-    const fileOverlay = (
-      <Popover
-        id="popover-trigger-hover-focus"
-      >
-        <small>
-          This lets you specify on certain filetypes to run a pipeline of tasks on. <code>*</code>
-          means everything, but <code>*.txt</code> would only work on 'txt' files.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
-
-    const TaskOverlay = (
-      <Popover
-        id="popover-trigger-hover-focus"
-      >
-        <small>
-          These are actions that will happen when files appear in the folder.
-          Click to learn more.
-        </small>
-      </Popover>
-    )
-
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
-
     return (
       <div className="row">
         <div className="col-xs-12">
-          <div className="row m-b">
-            <div className="col-xs-4">
-              <OverlayTrigger
-                trigger={['hover']}
-                placement="bottom"
-                overlay={fileOverlay}
-              >
-                <a
-                  style={{ top: '25px', left: '-7px' }}
-                  className="fa fa-question-circle-o text-muted col-xs-1 pull-right"
-                  href="http://docs.rinocloud.com/rinobot/metadata/getting_started.html"
-                  onClick={openExternal}
-                >
-                </a>
-              </OverlayTrigger>
-              <input
-                className="form-control form-control-primary"
-                placeholder="Type of file to match"
-                value={pipeline.filematch || ''}
-                onChange={(e) => {
-                  e.preventDefault()
-                  this.props.onChangeMatch(e.target.value)
-                }}
-              />
+          <div className="panel panel-primary">
+            <div className="panel-heading">
+              <div className="">
+                <form className="form-horizontal form-filematch" onSubmit={()=>{}}>
+                  <div className="form-group m-b-0">
+                    <div className="col-xs-4">
+                      <input
+                        className="form-control form-filematch"
+                        placeholder="Files to automate..."
+                        value={pipeline.filematch || ''}
+                        onChange={(e) => {
+                          e.preventDefault()
+                          this.props.onChangeMatch(e.target.value)
+                        }}
+                      />
+                    </div>
+                    <div className="col-xs-2 col-xs-offset-6">
+                      <a
+                        className="btn btn-sm pull-right"
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          this.props.onRemove()
+                        }}
+                      >
+                        <i className="fa fa-times-circle-o m-r-sm" />
+                        Delete pipeline
+                      </a>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="col-xs-1 col-xs-offset-7">
-              <a
-                className="pipeline-position-x-file"
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.props.onRemove()
-                }}
-              >
-                <i className="fa fa-remove btn-red-x"></i>
-              </a>
-            </div>
-          </div>
 
-          {_.map(pipeline.tasks, (task, index) => {
-            return (
-              <div className="row" key={`task-${index}`}>
-                <div className="col-xs-11 col-xs-offset-1 col-xs-offset-1-sm">
-                  {index > 0 &&
-                    <div className="row">
-                      <div className="col-xs-4 text-center m-t m-b">
-                        <div
-                          className="toggle btn-group btn-group-xs m-t-sm m-b-sm"
-                          role="group"
-                          aria-label="..."
-                        >
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              this.props.onChangeTaskFlow(index, 'then')
-                            }}
-                            className={
-                              'btn-flow ' // eslint-disable-line
-                              + (pipeline.tasks[index].flow === 'then' && 'active') // eslint-disable-line
-                            }
-                          >
-                            THEN
-                          </a>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              this.props.onChangeTaskFlow(index, 'and')
-                            }}
-                            className={
-                              'btn-flow ' // eslint-disable-line
-                              + (pipeline.tasks[index].flow === 'and' && 'active') // eslint-disable-line
-                            }
-                          >
-                            AND
-                          </a>
+            <div className="panel-body">
+              {_.map(pipeline.tasks, (task, index) => {
+                let isAnd = false
+                let nextTask = null
+                if (index !== pipeline.tasks.length - 1) {
+                  nextTask = pipeline.tasks[index + 1]
+                }
+                if (task.flow === 'and' || (nextTask && nextTask.flow === 'and')) {
+                  isAnd = true
+                }
+
+                let horzClass = 'grey_horz_task'
+                if (index === 0) {
+                  horzClass = 'grey_horz_task grey_horz_task_first'
+                }
+                if (index === pipeline.tasks.length - 1) {
+                  // !nextTask || nextTask.flow !== 'and'
+                  horzClass = 'grey_horz_task grey_horz_task_last'
+                }
+                if (pipeline.tasks.length === 1) {
+                  horzClass = 'grey_horz_task grey_horz_task_only'
+                }
+
+
+                return (
+                  <div
+                    className={
+                      `row row-task ${(isAnd && 'row-and')}`
+                    }
+                    key={`task-${index}`}
+                  >
+                    <div className="sf_wrapper_task">
+                      <div className={horzClass}></div>
+                    </div>
+                    <div className="col-xs-11">
+                      {index > 0 &&
+                        <div className="row-flow">
+                          <div className="m-t m-b">
+                            <div
+                              className="toggle btn-group btn-group-xs m-t-sm m-b-sm"
+                              role="group"
+                              aria-label="..."
+                            >
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  this.props.onChangeTaskFlow(index, 'then')
+                                }}
+                                className={
+                                  'btn-flow ' // eslint-disable-line
+                                  + (pipeline.tasks[index].flow === 'then' && 'active') // eslint-disable-line
+                                }
+                              >
+                                THEN
+                              </a>
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  this.props.onChangeTaskFlow(index, 'and')
+                                }}
+                                className={
+                                  'btn-flow ' // eslint-disable-line
+                                  + (pipeline.tasks[index].flow === 'and' && 'active') // eslint-disable-line
+                                }
+                              >
+                                AND
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                      <div className="row">
+                        <div className="col-xs-12">
+                          <TaskForm
+                            registry={registry}
+                            installedPlugins={installedPlugins}
+                            name={task.name}
+                            args={task.args}
+                            keep={task.keep}
+                            onChangeName={name => { this.props.onChangeTaskName(index, name) }}
+                            onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
+                            onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
+                            onRemove={() => { this.props.onRemoveTask(index) }}
+                          />
                         </div>
                       </div>
                     </div>
-                  }
-                  <div className="row">
-                    <div className="col-xs-12">
-                      <TaskForm
-                        registry={registry}
-                        installedPlugins={installedPlugins}
-                        name={task.name}
-                        args={task.args}
-                        keep={task.keep}
-                        onChangeName={name => { this.props.onChangeTaskName(index, name) }}
-                        onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
-                        onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
-                        onRemove={() => { this.props.onRemoveTask(index) }}
-                      />
-                    </div>
                   </div>
-                </div>
+                )
+              })}
+              <div className="row">
+                {pipeline.tasks.length === 0 &&
+                  <a
+                    href="#"
+                    className="btn-add-task"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.props.onAddTask()
+                    }}
+                  >
+                    <i className="fa fa-plus-circle" />
+                  </a>
+                }
+                {pipeline.tasks.length !== 0 &&
+                  <a
+                    href="#"
+                    className="btn-add-task"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.props.onAddTask()
+                    }}
+                  >
+                    <i className="fa fa-plus-circle" />
+                  </a>
+                }
               </div>
-            )
-          })}
+            </div>
 
-          <div className="row">
-            {pipeline.tasks.length === 0 &&
-              <div className="col-xs-12 col-xs-offset-">
-                <div className="row">
-                  <div className="col-xs-4 text-center m-t-sm m-b-sm">
-                    <a
-                      href="#"
-                      className="btn-add-task"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.props.onAddTask()
-                      }}
-                    >
-                      <i className="fa fa-plus" />{'  '}
-                      Add task
-                    </a>
-                  </div>
-                </div>
-              </div>
-            }
-            {pipeline.tasks.length !== 0 &&
-              <div className="col-xs-11 col-xs-offset-1-sm">
-                <div className="row">
-                  <div className="col-xs-4 text-center m-t-sm m-b-sm">
-                    <a
-                      href="#"
-                      className="btn-add-task"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.props.onAddTask()
-                      }}
-                    >
-                      <i className="fa fa-plus" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            }
           </div>
+
         </div>
       </div>
     )

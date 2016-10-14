@@ -89,7 +89,12 @@ class WatchDir extends React.Component {
           $push: [{
             filematch: null,
             incoming_only: true,
-            tasks: []
+            tasks: [{
+              name: null,
+              args: null,
+              keep: true,
+              flow: 'then'
+            }]
           }]
         }
       }
@@ -318,22 +323,25 @@ class WatchDir extends React.Component {
         <div className="header">
           <div className="row">
             <div className="col-sm-12">
+
               <a
-                className="text-muted m-r"
+                className="m-r header-link"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault()
                   shell.showItemInFolder(dir.path)
                 }}
               >
-                {pt.basename(dir.path)}/
-                <i className="m-l-sm fa fa-external-link"></i>
+                <strong>
+                  {pt.basename(dir.path)}/
+                  <i className="m-l-sm fa fa-external-link"></i>
+                </strong>
               </a>
 
               {!isSaved &&
                 <a
                   href="#"
-                  className="btn btn-xs btn-default m-r-sm"
+                  className="btn btn-sm btn-default m-r-sm"
                   onClick={(e) => {
                     e.preventDefault()
                     this.onSaveConfig()
@@ -347,7 +355,7 @@ class WatchDir extends React.Component {
               {isSaved &&
                 <a
                   href="#"
-                  className="btn btn-xs btn-default m-r-sm"
+                  className="btn btn-sm btn-default m-r-sm"
                   disabled
                 >
                   <span><i className="fa fa-check"></i> Saved</span>
@@ -357,18 +365,18 @@ class WatchDir extends React.Component {
               {dir.isStarted && !isStarting &&
                 <a
                   href="#"
-                  className="btn btn-xs btn-danger"
+                  className="btn btn-sm btn-danger"
                   onClick={onStopClick}
                 >
                   <i className="m-r-sm fa fa-stop-circle-o" />
-                  Stop
+                  Stop watching
                 </a>
               }
 
               {dir.isStarted && isStarting &&
                 <a
                   href="#"
-                  className="btn btn-xs btn-default"
+                  className="btn btn-sm btn-default"
                   onClick={onStopClick}
                   disabled
                 >
@@ -380,77 +388,32 @@ class WatchDir extends React.Component {
               {!dir.isStarted &&
                 <a
                   href="#"
-                  className="btn btn-xs btn-start"
+                  className="btn btn-sm btn-start"
                   style={{ color: '#fff' }}
                   onClick={onStartClick}
                   data-dismiss="alert"
                 >
-                  Start
+                  Start watching
                   <i className="m-l-sm fa fa-play-circle-o" />
                 </a>
               }
-
-              <OverlayTrigger
-                trigger={['hover']}
-                placement="bottom"
-                overlay={ClearRecord}
-              >
-                <a
-                  href="#"
-                  className="pull-right btn btn-xs btn-default btn-red text-muted"
-                  onClick={removeDotRino}
-                >
-                  Reset history
-                </a>
-              </OverlayTrigger>
-
               <a
                 href="#"
-                className="pull-right m-r-sm btn btn-xs btn-default btn-red text-muted"
+                className="pull-right btn btn-sm btn-default"
                 onClick={onRemoveDirClick}
               >
-                <span><i className="fa fa-trash"></i> Remove</span>
+                <span><i className="fa fa-trash"></i> Remove this folder</span>
               </a>
             </div>
           </div>
         </div>
 
-        <div className="main config">
+        <div className="main config p-l p-r">
           <div className="row">
-            <div className="col-sm-10 col-sm-offset-1">
-              <div className="row m-t m-b">
-                <div className="col-sm-4">
-                  <h6
-                    className="block-title"
-                    style={{ color: '#666' }}
-                  >
-                    Automation Pipeline {'  '}
-                    <OverlayTrigger
-                      trigger={['hover']}
-                      placement="right"
-                      overlay={PipelineOverlay}
-                    >
-                      <a
-                        className="fa fa-question-circle-o m-t-sm text-muted"
-                        href="http://docs.rinocloud.com/rinobot/tasks/getting_started.html"
-                        onClick={openExternal}
-                      >
-                      </a>
-                    </OverlayTrigger>
-                  </h6>
-                </div>
-              </div>
-
+            <div className="col-sm-12">
               {formData.pipelines.map((o, index) =>
                 <div className="row pipeline" key={`pipeline-${index}`}>
-                  <div className="sf_wrapper col-xs-1  col-xs-1-sm">
-                    <div
-                      className={
-                        index === 0 ? 'grey_horz grey_horz_first' : 'grey_horz'
-                      }
-                    ></div>
-                  </div>
-                  <div className="col-xs-11">
+                  <div className="col-xs-12">
                     <PipelineForm
                       pipeline={o}
                       installedPlugins={installedPlugins}
@@ -477,22 +440,22 @@ class WatchDir extends React.Component {
                 </div>
               )}
 
-              <a
-                href="#"
-                className={
-                  formData.pipelines.length === 0 ?
-                    'btn-add-pipeline m-l'
-                  :
-                    'btn-add-pipeline'
-                }
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.addPipeline()
-                }}
-              >
-                <i className="fa fa-plus-circle m-r-sm" />
-                {formData.pipelines.length === 0 && 'Add pipeline'}
-              </a>
+              <h4>
+                <strong>
+                  <a
+                    href="#"
+                    className="btn-add-metadata"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.addPipeline()
+                    }}
+                  >
+                    <i className="fa fa-plus-circle m-r-sm" />
+                    New Pipeline
+                  </a>
+                </strong>
+              </h4>
+
 
               {formData.metadata.map((o, index) =>
                 <div className="row m-t" key={`metadata-${index}`}>
@@ -514,17 +477,21 @@ class WatchDir extends React.Component {
               {formData.pipelines.length !== 0 &&
                 <div className="row">
                   <div className="col-sm-12">
-                    <a
-                      href="#"
-                      className="btn-add-metadata"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.addMetadata()
-                      }}
-                    >
-                      <i className="fa fa-plus m-t" />{'  '}
-                      <small className="">Add metadata</small>
-                    </a>
+                    <h4>
+                      <strong>
+                        <a
+                          href="#"
+                          className="btn-add-metadata"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            this.addMetadata()
+                          }}
+                        >
+                          <i className="fa fa-plus-circle m-r-sm" />
+                          Add Metadata
+                        </a>
+                      </strong>
+                    </h4>
                   </div>
                 </div>
               }

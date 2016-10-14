@@ -75,7 +75,7 @@ class TaskForm extends React.Component {
     const selectedValue = name || ''
 
     // now have access to the options of each installed plugin
-    _.each(installedPlugins, (i) => console.log(i.name, i.options))
+    // _.each(installedPlugins, (i) => console.log(i.name, i.options))
 
     return (
       <div className="row">

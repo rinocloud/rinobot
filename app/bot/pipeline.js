@@ -34,50 +34,66 @@ const createTaskQueue = (pipeline, opts, callback) => {
   const sortedTasks = sortTasks(pipeline.tasks)
   let inputFiles = [opts.filepath]
 
-  const taskList = _.flatMap(sortedTasks, (taskBatch) => {
-    const outputFiles = []
-    const batch = _.flatMap(taskBatch, (taskConfig) => { // eslint-disable-line
-      return _.flatMap(inputFiles, (inputFile) => finished => {
-        const onComplete = (task, err) => {
-          if (err) {
-            opts.onTaskError(task, err)
-            return setTimeout(() => { finished(false) })
-          }
-          opts.onTaskComplete(task)
-          if (task.outputFilename) {
-            const outputFile = pt.join(pt.dirname(task.filepath), task.outputFilename)
-            outputFiles.push(outputFile)
-            setTimeout(() => { finished(true) })
-          } else {
-            setTimeout(() => { finished(false) })
-          }
+  const mapInputFiles = (taskConfig, outputFiles) =>
+    _.flatMap(inputFiles, (inputFile) => subFinished => {
+      const onComplete = (task, err) => {
+        if (err) {
+          opts.onTaskError(task, err)
+          return setTimeout(() => { subFinished(false) })
         }
+        opts.onTaskComplete(task)
+        if (task.outputFilename) {
+          const outputFile = pt.join(pt.dirname(task.filepath), task.outputFilename)
+          outputFiles.push(outputFile)
+          setTimeout(() => { subFinished(true) })
+        } else {
+          setTimeout(() => { subFinished(false) })
+        }
+      }
 
-        createTask({
-          filepath: inputFile,
-          pluginsDir: opts.pluginsDir,
-          baseDir: opts.baseDir,
-          apiToken: opts.apiToken,
-          onLog: opts.onTaskLog,
-          command: taskConfig.name,
-          keep: taskConfig.keep,
-          args: taskConfig.args,
-          onComplete
-        })
-        .ready((task) => {
-          if (!task.ignored) {
-            opts.onTaskStart(task)
-            task.run()
-          } else {
-            opts.onTaskIgnore(task)
-            setTimeout(() => { finished(true) })
-          }
-        })
-      }) // eslint-disable-line
+      createTask({
+        filepath: inputFile,
+        pluginsDir: opts.pluginsDir,
+        baseDir: opts.baseDir,
+        apiToken: opts.apiToken,
+        onLog: opts.onTaskLog,
+        command: taskConfig.name,
+        keep: taskConfig.keep,
+        args: taskConfig.args,
+        onComplete
+      })
+      .ready((task) => {
+        if (!task.ignored) {
+          opts.onTaskStart(task)
+          task.run()
+        } else {
+          opts.onTaskIgnore(task)
+          setTimeout(() => { subFinished(true) })
+        }
+      })
     })
-    inputFiles = outputFiles
+
+  const buildBatch = (taskBatch) => finished => {
+    const outputFiles = []
+    const batch = _.flatMap(taskBatch, (taskConfig) => mapInputFiles(taskConfig, outputFiles))
+
+    const subQueue = async.queue((job, cb) => job(cb), 1)
+    subQueue.drain = () => {
+      inputFiles = outputFiles
+      finished(true)
+    }
+
+    subQueue.push(batch, (_continue) => {
+      if (_.isError(_continue) || _continue === false) {
+        const drain = queue.drain
+        subQueue.kill()
+        drain(_continue)
+      }
+    })
     return batch
-  })
+  }
+
+  const taskList = _.flatMap(sortedTasks, buildBatch)
 
   callback(taskList)
 }
