@@ -85,9 +85,10 @@ const createTaskQueue = (pipeline, opts, callback) => {
 
     subQueue.push(batch, (_continue) => {
       if (_.isError(_continue) || _continue === false) {
-        const drain = queue.drain
+        console.log('subQueue error - killing queue')
+        const drain = subQueue.drain
         subQueue.kill()
-        drain(_continue)
+        drain()
       }
     })
     return batch
@@ -121,6 +122,7 @@ const createPipeline = (opts) => {
       createTaskQueue(pipeline, opts, (taskList) => {
         queue.push(taskList, (_continue) => {
           if (_.isError(_continue) || _continue === false) {
+            console.log('queue error - killing queue')
             const drain = queue.drain
             queue.kill()
             drain(_continue)

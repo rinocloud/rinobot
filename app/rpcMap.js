@@ -8,6 +8,7 @@ export const JSONError = function (error) {
   if (error.syscall) this.syscall = error.syscall || ''
   if (error.path) this.path = error.path || ''
 }
+
 JSONError.prototype = Error.prototype;
 
 
@@ -28,6 +29,7 @@ export default (rpc, forkRpc, sentry) => {
   forkRpc.on('task log', args => rpc.emit('task log', args))
   forkRpc.on('task complete', args => rpc.emit('task complete', args))
   forkRpc.on('task error', args => {
+    console.log('task error')
     sentry.captureException(new JSONError(args.error))
     rpc.emit('task error', args)
   })

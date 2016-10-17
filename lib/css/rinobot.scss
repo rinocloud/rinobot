@@ -3,7 +3,7 @@ $grey1: #f8fafb;
 $grey2: #f0f4f7;
 
 $font-family: 'Karla', sans-serif;
-$primary-color: #7C87A8;
+$primary-color: #647997;
 $primary-dark: #737d9c;
 $sidebar-width: 200px;
 
@@ -492,7 +492,7 @@ span.block-title{
   top: 18px;
   height: 87px;
   left: -16px;
-  width: 20px;
+  width: 27px;
 }
 
 .grey_horz_task_only {
@@ -537,11 +537,14 @@ span.block-title{
 .config .panel-heading {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
+  font-size: 1.2em;
+  color: #666;
+  font-weight: 600;
   background-color: $panel-heading-color;
   border-color: $panel-border-color;
 }
 
-.config .panel-heading .btn {
+.config .panel-body .btn {
   border-radius: 2px;
   color: #868ea3;
   border-color: $panel-border-color;
@@ -552,9 +555,6 @@ span.block-title{
   outline: none;
   border-color: $panel-border-color;
   margin-left: 0px;
-}
-
-.config .form-filematch input::-webkit-input-placeholder {
 }
 
 .config .form-filematch label {

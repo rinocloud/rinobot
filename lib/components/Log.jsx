@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import pt from 'path'
-import moment from 'moment.twitter'
+import moment from 'moment'
 import { shell } from 'electron'
 import _ from 'lodash'
 
@@ -53,7 +53,7 @@ class Log extends React.Component {
         <div className="col-sm-12">
           <div className="row">
 
-            <div className="col-sm-8">
+            <div className="col-sm-7">
 
               <a href="#" onClick={this.toggleExtra}>
                 {error &&
@@ -95,9 +95,9 @@ class Log extends React.Component {
 
             </div>
 
-            <div className="col-sm-1">
+            <div className="col-sm-2">
               <small className="text-muted">
-                {`${moment(lastRun).twitter()} ago`}
+                {`${moment(lastRun).format('HH:mm:ss, D-MMM-YY')}`}
               </small>
             </div>
 

@@ -9,6 +9,7 @@ export const createSentry = () => {
   if (isDev) {
     return {
       captureException: (e) => {
+        console.log('Error printed by captureException')
         console.log(pe.render(e))
       }
     }
