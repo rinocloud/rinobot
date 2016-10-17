@@ -17,6 +17,7 @@ class TaskForm extends React.Component {
     onChangeArgs: PropTypes.func.isRequired,
     onChangeKeep: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
+    showRemove: PropTypes.bool.isRequired,
   }
 
 
@@ -221,16 +222,18 @@ class TaskForm extends React.Component {
                   : 'col-xs-1 col-xs-offset-7'
               }
             >
-              <a
-                href="#"
-                className="task-position-x-file"
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.props.onRemove()
-                }}
-              >
-                <i className="fa fa-remove btn-red-x"></i>
-              </a>
+              {this.props.showRemove &&
+                <a
+                  href="#"
+                  className="task-position-x-file"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.props.onRemove()
+                  }}
+                >
+                  <i className="fa fa-remove btn-red-x"></i>
+                </a>
+              }
             </div>
 
           </div>

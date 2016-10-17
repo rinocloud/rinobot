@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { Dropdown, MenuItem } from 'react-bootstrap'
 import { shell } from 'electron'
 import update from 'react-addons-update'
 import pt from 'path'
@@ -369,24 +370,34 @@ class WatchDir extends React.Component {
                   <i className="m-l-sm fa fa-play-circle-o" />
                 </a>
               }
-              <a
-                href="#"
-                className="pull-right btn btn-sm btn-default"
-                onClick={onRemoveDirClick}
-              >
-                <span><i className="fa fa-trash"></i> Remove this folder</span>
-              </a>
-            </div>
-          </div>
-        </div>
 
-        <div className="main config p-l p-r">
-          <div className="row m-b">
-            <div className="col-sm-12">
+              <Dropdown
+                id={'dropdown-basic'}
+                className="pull-right m-l-sm"
+              >
+                <Dropdown.Toggle className="btn-sm">
+                  <i className="fa fa-bars" />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="header-dropdown">
+                  <MenuItem
+                    eventKey="1"
+                    onClick={onRemoveDirClick}
+                  >
+                    <span><i className="fa fa-trash"></i> Remove folder</span>
+                  </MenuItem>
+                  <MenuItem
+                    eventKey="2"
+                    onClick={removeDotRino}
+                  >
+                    <span><i className="fa fa-eye-slash"></i> Reset</span>
+                  </MenuItem>
+                </Dropdown.Menu>
+              </Dropdown>
+
               {formData.pipelines.length !== 0 &&
                 <a
                   href="#"
-                  className="btn btn-sm btn-default pull-right"
+                  className="m-l-sm btn btn-sm btn-default pull-right"
                   onClick={(e) => {
                     e.preventDefault()
                     this.addMetadata()
@@ -398,7 +409,7 @@ class WatchDir extends React.Component {
               }
               <a
                 href="#"
-                className="btn btn-sm btn-add-pipeline pull-right m-r-sm"
+                className="btn btn-sm btn-add-pipeline pull-right"
                 onClick={(e) => {
                   e.preventDefault()
                   this.addPipeline()
@@ -409,10 +420,34 @@ class WatchDir extends React.Component {
               </a>
             </div>
           </div>
+        </div>
 
-
+        <div className="main config p-l p-r">
           <div className="row">
+
             <div className="col-sm-12">
+
+              {formData.pipelines.length === 0 &&
+                <div className="block text-center">
+                  <div className="m-t-lg">
+                    <i className="fa fa-bolt fa-2x" />
+                    <div className="slash" />
+                    <div className="m-b-sm"> No automation pipelines.</div>
+                    <a
+                      href="#"
+                      className="btn btn-sm btn-default"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        this.addPipeline()
+                      }}
+                    >
+                      <i className="fa fa-bolt m-r-sm" />
+                      Add a Pipeline
+                    </a>
+                  </div>
+                </div>
+              }
+
               {formData.pipelines.map((o, index) =>
                 <div className="row pipeline" key={`pipeline-${index}`}>
                   <div className="col-xs-12">

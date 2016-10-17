@@ -28,7 +28,7 @@ class PipelineForm extends React.Component {
           <div className="panel panel-primary">
             <div className="panel-heading">
               <div className="">
-                <form className="form-horizontal form-filematch" onSubmit={()=>{}}>
+                <form className="form-horizontal form-filematch" onSubmit={() => {}}>
                   <div className="form-group m-b-0">
                     <div className="col-xs-4">
                       <input
@@ -60,6 +60,40 @@ class PipelineForm extends React.Component {
             </div>
 
             <div className="panel-body">
+
+              <div className="row row-task">
+                <div className="sf_wrapper_task">
+                  <div className="grey_horz_task grey_horz_task-faux"></div>
+                </div>
+                <div className="col-xs-11 m-b">
+                  <div className="row">
+                    <div className="col-xs-12">
+                      <div className="row">
+                        <div className="col-xs-12">
+                          <div className="row">
+                            <div className="col-xs-4">
+                              <div className="form-control-static">
+                                {pipeline.filematch} file will appear
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row-flow-toggle">
+                        <div className="toggle toggle-faux btn-group btn-group-xs m-t-sm m-b-sm">
+                          <a
+                            className="btn-flow active"
+                          >
+                            THEN
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               {_.map(pipeline.tasks, (task, index) => {
                 let isAnd = false
                 let nextTask = null
@@ -82,7 +116,6 @@ class PipelineForm extends React.Component {
                   horzClass = 'grey_horz_task grey_horz_task_only'
                 }
 
-
                 return (
                   <div
                     className={
@@ -97,11 +130,7 @@ class PipelineForm extends React.Component {
                       {index > 0 &&
                         <div className="row-flow">
                           <div className="m-t m-b">
-                            <div
-                              className="toggle btn-group btn-group-xs m-t-sm m-b-sm"
-                              role="group"
-                              aria-label="..."
-                            >
+                            <div className="toggle btn-group btn-group-xs m-t-sm m-b-sm">
                               <a
                                 href="#"
                                 onClick={(e) => {
@@ -140,6 +169,7 @@ class PipelineForm extends React.Component {
                             name={task.name}
                             args={task.args}
                             keep={task.keep}
+                            showRemove={index !== 0}
                             onChangeName={name => { this.props.onChangeTaskName(index, name) }}
                             onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
                             onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}

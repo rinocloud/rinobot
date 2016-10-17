@@ -1,9 +1,15 @@
-$font-family: 'Karla', sans-serif;
+$white: #f7f8fb;
+$grey1: #f8fafb;
+$grey2: #f0f4f7;
 
+$font-family: 'Karla', sans-serif;
 $primary-color: #7C87A8;
 $primary-dark: #737d9c;
-$panel-color: rgba(124,135,168, 1);
-$white: #f7f8fb;
+$sidebar-width: 200px;
+
+$panel-heading-color: #eef1f8;
+$panel-border-color: #dae1eb;
+$panel-body-color: $grey1;
 
 html, body {
   height: 100%;
@@ -28,7 +34,8 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .main-container .container-fluid{
-  margin-left: 200px;
+  margin-left: $sidebar-width;
+  // background: $grey2;
 }
 
 .wrapper {
@@ -114,7 +121,7 @@ h1, h2, h3, h4, h5, h6{
   top: 0;
   bottom: 0;
   left: 0;
-  width: 200px;
+  width: $sidebar-width;
   background-color: $primary-color;
   padding-top: 40px;
 }
@@ -248,7 +255,6 @@ h1, h2, h3, h4, h5, h6{
 
 .btn-add-pipeline:hover{
   color: #ccc;
-  text-decoration: underline;
 }
 
 .btn-add-pipeline:visited{
@@ -351,10 +357,10 @@ span.block-title{
 .header {
     position: fixed;
     top: 0;
-    left: 200px;
+    left: $sidebar-width;
     padding: 20px 20px;
     right: 0;
-    background: #fff;
+    background: $grey1;
     border-bottom: 1px solid #e1e1ec;
     cursor: text;
     z-index: 5;
@@ -482,6 +488,13 @@ span.block-title{
   top: 18px;
 }
 
+.grey_horz_task-faux {
+  top: 18px;
+  height: 87px;
+  left: -16px;
+  width: 20px;
+}
+
 .grey_horz_task_only {
   top: 18px;
   height: 50px;
@@ -495,35 +508,49 @@ span.block-title{
   margin-left: -70px;
 }
 
+.row-flow-toggle{
+  margin-left: -49px;
+}
+
+.row-flow-toggle .btn-flow{
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-right: 1px solid #bdc7d2;
+}
+
+
+
 .row-task{
   margin-left: 50px;
 }
 
 .config .panel-body{
   padding-bottom: 35px;
+  background-color: $panel-body-color;
 }
 
 .config .panel-primary {
   border-radius: 2px;
-  border-color: $panel-color;
+  border-color: $panel-border-color;
 }
 
 .config .panel-heading {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  background-color: $panel-color;
-  border-color: rgba(124,135,168, 0);
+  background-color: $panel-heading-color;
+  border-color: $panel-border-color;
 }
 
 .config .panel-heading .btn {
   border-radius: 2px;
-  color: #fff;
-  border-color: #ccc;
-  background-color: $panel-color;
+  color: #868ea3;
+  border-color: $panel-border-color;
+  background-color: $panel-heading-color;
 }
 
 .config .form-filematch input, .config .form-filematch input:focus{
   outline: none;
+  border-color: $panel-border-color;
   margin-left: 0px;
 }
 
@@ -535,4 +562,17 @@ span.block-title{
   margin-bottom: 0;
   padding-top: 5px;
   width: 13%;
+}
+
+.slash{
+  position: relative;
+  border-right: 3px solid #6c6f73;
+  height: 30px;
+  width: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: -20px;
+  top: -40px;
+  left: -10px;
+  transform: rotate(45deg);
 }
