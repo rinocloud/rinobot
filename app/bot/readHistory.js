@@ -14,3 +14,12 @@ export default (historyFilePath, targetFilepath, cb) => {
     }
   })
 }
+
+export const readHistoryFile = (historyFilePath, cb) => {
+  fs.readFile(historyFilePath, 'utf8', (err, data) => {
+    if (err && err.code !== 'ENOENT') return cb(err, null)
+    if (err && err.code === 'ENOENT') return cb(null, null)
+    const history = JSON.parse(data)
+    cb(null, history)
+  })
+}

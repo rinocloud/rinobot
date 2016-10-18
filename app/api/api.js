@@ -125,22 +125,12 @@ export function getChildrenSync(id, limit=20, offset=0) {
   .post(config.base + '/api/1/files/children/')
   .set('Authorization', 'Token ' + config.token)
   .send({id: id, limit: limit, offset: offset})
-  //.use(superagentQueue({queue:SAqueue, retryEnabled: true}))
   .retry(5)
   .then(processResponse)
 }
 
-export function getAncestorsSync(id) {
-  return request
-  .post(config.base + '/api/1/files/ancestors/')
-  .set('Authorization', 'Token ' + config.token)
-  .send({id: id})
-  //.use(superagentQueue({queue:SAqueue, retryEnabled: true}))
-  .retry(5)
-  .then(processResponse)
-}
 /*
-Update routes
+  Update routes
 */
 
 export function updateMerge(id, metadata) {
@@ -439,4 +429,3 @@ export function multiPartUpload(path, data={}, progress, error, complete) {
     .then(complete)
     .catch(error)
 }
-
