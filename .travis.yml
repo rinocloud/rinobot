@@ -1,0 +1,17 @@
+sudo: false
+language: node_js
+node_js:
+  - "6.4"
+
+python:
+  - '3.5'
+
+install:
+  - npm install
+
+script:
+  - npm test
+
+notifications:
+  email: false
+  slack: rinocloud:Um6KNIhyglzDkAFs5KY0Yvrw

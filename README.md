@@ -26,29 +26,97 @@ $ npm run dev # builds the html based UI and also the rinobot child process, hot
 $ npm run start-hot # starts the electron window
 ```
 
-## Install errors
-
-If you get something like the following
-
-```
-> cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./main.development
-
-fs.js:634
-  return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
-                 ^
-Error: ENOENT: no such file or directory, open 'C:\Users\eoin\Documents\projects\rinobot\node_modules\electron-prebuilt\path.txt'
-```
-
-Try running
-
-```
->>> cd node_modules/electron-prebuilt
->>> npm install
-```
-
 ## Packaging
 
 Let Eoin do the packaging for now
+
+## The rino.yaml file
+
+
+In the simplest case it only has a list of tasks inside a pipeline
+
+v1:
+
+```yaml
+tasks:
+  - command: 'rinobot-plugin-rebin'
+    match: '*.txt'
+    args: '--bin=4'
+  - command: 'rinobot-plugin-line-plot'
+    match: '*.txt'
+    args: '--xmax=4'
+```
+
+v2:
+
+```yaml
+pipelines:
+  # add a file and a list of tasks to run on it, and its children
+  - filename: '*.txt'
+    tasks:
+      - name: rinobot-plugin-normalize
+        args: '--xmin=3 --xmax={{key}}'
+      - name: rinobot-plugin-rebin
+        args: '--bin=3'
+      - name: rinobot-plugin-line-plot
+
+metadata:
+  key: value
+```
+
+## Pipeline sequence algorithm
+
+```python
+tasks = [{
+    "name": "rebin2",
+    "flow": "then"
+},{
+    "name": "rebin4",
+    "flow": "and"
+},{
+    "name": "plot",
+    "flow": "then",
+},{
+    "name": "replot1",
+    "flow": "then",
+},{
+    "name": "replot2",
+    "flow": "and",
+},{
+    "name": "fin",
+    "flow": "then",
+}]
+```
+
+```python
+sortedTasks = []
+currentRow = []
+for index, t in enumerate(tasks):
+    nextTask = None
+    if index < len(tasks) - 1:
+        nextTask = tasks[index + 1]
+
+    currentRow.append(t)
+
+    if nextTask and nextTask["flow"] == "then":
+        sortedTasks.append(currentRow)
+        currentRow = []
+    elif not nextTask:
+        sortedTasks.append(currentRow)
+
+inputFiles = ["data.txt"]
+
+for tasks in sortedTasks:
+    outputFiles = []
+
+    for task in tasks:
+        for inputFile in inputFiles:
+            outputFile = runTask(inputFile, task)
+            outputFiles.append(outputFile)
+
+    inputFiles = outputFiles
+
+```
 
 ## Maintainers
 
@@ -58,15 +126,3 @@ Let Eoin do the packaging for now
 
 ## License
 [Rinocloud](https://github.com/rinocloud)
-
-## Storage idea
-{
-  filepath: {
-    id - rinocloud id or null,
-    etag - file etag - calculated locally,
-    created - ISO date string
-    completed: [
-      task name - task argument - ISO date string,
-    ]
-  },
-}

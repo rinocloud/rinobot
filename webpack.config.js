@@ -24,7 +24,9 @@ if (!isProd) {
 
 const config = {
   devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
-
+  devServer: {
+    stats: 'errors-only',
+  },
   entry: isProd ? './lib/index' :
   [
     'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
@@ -58,6 +60,10 @@ const config = {
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)\?*.*$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass']
       }
     ]
   },

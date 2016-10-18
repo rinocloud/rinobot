@@ -1,30 +1,21 @@
 import { app, BrowserWindow } from 'electron'
 import { createSentry } from './analytics'
-import createBot, { checkPythonVersion } from './bot/'
+import createBot, { checkPythonVersion, updateRinobotPlugin } from './bot/'
 import autoUpdater from './auto-updater'
 import isDev from 'electron-is-dev'
 import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
-
-export const JSONError = function (error) {
-  this.name = error.name || ''
-  this.message = error.message || ''
-  this.stack = error.stack || ''
-  if (error.code) this.code = error.code
-  if (error.errno) this.errno = error.errno || ''
-  if (error.syscall) this.syscall = error.syscall || ''
-  if (error.path) this.path = error.path || ''
-}
-JSONError.prototype = Error.prototype;
+import rpcMap, { JSONError } from './rpcMap'
 
 const isOSX = process.platform === 'darwin'
 
 const createWindow = (app, sentry) => { // eslint-disable-line
   let win = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1200,
+    height: 800,
+    titleBarStyle: 'hidden'
   })
 
   win.loadURL(`file://${__dirname}/app.html`)
@@ -33,26 +24,7 @@ const createWindow = (app, sentry) => { // eslint-disable-line
   const rpc = createRPC(win)
   const { child, forkRpc } = createBot()
 
-  rpc.on('watch', args => forkRpc.emit('watch', args))
-  rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
-
-  forkRpc.on('ready', () => rpc.emit('child process ready'))
-
-  forkRpc.on('watcher ready', args => rpc.emit('watcher ready', args))
-  forkRpc.on('watcher started', args => rpc.emit('watcher started', args))
-  forkRpc.on('watcher set total files', args => rpc.emit('watcher set total files', args))
-  forkRpc.on('watcher set processed files', args => rpc.emit('watcher set processed files', args))
-
-  forkRpc.on('task started', args => rpc.emit('task started', args))
-  forkRpc.on('task log', args => rpc.emit('task log', args))
-  forkRpc.on('task complete', args => rpc.emit('task complete', args))
-  forkRpc.on('task error', args => rpc.emit('task error', args))
-  forkRpc.on('task ignore', args => rpc.emit('task ignore', args))
-
-  forkRpc.on('unexpected error', error => {
-    rpc.emit('unexpected error', error)
-    sentry.captureException(new JSONError(error.error))
-  })
+  rpcMap(rpc, forkRpc, sentry)
 
   rpc.on('init', () => {
     win.show()
@@ -63,10 +35,15 @@ const createWindow = (app, sentry) => { // eslint-disable-line
       rpc.emit('python version', { version })
     })
 
+    updateRinobotPlugin((error) => {
+      if (error) {
+        rpc.emit('unexpected error', error)
+        sentry.captureException(new JSONError(error))
+      }
+    })
+
     if (!isDev && process.platform !== 'linux') {
       autoUpdater(win, rpc)
-    } else {
-      rpc.emit('log', 'ignoring auto updates during dev')
     }
   })
 

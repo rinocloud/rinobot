@@ -18,7 +18,7 @@ export default (opts) => {
       return onError(err)
     }
     const _args = _.trim(swig.render(args, { locals, ...metadata }))
-    fs.copy(filepath, pt.join(_args, filename), err => {
+    fs.copy(filepath, pt.join(_args, filename), err => { // eslint-disable-line
       if (err) return onError(err)
       return onComplete()
     })

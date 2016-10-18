@@ -1,47 +1,137 @@
-import { queue, createQueue } from './scheduler'
-import { Task } from './task'
+import { createTask } from './task'
+import async from 'async'
+import _ from 'lodash'
+import pt from 'path'
+import { isMatch } from './utils'
+import { readCreated } from './history'
 
-export default (opts) => {
-  const taskList = opts.config.tasks.map(task => callback => {
-    const t = new Task({
-      filepath: opts.filepath,
-      pluginsDir: opts.pluginsDir,
-      baseDir: opts.baseDir,
-      command: task.command,
-      match: task.match,
-      args: task.args,
-      apiToken: opts.apiToken,
 
-      onLog: (_task, message) => {
-        opts.onTaskLog(_task, message)
-      },
+export const queue = async.queue((job, callback) => job(callback), 1)
 
-      onComplete: (_task) => {
-        opts.onTaskComplete(_task)
-        setTimeout(() => { callback() })
-      },
 
-      onError: (_task, error) => {
-        opts.onTaskError(_task, error)
-        setTimeout(() => { callback(error) })
-      }
-
-    })
-
-    t.ready(() => {
-      if (!t.ignored) {
-        opts.onTaskStart(t)
-        t.run()
-      } else {
-        opts.onTaskIgnore(t)
-        setTimeout(() => { callback() })
-      }
-    })
-  })
-
-  queue.push(createQueue(taskList), (err) => {
-    if (err) {
-      return opts.onError(err)
+export const sortTasks = (tasks) => {
+  const sortedTasks = []
+  let currentRow = []
+  _.each(tasks, (task, index) => {
+    let nextTask = null
+    if (index < tasks.length - 1) {
+      nextTask = tasks[index + 1]
+    }
+    currentRow.push(task)
+    if (nextTask && (nextTask.flow === 'then' || nextTask.flow === null)) {
+      sortedTasks.push(currentRow)
+      currentRow = []
+    } else if (!nextTask) {
+      sortedTasks.push(currentRow)
     }
   })
+
+  return sortedTasks
 }
+
+
+const createTaskQueue = (pipeline, opts, callback) => {
+  const sortedTasks = sortTasks(pipeline.tasks)
+  let inputFiles = [opts.filepath]
+
+  const mapInputFiles = (taskConfig, outputFiles) =>
+    _.flatMap(inputFiles, (inputFile) => subFinished => {
+      const onComplete = (task, err) => {
+        if (err) {
+          opts.onTaskError(task, err)
+          return setTimeout(() => { subFinished(false) })
+        }
+        opts.onTaskComplete(task)
+        if (task.outputFilename) {
+          const outputFile = pt.join(pt.dirname(task.filepath), task.outputFilename)
+          outputFiles.push(outputFile)
+          setTimeout(() => { subFinished(true) })
+        } else {
+          setTimeout(() => { subFinished(false) })
+        }
+      }
+
+      createTask({
+        filepath: inputFile,
+        pluginsDir: opts.pluginsDir,
+        baseDir: opts.baseDir,
+        apiToken: opts.apiToken,
+        onLog: opts.onTaskLog,
+        command: taskConfig.name,
+        keep: taskConfig.keep,
+        args: taskConfig.args,
+        onComplete
+      })
+      .ready((task) => {
+        if (!task.ignored) {
+          opts.onTaskStart(task)
+          task.run()
+        } else {
+          opts.onTaskIgnore(task)
+          setTimeout(() => { subFinished(true) })
+        }
+      })
+    })
+
+  const buildBatch = (taskBatch) => finished => {
+    const outputFiles = []
+    const batch = _.flatMap(taskBatch, (taskConfig) => mapInputFiles(taskConfig, outputFiles))
+
+    const subQueue = async.queue((job, cb) => job(cb), 1)
+    subQueue.drain = () => {
+      inputFiles = outputFiles
+      finished(true)
+    }
+
+    subQueue.push(batch, (_continue) => {
+      if (_.isError(_continue) || _continue === false) {
+        console.log('subQueue error - killing queue')
+        const drain = subQueue.drain
+        subQueue.kill()
+        drain()
+      }
+    })
+    return batch
+  }
+
+  const taskList = _.flatMap(sortedTasks, buildBatch)
+
+  callback(taskList)
+}
+
+
+const createPipeline = (opts) => {
+  const createdFilePath = pt.join(opts.baseDir, '.rino', 'created.json')
+  const pipelines = opts.config.pipelines
+
+  readCreated(createdFilePath, (err, createdList) => {
+    _.map(pipelines, (pipeline) => {
+      if (
+        createdList &&
+        createdList.includes(opts.filepath) &&
+        pipeline.incoming_only
+      ) {
+        return
+      }
+
+      if (!isMatch(pipeline.filematch, pt.basename(opts.filepath))) {
+        /* TODO: return proper onTaskIgnore */
+        return
+      }
+
+      createTaskQueue(pipeline, opts, (taskList) => {
+        queue.push(taskList, (_continue) => {
+          if (_.isError(_continue) || _continue === false) {
+            console.log('queue error - killing queue')
+            const drain = queue.drain
+            queue.kill()
+            drain(_continue)
+          }
+        })
+      })
+    })
+  })
+}
+
+
+export default createPipeline

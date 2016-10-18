@@ -26,6 +26,14 @@ export const checkPythonVersion = (cb) => {
 }
 
 
+export const updateRinobotPlugin = (cb) => {
+  exec('pip install rinobot-plugin --upgrade', (error) => {
+    if (error) cb(error)
+    else cb()
+  })
+}
+
+
 const Bot = () => {
   const child = fork(pt.join(__dirname, 'fork.js'))
   const forkRpc = forkRpcCreator(child)

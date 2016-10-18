@@ -24,7 +24,7 @@ import { flattenWatched } from './utils'
 const forkRpc = rpc(process)
 
 const watchers = {}
-const processedFiles = {}
+let processedFiles = {}
 let timer
 
 forkRpc.on('watch', (opts) => {
@@ -44,6 +44,10 @@ forkRpc.on('watch', (opts) => {
       clearTimeout(timer)
       timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 500)
     })
+    .on('change', () => {
+      clearTimeout(timer)
+      timer = setTimeout(add(watcher, { apiToken, config, index, baseDir: path, pluginsDir }), 500)
+    })
     .on('ready', () => {
       ready(this, index, t0)
     })
@@ -56,9 +60,17 @@ forkRpc.on('unwatch', ({ index }) => {
   processedFiles[index] = []
 })
 
+forkRpc.on('unwatch all', () => {
+  _.each(watchers, (val) => {
+    val.close()
+  })
+  processedFiles = {}
+})
+
 const add = (watcher, arg) => () => {
   const allFiles = flattenWatched(watcher.getWatched())
   forkRpc.emit('watcher set total files', { index: arg.index, numFiles: allFiles.length })
+
   _.each(allFiles, (filepath) => {
     if (!processedFiles[arg.index].includes(filepath)) {
       processFile(arg.index, { ...arg, filepath })
@@ -77,7 +89,6 @@ const ready = (watcher, index, t0) => {
 
 const processFile = (index, opts) => {
   const { filepath, baseDir, pluginsDir, apiToken, config } = opts
-
   createPipeline({
     pluginsDir,
     apiToken,
@@ -128,11 +139,14 @@ const finishedFile = (index, filepath) => {
 }
 
 const taskStart = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task started',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -147,7 +161,8 @@ const taskLog = (index, task, log) => {
     {
       index,
       log,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -157,11 +172,14 @@ const taskLog = (index, task, log) => {
 }
 
 const taskComplete = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task complete',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
@@ -171,26 +189,30 @@ const taskComplete = (index, task) => {
 }
 
 const taskIgnore = (index, task) => {
+  forkRpc.emit('set history', { index, history: task.history })
+
   forkRpc.emit(
     'task ignore',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,
-      reason: task.reason,
       datetime: moment().toISOString()
     }
   )
 }
 
 const taskError = (index, task, error) => {
+  forkRpc.emit('set history', { index, history: task.history })
   forkRpc.emit(
     'task error',
     {
       index,
-      filepath: task.relativePath,
+      filepath: task.filepath,
+      relativePath: task.relativePath,
       command: task.command,
       args: task.args,
       match: task.match,

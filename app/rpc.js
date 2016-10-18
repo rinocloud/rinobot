@@ -30,6 +30,7 @@ class Server {
     this.queue = []
     this.timer = null
     this.last = null
+    this.delayTime = 500
   }
 
   get wc() {
@@ -54,8 +55,8 @@ class Server {
 
     this.queue.push(payload)
     const now = new Date().getTime()
-    if (this.last && now < this.last + 500) {
-      this.timer = setTimeout(task, 500)
+    if (this.last && now < this.last + this.delayTime) {
+      this.timer = setTimeout(task, this.delayTime)
     } else {
       this.last = now
       task()

@@ -1,49 +1,50 @@
 import { spawn } from 'child_process'
-import _ from 'lodash'
 import fs from 'fs-extra'
-import swig from 'swig'
+import _ from 'lodash'
 import pt from 'path'
 
 const setUpScript = (pluginsDir, command, cb) => {
   let codePath = false
+  const packagePath = pt.join(pluginsDir, command, 'package.json')
+  fs.readFile(packagePath, 'utf-8', (err, data) => { // eslint-disable-line
+    if (err) return cb(err, null)
 
-  fs.access(pt.join(pluginsDir, command), err => {
-    if (err) {
-      cb(new Error(`Cant find package "${command}"`), null)
+    let packageJSON = {}
+    try {
+      packageJSON = JSON.parse(data)
+    } catch (e) {
+      return cb(new Error(`package.json in "${command}" could not be parsed`), null)
+    }
+
+    if (_.has(packageJSON, 'main')) {
+      codePath = pt.join(pluginsDir, command, packageJSON.main)
+      cb(null, codePath)
     } else {
-      const packagePath = pt.join(pluginsDir, command, 'package.json')
-      fs.access(packagePath, err => { // eslint-disable-line
-        if (err) {
-          return cb(new Error(`Error reading package.json for plugin ${command}`), null)
-        }
-        return fs.readFile(packagePath, 'utf-8', (err, data) => { // eslint-disable-line
-          if (err) return cb(new Error(`package.json in "${command}" could not be opened`), null)
-
-          let packageJSON = {}
-          try {
-            packageJSON = JSON.parse(data)
-          } catch (e) {
-            return cb(new Error(`package.json in "${command}" could not be parsed`), null)
-          }
-
-          if (_.has(packageJSON, 'main')) {
-            codePath = pt.join(pluginsDir, command, packageJSON.main)
-            cb(null, codePath)
-          } else {
-            return cb(new Error(`package.json in "${command}" has no "main" specified`), null)
-          }
-        })
-      })
+      return cb(new Error(`package.json in "${command}" has no "main" specified`), null)
     }
   })
 }
 
 export default (opts) => {
+  /*
+    runPlugin({
+      pluginsDir: path to plugins directory,
+      command: the plugin name,
+      filepath: path to file,
+      args: command args
+      cwd: watched dir,
+      onError: function(err){}
+      onLog: function(log){}
+      onComplete: function(){}
+    })
+  */
+
   const pluginsDir = opts.pluginsDir
   const command = opts.command
-  const locals = opts.locals
+  const filepath = opts.filepath
+  const args = opts.args
   const cwd = opts.cwd
-
+  const prefix = opts.prefix || null
   const onError = opts.onError
   const onLog = opts.onLog
   const onComplete = opts.onComplete
@@ -52,30 +53,34 @@ export default (opts) => {
     if (err) {
       onError(err)
     } else {
-      const args = _.trim(swig.render(`${codePath} {{filepath}}`, { locals }))
-      const magicDelimiter = ',,,xxx123'
-      const tokens = _.map(args.split(/\\ /g).join(magicDelimiter).split(' '), (arg) =>
-        arg.split(new RegExp(magicDelimiter, 'g')).join('\ ') // eslint-disable-line
-      )
+      let _args = [codePath, filepath]
+      if (args) {
+        _args = [..._args, ...args.split(' ')]
+      }
+      if (prefix) {
+        _args = [..._args, `--prefix=${prefix}`]
+      }
 
-      const child = spawn('python', tokens, { cwd })
+      const child = spawn('python', _args, { cwd })
 
       child.on('error', (error) => {
         child.error = true
         return onError(error)
       })
 
-      child.stdout.on('data', onLog)
+      let errLog = ''
+      child.stdout.on('data', (b) => onLog(b.toString()))
+      child.stderr.on('data', (b) => {
+        errLog += b.toString()
+        onLog(b.toString())
+      })
 
-      child.stderr.on('data', onLog)
 
       child.on('close', (code) => {
         if (child.hasOwnProperty('error')) return
 
         if (code !== 0) {
-          return onError(
-            new Error, null(
-              `An error occured (code ${code}) while running "${codePath} ${args.split('  ')}"`))
+          return onError(new Error(errLog))
         } else { // eslint-disable-line
           return onComplete()
         }
