@@ -8144,6 +8144,7 @@ module.exports =
 	  if (_electronIsDev2.default) {
 	    return {
 	      captureException: function captureException(e) {
+	        console.log('Error printed by captureException');
 	        console.log(pe.render(e));
 	      }
 	    };
@@ -8193,10 +8194,12 @@ module.exports =
 			"shortid": "^2.2.6",
 			"source-map-support": "^0.4.2",
 			"superagent": "^1.8.3",
+			"superagent-d2l-queue": "^3.0.2",
 			"superagent-promise-plugin": "^3.2.0",
 			"superagent-queue": "0.0.3",
 			"swig": "^1.4.2",
-			"uid2": "0.0.3"
+			"uid2": "0.0.3",
+			"watchr": "^2.6.0"
 		},
 		"eslintConfig": {
 			"parser": "babel-eslint",
@@ -26013,6 +26016,7 @@ module.exports =
 	  if (error.syscall) this.syscall = error.syscall || '';
 	  if (error.path) this.path = error.path || '';
 	};
+	
 	JSONError.prototype = Error.prototype;
 	
 	exports.default = function (rpc, forkRpc, sentry) {
@@ -26056,6 +26060,7 @@ module.exports =
 	    return rpc.emit('task complete', args);
 	  });
 	  forkRpc.on('task error', function (args) {
+	    console.log('task error');
 	    sentry.captureException(new JSONError(args.error));
 	    rpc.emit('task error', args);
 	  });

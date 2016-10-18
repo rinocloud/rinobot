@@ -1,5 +1,6 @@
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
+import DashboardPlugin from 'webpack-dashboard/plugin'
 
 const nodeEnv = process.env.NODE_ENV || 'development'
 const isProd = nodeEnv === 'production'
@@ -8,7 +9,7 @@ export default {
   target: 'node',
   devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
   devServer: {
-    stats: 'errors-only',
+    stats: { chunks: false }
   },
   entry: ['babel-polyfill', './app/bot/fork.dev'],
   output: {
@@ -23,6 +24,7 @@ export default {
     ),
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new webpack.DefinePlugin({ FormData: false }),
+    new DashboardPlugin()
   ],
   module: {
     loaders: [{

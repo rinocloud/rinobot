@@ -11,8 +11,8 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "dev": "concurrently --kill-others \"npm run dev:hot-server\" \"npm run dev:fork\"",
-    "dev:hot-server": "node -r babel-register server.js",
-    "dev:fork": "cross-env NODE_ENV=development node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress --watch",
+    "dev:hot-server": "webpack-dashboard -p 3002 -- node -r babel-register server.js",
+    "dev:fork": "cross-env NODE_ENV=development webpack-dashboard -- node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress --watch",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/index.dev",
     "start": "cross-env NODE_ENV=production electron ./app",
     "build": "npm run build:lib && npm run build:app && npm run build:fork",
@@ -100,6 +100,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
+    "webpack-dashboard": "^0.2.0",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.1",
     "webpack-node-externals": "^1.2.0"
