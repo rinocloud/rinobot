@@ -253,8 +253,10 @@ class WatchDir extends React.Component {
                             dispatch(formActions.changePipelineFilematch({ index, newFileMatch }))}
                           onChangeTaskName={(taskIndex, name) =>
                             dispatch(formActions.changePipelineTaskName({ index, taskIndex, name }))} // eslint-disable-line
-                          onChangeTaskArgs={(taskIndex, args) =>
-                            dispatch(formActions.changePipelineTaskArgs({ index, taskIndex, args }))} // eslint-disable-line
+
+                          onChangeTaskArgs={(taskIndex, argName, argValue) =>
+                            dispatch(formActions.changePipelineTaskArgs({ index, taskIndex, argName, argValue }))} // eslint-disable-line
+
                           onChangeTaskKeep={(taskIndex, args) =>
                             dispatch(formActions.changePipelineTaskKeep({ index, taskIndex, args }))} // eslint-disable-line
                           onChangeTaskFlow={(taskIndex, args) =>

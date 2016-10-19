@@ -517,8 +517,6 @@ span.block-title{
   border-right: 1px solid #bdc7d2;
 }
 
-
-
 .row-task{
   margin-left: 50px;
 }
@@ -574,4 +572,17 @@ span.block-title{
   top: -40px;
   left: -10px;
   transform: rotate(45deg);
+}
+
+.certificate{
+  font-size: 0.7em;
+  float: right;
+  position: relative;
+  top: 10px;
+  right: 140px;
+  color: #999;
+}
+
+.select-parent .Select-control{
+  height: 50px;
 }

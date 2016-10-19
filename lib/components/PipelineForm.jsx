@@ -150,7 +150,8 @@ class PipelineForm extends React.Component {
                         keep={task.keep}
                         showRemove={index !== 0}
                         onChangeName={name => { this.props.onChangeTaskName(index, name) }}
-                        onChangeArgs={args => { this.props.onChangeTaskArgs(index, args) }}
+                        onChangeArgs={(argName, argValue) =>
+                          this.props.onChangeTaskArgs(index, argName, argValue)}
                         onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
                         onRemove={() => { this.props.onRemoveTask(index) }}
                       />
