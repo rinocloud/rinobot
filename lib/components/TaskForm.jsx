@@ -9,6 +9,7 @@ class TaskForm extends React.Component {
     registry: PropTypes.array,
     installedPlugins: PropTypes.array,
     name: PropTypes.string,
+    onRequired: PropTypes.bool,
     args: PropTypes.oneOfType([
       React.PropTypes.string,
       React.PropTypes.array,
@@ -20,13 +21,19 @@ class TaskForm extends React.Component {
     showRemove: PropTypes.bool.isRequired,
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      onRequired: true,
+    }
+  }
 
   render() {
     const { name, args, keep, registry, installedPlugins } = this.props //eslint-disable-line
 
     const changeArgs = (e) => {
       e.preventDefault()
-      this.props.onChangeArgs(e.target.value)
+      this.props.onChangeArgs({ argName: 'default', argValue: e.target.value })
     }
 
     const changeName = (item) => {
@@ -78,6 +85,28 @@ class TaskForm extends React.Component {
     // now have access to the options of each installed plugin
     // _.each(installedPlugins, (i) => console.log(i.name, i.options))
 
+    const currentPlugin = _.find(installedPlugins, {
+      name: selectedValue
+    })
+
+    let pluginOptionsList = {}
+    if (currentPlugin && currentPlugin.options) {
+      pluginOptionsList = currentPlugin.options
+    }
+
+    const onRequired = (e) => { // eslint-disable-line
+      e.preventDefault()
+      this.setState({ onRequired: !this.state.onRequired })
+    }
+
+    const sortedPluginOptionsList = _.sortBy(
+      _.map(pluginOptionsList, (value, key) => ({
+        optionName: key,
+        ...value
+      }))
+    , ['required'])
+
+
     return (
       <div className="row">
         <div className="col-xs-12">
@@ -96,21 +125,158 @@ class TaskForm extends React.Component {
             </div>
 
             {selectedValue &&
-              <div className="col-xs-5">
+              <div className="col-xs-6">
                 {isPluginCommand &&
-                  <input
-                    style={{ borderRadius: '4px' }}
-                    type="text"
-                    placeholder="extra parameters for plugin"
-                    value={args || ''}
-                    className="form-control input-sm"
-                    onChange={changeArgs}
-                  />
+                  _.map(sortedPluginOptionsList, (pluginOption, optionIndex) => {
+                    const {
+                      description, // eslint-disable-line
+                      type,
+                      allowed = [],
+                      required,
+                      optionName
+                    } = pluginOption
+
+                    const selectOpts = _.map(allowed, item => {
+                      return { label: item, value: item }
+                    })
+
+                    if (type === 'string' && required && allowed.length > 0) {
+                      return (
+                        <div className="col-xs-6">
+                          <Select
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="text"
+                            value={selectedValue || ''}
+                            options={selectOpts}
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                            placeholder={optionName}
+                          />
+                        </div>
+                        )
+                    }
+
+                    if (type === 'string' && required) {
+                      return (
+                        <div className="col-xs-6">
+                          <input
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="text"
+                            placeholder={optionName}
+                            value={args || ''}
+                            className="form-control input-sm"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                          />*required string
+                        </div>
+                        )
+                    }
+
+                    if (type === 'string' && allowed.length > 0) {
+                      return (
+                        <div className="col-xs-6 select-parent">
+                          <Select
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="text"
+                            value={selectedValue || ''}
+                            options={selectOpts}
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                            placeholder={optionName}
+                          />
+                        </div>
+                        )
+                    }
+
+                    if (type === 'string') {
+                      return (
+                        <div className="col-xs-6  pull-right">
+                          <input
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="text"
+                            placeholder={optionName}
+                            value={args || ''}
+                            className="form-control input-sm"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                          />
+                        </div>
+                        )
+                    }
+
+                    if (type === 'int' || type === 'float' && required) {
+                      return (
+                        <div className="col-xs-6">
+                          <input
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="number"
+                            placeholder={optionName}
+                            value={args || ''}
+                            className="form-control input-sm"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                          />
+                        </div>
+                      )
+                    }
+
+                    if (type === 'int' || type === 'float') {
+                      return (
+                        <div className="col-xs-3">
+                          <input
+                            style={{ height: '36px', borderRadius: '4px' }}
+                            type="number"
+                            placeholder={optionName}
+                            value={args || ''}
+                            className="form-control input-sm"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                          />
+                        </div>
+                      )
+                    }
+
+                    if (type === 'bool' && required) {
+                      return (
+                        <div className="config-checkbox col-xs-3">
+                          {optionName}{'  '}
+                          <input
+                            type="checkbox"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                            defaultChecked={keep}
+                          /> *required bool
+                        </div>
+                      )
+                    }
+
+                    if (type === 'bool') {
+                      return (
+                        <div className="config-checkbox col-xs-3">
+                          {optionName}{'  '}
+                          <input
+                            type="checkbox"
+                            onChange={(item) => {
+                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            }}
+                            defaultChecked={keep}
+                          />
+                        </div>
+                      )
+                    }
+                  })
                 }
 
                 {name === 'upload' &&
                   <input
-                    style={{ borderRadius: '4px' }}
+                    style={{ height: '36px', borderRadius: '4px' }}
                     placeholder="target folder in rinocloud"
                     type="text"
                     value={args || ''}
@@ -123,11 +289,11 @@ class TaskForm extends React.Component {
                   <div className="form-group m-b-0">
                     <div className="input-group">
                       <span
+                        style={{ height: '36px', borderRadius: '4px', lineHeight: '36px' }}
                         className="input-group-addon"
                         style={{ backgroundColor: 'white' }}
                       >
                         <a
-
                           href="#"
                           onClick={(e) => {
                             e.preventDefault()
@@ -141,6 +307,7 @@ class TaskForm extends React.Component {
                         </a>
                       </span>
                       <input
+                        style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
                         value={args || ''}
                         className="form-control"
@@ -153,7 +320,7 @@ class TaskForm extends React.Component {
 
                 {['python', 'Rscript', 'matlab'].includes(name) &&
                   <a
-                    style={{ borderRadius: '4px' }}
+                    style={{ height: '36px', borderRadius: '4px' }}
                     href="#"
                     className="btn btn-default btn-sm"
                     onClick={(e) => {
@@ -173,7 +340,7 @@ class TaskForm extends React.Component {
                   <div>
                     <div className="col-xs-6">
                       <input
-                        style={{ borderRadius: '4px' }}
+                        style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
                         value={name || ''}
                         placeholder="Command to run"
@@ -186,7 +353,7 @@ class TaskForm extends React.Component {
                     </div>
                     <div className="col-xs-6">
                       <input
-                        style={{ borderRadius: '4px' }}
+                        style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
                         value={args || ''}
                         placeholder="Command arguments"
