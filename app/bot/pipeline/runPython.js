@@ -12,13 +12,13 @@ export default (opts) => {
 
   const args = [codePath, locals.filepath]
 
-  checkPythonVersion(python => {
-    if (!python) {
+  checkPythonVersion(pythonVersion => {
+    if (!pythonVersion) {
       return this.onError(
         new Error('No python installed'))
     } else { // eslint-disable-line
 
-      const child = spawn(python, args, { cwd })
+      const child = spawn(`python${pythonVersion}`, args, { cwd })
 
       child.on('error', (error) => {
         child.error = true

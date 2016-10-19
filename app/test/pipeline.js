@@ -1,5 +1,5 @@
-import { Task } from '../bot/task'
-import createPipeline from '../bot/pipeline'
+import { Task } from '../bot/pipeline/task'
+import createPipeline from '../bot/pipeline/pipeline'
 import async from 'async'
 import { isMatch } from '../bot/utils'
 import rimraf from 'rimraf'

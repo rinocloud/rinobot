@@ -30,7 +30,13 @@ export const checkPythonVersion = (cb) => {
           if (m.index === re.lastIndex) {
             re.lastIndex++;
           }
-          cb(m[1])
+          if (m[1][0] === '3') {
+            cb('3')
+          } else if (m[1][0] === '2') {
+            cb('2')
+          } else {
+            cb(false)
+          }
         } else {
           cb(false)
         }
