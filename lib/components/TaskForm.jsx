@@ -11,6 +11,7 @@ class TaskForm extends React.Component {
     name: PropTypes.string,
     onRequired: PropTypes.bool,
     args: PropTypes.oneOfType([
+      React.PropTypes.object,
       React.PropTypes.string,
       React.PropTypes.array,
     ]),
@@ -33,7 +34,7 @@ class TaskForm extends React.Component {
 
     const changeArgs = (e) => {
       e.preventDefault()
-      this.props.onChangeArgs({ argName: 'default', argValue: e.target.value })
+      this.props.onChangeArgs('default', e.target.value)
     }
 
     const changeName = (item) => {
@@ -106,7 +107,6 @@ class TaskForm extends React.Component {
       }))
     , ['required'])
 
-
     return (
       <div className="row">
         <div className="col-xs-12">
@@ -136,20 +136,22 @@ class TaskForm extends React.Component {
                       optionName
                     } = pluginOption
 
+                    const value = args[optionName] || ''
+
                     const selectOpts = _.map(allowed, item => {
                       return { label: item, value: item }
                     })
 
                     if (type === 'string' && required && allowed.length > 0) {
                       return (
-                        <div className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-6">
                           <Select
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
-                            value={selectedValue || ''}
+                            value={value}
                             options={selectOpts}
                             onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                              this.props.onChangeArgs(optionName, item.value)
                             }}
                             placeholder={optionName}
                           />
@@ -159,15 +161,15 @@ class TaskForm extends React.Component {
 
                     if (type === 'string' && required) {
                       return (
-                        <div className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-6">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
                             placeholder={optionName}
-                            value={args || ''}
+                            value={value}
                             className="form-control input-sm"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.value)
                             }}
                           />*required string
                         </div>
@@ -176,14 +178,14 @@ class TaskForm extends React.Component {
 
                     if (type === 'string' && allowed.length > 0) {
                       return (
-                        <div className="col-xs-6 select-parent">
+                        <div key={`opts${optionIndex}`} className="col-xs-6 select-parent">
                           <Select
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
-                            value={selectedValue || ''}
+                            value={value}
                             options={selectOpts}
                             onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                              this.props.onChangeArgs(optionName, item.value)
                             }}
                             placeholder={optionName}
                           />
@@ -193,15 +195,15 @@ class TaskForm extends React.Component {
 
                     if (type === 'string') {
                       return (
-                        <div className="col-xs-6  pull-right">
+                        <div key={`opts${optionIndex}`} className="col-xs-6  pull-right">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
                             placeholder={optionName}
-                            value={args || ''}
+                            value={value}
                             className="form-control input-sm"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.value)
                             }}
                           />
                         </div>
@@ -210,15 +212,15 @@ class TaskForm extends React.Component {
 
                     if (type === 'int' || type === 'float' && required) {
                       return (
-                        <div className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-6">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="number"
                             placeholder={optionName}
-                            value={args || ''}
+                            value={value}
                             className="form-control input-sm"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.value)
                             }}
                           />
                         </div>
@@ -227,15 +229,15 @@ class TaskForm extends React.Component {
 
                     if (type === 'int' || type === 'float') {
                       return (
-                        <div className="col-xs-3">
+                        <div key={`opts${optionIndex}`} className="col-xs-3">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="number"
                             placeholder={optionName}
-                            value={args || ''}
+                            value={value}
                             className="form-control input-sm"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.value)
                             }}
                           />
                         </div>
@@ -244,14 +246,14 @@ class TaskForm extends React.Component {
 
                     if (type === 'bool' && required) {
                       return (
-                        <div className="config-checkbox col-xs-3">
+                        <div key={`opts${optionIndex}`} className="config-checkbox col-xs-3">
                           {optionName}{'  '}
                           <input
                             type="checkbox"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.checked)
                             }}
-                            defaultChecked={keep}
+                            defaultChecked={value}
                           /> *required bool
                         </div>
                       )
@@ -259,14 +261,14 @@ class TaskForm extends React.Component {
 
                     if (type === 'bool') {
                       return (
-                        <div className="config-checkbox col-xs-3">
+                        <div key={`opts${optionIndex}`} className="config-checkbox col-xs-3">
                           {optionName}{'  '}
                           <input
                             type="checkbox"
-                            onChange={(item) => {
-                              this.props.onChangeArgs({ argName: optionName, argValue: item.value })
+                            onChange={(e) => {
+                              this.props.onChangeArgs(optionName, e.target.checked)
                             }}
-                            defaultChecked={keep}
+                            defaultChecked={value}
                           />
                         </div>
                       )
@@ -279,7 +281,7 @@ class TaskForm extends React.Component {
                     style={{ height: '36px', borderRadius: '4px' }}
                     placeholder="target folder in rinocloud"
                     type="text"
-                    value={args || ''}
+                    value={args["default"] || ''}
                     className="form-control input-sm"
                     onChange={changeArgs}
                   />
@@ -309,7 +311,7 @@ class TaskForm extends React.Component {
                       <input
                         style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
-                        value={args || ''}
+                        value={args["default"] || ''}
                         className="form-control"
                         onChange={changeArgs}
                         placeholder="or type a location"
@@ -355,7 +357,7 @@ class TaskForm extends React.Component {
                       <input
                         style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
-                        value={args || ''}
+                        value={args["default"] || ''}
                         placeholder="Command arguments"
                         className="form-control input-sm"
                         onChange={changeArgs}
