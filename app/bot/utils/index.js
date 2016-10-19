@@ -22,12 +22,21 @@ export const checkPythonVersion = (cb) => {
   // returns callback with values 2, 3 or false
   exec('python3 -V', (error) => {
     if (error) {
-      exec('python -V', (error) => { // eslint-disable-line
+      exec('python -V', (error, stdout, stderr) => { // eslint-disable-line
         if (error) cb(false)
-        else cb('python')
+        const re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/
+        let m
+        if ((m = re.exec(stderr)) !== null) { // eslint-disable-line
+          if (m.index === re.lastIndex) {
+            re.lastIndex++;
+          }
+          cb(m[1])
+        } else {
+          cb(false)
+        }
       })
     } else {
-      cb('python3')
+      cb('3')
     }
   })
 }

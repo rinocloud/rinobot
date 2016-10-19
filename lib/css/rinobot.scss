@@ -1,15 +1,10 @@
-$white: #f7f8fb;
-$grey1: #f8fafb;
-$grey2: #f0f4f7;
-
-$font-family: 'Karla', sans-serif;
-$primary-color: #647997;
-$primary-dark: #737d9c;
-$sidebar-width: 200px;
-
-$panel-heading-color: #eef1f8;
-$panel-border-color: #dae1eb;
-$panel-body-color: $grey1;
+@import './libs/font-awesome.css';
+@import './libs/toolkit-startup.css';
+@import './libs/application-startup.css';
+@import './libs/rinocloud-icons.css';
+@import './libs/react-select-plus.css';
+@import './libs/react-toggle';
+@import 'variables';
 
 html, body {
   height: 100%;
@@ -357,7 +352,7 @@ span.block-title{
 .header {
     position: fixed;
     top: 0;
-    left: $sidebar-width;
+    left: 0;
     padding: 20px 20px;
     right: 0;
     background: $grey1;
@@ -365,6 +360,10 @@ span.block-title{
     cursor: text;
     z-index: 5;
     -webkit-app-region: drag;
+}
+
+.main-container .header {
+  left: $sidebar-width;
 }
 
 .header-link{

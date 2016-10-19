@@ -1,4 +1,4 @@
-import { checkPythonVersion } from './utils'
+import { checkPythonVersion } from '../utils'
 import { spawn } from 'child_process'
 
 export default (opts) => {

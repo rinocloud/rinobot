@@ -46,12 +46,12 @@ export function requireAuthentication(Component) {
       const { actions, auth, ui, watcher, location } = this.props
       return (
         <div className="wrapper main-container">
-          {/*<Notifications
+          <Notifications
             installUpdate={actions.installUpdate}
             updateNotes={ui.updateNotes}
             updateShowing={ui.updateShowing}
             updateVersion={ui.updateVersion}
-          />*/}
+          />
 
           <div className="sidebar p-0 m-0">
             <Sidebar

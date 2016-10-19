@@ -99,57 +99,6 @@ class Sidebar extends React.Component {
               <i className="fa fa-bolt"></i>{'  '}
               <span>Install</span>
             </Link>
-
-            <li className="list-group-item list-group-item-heading m-t">
-              <h6><strong>User</strong></h6>
-            </li>
-
-            {auth.isAuthenticating &&
-              <a
-                href="#"
-                onClick={onClickLogout}
-                className="list-group-item"
-              >
-                <i className="fa fa-spinner fa-spin"></i>{'  '}
-                <span>Logging out</span>
-              </a>
-            }
-
-            {!auth.isAuthenticating &&
-              <a
-                href="#"
-                onClick={onClickLogout}
-                className="list-group-item"
-              >
-                <i className="fa fa-sign-out"></i>{'  '}
-                <span>Logout {auth.username}</span>
-              </a>
-            }
-
-            <a
-              className="list-group-item"
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                shell.openExternal(`https://${auth.project}.rinocloud.com/app/`)
-              }}
-            >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
-              <span>My rinocloud</span>
-            </a>
-
-            <a
-              href="#"
-              className="list-group-item"
-              onClick={(e) => {
-                e.preventDefault()
-                shell.openExternal('http://docs.rinocloud.com/rinobot/')
-              }
-              }
-            >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
-              <span>Documentation</span>
-            </a>
           </ul>
         </div>
         <div>

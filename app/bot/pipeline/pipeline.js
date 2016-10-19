@@ -2,8 +2,8 @@ import { createTask } from './task'
 import async from 'async'
 import _ from 'lodash'
 import pt from 'path'
-import { isMatch } from './utils'
-import { readCreated } from './history'
+import { isMatch } from '../utils'
+import { readCreated } from '../history'
 
 
 export const queue = async.queue((job, callback) => job(callback), 1)

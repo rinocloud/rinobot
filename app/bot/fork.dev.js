@@ -2,24 +2,8 @@ import _ from 'lodash'
 import rpc from './rpc-fork'
 import chokidar from 'chokidar'
 import moment from 'moment'
-import createPipeline from './pipeline'
+import createPipeline from './pipeline/pipeline'
 import { flattenWatched } from './utils'
-
-/*
-  only emits events
-
-    'watcher started'
-    'watcher ready'
-    'watcher set total files'
-    'watcher set processed files'
-
-    'task started'
-    'task log'
-    'task complete'
-    'task ignore'
-    'task error'
-    'unexpected error'
-*/
 
 const forkRpc = rpc(process)
 

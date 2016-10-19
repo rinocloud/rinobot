@@ -1,6 +1,5 @@
 import remoteFileList from './remoteFileList'
-import mergeHistory from './mergeHistory'
-import readHistory from './readHistory'
+import { mergeHistory, readHistory } from './history/history'
 import * as api from '../api/api.js'
 import _ from 'lodash'
 import fs from 'fs'
@@ -15,7 +14,7 @@ const watchedDirId = null //null for root 3120
 
 const historyFile = pt.join(pathBase, 'history.json')
 const opts = {apiToken:apiToken, historyFile:historyFile, localPathBase:pathBase}
-	
+
 new Promise((resolve, reject) => {
 		resolve(
 			remoteFileList({id:watchedDirId,apiToken:apiToken})
@@ -26,7 +25,7 @@ new Promise((resolve, reject) => {
 		//	2. Iterate through remot file list
 		//	3. If file not in the list, download, mergeHistory
 		//_(list).forEach((value) => {readHistory('history.json', value.name, (err, tt)=>{console.log(err, tt)})})
-		
+
 		//_(list).forEach((value, key) => {
 		//list.forEach((value, key) => {
 		let i
@@ -40,7 +39,7 @@ new Promise((resolve, reject) => {
 					mergeHistory(historyFile, fileInfo.name, fileInfo, ()=>{console.log(len+'/'+i)})
 					})
 				}
-			})	
+			})
 		}
 		//})
 

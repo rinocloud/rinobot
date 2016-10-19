@@ -17,8 +17,8 @@ export default (fpath, cb) => {
   const globs = [].concat(
     exts.map((ext) => fpathNoExt + ext),
     exts.map((ext) => fpath + ext),
-    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), '.' + pt.basename(fpathNoExt) + ext)),
-    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), '.' + pt.basename(fpathNoExt) + ext)),
+    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), `.${pt.basename(fpathNoExt)}${ext}`)),
+    exts.map((ext) => pt.join(pt.dirname(fpathNoExt), `.${pt.basename(fpathNoExt)}${ext}`)),
   )
 
   const globResults = globule.find(globs)

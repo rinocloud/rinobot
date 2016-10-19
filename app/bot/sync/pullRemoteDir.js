@@ -1,12 +1,15 @@
-import remoteFileList from './remoteFileList'
-import mergeHistorySync from './mergeHistorySync'
-import { readHistoryFile } from './readHistory'
-import updateHistorySync from './updateHistorySync'
 import replaceFile from './replaceFile'
-import { checkIgnored } from './filters'
-import _ from 'lodash'
-import downloadFileSync from './downloadFileSync'
+import remoteFileList from './remoteFileList'
+import downloadFile from './downloadFile'
 import pt from 'path'
+import _ from 'lodash'
+import {
+  mergeHistory,
+  readHistory,
+  updateHistory,
+  checkIgnored
+} from '../history'
+
 
 const apiToken = '8186755009251ef0bbb273fbc86d7b9caa228374'
 const pathBase = '/Users/eoinmurray/Desktop/test-sync'
@@ -22,12 +25,12 @@ const opts = {
 }
 
 console.log('Updating history file locally.')
-updateHistorySync(opts, () => {
-  readHistoryFile(historyFile, (history) => {
+updateHistory(opts, () => {
+  readHistory(historyFile, (history) => {
     console.log('History file was updated locally.')
     console.log('Downloading remote file list.')
     remoteFileList({ id: watchedDirId, apiToken }, (err, list) => {
-      console.log('Downloading files.', list)
+      console.log('Downloading files.')
       _(list).forEach((value, key) => { // eslint-disable-line
         const fileInfo = JSON.parse(JSON.stringify(value))
         const ifIgnored = checkIgnored(ignoredFilter, fileInfo.name.split(/[/ ]+/).pop())
@@ -41,8 +44,8 @@ updateHistorySync(opts, () => {
               versions: [],
               id: fileInfo.id
             }
-            downloadFileSync(opts, fileInfo, () => {
-              mergeHistorySync(historyFile, fileInfo.name, fileStats, () => {
+            downloadFile(opts, fileInfo, () => {
+              mergeHistory(historyFile, fileInfo.name, fileStats, () => {
                 console.log(`Downloading and updating history.json: ${fileInfo.name}`)
               })
             })

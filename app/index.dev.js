@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron'
 import { createSentry } from './analytics'
-import createBot, { checkPythonVersion, updateRinobotPlugin } from './bot/'
+import createBot, { updateRinobotPlugin } from './bot/'
+import { checkPythonVersion } from './bot/utils/'
 import autoUpdater from './auto-updater'
 import isDev from 'electron-is-dev'
 import _package from './package'

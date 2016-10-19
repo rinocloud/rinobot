@@ -1,15 +1,22 @@
 import React, { PropTypes } from 'react'
 import { shell } from 'electron'
-import update from 'react-addons-update'
+import Toggle from 'react-toggle'
 import pt from 'path'
+import _ from 'lodash'
+import { UserDropdown } from '../components/UserDropdown'
 import { PipelineForm } from './PipelineForm'
 import { MetadataForm } from './MetadataForm'
 import { LogScroll } from './LogScroll'
+import * as formActions from '../actions/form'
 
 
 class WatchDir extends React.Component {
   static propTypes = {
     dir: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
+    logout: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     onStartClick: PropTypes.func.isRequired,
     isStarting: PropTypes.bool.isRequired,
     onStopClick: PropTypes.func.isRequired,
@@ -22,266 +29,15 @@ class WatchDir extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.onSaveConfig = this.onSaveConfig.bind(this)
-    this.addPipeline = this.addPipeline.bind(this)
-    this.removePipeline = this.removePipeline.bind(this)
-    this.addPipelineTask = this.addPipelineTask.bind(this)
-    this.removePipelineTask = this.removePipelineTask.bind(this)
-    this.changePipelineMatch = this.changePipelineMatch.bind(this)
-    this.changePipelineTaskName = this.changePipelineTaskName.bind(this)
-    this.changePipelineTaskArgs = this.changePipelineTaskArgs.bind(this)
-    this.changePipelineTaskFlow = this.changePipelineTaskFlow.bind(this)
-
-    this.addMetadata = this.addMetadata.bind(this)
-    this.removeMetadata = this.removeMetadata.bind(this)
-    this.changeMetadataField = this.changeMetadataField.bind(this)
-    this.changeMetadataValue = this.changeMetadataValue.bind(this)
-
-    this.state = {
-      formData: props.dir.config,
-      isSaved: true,
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ formData: nextProps.dir.config, isSaved: true })
   }
 
   onSaveConfig() {
-    this.props.onSaveConfig(this.state.formData)
-    this.setState({ isSaved: true })
-  }
-
-  addPipeline() {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          $push: [{
-            filematch: null,
-            incoming_only: true,
-            tasks: [{
-              name: null,
-              args: null,
-              keep: true,
-              flow: 'then'
-            }]
-          }]
-        }
-      }
-    }))
-  }
-
-  removePipeline(index) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          $splice: [[index, 1]]
-        }
-      }
-    }))
-  }
-
-  addPipelineTask(index) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              $push: [{
-                name: null,
-                args: null,
-                keep: true,
-                flow: 'then'
-              }]
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  removePipelineTask(index, taskIndex) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              $splice: [[taskIndex, 1]]
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineMatch(index, newMatch) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            filematch: { $set: newMatch }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineTaskName(index, taskIndex, name) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              [taskIndex]: {
-                name: { $set: name }
-              }
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineTaskArgs(index, taskIndex, args) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              [taskIndex]: {
-                args: { $set: args }
-              }
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineTaskKeep(index, taskIndex, args) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              [taskIndex]: {
-                keep: { $set: args }
-              }
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineTaskFlow(index, taskIndex, args) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            tasks: {
-              [taskIndex]: {
-                flow: { $set: args }
-              }
-            }
-          }
-        }
-      }
-    }))
-  }
-
-  changePipelineIncomingOnly(index, args) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        pipelines: {
-          [index]: {
-            incoming_only: { $set: args }
-          }
-        }
-      }
-    }))
-  }
-
-  addMetadata() {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        metadata: {
-          $push: [{
-            field: null,
-            value: null
-          }]
-        }
-      }
-    }))
-  }
-
-  removeMetadata(index) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        metadata: {
-          $splice: [[index, 1]]
-        }
-      }
-    }))
-  }
-
-  changeMetadataField(index, field) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        metadata: {
-          [index]: {
-            field: { $set: field }
-          }
-        }
-      }
-    }))
-  }
-
-  changeMetadataValue(index, value) {
-    this.setState(update(this.state, {
-      isSaved: { $set: false },
-      formData: {
-        metadata: {
-          [index]: {
-            value: { $set: value }
-          }
-        }
-      }
-    }))
+    this.props.onSaveConfig(_.omit(this.props.form, 'isSaved'))
   }
 
   render() {
-    const { dir, registry, installedPlugins, isStarting } = this.props
-    const { formData, isSaved } = this.state
-
-    const onStartClick = (e) => {
-      e.preventDefault()
-      this.props.onStartClick()
-    }
-
-    const onStopClick = (e) => {
-      e.preventDefault()
-      this.props.onStopClick()
-    }
-
-    const onRemoveDirClick = (e) => {
-      e.preventDefault()
-      this.props.onRemoveDirClick()
-    }
+    const { dir, dispatch, form, registry, installedPlugins, isStarting } = this.props
 
     const removeDotRino = (e) => {
       e.preventDefault()
@@ -295,7 +51,6 @@ class WatchDir extends React.Component {
         <div className="header">
           <div className="row">
             <div className="col-sm-12">
-
               <a
                 className="m-r header-link"
                 href="#"
@@ -310,7 +65,7 @@ class WatchDir extends React.Component {
                 </strong>
               </a>
 
-              {!isSaved &&
+              {!form.isSaved &&
                 <a
                   href="#"
                   className="btn btn-sm btn-default m-r-sm"
@@ -324,7 +79,7 @@ class WatchDir extends React.Component {
                 </a>
               }
 
-              {isSaved &&
+              {form.isSaved &&
                 <a
                   href="#"
                   className="btn btn-sm btn-default m-r-sm"
@@ -338,7 +93,10 @@ class WatchDir extends React.Component {
                 <a
                   href="#"
                   className="btn btn-sm btn-danger"
-                  onClick={onStopClick}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.props.onStopClick()
+                  }}
                 >
                   <i className="m-r-sm fa fa-stop-circle-o" />
                   Stop watching
@@ -349,7 +107,10 @@ class WatchDir extends React.Component {
                 <a
                   href="#"
                   className="btn btn-sm btn-default"
-                  onClick={onStopClick}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.props.onStopClick()
+                  }}
                   disabled
                 >
                   <i className="m-r-sm fa fa-spinner fa-spin"></i>
@@ -362,12 +123,21 @@ class WatchDir extends React.Component {
                   href="#"
                   className="btn btn-sm btn-start"
                   style={{ color: '#fff' }}
-                  onClick={onStartClick}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.props.onStartClick()
+                  }}
                 >
                   Start watching
                   <i className="m-l-sm fa fa-play-circle-o" />
                 </a>
               }
+
+              <UserDropdown
+                groupClassName="pull-right m-l"
+                auth={this.props.auth}
+                logout={this.props.logout}
+              />
 
               <a
                 href="#"
@@ -380,7 +150,10 @@ class WatchDir extends React.Component {
               <a
                 href="#"
                 className="btn btn-sm btn-default m-l-sm pull-right"
-                onClick={onRemoveDirClick}
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.props.onRemoveDirClick()
+                }}
               >
                 <span><i className="fa fa-trash"></i> Remove folder</span>
               </a>
@@ -390,102 +163,119 @@ class WatchDir extends React.Component {
 
         <div className="main config p-l p-r">
           <div className="row">
-
             <div className="col-sm-12">
-
-              {formData.pipelines.length === 0 &&
-                <div className="block text-center">
-                  <div className="m-t-lg">
-                    <i className="fa fa-bolt fa-2x" />
-                    <div className="slash" />
-                    <div className="m-b-sm"> No automation pipelines.</div>
-                    <a
-                      href="#"
-                      className="btn btn-sm btn-default"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        this.addPipeline()
-                      }}
-                    >
-                      <i className="fa fa-bolt m-r-sm" />
-                      Add a Pipeline
-                    </a>
+              <div className="panel panel-primary">
+                <div className="panel-heading">
+                  <div className="panel-title">
+                    Synchronization
                   </div>
                 </div>
-              }
-
-              {formData.pipelines.length !== 0 &&
-                <div className="panel panel-primary">
-                  <div className="panel-heading">
-                    <div className="row">
-                      <div className="col-sm-4">
-                        <div className="panel-title m-t-sm">
-                          Automation Pipelines
-                        </div>
-                      </div>
-                      <div className="col-sm-8">
-                      {formData.pipelines.length !== 0 &&
-                        <a
-                          href="#"
-                          className="m-l-sm btn btn-sm btn-default pull-right"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            this.addMetadata()
-                          }}
-                        >
-                          <i className="fa fa-plus-circle m-r-sm" />
-                          Add Metadata
-                        </a>
-                      }
-                        <a
-                          href="#"
-                          className="btn btn-sm btn-add-pipeline pull-right"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            this.addPipeline()
-                          }}
-                        >
-                          <i className="fa fa-bolt m-r-sm" />
-                          New Pipeline
-                        </a>
-                      </div>
+                <div className="panel-body">
+                  <div className="row">
+                    <div className="col-sm-12">
+                      Synchronization on
+                      <Toggle
+                        defaultChecked
+                        onChange={() => {}}
+                      />
                     </div>
                   </div>
-                  <div className="panel-body">
-                    {formData.pipelines.map((o, index) =>
-                      <div className="row pipeline m-b-lg m-t" key={`pipeline-${index}`}>
-                        <div className="col-xs-12">
-                          <PipelineForm
-                            pipeline={o}
-                            installedPlugins={installedPlugins}
-                            registry={registry}
-                            onChangeMatch={(match) =>
-                              this.changePipelineMatch(index, match)}
-                            onChangeTaskName={(taskIndex, name) =>
-                              this.changePipelineTaskName(index, taskIndex, name)}
-                            onChangeTaskArgs={(taskIndex, args) =>
-                              this.changePipelineTaskArgs(index, taskIndex, args)}
-                            onChangeTaskKeep={(taskIndex, args) =>
-                              this.changePipelineTaskKeep(index, taskIndex, args)}
-                            onChangeTaskFlow={(taskIndex, args) =>
-                              this.changePipelineTaskFlow(index, taskIndex, args)}
-                            onChangeIncomingOnly={args =>
-                              this.changePipelineIncomingOnly(index, args)}
-                            onAddTask={() =>
-                              this.addPipelineTask(index)}
-                            onRemoveTask={(taskIndex) =>
-                              this.removePipelineTask(index, taskIndex)}
-                            onRemove={() => this.removePipeline(index)}
-                          />
-                        </div>
-                      </div>
-                    )}
+                  <div className="row">
+                    <div className="col-sm-4">
+                      <input
+                        className="form-control m-t"
+                        placeholder="Target folder on Rinocloud"
+                        onChange={(e) => {
+                          e.preventDefault()
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              }
+              </div>
 
+              <div className="panel panel-primary">
+                <div className="panel-heading">
+                  <div className="row">
+                    <div className="col-sm-4">
+                      <div className="panel-title m-t-sm">
+                        Automation Pipelines
+                      </div>
+                    </div>
+                    <div className="col-sm-8">
+                    {form.pipelines.length !== 0 &&
+                      <a
+                        href="#"
+                        className="m-l-sm btn btn-sm btn-default pull-right"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          dispatch(formActions.addMetadata())
+                        }}
+                      >
+                        <i className="fa fa-plus-circle m-r-sm" />
+                        Add Metadata
+                      </a>
+                    }
+                      <a
+                        href="#"
+                        className="btn btn-sm btn-add-pipeline pull-right"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          dispatch(formActions.addPipeline())
+                        }}
+                      >
+                        <i className="fa fa-bolt m-r-sm" />
+                        New Pipeline
+                      </a>
+                    </div>
+                  </div>
+                </div>
 
-              {formData.metadata.map((o, index) =>
+                <div className="panel-body">
+                  {form.pipelines.length === 0 &&
+                    <div className="text-center">
+                      <div className="m-t">
+                        <i className="fa fa-bolt fa-2x" />
+                        <div className="slash" />
+                        <div>No automation pipelines.</div>
+                      </div>
+                    </div>
+                  }
+
+                  {form.pipelines.map((pipeline, index) =>
+                    <div className="row pipeline m-b-lg m-t" key={`pipeline-${index}`}>
+                      <div className="col-xs-12">
+                        <PipelineForm
+                          pipeline={pipeline}
+                          installedPlugins={installedPlugins}
+                          registry={registry}
+                          onChangeMatch={(newFileMatch) =>
+                            dispatch(formActions.changePipelineFilematch({ index, newFileMatch }))}
+                          onChangeTaskName={(taskIndex, name) =>
+                            dispatch(formActions.changePipelineTaskName({ index, taskIndex, name }))} // eslint-disable-line
+                          onChangeTaskArgs={(taskIndex, args) =>
+                            dispatch(formActions.changePipelineTaskArgs({ index, taskIndex, args }))} // eslint-disable-line
+                          onChangeTaskKeep={(taskIndex, args) =>
+                            dispatch(formActions.changePipelineTaskKeep({ index, taskIndex, args }))} // eslint-disable-line
+                          onChangeTaskFlow={(taskIndex, args) =>
+                            dispatch(formActions.changePipelineTaskFlow(index, taskIndex, args))}
+                          onChangeIncomingOnly={args =>
+                            dispatch(formActions.changePipelineIncomingOnly({ index, args }))}
+                          onAddTask={() =>
+                            dispatch(formActions.addPipelineTask({ index }))}
+                          onRemoveTask={(taskIndex) =>
+                            dispatch(formActions.removePipelineTask({ index, taskIndex }))
+                          }
+                          onRemove={() =>
+                            dispatch(formActions.removePipeline({ index }))}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {form.metadata.map((o, index) =>
                 <div className="row m-t" key={`metadata-${index}`}>
                   <div className="col-xs-1 col-xs-1-sm col-xs-11" />
                   <div className="col-xs-11">
@@ -493,10 +283,10 @@ class WatchDir extends React.Component {
                       field={o.field}
                       value={o.value}
                       onChangeField={(field) =>
-                        this.changeMetadataField(index, field)}
+                        dispatch(formActions.changeMetadataField({ index, field }))}
                       onChangeValue={(value) =>
-                        this.changeMetadataValue(index, value)}
-                      onRemove={() => this.removeMetadata(index)}
+                        dispatch(formActions.changeMetadataValue({ index, value }))}
+                      onRemove={() => dispatch(formActions.removeMetadata({ index }))}
                     />
                   </div>
                 </div>

@@ -14,12 +14,12 @@ import runCommand from './runCommand'
 import runUpload from './runUpload'
 import runCopy from './runCopy'
 import runMove from './runMove'
-import hashFile from './hashFile'
+import hashFile from '../utils/hashFile'
 import {
   addCreated,
   mergeHistory,
   readHistory
-} from './history'
+} from '../history'
 
 
 export const createTask = (opts) =>
