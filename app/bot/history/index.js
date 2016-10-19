@@ -122,31 +122,30 @@ export const updateHistory = (opts, cb) => {
   const historyFile = opts.historyFile
   const pathBase = opts.localPathBase
   const ignoredFilter = opts.ignoredFilter
-  readHistory(historyFile, history => {
+  readHistory(historyFile, (err, history) => {
     console.log('Updating history.json file...')
-
     walk.walk(pathBase, (basedir, filename, stat, next) => {
       if (stat.isFile()) {
-        const ff = pt
+        const relRinoFilePath = pt
           .relative(pathBase, pt.join(basedir, filename))
           .split(pt.sep)
-          .reduce((pv, cv) => `${pv}/${cv}`)
+          .join('/')
 
-        const ifIgnored = checkIgnored(ignoredFilter, filename)
-        if (!_.has(history, ff) && ifIgnored !== 1) {
-          console.log(`Adding to history.json: ${ff}`)
-          mergeHistory(historyFile, ff, {}, next)
+        const isIgnored = checkIgnored(ignoredFilter, filename)
+        if (!_.has(history, relRinoFilePath) && isIgnored !== 1) {
+          console.log(`Adding to history.json: ${relRinoFilePath}`)
+          mergeHistory(historyFile, relRinoFilePath, {}, next)
         }
-        if (_.has(history, ff) && ifIgnored === 1) {
+        if (_.has(history, relRinoFilePath) && isIgnored === 1) {
           // remove from history the record
           next()
         }
       } else {
         next()
       }
-    }, (err) => {
+    }, (er) => {
       console.log('Finished updating history.json file.')
-      cb(err)
+      cb(er)
     })
   })
 }

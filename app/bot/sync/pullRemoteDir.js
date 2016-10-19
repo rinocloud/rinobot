@@ -1,5 +1,4 @@
-import replaceFile from './replaceFile'
-import remoteFileList from './remoteFileList'
+import replaceRemoteFile from './replaceRemoteFile'
 import downloadFile from './downloadFile'
 import pt from 'path'
 import _ from 'lodash'
@@ -12,24 +11,25 @@ import {
 
 
 const apiToken = '8186755009251ef0bbb273fbc86d7b9caa228374'
-const pathBase = '/Users/eoinmurray/Desktop/test-sync'
-const watchedDirId = null
+const localDir = '/Users/eoinmurray/Desktop/test-sync'
+const remoteDirID = null
+
 const ignoredFilter = ['.db', 'history.json']
-const historyFile = pt.join(pathBase, 'history.json')
+const historyFile = pt.join(localDir, 'history.json')
 
 const opts = {
   apiToken,
   historyFile,
   ignoredFilter,
-  localPathBase: pathBase
+  localPathBase: localDir
 }
 
 console.log('Updating history file locally.')
 updateHistory(opts, () => {
-  readHistory(historyFile, (history) => {
+  readHistory(historyFile, (err, history) => {
     console.log('History file was updated locally.')
     console.log('Downloading remote file list.')
-    remoteFileList({ id: watchedDirId, apiToken }, (err, list) => {
+    replaceRemoteFile({ id: remoteDirID, apiToken }, (err, list) => {
       console.log('Downloading files.')
       _(list).forEach((value, key) => { // eslint-disable-line
         const fileInfo = JSON.parse(JSON.stringify(value))
@@ -55,7 +55,7 @@ updateHistory(opts, () => {
               if (fileInfo.created_on < history[fileInfo.name].lastUpdate) {
                 console.log(`Upload updated: ${fileInfo.name}`)
                 // might need to add queues
-                replaceFile(opts, fileInfo.id, fileInfo.name, () => {
+                replaceRemoteFile(opts, fileInfo.id, fileInfo.name, () => {
                   console.log('replaced')
                 })
               }
