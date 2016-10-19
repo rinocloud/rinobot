@@ -1,6 +1,8 @@
 import { checkPythonVersion } from '../utils'
 import { spawn } from 'child_process'
 
+const isOSX = process.platform === 'darwin'
+
 export default (opts) => {
   const codePath = opts.codePath
   const locals = opts.locals
@@ -18,7 +20,8 @@ export default (opts) => {
         new Error('No python installed'))
     } else { // eslint-disable-line
 
-      const child = spawn(`python${pythonVersion}`, args, { cwd })
+      const python = isOSX ? `python${pythonVersion}` : 'python'
+      const child = spawn(python, args, { cwd })
 
       child.on('error', (error) => {
         child.error = true
