@@ -2,33 +2,33 @@ import * as api from '../api/api.js'
 import _ from 'lodash'
 import async from 'async'
 
-export default (opts, callback) => {
-  const apiToken = opts.apiToken
-  const id = opts.id
+export const getRemoteFileList = (opts, callback) => {
+  /*
+    Returns the list of files on Rinocloud relative to the starting remote dir. So
+    if testFolder is the folder to be synched then testFolder/file.txt will be named
+    just file.txt
+  */
+  const { apiToken, remoteDir } = opts
+
   api.auth(apiToken)
   api.setBase('https://rinocloud.com')
-  let pathBase = ''
-  return api
-    .getAncestors(id)
-    .then((payload) => {
-      _.forEach(payload, (parent) => {
-        let parentJSON = JSON.stringify(parent)
-        parentJSON = JSON.parse(parentJSON)
-        pathBase += `${parentJSON.name}/`
-      })
-      return remoteDirList(id, pathBase, (err, res) => {
-        callback(err, res)
-      })
-    })
-    .catch(() => { // eslint-disable-line
-      return remoteDirList(id, '', (err, res) => {
-        callback(err, res)
-      })
-    })
+
+  return getRemoteDirList({ id: remoteDir.id, path: '' }, (err, res) => {
+    const remoteList = _.reduce(res, (r, item) => {
+      r[item.name] = _.omit(item, 'name') // eslint-disable-line
+      return r
+    }, {})
+
+    callback(err, remoteList)
+  })
 }
 
 
-const remoteDirList = (id, pathBase, callback) => {
+const getRemoteDirList = ({ id, path }, callback) => {
+  if (_.isUndefined(id) || _.isUndefined(path)) {
+    throw new Error('Path or id is undefined for getRemoteDirList')
+  }
+
   api
     .getChildren(id, 1000000, 0)
     .then((payload) => {
@@ -37,10 +37,13 @@ const remoteDirList = (id, pathBase, callback) => {
       childrenJSON = childrenJSON.result
       return async.map(childrenJSON, (record, cb) => {
         if (record.type === 'folder') {
-          remoteDirList(record.id, `${pathBase}${record.name}/`, cb)
+          getRemoteDirList({
+            id: record.id,
+            path: `${path}${record.name}/`
+          }, cb)
         } else if (record.type === 'file') {
           cb(null, {
-            name: pathBase + record.name,
+            name: path + record.name,
             id: record.id,
             created_on: record.created_on,
             etag: record.etag
@@ -61,3 +64,5 @@ const remoteDirList = (id, pathBase, callback) => {
       console.log(err)
     })
 }
+
+export default getRemoteFileList

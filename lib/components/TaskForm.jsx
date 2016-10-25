@@ -125,7 +125,7 @@ class TaskForm extends React.Component {
             </div>
 
             {selectedValue &&
-              <div className="col-xs-6">
+              <div className="col-xs-5">
                 {isPluginCommand &&
                   _.map(sortedPluginOptionsList, (pluginOption, optionIndex) => {
                     const {
@@ -144,7 +144,7 @@ class TaskForm extends React.Component {
 
                     if (type === 'string' && required && allowed.length > 0) {
                       return (
-                        <div key={`opts${optionIndex}`} className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-4">
                           <Select
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
@@ -161,7 +161,7 @@ class TaskForm extends React.Component {
 
                     if (type === 'string' && required) {
                       return (
-                        <div key={`opts${optionIndex}`} className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-4">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
@@ -178,7 +178,7 @@ class TaskForm extends React.Component {
 
                     if (type === 'string' && allowed.length > 0) {
                       return (
-                        <div key={`opts${optionIndex}`} className="col-xs-6 select-parent">
+                        <div key={`opts${optionIndex}`} className="col-xs-4 select-parent">
                           <Select
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
@@ -195,7 +195,7 @@ class TaskForm extends React.Component {
 
                     if (type === 'string') {
                       return (
-                        <div key={`opts${optionIndex}`} className="col-xs-6  pull-right">
+                        <div key={`opts${optionIndex}`} className="col-xs-4">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="text"
@@ -212,7 +212,7 @@ class TaskForm extends React.Component {
 
                     if (type === 'int' || type === 'float' && required) {
                       return (
-                        <div key={`opts${optionIndex}`} className="col-xs-6">
+                        <div key={`opts${optionIndex}`} className="col-xs-4">
                           <input
                             style={{ height: '36px', borderRadius: '4px' }}
                             type="number"
@@ -281,7 +281,7 @@ class TaskForm extends React.Component {
                     style={{ height: '36px', borderRadius: '4px' }}
                     placeholder="target folder in rinocloud"
                     type="text"
-                    value={args["default"] || ''}
+                    value={args.default || ''}
                     className="form-control input-sm"
                     onChange={changeArgs}
                   />
@@ -311,7 +311,7 @@ class TaskForm extends React.Component {
                       <input
                         style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
-                        value={args["default"] || ''}
+                        value={args.default || ''}
                         className="form-control"
                         onChange={changeArgs}
                         placeholder="or type a location"
@@ -357,7 +357,7 @@ class TaskForm extends React.Component {
                       <input
                         style={{ height: '36px', borderRadius: '4px' }}
                         type="text"
-                        value={args["default"] || ''}
+                        value={args.default || ''}
                         placeholder="Command arguments"
                         className="form-control input-sm"
                         onChange={changeArgs}
@@ -370,7 +370,7 @@ class TaskForm extends React.Component {
 
             {selectedValue && isPluginCommand &&
               <div className="col-xs-2">
-                <div className="text-muted config-checkbox">
+                {/*<div className="text-muted config-checkbox">
                   save output{'  '}
                   <input
                     type="checkbox"
@@ -379,7 +379,7 @@ class TaskForm extends React.Component {
                     }}
                     defaultChecked={keep}
                   />
-                </div>
+                </div>*/}
               </div>
             }
 

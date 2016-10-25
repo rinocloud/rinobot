@@ -55,6 +55,7 @@ export default (opts) => {
     } else {
       let _args = [codePath, filepath]
       if (args) {
+        console.log(args)
         _args = [..._args, ...args.split(' ')]
       }
       if (prefix) {

@@ -72,7 +72,6 @@ class PipelineForm extends React.Component {
             </div>
           </div>
 
-
           {_.map(pipeline.tasks, (task, index) => {
             let isAnd = false
             let nextTask = null

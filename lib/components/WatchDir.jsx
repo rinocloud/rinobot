@@ -260,7 +260,7 @@ class WatchDir extends React.Component {
                           onChangeTaskKeep={(taskIndex, args) =>
                             dispatch(formActions.changePipelineTaskKeep({ index, taskIndex, args }))} // eslint-disable-line
                           onChangeTaskFlow={(taskIndex, args) =>
-                            dispatch(formActions.changePipelineTaskFlow(index, taskIndex, args))}
+                            dispatch(formActions.changePipelineTaskFlow({ index, taskIndex, args }))} // eslint-disable-line
                           onChangeIncomingOnly={args =>
                             dispatch(formActions.changePipelineIncomingOnly({ index, args }))}
                           onAddTask={() =>
