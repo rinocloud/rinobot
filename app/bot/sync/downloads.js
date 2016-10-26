@@ -62,11 +62,13 @@ export const downloadFile = (opts) => {
           stream.end()
           onFileComplete(null)
 
+          const prev = rinoObj.previousVersions || []
+
           const fileStats = {
             created_on: rinoObj.created_on,
             lastUpdate: rinoObj.created_on,
             etag: rinoObj.etag,
-            versions: [rinoObj.id],
+            versions: [...prev, rinoObj.id],
             id: rinoObj.id
           }
 

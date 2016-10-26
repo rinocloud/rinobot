@@ -15,6 +15,7 @@ export const diffLists = (localList, remoteList) => {
       // file exists locally and remotely
       const remoteFile = remoteList[name]
       if (remoteFile.etag !== localFile.etag) {
+        console.log(`${name} etag diff\n\tremote:\t${remoteFile.etag}\n\tlocal:\t${localFile.etag}`)
         if (remoteFile.id > localFile.id) {
           // file contents are different and remote file is newer - so we need to update
           // the local copy
@@ -27,11 +28,11 @@ export const diffLists = (localList, remoteList) => {
       }
 
       if (remoteFile.etag === localFile.etag && remoteFile.id !== localFile.id) {
-        // file contents are the same but ids are different - I think this is an error
-        throw new Error(
-          `File contents (${name}) are the same but ids (remote: ${remoteFile.id}, local:
-            ${localFile.id}) are different.`
-        )
+        if (remoteFile.id > localFile.id) {
+          // file contents are same and remote file is newer - so we to update
+          // the local copy
+          newerRemoteFiles[name] = remoteFile
+        }
       }
     }
   })

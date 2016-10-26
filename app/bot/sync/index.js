@@ -5,7 +5,7 @@ import getRemoteFileList from './getRemoteFileList'
 import diffLists from './diffLists'
 import { downloadFiles } from './downloads'
 import { uploadFiles } from './uploads'
-import { updateLocalFiles, updateRemoteFiles  } from './updates'
+import { updateLocalFiles, updateRemoteFiles } from './updates'
 
 const apiToken = '8186755009251ef0bbb273fbc86d7b9caa228374'
 const localDir = '/Users/eoinmurray/Desktop/Rinobot/sync-test'
@@ -49,11 +49,6 @@ getRemotePath({ apiToken, remoteDirID }, (error, remotePath) => {
         newerLocalFiles
       } = lists
 
-      /*
-        First we handle the download, then the uploads
-        TODO: handle the newerRemoteFiles and newerLocalFiles
-      */
-
       downloadFiles({
         apiToken,
         localDir,
@@ -80,18 +75,31 @@ getRemotePath({ apiToken, remoteDirID }, (error, remotePath) => {
         onFileComplete: (e) => { if (e) throw e }
       })
 
-      // updateRemoteFiles({
-      //   apiToken,
-      //   localDir,
-      //   newerLocalFiles,
-      //   remoteDir,
-      //   onFileProgress: (remoteFileName, totalSize, currentSize) => {
-      //     console.log(
-      //       `Updating ${remoteFileName}: ${(100.0 * currentSize / totalSize).toFixed(2)}%`
-      //     )
-      //   },
-      //   onFileComplete: (e) => { if (e) throw e }
-      // })
+      updateRemoteFiles({
+        apiToken,
+        localDir,
+        newerLocalFiles,
+        remoteDir,
+        onFileProgress: (remoteFileName, totalSize, currentSize) => {
+          console.log(
+            `Updating remote ${remoteFileName}: ${(100.0 * currentSize / totalSize).toFixed(2)}%`
+          )
+        },
+        onFileComplete: (e) => { if (e) throw e }
+      })
+
+      updateLocalFiles({
+        apiToken,
+        localDir,
+        remoteDir,
+        newerRemoteFiles,
+        onFileProgress: (localFileName, totalSize, currentSize) => {
+          console.log(
+            `Updating local ${localFileName}: ${(100.0 * currentSize / totalSize).toFixed(2)}%`
+          )
+        },
+        onFileComplete: (e) => { if (e) throw e }
+      })
     })
   })
 })
