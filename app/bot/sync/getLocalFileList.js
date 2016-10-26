@@ -35,7 +35,7 @@ export const getLocalFileList = (opts, callback) => {
   } = opts
 
   readHistory(historyFilePath, (err, _history) => {
-    const history = _history || {}
+    let history = _history || {}
 
     walk.walk(localDir, (basedir, filename, stat, next) => {
       if (!stat.isFile()) {
@@ -49,12 +49,20 @@ export const getLocalFileList = (opts, callback) => {
         .split(pt.sep)
         .join('/')
 
-      if (_.has(history, relRinoFilePath) && isIgnored) {
-        next()
-      } else if (!_.has(history, relRinoFilePath) && !isIgnored) {
+      if (isIgnored && !_.has(history, relRinoFilePath)) {
+        // the file is not in history and is ignored
+        return next()
+      }
+
+      if (isIgnored && _.has(history, relRinoFilePath)) {
+        // file is ignore and is in history
+        history = _.omit(history, relRinoFilePath)
+        return next()
+      }
+
+      if (!_.has(history, relRinoFilePath)) {
         // file not in history so lets hash it and add it
         hashFile(pt.join(basedir, filename), (er, hash) => {
-          console.log(`Hashing and adding ${filename}`)
           history[relRinoFilePath] = {
             created_on: null,
             lastUpdate: null,
@@ -67,7 +75,14 @@ export const getLocalFileList = (opts, callback) => {
           next()
         })
       } else {
-        next()
+        // the file is already in history, but we hash it to see if its changed
+        hashFile(pt.join(basedir, filename), (er, hash) => {
+          history[relRinoFilePath] = {
+            ...history[relRinoFilePath],
+            etag: hash,
+          }
+          next()
+        })
       }
     }, (er) => {
       if (er) callback(null, er)

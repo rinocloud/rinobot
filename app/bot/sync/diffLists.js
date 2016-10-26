@@ -3,8 +3,8 @@ import _ from 'lodash'
 export const diffLists = (localList, remoteList) => {
   const filesToUpload = {}
   const filesToDownload = {}
-  const localFilesToUpdate = {}
-  const remoteFilesToUpdate = {}
+  const newerRemoteFiles = {}
+  const newerLocalFiles = {}
 
   // First loop over all the local files
   _.each(localList, (localFile, name) => {
@@ -14,16 +14,16 @@ export const diffLists = (localList, remoteList) => {
     } else {
       // file exists locally and remotely
       const remoteFile = remoteList[name]
-
-      if (remoteFile.etag !== localFile.etag && remoteFile.id > localFile.id) {
-        // file contents are different and remote file is newer - so we need to update
-        // the local copy
-        localFilesToUpdate[name] = remoteFile
-      }
-      if (remoteFile.etag !== localFile.etag && remoteFile.id < localFile.id) {
-        // file contents are different and local file is newer - so we need to update
-        // the remote copy
-        remoteFilesToUpdate[name] = localFile
+      if (remoteFile.etag !== localFile.etag) {
+        if (remoteFile.id > localFile.id) {
+          // file contents are different and remote file is newer - so we need to update
+          // the local copy
+          newerRemoteFiles[name] = remoteFile
+        } else {
+          // file contents are different and the id are the same, this means that the local
+          // file has changed - so we need to update the remote copy
+          newerLocalFiles[name] = localFile
+        }
       }
 
       if (remoteFile.etag === localFile.etag && remoteFile.id !== localFile.id) {
@@ -49,8 +49,8 @@ export const diffLists = (localList, remoteList) => {
   return {
     filesToUpload,
     filesToDownload,
-    localFilesToUpdate,
-    remoteFilesToUpdate
+    newerRemoteFiles,
+    newerLocalFiles
   }
 }
 

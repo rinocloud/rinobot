@@ -3,32 +3,34 @@ import _ from 'lodash'
 import fs from 'fs-extra'
 import crypto from 'crypto'
 const CHUNK_SIZE = 6 * 1024 * 1024
-const buffer = new Buffer(CHUNK_SIZE)
+
 
 export const done = (hashList, cb) => {
   const binaryList = _.map(hashList, h => new Buffer(h, 'hex'))
   const concatedBytes = Buffer.concat(binaryList)
   const finalHash = crypto.createHash('md5').update(concatedBytes).digest('hex')
-  cb(null, finalHash)
+
+  const finalHashStr = `${finalHash}-${hashList.length}`
+  cb(null, finalHashStr)
 }
 
-export default (filepath, cb) => {
+export const hashFile = (filepath, cb) => {
   const hashList = []
-
+  const buffer = new Buffer(CHUNK_SIZE)
   fs.open(filepath, 'r', (err, fd) => {
     if (err) return cb(err, null)
 
     const readChunk = () => {
-      fs.read(fd, buffer, 0, CHUNK_SIZE, null, (err, nread) => { // eslint-disable-line
-        if (err) {
-          return fs.close(fd, (err) => { // eslint-disable-line
-            if (err) cb(err, null)
+      fs.read(fd, buffer, 0, CHUNK_SIZE, null, (er, nread) => {
+        if (er) {
+          return fs.close(fd, (e) => {
+            if (err) return cb(e, null)
           })
         }
 
         if (nread === 0) {
-          return fs.close(fd, (err) => { // eslint-disable-line
-            if (err) cb(err, null)
+          return fs.close(fd, (error) => {
+            if (err) return cb(error, null)
             done(hashList, cb)
           })
         }
@@ -40,11 +42,12 @@ export default (filepath, cb) => {
           data = buffer
         }
 
-        const hash = crypto.createHash('md5')
-        hash
+        const hash = crypto
+          .createHash('md5')
           .update(data)
+          .digest('hex')
 
-        hashList.push(hash.digest('hex'))
+        hashList.push(hash)
         readChunk()
       })
     }
@@ -52,3 +55,5 @@ export default (filepath, cb) => {
     readChunk()
   })
 }
+
+export default hashFile
