@@ -1,8 +1,10 @@
 import { exec } from 'child_process'
 
+const isOSX = process.platform === 'darwin'
+
 export const checkPythonVersion = (cb) => {
   // returns callback with values 2, 3 or false
-  exec('python3 -V', (error) => {
+  exec(isOSX ? 'python3 -V' : 'python -V', (error) => {
     if (error) {
       exec('python2 -V', (err, stdout, stderr) => {
         if (err) return cb(false)

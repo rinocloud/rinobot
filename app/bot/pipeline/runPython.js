@@ -16,7 +16,7 @@ export default (opts) => {
 
   checkPythonVersion(pythonVersion => {
     if (!pythonVersion) {
-      return this.onError(
+      return onError(
         new Error('No python installed'))
     } else { // eslint-disable-line
 
