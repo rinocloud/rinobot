@@ -2,8 +2,9 @@
 @import './libs/toolkit-startup.css';
 @import './libs/application-startup.css';
 @import './libs/rinocloud-icons.css';
-@import './libs/react-select-plus.css';
-@import './libs/react-toggle';
+@import './vendor/react-select-plus.css';
+@import './vendor/react-toggle';
+@import './vendor/react-notification-system';
 @import 'variables';
 
 html, body {
@@ -93,20 +94,16 @@ h1, h2, h3, h4, h5, h6{
 .notification-container {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  left: 40%;
+  z-index: 6;
 }
 
 .notification {
   display: inline-block;
-  cursor: default;
-  background: rgba(255, 255, 255, .2);
   padding: 8px 14px 9px;
-  margin-left: 10px;
-  transition: 150ms opacity ease;
   color: #fff;
   font-size: 11px;
 }
-
 /*
   * Sidebar
 */

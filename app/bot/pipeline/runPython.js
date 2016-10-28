@@ -1,4 +1,4 @@
-import { checkPythonVersion } from '../utils'
+import checkPythonVersion from '../utils/checkPythonVersion'
 import { spawn } from 'child_process'
 
 const isOSX = process.platform === 'darwin'

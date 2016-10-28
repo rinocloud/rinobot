@@ -49,7 +49,7 @@ class Log extends React.Component {
     if (pt.basename(filepath).startsWith('.')) return null
 
     return (
-      <div className="row log">
+      <div className="row m-b-sm">
         <div className="col-sm-12">
           <div className="row">
 
@@ -97,7 +97,7 @@ class Log extends React.Component {
 
             <div className="col-sm-2">
               <small className="text-muted">
-                {`${moment(lastRun).format('HH:mm:ss, D-MMM-YY')}`}
+                {`${moment(lastRun).format('HH:mm:ss D-MMM-YY')}`}
               </small>
             </div>
 

@@ -164,7 +164,7 @@ class WatchDir extends React.Component {
         <div className="main config p-l p-r">
           <div className="row">
             <div className="col-sm-12">
-              <div className="panel panel-primary">
+              {/*<div className="panel panel-primary">
                 <div className="panel-heading">
                   <div className="panel-title">
                     Synchronization
@@ -192,14 +192,14 @@ class WatchDir extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>*/}
 
               <div className="panel panel-primary">
                 <div className="panel-heading">
                   <div className="row">
                     <div className="col-sm-4">
                       <div className="panel-title m-t-sm">
-                        Automation Pipelines
+                        Task automation
                       </div>
                     </div>
                     <div className="col-sm-8">
@@ -297,26 +297,26 @@ class WatchDir extends React.Component {
           </div>
 
           {dir.isStarted &&
-            <div className="row plugins m-b-lg m-t">
-              <div className="col-sm-12 col-sm-offset-">
-                <div className="row m-b">
-                  <div className="col-sm-6">
-                    <strong>
-                      Activity
-                      <span
-                        className="text-muted m-l"
-                        style={{
-                          textTransform: 'lowercase'
-                        }}
-                      >
-                        {dir.processedFiles}/{dir.totalFiles} files processed
-                      </span>
-
-                    </strong>
+            <div className="panel panel-primary">
+              <div className="panel-heading">
+                <div className="panel-title">
+                  Activity
+                  <span
+                    className="text-muted m-l"
+                    style={{
+                      textTransform: 'lowercase'
+                    }}
+                  >
+                    {dir.processedFiles}/{dir.totalFiles} files processed
+                  </span>
+                </div>
+              </div>
+              <div className="panel-body">
+                <div className="row">
+                  <div className="col-sm-12">
+                    <LogScroll history={dir.history} />
                   </div>
                 </div>
-
-                <LogScroll history={dir.history} />
               </div>
             </div>
           }

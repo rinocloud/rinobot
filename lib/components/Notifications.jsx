@@ -1,65 +1,36 @@
 import React, { PropTypes } from 'react'
-import { Notification } from './Notification'
+import _ from 'lodash'
+import NotificationSystem from 'react-notification-system'
 
 class Notifications extends React.Component {
 
   static propTypes = {
+    notification: PropTypes.object.isRequired,
     installUpdate: PropTypes.func.isRequired,
     updateNotes: PropTypes.string,
     updateShowing: PropTypes.bool,
     updateVersion: PropTypes.string,
   }
 
-  render() {
-    const {
-      installUpdate,
-      updateShowing,
-      updateVersion,
-      updateNotes
-    } = this.props
+  componentDidMount() {
+    console.log('componentDidMount')
+    this.notificationSystem = this.refs.notificationSystem;
 
-    const onClickUpdate = (e) => {
-      e.preventDefault()
-      installUpdate()
+    if (this.props.notification.message) {
+      this.notificationSystem.addNotification(this.props.notification)
     }
+  }
 
+  componentWillReceiveProps(newProps) {
+    if (!_.isEqual(newProps.notification, this.props.notification)) {
+      this.notificationSystem.addNotification(newProps.notification)
+    }
+  }
+
+  render() {
     return (
       <div className="notification-container">
-      {
-        updateShowing &&
-          <Notification
-            key="update"
-            backgroundColor="#7ED321"
-            text={`Version ${updateVersion} ready`}
-            onDismiss={() => {}}
-            userDismissable
-          >
-            Version <b>{updateVersion}</b> ready.
-            {updateNotes && ` ${updateNotes.trim().replace(/\.$/, '')}`}
-            {' '}
-            (
-            <a
-              style={{ color: '#fff' }}
-              onClick={ (ev) => { window.require('electron').shell.openExternal(ev.target.href); ev.preventDefault(); } } // eslint-disable-line
-              href={`https://github.com/rinocloud/rinobot/releases/tag/${updateVersion}`}
-            >
-              notes
-            </a>
-            ).
-            {' '}
-            <a
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                fontWeight: 'bold'
-              }}
-              onClick={onClickUpdate}
-            >
-                Restart
-            </a>.
-            {' '}
-          </Notification>
-      }
+        <NotificationSystem ref="notificationSystem" noAnimation style={false} />
       </div>
     )
   }

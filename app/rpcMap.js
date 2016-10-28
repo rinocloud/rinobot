@@ -1,8 +1,8 @@
 
 export const JSONError = function (error) {
-  this.name = error.name || ''
-  this.message = error.message || ''
-  this.stack = error.stack || ''
+  this.name = error.name
+  this.message = error.message
+  this.stack = error.stack
   if (error.code) this.code = error.code
   if (error.errno) this.errno = error.errno || ''
   if (error.syscall) this.syscall = error.syscall || ''

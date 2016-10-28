@@ -22,27 +22,6 @@ class LogScroll extends React.Component {
     logs = logs.slice(0, 50)
     return (
       <div>
-
-        {logs.length === 0 && _.map(_.range(4), (l, i) => {
-          return (
-            <div className="log row m-b-sm" key={`pseudo-hist-${i}`}>
-              <div className="col-sm-8">
-                <i className="pseudo-fa fa fa-2 fa-file-text-o text-muted"></i>
-                {'  '}
-                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
-              </div>
-
-              <div className="col-sm-1">
-                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
-              </div>
-
-              <div className="col-sm-3">
-                <span className="pseudo" style={{ backgroundColor: '#E1E4EF' }}></span>
-              </div>
-            </div>
-          )
-        })}
-
         {_.map(logs, (l, i) =>
           <Log
             key={`hist-${i}`}

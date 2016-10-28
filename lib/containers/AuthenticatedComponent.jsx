@@ -47,6 +47,7 @@ export function requireAuthentication(Component) {
       return (
         <div className="wrapper main-container">
           <Notifications
+            notification={ui.notification}
             installUpdate={actions.installUpdate}
             updateNotes={ui.updateNotes}
             updateShowing={ui.updateShowing}

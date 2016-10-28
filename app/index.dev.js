@@ -1,12 +1,14 @@
 import { app, BrowserWindow } from 'electron'
 import { createSentry } from './analytics'
-import createBot, { updateRinobotPlugin } from './bot/'
-import { checkPythonVersion } from './bot/utils/'
+import createBot from './bot/'
+import checkPythonVersion from './bot/utils/checkPythonVersion'
+import updateRinobotPlugin from './bot/utils/updateRinobotPlugin'
 import autoUpdater from './auto-updater'
 import isDev from 'electron-is-dev'
 import _package from './package'
 import createMenu from './menu'
 import createRPC from './rpc'
+import moment from 'moment'
 import rpcMap, { JSONError } from './rpcMap'
 
 const isOSX = process.platform === 'darwin'
@@ -32,15 +34,27 @@ const createWindow = (app, sentry) => { // eslint-disable-line
     win.focus()
 
     rpc.emit('rinobot version', { version: _package.version })
-    checkPythonVersion((version) => {
-      rpc.emit('python version', { version })
-    })
 
-    updateRinobotPlugin((error) => {
-      if (error) {
-        rpc.emit('unexpected error', error)
-        sentry.captureException(new JSONError(error))
+    checkPythonVersion((version) => {
+      if (version) {
+        updateRinobotPlugin((error) => {
+          if (error) {
+            rpc.emit('unexpected error', {
+              datetime: moment().toISOString(),
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code || null,
+              errno: error.errno || null,
+              syscall: error.syscall || null,
+              path: error.path || null,
+            })
+            sentry.captureException(new JSONError(error))
+          }
+        })
       }
+
+      rpc.emit('python version', { version })
     })
 
     if (!isDev && process.platform !== 'linux') {
