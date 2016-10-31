@@ -1,12 +1,15 @@
 import { exec } from 'child_process'
+import { getPipPath } from './pythonKernel'
 
-export const updateRinobotPlugin = (cb) => {
-  exec('pip install rinobot-plugin --upgrade', (error) => {
-    if (error) {
-      cb(error)
-    } else {
-      cb()
-    }
+export const updateRinobotPlugin = (callback) => {
+  getPipPath((err, pip) => {
+    exec(`${pip} install rinobot-plugin --upgrade`, (error) => {
+      if (error) {
+        callback(error)
+      } else {
+        callback()
+      }
+    })
   })
 }
 

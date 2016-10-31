@@ -5,6 +5,20 @@ import DashboardPlugin from 'webpack-dashboard/plugin'
 const nodeEnv = process.env.NODE_ENV || 'development'
 const isProd = nodeEnv === 'production'
 
+const plugins = [
+  new webpack.BannerPlugin(
+    'require("source-map-support").install()',
+    { raw: true, entryOnly: false }
+  ),
+  new webpack.DefinePlugin({ 'global.GENTLY': false }),
+  new webpack.DefinePlugin({ FormData: false }),
+]
+
+if (!isProd) {
+  plugins.push(new DashboardPlugin())
+}
+
+
 export default {
   target: 'node',
   devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
@@ -17,15 +31,7 @@ export default {
     path: __dirname,
     filename: isProd ? './app/fork.js' : './app/bot/fork.js'
   },
-  plugins: [
-    new webpack.BannerPlugin(
-      'require("source-map-support").install()',
-      { raw: true, entryOnly: false }
-    ),
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
-    new webpack.DefinePlugin({ FormData: false }),
-    new DashboardPlugin()
-  ],
+  plugins,
   module: {
     loaders: [{
       test: /\.jsx?$/,

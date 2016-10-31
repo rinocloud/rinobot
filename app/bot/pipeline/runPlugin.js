@@ -2,6 +2,7 @@ import { spawn } from 'child_process'
 import fs from 'fs-extra'
 import _ from 'lodash'
 import pt from 'path'
+import { getPythonPath } from '../utils/pythonKernel'
 
 const setUpScript = (pluginsDir, command, cb) => {
   let codePath = false
@@ -55,36 +56,38 @@ export default (opts) => {
     } else {
       let _args = [codePath, filepath]
       if (args) {
-        console.log(args)
         _args = [..._args, ...args.split(' ')]
       }
       if (prefix) {
         _args = [..._args, `--prefix=${prefix}`]
       }
 
-      const child = spawn('python', _args, { cwd })
+      getPythonPath((er, python) => {
+        if (er) return onError(er)
 
-      child.on('error', (error) => {
-        child.error = true
-        return onError(error)
-      })
+        const child = spawn(python, _args, { cwd })
 
-      let errLog = ''
-      child.stdout.on('data', (b) => onLog(b.toString()))
-      child.stderr.on('data', (b) => {
-        errLog += b.toString()
-        onLog(b.toString())
-      })
+        child.on('error', (error) => {
+          child.error = true
+          return onError(error)
+        })
 
+        let errLog = ''
+        child.stdout.on('data', (b) => onLog(b.toString()))
+        child.stderr.on('data', (b) => {
+          errLog += b.toString()
+          onLog(b.toString())
+        })
 
-      child.on('close', (code) => {
-        if (child.hasOwnProperty('error')) return
+        child.on('close', (code) => {
+          if (child.hasOwnProperty('error')) return
 
-        if (code !== 0) {
-          return onError(new Error(errLog))
-        } else { // eslint-disable-line
-          return onComplete()
-        }
+          if (code !== 0) {
+            return onError(new Error(errLog))
+          } else { // eslint-disable-line
+            return onComplete()
+          }
+        })
       })
     }
   })

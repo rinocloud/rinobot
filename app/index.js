@@ -8005,9 +8005,7 @@ module.exports =
 	
 	var _bot2 = _interopRequireDefault(_bot);
 	
-	var _checkPythonVersion = __webpack_require__(443);
-	
-	var _checkPythonVersion2 = _interopRequireDefault(_checkPythonVersion);
+	var _pythonKernel = __webpack_require__(443);
 	
 	var _updateRinobotPlugin = __webpack_require__(444);
 	
@@ -8073,7 +8071,7 @@ module.exports =
 	
 	    rpc.emit('rinobot version', { version: _package3.default.version });
 	
-	    (0, _checkPythonVersion2.default)(function (version) {
+	    (0, _pythonKernel.checkPythonVersion)(function (version) {
 	      if (version) {
 	        (0, _updateRinobotPlugin2.default)(function (error) {
 	          if (error) {
@@ -25449,37 +25447,99 @@ module.exports =
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.checkPythonVersion = undefined;
+	exports.checkPythonVersion = exports.getPythonPath = exports.getPythonWin = exports.getPythonOSX = exports.getPipPath = exports.getPipWin = exports.getPipOSX = undefined;
 	
 	var _child_process = __webpack_require__(441);
 	
-	var checkPythonVersion = exports.checkPythonVersion = function checkPythonVersion(cb) {
-	  // returns callback with values 2, 3 or false
-	  (0, _child_process.exec)('python3 -V', function (error) {
-	    if (error) {
-	      (0, _child_process.exec)('python2 -V', function (err, stdout, stderr) {
-	        if (err) return cb(false);
-	        var re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/;
-	        var m = void 0;
-	        if ((m = re.exec(stderr)) !== null) {
-	          // eslint-disable-line
-	          if (m.index === re.lastIndex) {
-	            re.lastIndex++;
-	          }
-	          if (m[1][0] === '3') {
-	            cb('3');
-	          } else if (m[1][0] === '2') {
-	            cb('2');
-	          } else {
-	            cb(false);
-	          }
-	        } else {
-	          cb(false);
+	var _path = __webpack_require__(313);
+	
+	var _path2 = _interopRequireDefault(_path);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var isOSX = process.platform === 'darwin';
+	
+	var getPipOSX = exports.getPipOSX = function getPipOSX(callback) {
+	  var anacondaPath = '' + _path2.default.join(({"NODE_ENV":"production"}).HOME, 'anaconda/bin/pip');
+	
+	  (0, _child_process.exec)(anacondaPath + ' -V', function (error) {
+	    if (!error) return callback(null, anacondaPath);
+	    (0, _child_process.exec)('pip -V', function (err) {
+	      if (!err) return callback(null, 'pip');
+	      return callback(new Error('No pip found.'));
+	    });
+	  });
+	};
+	
+	var getPipWin = exports.getPipWin = function getPipWin(callback) {
+	  (0, _child_process.exec)('pip -V', function (err) {
+	    if (!err) return callback(null, 'pip');
+	    return callback(new Error('No pip found.'), null);
+	  });
+	};
+	
+	var getPipPath = exports.getPipPath = function getPipPath(callback) {
+	  if (isOSX) {
+	    getPipOSX(callback);
+	  } else {
+	    getPipWin(callback);
+	  }
+	};
+	
+	var getPythonOSX = exports.getPythonOSX = function getPythonOSX(callback) {
+	  var anacondaPath = '' + _path2.default.join(({"NODE_ENV":"production"}).HOME, 'anaconda/bin/python');
+	  (0, _child_process.exec)(anacondaPath + ' -V', function (error) {
+	    if (!error) return callback(null, anacondaPath);
+	    (0, _child_process.exec)('python -V', function (err) {
+	      if (!err) return callback(null, 'python');
+	      return callback(new Error('No python found.'));
+	    });
+	  });
+	};
+	
+	var getPythonWin = exports.getPythonWin = function getPythonWin(callback) {
+	  (0, _child_process.exec)('python -V', function (err) {
+	    if (!err) return callback(null, 'python');
+	    return callback(new Error('No python found.'), null);
+	  });
+	};
+	
+	var getPythonPath = exports.getPythonPath = function getPythonPath(callback) {
+	  if (isOSX) {
+	    getPythonOSX(callback);
+	  } else {
+	    getPythonWin(callback);
+	  }
+	};
+	
+	var checkPythonVersion = exports.checkPythonVersion = function checkPythonVersion(callback) {
+	  /*
+	    returns callback with values 2, 3 or false
+	  */
+	  getPythonPath(function (err, python) {
+	    if (err) callback(false);
+	
+	    (0, _child_process.exec)(python + ' -V', function (error, stdout, stderr) {
+	      if (error) return callback(false);
+	
+	      var re = /\w+\s(\d+\.\d+\.\d+)(\s+\w+)?/;
+	      var m = void 0;
+	      if ((m = re.exec(stderr)) !== null) {
+	        // eslint-disable-line
+	        if (m.index === re.lastIndex) {
+	          re.lastIndex++;
 	        }
-	      });
-	    } else {
-	      cb('3');
-	    }
+	        if (m[1][0] === '3') {
+	          callback('3');
+	        } else if (m[1][0] === '2') {
+	          callback('2');
+	        } else {
+	          callback(false);
+	        }
+	      } else {
+	        callback(false);
+	      }
+	    });
 	  });
 	};
 	
@@ -25498,13 +25558,17 @@ module.exports =
 	
 	var _child_process = __webpack_require__(441);
 	
-	var updateRinobotPlugin = exports.updateRinobotPlugin = function updateRinobotPlugin(cb) {
-	  (0, _child_process.exec)('pip install rinobot-plugin --upgrade', function (error) {
-	    if (error) {
-	      cb(error);
-	    } else {
-	      cb();
-	    }
+	var _pythonKernel = __webpack_require__(443);
+	
+	var updateRinobotPlugin = exports.updateRinobotPlugin = function updateRinobotPlugin(callback) {
+	  (0, _pythonKernel.getPipPath)(function (err, pip) {
+	    (0, _child_process.exec)(pip + ' install rinobot-plugin --upgrade', function (error) {
+	      if (error) {
+	        callback(error);
+	      } else {
+	        callback();
+	      }
+	    });
 	  });
 	};
 	
