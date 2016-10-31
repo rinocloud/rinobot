@@ -8,6 +8,7 @@ class PipelineForm extends React.Component {
     registry: PropTypes.array,
     installedPlugins: PropTypes.array,
     pipeline: PropTypes.object.isRequired,
+    isDisabled: PropTypes.bool.isRequired,
     onChangeMatch: PropTypes.func.isRequired,
     onChangeTaskName: PropTypes.func.isRequired,
     onChangeTaskArgs: PropTypes.func.isRequired,
@@ -20,7 +21,7 @@ class PipelineForm extends React.Component {
   }
 
   render() {
-    const { pipeline, registry, installedPlugins } = this.props //eslint-disable-line
+    const { pipeline, registry, installedPlugins, isDisabled } = this.props //eslint-disable-line
 
     return (
       <div className="row">
@@ -42,6 +43,7 @@ class PipelineForm extends React.Component {
                           e.preventDefault()
                           this.props.onChangeMatch(e.target.value)
                         }}
+                        disabled={isDisabled}
                       />
                     </div>
                     <div className="col-xs-2 col-xs-offset-6">
@@ -50,8 +52,11 @@ class PipelineForm extends React.Component {
                         href="#"
                         onClick={(e) => {
                           e.preventDefault()
-                          this.props.onRemove()
+                          if (!isDisabled) {
+                            this.props.onRemove()
+                          }
                         }}
+                        disabled={isDisabled}
                       >
                         <i className="fa fa-times-circle-o m-r-sm" />
                         Delete pipeline
@@ -113,7 +118,9 @@ class PipelineForm extends React.Component {
                             href="#"
                             onClick={(e) => {
                               e.preventDefault()
-                              this.props.onChangeTaskFlow(index, 'then')
+                              if (!isDisabled) {
+                                this.props.onChangeTaskFlow(index, 'then')
+                              }
                             }}
                             className={
                               'btn-flow ' // eslint-disable-line
@@ -126,7 +133,9 @@ class PipelineForm extends React.Component {
                             href="#"
                             onClick={(e) => {
                               e.preventDefault()
-                              this.props.onChangeTaskFlow(index, 'and')
+                              if (!isDisabled) {
+                                this.props.onChangeTaskFlow(index, 'and')
+                              }
                             }}
                             className={
                               'btn-flow ' // eslint-disable-line
@@ -142,6 +151,7 @@ class PipelineForm extends React.Component {
                   <div className="row">
                     <div className="col-xs-12">
                       <TaskForm
+                        isDisabled={isDisabled}
                         registry={registry}
                         installedPlugins={installedPlugins}
                         name={task.name}
@@ -167,8 +177,11 @@ class PipelineForm extends React.Component {
                 className="btn-add-task"
                 onClick={(e) => {
                   e.preventDefault()
-                  this.props.onAddTask()
+                  if (!isDisabled) {
+                    this.props.onAddTask()
+                  }
                 }}
+                disabled={isDisabled}
               >
                 <i className="fa fa-plus-circle" />
               </a>
@@ -179,8 +192,11 @@ class PipelineForm extends React.Component {
                 className="btn-add-task"
                 onClick={(e) => {
                   e.preventDefault()
-                  this.props.onAddTask()
+                  if (!isDisabled) {
+                    this.props.onAddTask()
+                  }
                 }}
+                disabled={isDisabled}
               >
                 <i className="fa fa-plus-circle" />
               </a>

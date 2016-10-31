@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import _ from 'lodash'
-import moment from 'moment'
-import { shell } from 'electron'
 import semver from 'semver'
+import _ from 'lodash'
+import { shell } from 'electron'
+import { Plugin } from '../components/Plugin'
 import * as pluginsActions from '../actions/plugins'
 
 
@@ -16,8 +16,6 @@ class Plugins extends React.Component {
 
   constructor(props) {
     super(props)
-    this.setSearchTerm = this.setSearchTerm.bind(this)
-    this.clearSearchTerm = this.clearSearchTerm.bind(this)
     this.state = { searchTerm: null }
   }
 
@@ -30,34 +28,32 @@ class Plugins extends React.Component {
     this.setState({ searchTerm: val === '' ? null : val })
   }
 
-  clearSearchTerm() {
-    this.setState({ searchTerm: null })
-  }
+  prepareRegistry() {
+    const { plugins } = this.props
 
-  render() {
-    const { dispatch, plugins } = this.props
-
-    let registry = _.map(plugins.registry, (p, originalIndex) => {
-      const isInstalled = _.map(plugins.installed, 'name').includes(p.name)
+    const newRegistry = _.map(plugins.registry, (registryPlugin, index) => {
+      const isInstalled = _.map(plugins.installed, 'name').includes(registryPlugin.name)
       let canUpdate = false
-      if (isInstalled && p.version) {
-        const currentPlugin = _.find(plugins.installed, { name: p.name })
-        const registryVersion = p.version
-        if (semver.validRange(currentPlugin.version)) {
-          canUpdate = semver.gtr(registryVersion, currentPlugin.version)
+      if (isInstalled && registryPlugin.version) {
+        const installedVersion = _.find(plugins.installed, { name: registryPlugin.name })
+        const registryVersion = registryPlugin.version
+
+        if (semver.validRange(installedVersion.version)) {
+          canUpdate = semver.gtr(registryVersion, installedVersion.version)
         } else {
-          canUpdate = semver.lt(currentPlugin.version, registryVersion)
+          canUpdate = semver.lt(installedVersion.version, registryVersion)
         }
       }
+
       return {
-        ...p,
+        ...registryPlugin,
         isInstalled,
         canUpdate,
-        index: originalIndex
+        index
       }
     })
 
-    registry.sort((x, y) => {
+    newRegistry.sort((x, y) => {
       if (x.isInstalled === y.isInstalled) {
         if (x.downloads > y.downloads) {
           return -1
@@ -70,147 +66,116 @@ class Plugins extends React.Component {
       return 1
     })
 
+    return newRegistry
+  }
+
+  render() {
+    const { dispatch, plugins } = this.props
+
+    let filteredRegistry = this.prepareRegistry()
     if (this.state.searchTerm) {
-      registry = _.filter(registry, plugin =>
+      filteredRegistry = _.filter(plugins.registry, plugin =>
         plugin.name.toLowerCase().indexOf(this.state.searchTerm) !== -1
       )
     }
 
-    const openExternal = (e) => {
-      e.preventDefault()
-      shell.openExternal(e.target.href)
-    }
-
-    const onClickInstall = (plugin, index) => {
-      dispatch(pluginsActions.install(plugin, index))
-    }
-
-    const onClickUninstall = (plugin, index) => {
-      dispatch(pluginsActions.uninstall(plugin, index))
-    }
-
-    const onClickUpdate = (plugin, index) => {
-      dispatch(pluginsActions.update(plugin, index))
-    }
-
     return (
-      <div className="col-sm-12 p-a plugins">
-        <h3>Plugins</h3>
-        {plugins.isSearching ?
-          <small className="text-muted pull-right">
-            <i className="fa fa-spinner fa-spin"></i>
-            {'  '}checking for updates
-          </small>
-        : ''}
+      <div>
+        <div className="header">
+          <div className="row">
+            <div className="col-sm-12">
 
-        <div className="row m-b">
-          <form className="col-sm-6">
-            <input
-              className="form-control"
-              name="searchInput"
-              type="text"
-              placeholder="Search for plugin"
-              onChange={(e) => {
-                e.preventDefault()
-                const val = e.target.value
-                this.setSearchTerm(val)
-              }}
-            />
-          </form>
+              <strong className="m-r header-link">
+                Plugins
+              </strong>
+              <a
+                className="m-r header-link"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  shell.openExternal('http://docs.rinocloud.com/rinobot/plugins/installing_a_plugin.html')
+                }}
+              >
+                <strong>
+                  <i className="fa fa-external-link fa-small"></i>{'  '}
+                  <span>Docs</span>
+                </strong>
+              </a>
 
+              {plugins.isSearching ?
+                <small className="text-muted m-l-sm m-t-sm pull-right">
+                  <i className="fa fa-spinner fa-spin"></i>
+                  {'  '}checking for updates
+                </small>
+              : ''}
+
+            </div>
+          </div>
         </div>
-        <div className="row">
-          {plugins.statusText}
-        </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Plugin</th>
-              <th>Description</th>
-              <th>Downloads last month</th>
-            </tr>
-          </thead>
-          <tbody>
-          {_.map(registry, (el, i) => {
-            return (
-              <tr className="m-a-sm" key={`plugin${i}`}>
-                <td style={{minWidth: '80px'}}>
-                  {!el.isInstalled &&
-                    <a
-                      href="#"
-                      className="btn btn-xs btn-primary"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        onClickInstall(el, el.index)
-                      }}
-                    >
-                      {el.isInstalling && 'Installing'}
-                      {!el.isInstalling && 'Install'}
-                    </a>
-                  }
+        <div className="main config p-l p-r">
+          <div className="row">
+            <div className="col-sm-12">
+              <div className="panel panel-primary">
+                <div className="panel-heading">
+                  <div className="row">
+                    <form className="col-sm-6">
+                      <input
+                        className="form-control"
+                        name="searchInput"
+                        type="text"
+                        placeholder="Search for plugin"
+                        onChange={(e) => {
+                          e.preventDefault()
+                          const val = e.target.value
+                          this.setSearchTerm(val)
+                        }}
+                      />
+                    </form>
+                  </div>
+                </div>
+                <div className="panel-body">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Plugin</th>
+                        <th>Description</th>
+                        <th>Downloads last month</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {_.map(filteredRegistry, (el, i) => {
+                      return (
+                        <Plugin
+                          key={`plugin${i}`}
+                          plugin={el}
+                          version={
+                            (el.isInstalled && _.find(plugins.installed, { name: el.name })) &&
+                            _.find(plugins.installed, { name: el.name }).version
+                          }
+                          install={(el, index) => {
+                            dispatch(pluginsActions.install(el, index))
+                          }}
+                          uninstall={(el, index) => {
+                            dispatch(pluginsActions.uninstall(el, index))
+                          }}
+                          update={(el, index) => {
+                            dispatch(pluginsActions.update(el, index))
+                          }}
 
-                  {el.isInstalled &&
-                    <a
-                      href="#"
-                      className="btn btn-xs btn-default"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        onClickUninstall(el, el.index)
-                      }}
-                    >
-                      Uninstall
-                    </a>
-                  }
-
-                  {el.canUpdate &&
-                    <a
-                      href="#"
-                      className="btn btn-xs btn-default"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        onClickUpdate(el, el.index)
-                      }}
-                    >
-                      {el.isInstalling && 'Updating'}
-                      {!el.isInstalling && `Update to v${el.version}`}
-                    </a>
-                  }
-                </td>
-
-                <td>
-                  <a
-                    onClick={openExternal}
-                    href={el.homepage}
-                  >{el.name.replace('rinobot-plugin-', '')}</a>
-                  <br />
-                  <small className="text-muted">
-                    {el.isInstalled ?
-                      <span>
-                        v{_.find(plugins.installed, { name: el.name }).version}
-                      </span>
-                      :
-                      <span>
-                        v{el.version}
-                        {' '} updated by {el && el.author} {' '}
-                        {moment(el.modified).fromNow()}
-                      </span>
+                        />
+                      )
                     }
-                  </small>
-                </td>
+                    )}
 
-                <td>{el.description}</td>
-
-                <td className="text-muted">{el.downloads}</td>
-              </tr>
-            )
-          }
-          )}
-
-          </tbody>
-        </table>
-
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

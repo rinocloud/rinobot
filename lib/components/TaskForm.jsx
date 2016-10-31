@@ -6,6 +6,7 @@ import Select from 'react-select-plus'
 class TaskForm extends React.Component {
 
   static propTypes = {
+    isDisabled: PropTypes.bool.isRequired,
     registry: PropTypes.array,
     installedPlugins: PropTypes.array,
     name: PropTypes.string,
@@ -30,7 +31,7 @@ class TaskForm extends React.Component {
   }
 
   render() {
-    const { name, args, keep, registry, installedPlugins } = this.props //eslint-disable-line
+    const { name, args, keep, registry, installedPlugins, isDisabled } = this.props //eslint-disable-line
 
     const changeArgs = (e) => {
       e.preventDefault()
@@ -83,9 +84,6 @@ class TaskForm extends React.Component {
     const isPluginCommand = _.map(installDeps, 'value').includes(name)
     const selectedValue = name || ''
 
-    // now have access to the options of each installed plugin
-    // _.each(installedPlugins, (i) => console.log(i.name, i.options))
-
     const currentPlugin = _.find(installedPlugins, {
       name: selectedValue
     })
@@ -120,6 +118,7 @@ class TaskForm extends React.Component {
                   options={selectOpts}
                   onChange={changeName}
                   placeholder="Select automation..."
+                  disabled={isDisabled}
                 />
               </div>
             </div>
@@ -154,6 +153,7 @@ class TaskForm extends React.Component {
                               this.props.onChangeArgs(optionName, item.value)
                             }}
                             placeholder={optionName}
+                            disabled={isDisabled}
                           />
                         </div>
                         )
@@ -171,6 +171,7 @@ class TaskForm extends React.Component {
                             onChange={(e) => {
                               this.props.onChangeArgs(optionName, e.target.value)
                             }}
+                            disabled={isDisabled}
                           />*required string
                         </div>
                         )
@@ -187,6 +188,7 @@ class TaskForm extends React.Component {
                             onChange={(item) => {
                               this.props.onChangeArgs(optionName, item.value)
                             }}
+                            disabled={isDisabled}
                             placeholder={optionName}
                           />
                         </div>
@@ -205,6 +207,7 @@ class TaskForm extends React.Component {
                             onChange={(e) => {
                               this.props.onChangeArgs(optionName, e.target.value)
                             }}
+                            disabled={isDisabled}
                           />
                         </div>
                         )
@@ -222,6 +225,7 @@ class TaskForm extends React.Component {
                             onChange={(e) => {
                               this.props.onChangeArgs(optionName, e.target.value)
                             }}
+                            disabled={isDisabled}
                           />
                         </div>
                       )
@@ -239,6 +243,7 @@ class TaskForm extends React.Component {
                             onChange={(e) => {
                               this.props.onChangeArgs(optionName, e.target.value)
                             }}
+                            disabled={isDisabled}
                           />
                         </div>
                       )
@@ -254,6 +259,7 @@ class TaskForm extends React.Component {
                               this.props.onChangeArgs(optionName, e.target.checked)
                             }}
                             defaultChecked={value}
+                            disabled={isDisabled}
                           /> *required bool
                         </div>
                       )
@@ -269,6 +275,7 @@ class TaskForm extends React.Component {
                               this.props.onChangeArgs(optionName, e.target.checked)
                             }}
                             defaultChecked={value}
+                            disabled={isDisabled}
                           />
                         </div>
                       )
@@ -284,6 +291,7 @@ class TaskForm extends React.Component {
                     value={args.default || ''}
                     className="form-control input-sm"
                     onChange={changeArgs}
+                    disabled={isDisabled}
                   />
                 }
 
@@ -304,6 +312,7 @@ class TaskForm extends React.Component {
                               changeArgs(e, paths[0])
                             }
                           }}
+                          disabled={isDisabled}
                         >
                           Select folder
                         </a>
@@ -315,6 +324,7 @@ class TaskForm extends React.Component {
                         className="form-control"
                         onChange={changeArgs}
                         placeholder="or type a location"
+                        disabled={isDisabled}
                       />
                     </div>
                   </div>
@@ -332,6 +342,7 @@ class TaskForm extends React.Component {
                         changeArgs('args')(e, paths[0])
                       }
                     }}
+                    disabled={isDisabled}
                   >
                     Select {name === 'Rscript' ? 'R' : name} file
                     {args ? ` (${pt.basename(args)})` : ''}
@@ -351,6 +362,7 @@ class TaskForm extends React.Component {
                           e.preventDefault()
                           changeName({ value: e.target.value })
                         }}
+                        disabled={isDisabled}
                       />
                     </div>
                     <div className="col-xs-6">
@@ -361,6 +373,7 @@ class TaskForm extends React.Component {
                         placeholder="Command arguments"
                         className="form-control input-sm"
                         onChange={changeArgs}
+                        disabled={isDisabled}
                       />
                     </div>
                   </div>
@@ -370,7 +383,7 @@ class TaskForm extends React.Component {
 
             {selectedValue && isPluginCommand &&
               <div className="col-xs-2">
-                {/*<div className="text-muted config-checkbox">
+                {/* <div className="text-muted config-checkbox">
                   save output{'  '}
                   <input
                     type="checkbox"
@@ -399,6 +412,7 @@ class TaskForm extends React.Component {
                     e.preventDefault()
                     this.props.onRemove()
                   }}
+                  disabled={isDisabled}
                 >
                   <i className="fa fa-remove btn-red-x"></i>
                 </a>

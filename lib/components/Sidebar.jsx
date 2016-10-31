@@ -99,6 +99,22 @@ class Sidebar extends React.Component {
               <i className="fa fa-bolt"></i>{'  '}
               <span>Install</span>
             </Link>
+
+            <li className="list-group-item list-group-item-heading m-t">
+              <h6><strong>User</strong></h6>
+            </li>
+
+            <a
+              href="#"
+              className="list-group-item"
+              onClick={(e) => {
+                e.preventDefault()
+                shell.openExternal('http://docs.rinocloud.com/rinobot/')
+              }}
+            >
+              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <span>Documentation</span>
+            </a>
           </ul>
         </div>
         <div>
@@ -108,7 +124,6 @@ class Sidebar extends React.Component {
             </li>
           </ul>
         </div>
-
       </div>
 
     )

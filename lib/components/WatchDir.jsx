@@ -199,7 +199,14 @@ class WatchDir extends React.Component {
                   <div className="row">
                     <div className="col-sm-4">
                       <div className="panel-title m-t-sm">
-                        Task automation
+                        Task automation {'  '}
+                        {dir.isStarted &&
+                          <small
+                            style={{ color: '#999', fontSize: '0.6em' }}
+                          >
+                            (locked while watching)
+                          </small>
+                        }
                       </div>
                     </div>
                     <div className="col-sm-8">
@@ -209,8 +216,11 @@ class WatchDir extends React.Component {
                         className="m-l-sm btn btn-sm btn-default pull-right"
                         onClick={(e) => {
                           e.preventDefault()
-                          dispatch(formActions.addMetadata())
+                          if (!dir.isStarted) {
+                            dispatch(formActions.addMetadata())
+                          }
                         }}
+                        disabled={dir.isStarted}
                       >
                         <i className="fa fa-plus-circle m-r-sm" />
                         Add Metadata
@@ -221,11 +231,14 @@ class WatchDir extends React.Component {
                         className="btn btn-sm btn-add-pipeline pull-right"
                         onClick={(e) => {
                           e.preventDefault()
-                          dispatch(formActions.addPipeline())
+                          if (!dir.isStarted) {
+                            dispatch(formActions.addPipeline())
+                          }
                         }}
+                        disabled={dir.isStarted}
                       >
                         <i className="fa fa-bolt m-r-sm" />
-                        New Pipeline
+                        New Task Pipeline
                       </a>
                     </div>
                   </div>
@@ -246,6 +259,7 @@ class WatchDir extends React.Component {
                     <div className="row pipeline m-b-lg m-t" key={`pipeline-${index}`}>
                       <div className="col-xs-12">
                         <PipelineForm
+                          isDisabled={dir.isStarted}
                           pipeline={pipeline}
                           installedPlugins={installedPlugins}
                           registry={registry}
