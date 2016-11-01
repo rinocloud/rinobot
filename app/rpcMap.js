@@ -16,6 +16,7 @@ export default (rpc, forkRpc, sentry) => {
   rpc.on('watch', args => forkRpc.emit('watch', args))
   rpc.on('unwatch', args => forkRpc.emit('unwatch', args))
   rpc.on('unwatch all', args => forkRpc.emit('unwatch all', args))
+  rpc.on('process file', args => forkRpc.emit('process file', args))
 
   forkRpc.on('ready', () => rpc.emit('child process ready'))
 

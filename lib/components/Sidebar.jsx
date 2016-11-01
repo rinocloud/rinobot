@@ -74,7 +74,6 @@ class Sidebar extends React.Component {
               </Link>
             )}
 
-
             <Link
               className="list-group-item"
               to="/"
@@ -83,6 +82,15 @@ class Sidebar extends React.Component {
               <i className="fa fa-plus"></i>{'  '}
               <span>Add folder</span>
             </Link>
+
+            <Link
+              className="list-group-item"
+              to="/file_system"
+            >
+              <i className="fa fa-file"></i>{'  '}
+              <span>File system</span>
+            </Link>
+
 
             <li className="list-group-item list-group-item-heading m-t">
               <h6><strong>Plugins</strong></h6>

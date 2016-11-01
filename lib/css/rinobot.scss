@@ -583,3 +583,7 @@ span.block-title{
 .select-parent .Select-control{
   height: 50px;
 }
+
+.table > tbody > tr.active > td{
+  background-color: #e6e6e6;
+}

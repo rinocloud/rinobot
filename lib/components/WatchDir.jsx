@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { shell } from 'electron'
-import Toggle from 'react-toggle'
 import pt from 'path'
 import _ from 'lodash'
 import { UserDropdown } from '../components/UserDropdown'
@@ -164,7 +163,7 @@ class WatchDir extends React.Component {
         <div className="main config p-l p-r">
           <div className="row">
             <div className="col-sm-12">
-              {/*<div className="panel panel-primary">
+              {/* <div className="panel panel-primary">
                 <div className="panel-heading">
                   <div className="panel-title">
                     Synchronization
@@ -192,7 +191,7 @@ class WatchDir extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>*/}
+              </div> */}
 
               <div className="panel panel-primary">
                 <div className="panel-heading">
