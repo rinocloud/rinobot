@@ -4,10 +4,9 @@ import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 
 import { Sidebar } from '../components/Sidebar'
-import { Footer } from '../components/Footer'
 import { Notifications } from '../components/Notifications'
 
-import * as watcherActions from '../actions/watcher'
+// import * as watcherActions from '../actions/watcher'
 import * as authActions from '../actions/auth'
 import * as uiActions from '../actions/ui'
 
@@ -91,7 +90,6 @@ export function requireAuthentication(Component) {
   const mapDispatchToProps = (dispatch) => ({
     actions: bindActionCreators({
       push,
-      ...watcherActions,
       ...authActions,
       ...uiActions
     }, dispatch)

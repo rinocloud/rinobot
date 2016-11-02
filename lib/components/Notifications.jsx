@@ -13,7 +13,6 @@ class Notifications extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
     this.notificationSystem = this.refs.notificationSystem;
 
     if (this.props.notification.message) {

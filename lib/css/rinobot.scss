@@ -272,12 +272,12 @@ h1, h2, h3, h4, h5, h6{
   color: #fff;
 }
 
-.task-position-x-file{
+.btn-remove-task{
   font-size: 1.2em;
   float: right;
   position: relative;
-  top: 7px;
-  right: 3px;
+  top: -0px;
+  right: 0px;
   color: #999;
 }
 
@@ -373,7 +373,7 @@ span.block-title{
 }
 
 .main {
-  margin-top: 80px;
+  // margin-top: 80px;
 }
 
 .pipeline{
@@ -394,7 +394,7 @@ span.block-title{
   top: 0;
   left: 0px;
   width: 100px;
-  height: 32px;
+  height: 39px;
   border-left: 1px solid white;
   border-bottom: 1px solid #bfcfda;
   display: block;
@@ -421,7 +421,6 @@ span.block-title{
   font-size: 11px;
   border: 1px solid #bdc7d2;
   font-weight: 500;
-
 }
 
 .btn-flow.active {
@@ -475,11 +474,10 @@ span.block-title{
   top: 87px;
   left: -16px;
   width: 100px;
-  height: 106px;
+  height: 135px;
   border-left: 1px solid #bfcfda;
   border-top: 1px solid #bfcfda;
   display: block;
-  opacity: 0.5;
 }
 
 .grey_horz_task_first {

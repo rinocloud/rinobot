@@ -81,57 +81,48 @@ class Plugins extends React.Component {
 
     return (
       <div>
-        <div className="header">
-          <div className="row">
-            <div className="col-sm-12">
-
-              <strong className="m-r header-link">
-                Plugins
-              </strong>
-              <a
-                className="m-r header-link"
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  shell.openExternal('http://docs.rinocloud.com/rinobot/plugins/installing_a_plugin.html')
-                }}
-              >
-                <strong>
-                  <i className="fa fa-external-link fa-small"></i>{'  '}
-                  <span>Docs</span>
-                </strong>
-              </a>
-
-              {plugins.isSearching ?
-                <small className="text-muted m-l-sm m-t-sm pull-right">
-                  <i className="fa fa-spinner fa-spin"></i>
-                  {'  '}checking for updates
-                </small>
-              : ''}
-
-            </div>
-          </div>
-        </div>
-
         <div className="main config p-l p-r">
           <div className="row">
             <div className="col-sm-12">
               <div className="panel panel-primary">
                 <div className="panel-heading">
                   <div className="row">
-                    <form className="col-sm-6">
-                      <input
-                        className="form-control"
-                        name="searchInput"
-                        type="text"
-                        placeholder="Search for plugin"
-                        onChange={(e) => {
-                          e.preventDefault()
-                          const val = e.target.value
-                          this.setSearchTerm(val)
-                        }}
-                      />
-                    </form>
+                    <div className="col-sm-6">
+                      <form>
+                        <input
+                          className="form-control"
+                          name="searchInput"
+                          type="text"
+                          placeholder="Search for plugin"
+                          onChange={(e) => {
+                            e.preventDefault()
+                            const val = e.target.value
+                            this.setSearchTerm(val)
+                          }}
+                        />
+                      </form>
+                    </div>
+                    <div className="col-sm-6">
+                      <small className="text-muted m-l-sm m-t-sm pull-right">
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            shell.openExternal('http://docs.rinocloud.com/rinobot/plugins/installing_a_plugin.html')
+                          }}
+                        >
+                          <i className="fa fa-external-link fa-small"></i>{'  '}
+                          <span>Plugin docs</span>
+                        </a>
+                      </small>
+
+                    {plugins.isSearching ?
+                      <small className="text-muted m-l-sm m-r m-t-sm pull-right">
+                        <i className="fa fa-spinner fa-spin"></i>
+                        {'  '}checking for updates
+                      </small>
+                    : ''}
+                    </div>
                   </div>
                 </div>
                 <div className="panel-body">
