@@ -605,4 +605,12 @@ span.block-title{
 li, tr {
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.selection-border {
+  background: rgba(162, 162, 162, 0.4);
+  border: 1px solid $white;
+  position: absolute;
+  z-index: 99;
 }

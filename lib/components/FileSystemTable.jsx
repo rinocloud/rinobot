@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import { shell } from 'electron'
 import { FileIcon } from './FileIcon'
+import { Selection } from './utils/Selection'
 
 const isOSX = process.platform === 'darwin'
-
 
 export class FileSystemTable extends React.Component {
   static propTypes = {
@@ -13,7 +13,8 @@ export class FileSystemTable extends React.Component {
     onUnselectAll: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onCtrlSelect: PropTypes.func.isRequired,
-    onShiftSelect: PropTypes.func.isRequired
+    onShiftSelect: PropTypes.func.isRequired,
+    onDragSelect: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -42,18 +43,25 @@ export class FileSystemTable extends React.Component {
         tabIndex="0"
         onBlur={onUnselectAll}
       >
+
         <thead>
           <tr>
             <th></th>
             <th></th>
           </tr>
         </thead>
-        <tbody>
+
+        <Selection
+          onSelectionChange={(keys) => {
+            const paths = _.map(keys, key => key.replace('tr-path-', ''))
+            this.props.onDragSelect(paths)
+          }}
+        >
           {_.map(items, (item, name) => {
             return (
               <tr
                 key={`tr-path-${name}`}
-                className={item.selected && 'active'}
+                className={`${item.selected ? 'active' : ''}`}
                 onClick={(e) => {
                   this.onClickTr(e, item)
                 }}
@@ -104,7 +112,8 @@ export class FileSystemTable extends React.Component {
               </tr>
             )
           })}
-        </tbody>
+        </Selection>
+
       </table>
     )
   }
