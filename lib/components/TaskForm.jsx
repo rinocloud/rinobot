@@ -22,6 +22,12 @@ class TaskForm extends React.Component {
     showRemove: PropTypes.bool.isRequired,
   }
 
+  constructor(props) {
+    super(props)
+    this.changeName = this.changeName.bind(this)
+    this.changeArgs = this.changeArgs.bind(this)
+  }
+
   changeName(item) {
     if (item) this.props.onChangeName(item.value)
     else this.props.onChangeName(null)
