@@ -21,6 +21,8 @@ const createWindow = (app, sentry) => { // eslint-disable-line
     titleBarStyle: 'hidden'
   })
 
+  win.maximize()
+
   win.loadURL(`file://${__dirname}/app.html`)
 
   createMenu(app, win)

@@ -111,7 +111,7 @@ class TaskForm extends React.Component {
           />
         </div>
 
-        <div className="col-xs-6">
+        <div className="col-xs-5">
           {selectedValue && isPluginCommand &&
             _.map(sortedPluginOptionsList, (pluginOption, optionIndex) => {
               const {

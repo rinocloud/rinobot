@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import { shell } from 'electron'
-
+import { FileIcon } from './FileIcon'
 
 const isOSX = process.platform === 'darwin'
 
@@ -10,14 +10,38 @@ export class FileSystemTable extends React.Component {
   static propTypes = {
     items: PropTypes.object.isRequired,
     onSelect: PropTypes.func.isRequired,
+    onUnselectAll: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
+    onCtrlSelect: PropTypes.func.isRequired,
+    onShiftSelect: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    this.onClickTr = this.onClickTr.bind(this)
+  }
+
+  onClickTr(e, item) {
+    const { onSelect, onCtrlSelect, onShiftSelect } = this.props
+    e.preventDefault()
+    if (e.ctrlKey || e.metaKey) {
+      onCtrlSelect(item.path)
+    } else if (e.shiftKey) {
+      onShiftSelect(item.path)
+    } else {
+      onSelect(item.path)
+    }
   }
 
   render() {
-    const { items, onSelect, onClick } = this.props
+    const { items, onClick, onUnselectAll } = this.props
 
     return (
-      <table className="table">
+      <table
+        className="table"
+        tabIndex="0"
+        onBlur={onUnselectAll}
+      >
         <thead>
           <tr>
             <th></th>
@@ -31,17 +55,14 @@ export class FileSystemTable extends React.Component {
                 key={`tr-path-${name}`}
                 className={item.selected && 'active'}
                 onClick={(e) => {
-                  e.preventDefault()
-                  onSelect(item.path)
+                  this.onClickTr(e, item)
                 }}
               >
                 <td className="col-sm-10">
-                  {item.type === 'folder' &&
-                    <i className="fa fa-folder-o m-r-sm" />
-                  }
-                  {item.type === 'file' &&
-                    <i className="fa fa-file-o m-r-sm" />
-                  }
+                  <FileIcon
+                    filename={item.name}
+                    type={item.type}
+                  />
                   {item.type === 'folder' &&
                     <a
                       href="#"
