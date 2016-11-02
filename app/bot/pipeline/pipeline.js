@@ -57,13 +57,14 @@ const createTaskQueue = (pipeline, opts, callback) => {
         baseDir: opts.baseDir,
         apiToken: opts.apiToken,
         onLog: opts.onTaskLog,
+        forceRerun: opts.forceRerun,
         command: taskConfig.name,
         keep: taskConfig.keep,
         args: taskConfig.args,
         onComplete
       })
       .ready((task) => {
-        if (!task.ignored) {
+        if (!task.ignored || opts.forceRerun) {
           opts.onTaskStart(task)
           task.run()
         } else {

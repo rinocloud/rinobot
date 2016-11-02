@@ -8,7 +8,6 @@ import { flattenWatched } from './utils'
 const forkRpc = rpc(process)
 
 const watchers = {}
-let processedFiles = {}
 let timer
 
 export const watch = (opts) => {
@@ -41,7 +40,6 @@ export const watch = (opts) => {
 
 export const unwatch = ({ index }) => {
   if (watchers[index]) watchers[index].close()
-  processedFiles[index] = []
 }
 
 
@@ -49,7 +47,6 @@ export const unwatchAll = () => {
   _.each(watchers, (val) => {
     val.close()
   })
-  processedFiles = {}
 }
 
 
@@ -74,58 +71,59 @@ const ready = (watcher, index, t0) => {
 
 
 const processFile = (opts) => {
-  const { index, filepath, baseDir, pluginsDir, apiToken, config } = opts
+  const {
+    index,
+    filepath,
+    baseDir,
+    pluginsDir,
+    apiToken,
+    config,
+    forceRerun = false
+   } = opts
 
-  if (!_.has(processedFiles, index)) processedFiles[index] = []
+  createPipeline({
+    pluginsDir,
+    apiToken,
+    filepath,
+    baseDir,
+    config,
+    forceRerun,
 
-  if (!processedFiles[index].includes(filepath)) {
-    createPipeline({
-      pluginsDir,
-      apiToken,
-      filepath,
-      baseDir,
-      config,
+    onTaskStart: (task) => {
+      taskStart(index, task)
+    },
 
-      onTaskStart: (task) => {
-        taskStart(index, task)
-      },
+    onTaskLog: (task, log) => {
+      taskLog(index, task, log)
+    },
 
-      onTaskLog: (task, log) => {
-        taskLog(index, task, log)
-      },
+    onTaskComplete: (task) => {
+      taskComplete(index, task)
+      finishedFile(index, filepath)
+    },
 
-      onTaskComplete: (task) => {
-        taskComplete(index, task)
-        finishedFile(index, filepath)
-      },
+    onTaskIgnore: (task) => {
+      taskIgnore(index, task)
+      finishedFile(index, filepath)
+    },
 
-      onTaskIgnore: (task) => {
-        taskIgnore(index, task)
-        finishedFile(index, filepath)
-      },
+    onTaskError: (task, error) => {
+      taskError(index, task, error)
+      finishedFile(index, filepath)
+    },
 
-      onTaskError: (task, error) => {
-        taskError(index, task, error)
-        finishedFile(index, filepath)
-      },
-
-      onError: (error) => {
-        unexpectedError(index, error)
-        finishedFile(index, filepath)
-      }
-    })
-  }
+    onError: (error) => {
+      unexpectedError(index, error)
+      finishedFile(index, filepath)
+    }
+  })
 }
 
 
 const finishedFile = (index, filepath) => {
-  if (!processedFiles[index].includes(filepath)) {
-    processedFiles[index].push(filepath)
-  }
-
   forkRpc.emit('watcher set processed files', {
     index,
-    numFiles: processedFiles[index].length
+    numFiles: 'inifinte'
   })
 }
 

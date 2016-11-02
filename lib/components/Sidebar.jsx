@@ -51,7 +51,7 @@ class Sidebar extends React.Component {
             <li className="list-group-item list-group-item-heading">
               <h6><strong>Rinobot</strong></h6>
             </li>
-            <li className="list-group-item list-group-item-heading">
+            {/*<li className="list-group-item list-group-item-heading">
               <h6><strong>My Folders</strong></h6>
             </li>
 
@@ -72,22 +72,22 @@ class Sidebar extends React.Component {
                 <i className="fa fa-level-up fa-rotate-90"></i>{'  '}
                 <span>{pt.basename(dir.path)}/</span>
               </Link>
-            )}
+            )}*/}
 
-            <Link
+            {/*<Link
               className="list-group-item"
               to="/"
               onClick={chooseFolder}
             >
               <i className="fa fa-plus"></i>{'  '}
               <span>Add folder</span>
-            </Link>
+            </Link>*/}
 
             <Link
               className="list-group-item"
-              to="/file_system"
+              to="/"
             >
-              <i className="fa fa-file"></i>{'  '}
+              <i className="fa fa-file-o"></i>{'  '}
               <span>File system</span>
             </Link>
 

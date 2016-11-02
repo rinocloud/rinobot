@@ -28,51 +28,47 @@ class PipelineModal extends React.Component {
     const { open, onHide, onRun } = this.props
 
     return (
-      <Modal
-        show={open}
-        onHide={onHide}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
+      <div className="row">
+        <div className="col-sm-12">
+          {open &&
             <div className="row">
-              <div className="col-sm-11">
-                Setup Tasks
+              <div className="col-sm-12 m-t">
+                <PipelineForm
+                  filematchVisible={false}
+                  pipeline={this.props.pipeline}
+                  installedPlugins={this.props.installedPlugins}
+                  registry={this.props.registry}
+                  onChangeMatch={this.props.onChangeMatch}
+                  onChangeTaskName={this.props.onChangeTaskName}
+                  onChangeTaskArgs={this.props.onChangeTaskArgs}
+                  onChangeTaskKeep={this.props.onChangeTaskKeep}
+                  onChangeTaskFlow={this.props.onChangeTaskFlow}
+                  onChangeIncomingOnly={this.props.onChangeIncomingOnly}
+                  onAddTask={this.props.onAddTask}
+                  onRemoveTask={this.props.onRemoveTask}
+                  onRemove={this.props.onRemove}
+                />
               </div>
             </div>
-          </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <PipelineForm
-            filematchVisible={false}
-            pipeline={this.props.pipeline}
-            installedPlugins={this.props.installedPlugins}
-            registry={this.props.registry}
-            onChangeMatch={this.props.onChangeMatch}
-            onChangeTaskName={this.props.onChangeTaskName}
-            onChangeTaskArgs={this.props.onChangeTaskArgs}
-            onChangeTaskKeep={this.props.onChangeTaskKeep}
-            onChangeTaskFlow={this.props.onChangeTaskFlow}
-            onChangeIncomingOnly={this.props.onChangeIncomingOnly}
-            onAddTask={this.props.onAddTask}
-            onRemoveTask={this.props.onRemoveTask}
-            onRemove={this.props.onRemove}
-          />
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={onRun}
-          >
-            Run
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          }
+          {open &&
+            <div className="row">
+              <div className="col-sm-10">
+                <a
+                  href="#"
+                  className="m-l-sm btn btn-sm btn-default pull-right"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    onRun()
+                  }}
+                >
+                  Run
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
 
     )
   }

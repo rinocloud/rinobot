@@ -110,14 +110,14 @@ class TaskForm extends React.Component {
         <div className="col-xs-12">
           <div className="row">
 
-            <div className="col-xs-4">
+            <div className="col-xs-6">
               <div>
                 <Select
                   type="text"
                   value={selectedValue || ''}
                   options={selectOpts}
                   onChange={changeName}
-                  placeholder="Select automation..."
+                  placeholder="Select task..."
                   disabled={isDisabled}
                 />
               </div>

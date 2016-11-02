@@ -148,7 +148,9 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .sidebar a.list-group-item:focus{
-    text-decoration: none;
+  text-decoration: none;
+  background-color: $primary-dark;
+  color: #fff;
 }
 
 .sidebar .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
@@ -586,4 +588,10 @@ span.block-title{
 
 .table > tbody > tr.active > td{
   background-color: #e6e6e6;
+}
+
+.breadcrumbs {
+  background-color: $panel-heading-color;
+  font-weight: 300;
+  font-size: 0.8em;
 }
