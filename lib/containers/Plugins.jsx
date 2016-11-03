@@ -81,7 +81,7 @@ class Plugins extends React.Component {
 
     return (
       <div>
-        <div className="main config p-l p-r">
+        <div className="main config">
           <div className="row">
             <div className="col-sm-12">
               <div className="panel panel-primary">
