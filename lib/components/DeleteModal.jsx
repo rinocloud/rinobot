@@ -48,6 +48,6 @@ export class DeleteModal extends React.Component {
       </div>
     )
   }
-
 }
+
 export default { DeleteModal }

@@ -68,6 +68,7 @@
     "superagent-d2l-queue": "^3.0.2",
     "superagent-retry": "^0.6.0",
     "tar": "^2.2.1",
+    "trash": "^4.0.0",
     "update": "^0.7.4"
   },
   "devDependencies": {
