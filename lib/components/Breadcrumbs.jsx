@@ -55,3 +55,6 @@ export class Breadcrumbs extends React.Component {
     )
   }
 }
+
+
+export default { Breadcrumbs }

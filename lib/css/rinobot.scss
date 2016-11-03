@@ -614,3 +614,15 @@ li, tr {
   position: absolute;
   z-index: 99;
 }
+.btn-noOutline:focus, .btn-noOutline.focus{
+  outline: none;
+}
+
+.copy-input {
+    height: 36px;
+    border-radius: 4px;
+    outline: none;
+    border-width: 1px;
+    
+    border-color: #eee;
+}

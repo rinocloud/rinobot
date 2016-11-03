@@ -38,11 +38,7 @@ export class FileSystemTable extends React.Component {
     const { items, onClick, onUnselectAll } = this.props
 
     return (
-      <table
-        className="table"
-        tabIndex="0"
-        onBlur={onUnselectAll}
-      >
+      <table className="table">
 
         <thead>
           <tr>
