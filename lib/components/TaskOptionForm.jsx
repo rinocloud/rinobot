@@ -37,6 +37,7 @@ class TaskOptionForm extends React.Component {
                   description={pluginOption.description}
                   type={pluginOption.type}
                   allowed={pluginOption.allowed}
+                  description={pluginOption.description}
                   required={pluginOption.required}
                   optionName={pluginOption.optionName}
                   optionsValue={optionsValue}

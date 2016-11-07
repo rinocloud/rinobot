@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Button } from './Button'
+import { TaskFlowButton } from './TaskFlowButton'
 
 
 export class TaskRow extends React.Component {
@@ -9,6 +9,11 @@ export class TaskRow extends React.Component {
     onChangeTaskFlow: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
     children: PropTypes.node.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    this.onClickFlow = this.onClickFlow.bind(this)
   }
 
   onClickFlow(index, type) {
@@ -43,8 +48,6 @@ export class TaskRow extends React.Component {
     } = this.props
 
     const horzLineClass = this.calculateHorzLineClass(tasks, index)
-    const thenClass = `btn-flow ${tasks[index].flow === 'then' ? 'active' : ''}`
-    const andClass = `btn-flow ${tasks[index].flow === 'and' ? 'active' : ''}`
 
     return (
       <div className="row row-task">
@@ -56,12 +59,11 @@ export class TaskRow extends React.Component {
             <div className="row-flow">
               <div className="m-t m-b">
                 <div className="toggle btn-group btn-group-xs">
-                  <Button className={thenClass} onClick={() => this.onClickFlow(index, 'then')}>
-                    THEN
-                  </Button>
-                  <Button className={andClass} onClick={() => this.onClickFlow(index, 'and')}>
-                    AND
-                  </Button>
+                  <TaskFlowButton
+                    index={index}
+                    onClickFlow={this.onClickFlow}
+                    flow={tasks[index].flow}
+                  />
                 </div>
               </div>
             </div>

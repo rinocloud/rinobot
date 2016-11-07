@@ -3,10 +3,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
 
-import { Sidebar } from '../components/Sidebar'
 import { Notifications } from '../components/Notifications'
-
-// import * as watcherActions from '../actions/watcher'
+import { Sidebar } from '../components/Sidebar'
 import * as authActions from '../actions/auth'
 import * as uiActions from '../actions/ui'
 
@@ -14,11 +12,11 @@ export function requireAuthentication(Component) {
   class AuthenticatedComponent extends React.Component {
 
     static propTypes = {
-      auth: PropTypes.object.isRequired,
-      actions: PropTypes.object.isRequired,
-      ui: PropTypes.object.isRequired,
-      watcher: PropTypes.array.isRequired,
       location: PropTypes.object.isRequired,
+      actions: PropTypes.object.isRequired,
+      watcher: PropTypes.array.isRequired,
+      auth: PropTypes.object.isRequired,
+      ui: PropTypes.object.isRequired,
     }
 
     constructor(props) {
@@ -42,7 +40,7 @@ export function requireAuthentication(Component) {
     }
 
     render() {
-      const { actions, auth, ui, watcher, location } = this.props
+      const { actions, auth, ui, location } = this.props
       return (
         <div className="wrapper main-container">
           <Notifications
@@ -55,27 +53,16 @@ export function requireAuthentication(Component) {
 
           <div className="sidebar p-0 m-0">
             <Sidebar
-              pathname={location.pathname}
-              currentDir={ui.currentDir}
-              rinobotVersion={ui.rinobotVersion}
-              watcher={watcher}
               auth={auth}
+              rinobotVersion={ui.rinobotVersion}
+              pathname={location.pathname}
               logout={actions.logout}
-              setCurrentDir={actions.setCurrentDir}
-              addDir={actions.addDir}
             />
           </div>
 
-          <div
-            className="container-fluid p-t"
-            style={{ minHeight: '100vh', marginBottom: '-50px' }}
-          >
-            {auth.access_token
-                ? <Component {...this.props} />
-                : null
-            }
+          <div className="container-fluid p-t main-component">
+            {auth.access_token && <Component {...this.props} />}
           </div>
-          {/* <Footer ui={ui} /> */}
         </div>
       )
     }

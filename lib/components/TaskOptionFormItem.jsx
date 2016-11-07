@@ -14,7 +14,8 @@ export const TaskOptionFormItem = (props) => {
     required = false, // true or false
     optionName, // the name of the option
     optionsValue, // the object which holds current options value
-    onChangeArgs
+    onChangeArgs,
+    description // this is the string, description of the task
   } = props
 
   const value = optionsValue[optionName] || null

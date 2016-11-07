@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import { remote } from 'electron'
 import pt from 'path'
+import { ChooseFolderButton } from './ChooseFolderButton'
 
 export const TaskProgramForm = (props) => {
   const {
@@ -11,23 +11,20 @@ export const TaskProgramForm = (props) => {
   } = props
 
   return (
-    <a
-      style={{ height: '36px', borderRadius: '4px' }}
-      href="#"
-      className="btn btn-default btn-sm"
-      onClick={(e) => {
-        e.preventDefault()
-        const paths = remote.dialog.showOpenDialog({ properties: ['openFile'] })
-        if (paths) {
-          e.preventDefault()
+    <span>
+      <ChooseFolderButton
+        onChooseFolder={(paths) => {
           onChangeArgs('default', paths[0])
-        }
-      }}
-      disabled={isDisabled}
-    >
-      Select {programName === 'Rscript' ? 'R' : programName} file
-      {value ? ` (${pt.basename(value)})` : ''}
-    </a>
+        }}
+        disabled={isDisabled}
+      >
+        Select {programName === 'Rscript' ? 'R' : programName} file
+
+      </ChooseFolderButton>
+      <small className="m-l-sm">
+        {`${value ? pt.basename(value) : ''}`}
+      </small>
+    </span>
   )
 }
 

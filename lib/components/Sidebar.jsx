@@ -8,6 +8,7 @@ export const Sidebar = (props) => {
     auth,
     rinobotVersion,
     pathname,
+    logout
   } = props
 
   return (
@@ -66,7 +67,7 @@ export const Sidebar = (props) => {
             className="list-group-item"
             onClick={(e) => {
               e.preventDefault()
-              this.props.logout()
+              logout()
             }}
           >
             <i className="fa fa-external-link fa-small"></i>{'  '}

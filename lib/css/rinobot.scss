@@ -35,7 +35,11 @@ table:focus{
 
 .main-container .container-fluid{
   margin-left: $sidebar-width;
-  // background: $grey2;
+}
+
+.main-component{
+  min-height: '100vh';
+  margin-bottom: '-50px';
 }
 
 .wrapper {
