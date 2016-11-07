@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
-import { TaskForm } from './TaskForm'
-import _ from 'lodash'
+import { TaskFormList } from './TaskFormList'
+import { FileMatchForm } from './FileMatchForm'
+import { Button } from '../components/Button'
 
 class PipelineForm extends React.Component {
 
@@ -27,189 +28,52 @@ class PipelineForm extends React.Component {
       registry,
       installedPlugins,
       isDisabled = false,
-      filematchVisible = true
-     } = this.props //eslint-disable-line
+      filematchVisible = true,
+      onChangeMatch,
+      onChangeTaskName,
+      onChangeTaskArgs,
+      onChangeTaskKeep,
+      onChangeTaskFlow,
+      onRemove,
+      onRemoveTask
+     } = this.props
 
     return (
       <div className="row config m-b">
         <div className="col-xs-12">
-          {filematchVisible &&
-            <div className="row row-task">
-              <div className="sf_wrapper_task">
-                <div className="grey_horz_task grey_horz_task-faux"></div>
-              </div>
-              <div className="col-xs-11 m-b">
-                <div className="row">
-                  <div className="col-xs-12">
-                    <div className="row">
-                      <div className="col-xs-4">
-                        <input
-                          className="form-control m-b-sm"
-                          placeholder="Files to automate..."
-                          value={pipeline.filematch || ''}
-                          onChange={(e) => {
-                            e.preventDefault()
-                            this.props.onChangeMatch(e.target.value)
-                          }}
-                          disabled={isDisabled}
-                        />
-                      </div>
-                      <div className="col-xs-2 col-xs-offset-6">
-                        <a
-                          className="btn btn-sm pull-right"
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            if (!isDisabled) {
-                              this.props.onRemove()
-                            }
-                          }}
-                          disabled={isDisabled}
-                        >
-                          <i className="fa fa-times-circle-o m-r-sm" />
-                          Delete pipeline
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row-flow-toggle">
-                  <div className="toggle toggle-faux btn-group btn-group-xs m-t-sm m-b-sm">
-                    <a
-                      className="btn-flow active"
-                    >
-                      THEN
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
 
-          {_.map(pipeline.tasks, (task, index) => {
-            let isAnd = false
-            let nextTask = null
-            if (index !== pipeline.tasks.length - 1) {
-              nextTask = pipeline.tasks[index + 1]
-            }
-            if (task.flow === 'and' || (nextTask && nextTask.flow === 'and')) {
-              isAnd = true
-            }
+          <FileMatchForm
+            show={filematchVisible}
+            isDisabled={isDisabled}
+            value={pipeline.filematch || ''}
+            onChange={onChangeMatch}
+            onRemove={onRemove}
+          />
 
-            let horzClass = 'grey_horz_task'
-            if (index === 0) {
-              horzClass = 'grey_horz_task grey_horz_task_first'
-            }
-            if (index === pipeline.tasks.length - 1) {
-              // !nextTask || nextTask.flow !== 'and'
-              horzClass = 'grey_horz_task grey_horz_task_last'
-            }
-            if (pipeline.tasks.length === 1) {
-              horzClass = 'grey_horz_task grey_horz_task_only'
-            }
+          <TaskFormList
+            tasks={pipeline.tasks}
+            isDisabled={isDisabled}
+            registry={registry}
+            installedPlugins={installedPlugins}
+            onChangeTaskFlow={onChangeTaskFlow}
+            onChangeTaskName={onChangeTaskName}
+            onChangeTaskArgs={onChangeTaskArgs}
+            onChangeTaskKeep={onChangeTaskKeep}
+            onRemoveTask={onRemoveTask}
+          />
 
-            return (
-              <div
-                className={
-                  `row row-task ${(isAnd && 'row-and')}`
-                }
-                key={`task-${index}`}
-              >
-                <div className="sf_wrapper_task">
-                  <div className={horzClass}></div>
-                </div>
-                <div className="col-xs-11">
-                  {index > 0 &&
-                    <div className="row-flow">
-                      <div className="m-t m-b">
-                        <div className="toggle btn-group btn-group-xs m-t-sm m-b-sm">
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              if (!isDisabled) {
-                                this.props.onChangeTaskFlow(index, 'then')
-                              }
-                            }}
-                            className={
-                              'btn-flow ' // eslint-disable-line
-                              + (pipeline.tasks[index].flow === 'then' && 'active') // eslint-disable-line
-                            }
-                          >
-                            THEN
-                          </a>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              if (!isDisabled) {
-                                this.props.onChangeTaskFlow(index, 'and')
-                              }
-                            }}
-                            className={
-                              'btn-flow ' // eslint-disable-line
-                              + (pipeline.tasks[index].flow === 'and' && 'active') // eslint-disable-line
-                            }
-                          >
-                            AND
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  <div className="row">
-                    <div className="col-xs-12">
-                      <TaskForm
-                        isDisabled={isDisabled}
-                        registry={registry}
-                        installedPlugins={installedPlugins}
-                        name={task.name}
-                        args={task.args}
-                        keep={task.keep}
-                        showRemove={index !== 0}
-                        onChangeName={name => { this.props.onChangeTaskName(index, name) }}
-                        onChangeArgs={(argName, argValue) =>
-                          this.props.onChangeTaskArgs(index, argName, argValue)}
-                        onChangeKeep={args => { this.props.onChangeTaskKeep(index, args) }}
-                        onRemove={() => { this.props.onRemoveTask(index) }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
           <div className="row">
-            {pipeline.tasks.length === 0 &&
-              <a
-                href="#"
-                className="btn-add-task"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (!isDisabled) {
-                    this.props.onAddTask()
-                  }
-                }}
-                disabled={isDisabled}
-              >
-                <i className="fa fa-plus-circle" />
-              </a>
-            }
-            {pipeline.tasks.length !== 0 &&
-              <a
-                href="#"
-                className="btn-add-task"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (!isDisabled) {
-                    this.props.onAddTask()
-                  }
-                }}
-                disabled={isDisabled}
-              >
-                <i className="fa fa-plus-circle" />
-              </a>
-            }
+            <Button
+              className="btn-add-task"
+              onClick={() => {
+                if (!isDisabled) {
+                  this.props.onAddTask()
+                }
+              }}
+              disabled={isDisabled}
+            >
+              <i className="fa fa-plus-circle" />
+            </Button>
           </div>
         </div>
       </div>

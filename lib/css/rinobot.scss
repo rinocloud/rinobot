@@ -35,7 +35,11 @@ table:focus{
 
 .main-container .container-fluid{
   margin-left: $sidebar-width;
-  // background: $grey2;
+}
+
+.main-component{
+  min-height: '100vh';
+  margin-bottom: '-50px';
 }
 
 .wrapper {
@@ -233,23 +237,6 @@ table:focus{
   color:  white;
 }
 
-.btn-add-task {
-  background-color: #fff;
-  color: #999;
-  font-size: 1em;
-  position: relative;
-  left: 52px;
-  top: 25px;
-}
-.btn-add-task i{
-  font-size: 1.2em;
-}
-.btn-add-task:hover,
-.btn-add-task:focus,
-.btn-add-task:visited {
-  color:  $primary-color;
-}
-
 .btn-add-pipeline{
   background-color: $primary-color;
   color: #fafafa;
@@ -409,30 +396,6 @@ span.block-title{
   position: relative;
 }
 
-.grey_horz {
-  position: absolute;
-  top: 0;
-  left: 0px;
-  width: 100px;
-  height: 39px;
-  border-left: 1px solid white;
-  border-bottom: 1px solid #bfcfda;
-  display: block;
-}
-
-.grey_horz_first{
-  background: white;
-  margin-left: -1px;
-}
-
-.grey_vert {
-  top: 13px;
-  left: 40px;
-  height: 100%;
-  width: 1px;
-  background: #bfcfda;
-}
-
 .config .btn-flow{
   padding: 7px;
   color: #555;
@@ -489,39 +452,59 @@ span.block-title{
   min-height: 1px;
 }
 
+$grey-line-color: rgba(100,100,100,0.2);
+
+.row-task{
+  margin-left: 50px;
+  border-left: 1px solid $grey-line-color;
+}
+
 .grey_horz_task {
-  position: absolute;
-  top: 87px;
-  left: -16px;
-  width: 100px;
-  height: 135px;
-  border-left: 1px solid #bfcfda;
-  border-top: 1px solid #bfcfda;
-  display: block;
+  position: relative;
+  left: -15px;
+  top: 75px;
+  width: 30px;
+  border-top: 1px solid $grey-line-color;
 }
 
 .grey_horz_task_first {
-  top: 18px;
-}
-
-.grey_horz_task-faux {
-  top: 18px;
-  height: 87px;
+  top: 0px;
+  height: 19px;
   left: -16px;
-  width: 27px;
+  border-left: 1px solid $panel-body-color;
+  border-top: none;
+  border-bottom: 1px solid $grey-line-color;
 }
 
 .grey_horz_task_only {
-  top: 18px;
-  height: 50px;
+  top: 0px;
+  height: 19px;
+  left: -16px;
+  border-left: 1px solid $panel-body-color;
+  border-top: none;
+  border-bottom: 1px solid $grey-line-color;
 }
 
-.grey_horz_task_last{
-  height: 50px;
+.btn-add-task {
+  color: #999;
+  font-size: 1.1em;
+  position: relative;
+  left: 52px;
+  top: -2px;
+}
+
+.btn-add-task i{
+  font-size: 1.2em;
+}
+.btn-add-task:hover,
+.btn-add-task:focus,
+.btn-add-task:visited {
+  color:  $primary-color;
 }
 
 .row-flow{
   margin-left: -70px;
+  margin-top: -7px;
 }
 
 .row-flow-toggle{
@@ -532,10 +515,6 @@ span.block-title{
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
   border-right: 1px solid #bdc7d2;
-}
-
-.row-task{
-  margin-left: 50px;
 }
 
 .config .panel-body{
@@ -626,14 +605,44 @@ li, tr {
   position: absolute;
   z-index: 99;
 }
+
+.option{
+  font-size: 14px;
+  font-weight: 400;
+  height: 34px;
+}
+
+label.option{
+  padding-top: 8px;
+}
+
+.option .Select-control{
+  border: 1px solid #eeeeee;
+  border-radius: 2px;
+  height: 34px;
+}
+
+.option .Select-input{
+  height: 30px;
+}
+
+.task-option-form-item{
+  float: left;
+  min-width: 12%;
+  position: relative;
+  min-height: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .btn-noOutline:focus, .btn-noOutline.focus{
   outline: none;
 }
 
 .copy-input {
-    height: 36px;
-    border-radius: 4px;
-    outline: none;
-    border-width: 1px;
-    border-color: #eee;
+  height: 36px;
+  border-radius: 4px;
+  outline: none;
+  border-width: 1px;
+  border-color: #eee;
 }

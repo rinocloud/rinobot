@@ -115,7 +115,6 @@ for tasks in sortedTasks:
             outputFiles.append(outputFile)
 
     inputFiles = outputFiles
-
 ```
 
 ## Maintainers
