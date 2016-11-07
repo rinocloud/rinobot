@@ -10,7 +10,7 @@ export class Breadcrumbs extends React.Component {
   }
 
   render() {
-    const { path, basePath = false, onClick } = this.props
+    const { path, basePath = true, onClick } = this.props
     let breadcrumbs = []
 
 
@@ -46,6 +46,7 @@ export class Breadcrumbs extends React.Component {
                   onClick(breadcrumb.path)
                 }}
               >
+                <i className="fa fa-folder-open-o" />
                 {breadcrumb.name}
               </a>
             </li>

@@ -60,7 +60,7 @@ class Sidebar extends React.Component {
                 shell.openExternal('http://docs.rinocloud.com/rinobot/')
               }}
             >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <i className="fa fa-book"></i>{'  '}
               <span>Documentation</span>
             </a>
 
@@ -72,7 +72,7 @@ class Sidebar extends React.Component {
                 shell.openExternal(`https://${auth.project}.rinocloud.com/app/`)
               }}
             >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <i className="fa fa-external-link"></i>{'  '}
               <span>Open my Rinocloud</span>
             </a>
             <a
@@ -80,7 +80,7 @@ class Sidebar extends React.Component {
               className="list-group-item"
               onClick={onClickLogout}
             >
-              <i className="fa fa-external-link fa-small"></i>{'  '}
+              <i className="fa fa-sign-out"></i>{'  '}
               <span>Logout</span>
             </a>
           </ul>
