@@ -58,6 +58,9 @@ const createTaskQueue = (pipeline, opts, callback) => {
         apiToken: opts.apiToken,
         onLog: opts.onTaskLog,
         forceRerun: opts.forceRerun,
+        matlabRoot: opts.matlabRoot || null,
+        pythonRoot: opts.pythonRoot || null,
+        rRoot: opts.rRoot || null,
         command: taskConfig.name,
         keep: taskConfig.keep,
         args: taskConfig.args,
@@ -86,7 +89,7 @@ const createTaskQueue = (pipeline, opts, callback) => {
 
     subQueue.push(batch, (_continue) => {
       if (_.isError(_continue) || _continue === false) {
-        console.log('subQueue error - killing queue')
+        console.log('subQueue error - killing queue', _continue)
         const drain = subQueue.drain
         subQueue.kill()
         drain()

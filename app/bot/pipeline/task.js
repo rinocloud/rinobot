@@ -71,6 +71,10 @@ export class Task {
     this.apiToken = opts.apiToken || null
     this.keep = opts.keep
 
+    this.matlabRoot = opts.matlabRoot || null
+    this.pythonRoot = opts.pythonRoot || null
+    this.rRoot = opts.rRoot || null
+
     this.readyFunc = () => {}
     this.ignored = opts.logOnly || false
     this.relativePath = pt.relative(this.baseDir, this.filepath)
@@ -363,6 +367,7 @@ export class Task {
   matlab() {
     runMatlab({
       codePath: this.args,
+      root: this.matlabRoot,
       filepath: this.getLocals().filepath,
       cwd: this.baseDir,
       onError: this.onError,
@@ -375,6 +380,7 @@ export class Task {
     runR({
       codePath: this.args,
       locals: this.getLocals(),
+      root: this.rRoot,
       cwd: this.baseDir,
       onError: this.onError,
       onLog: this.onLog,
@@ -387,6 +393,7 @@ export class Task {
       locals: this.getLocals(),
       cwd: this.baseDir,
       args: this.args,
+      root: this.pythonRoot,
       command: this.command,
       onError: this.onError,
       onLog: this.onLog,

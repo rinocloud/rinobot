@@ -2,8 +2,6 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { bindActionCreators } from 'redux'
-
-import { Notifications } from '../components/Notifications'
 import { Sidebar } from '../components/Sidebar'
 import * as authActions from '../actions/auth'
 import * as uiActions from '../actions/ui'
@@ -43,14 +41,6 @@ export function requireAuthentication(Component) {
       const { actions, auth, ui, location } = this.props
       return (
         <div className="wrapper main-container">
-          <Notifications
-            notification={ui.notification}
-            installUpdate={actions.installUpdate}
-            updateNotes={ui.updateNotes}
-            updateShowing={ui.updateShowing}
-            updateVersion={ui.updateVersion}
-          />
-
           <div className="sidebar p-0 m-0">
             <Sidebar
               auth={auth}

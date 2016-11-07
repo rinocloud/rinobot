@@ -56,23 +56,24 @@ export const Sidebar = (props) => {
             className="list-group-item"
             onClick={(e) => {
               e.preventDefault()
-              shell.openExternal(`https://${auth.project}.rinocloud.com/app/`)
-            }}
-          >
-            <i className="fa fa-external-link fa-small"></i>{'  '}
-            <span>Open my Rinocloud</span>
-          </a>
-          <a
-            href="#"
-            className="list-group-item"
-            onClick={(e) => {
-              e.preventDefault()
               logout()
             }}
           >
             <i className="fa fa-external-link fa-small"></i>{'  '}
             <span>Logout {auth.username}</span>
           </a>
+
+          <Link
+            to="/settings"
+            className={
+              pathname === '/settings' ?
+                'list-group-item active' :
+                'list-group-item'
+            }
+          >
+            <i className="fa fa-cogs"></i>{'  '}
+            <span>Settings</span>
+          </Link>
         </ul>
       </div>
       <div>

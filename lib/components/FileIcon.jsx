@@ -2,7 +2,16 @@ import React, { PropTypes } from 'react'
 import pt from 'path'
 
 export const FileIcon = (props) => {
-  const { type, filename } = props
+  const {
+    type,
+    state = null,
+    filename
+  } = props
+
+  if (state && state === 'started') {
+    return <i className="m-r fa fa-spinner fa-spin" />
+  }
+
   if (type === 'folder') {
     return <i className="fa fa-folder-o m-r" />
   }
@@ -18,6 +27,7 @@ export const FileIcon = (props) => {
 }
 
 FileIcon.propTypes = {
+  state: PropTypes.string,
   type: PropTypes.string.isRequired,
   filename: PropTypes.string.isRequired
 }

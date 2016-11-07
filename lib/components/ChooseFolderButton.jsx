@@ -6,7 +6,8 @@ export const ChooseFolderButton = (props) => {
   const {
     onChooseFolder,
     children,
-    extraClassNames = ''
+    extraClassNames = '',
+    properties = ['openDirectory', 'multiSelections']
   } = props
 
   return (
@@ -14,7 +15,7 @@ export const ChooseFolderButton = (props) => {
       extraClassNames={extraClassNames}
       onClick={() => {
         const paths = remote.dialog.showOpenDialog({
-          properties: ['openDirectory', 'multiSelections']
+          properties
         })
         if (paths) {
           onChooseFolder(paths)
@@ -30,4 +31,5 @@ ChooseFolderButton.propTypes = {
   children: PropTypes.node,
   onChooseFolder: PropTypes.func.isRequired,
   extraClassNames: PropTypes.string,
+  properties: PropTypes.array,
 }

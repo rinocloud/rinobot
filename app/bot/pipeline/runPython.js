@@ -1,5 +1,6 @@
 import { getPythonPath } from '../utils/pythonKernel'
 import { spawn } from 'child_process'
+// import pt from 'path'
 
 export default (opts) => {
   const codePath = opts.codePath
@@ -12,6 +13,7 @@ export default (opts) => {
 
   const args = [codePath, locals.filepath]
 
+  // TODO: use python root if given by the user
   getPythonPath((er, python) => {
     if (er) return onError(er)
 

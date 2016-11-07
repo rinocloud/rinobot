@@ -36,7 +36,7 @@ export class DeleteModal extends React.Component {
             Back
           </Button>
           <Button
-            className="btn-danger m-t m-b"
+            className="btn-danger m-t m-b ignore-react-onclickoutside"
             onClick={(e) => {
               e.preventDefault()
               onConfirmDelete()

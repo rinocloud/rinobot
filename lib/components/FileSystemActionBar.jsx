@@ -1,66 +1,92 @@
 import React, { PropTypes } from 'react'
-import { Button } from '../components/Button'
 import pt from 'path'
+import { Button } from '../components/Button'
+import { DeleteModal } from '../components/DeleteModal'
 
-export const FileSystemActionBar = (props) => {
-  const {
-    currentPath,
-    basePath,
-    setCurrentPath,
-    rmSelected,
-    modalOpen,
-    openModal,
-    closeModal
-  } = props
 
-  return (
-    <div>
-      <Button
-        extraClassNames="m-l-sm"
-        onClick={() => {
-          if (currentPath !== basePath) {
-            setCurrentPath(pt.dirname(currentPath))
+class FileSystemActionBar extends React.Component {
+
+  static propTypes = {
+    currentPath: PropTypes.string.isRequired,
+    basePath: PropTypes.string.isRequired,
+    setCurrentPath: PropTypes.func.isRequired,
+    rmSelected: PropTypes.func.isRequired,
+    modalOpen: PropTypes.bool.isRequired,
+    openModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired
+  }
+
+
+  constructor(props) {
+    super(props)
+    this.state = { toggleDeleteModal: false }
+  }
+
+  render() {
+    const {
+      currentPath,
+      basePath,
+      setCurrentPath,
+      rmSelected,
+      modalOpen,
+      openModal,
+      closeModal
+    } = this.props
+
+    return (
+      <div>
+        <Button
+          extraClassNames="m-l-sm"
+          onClick={() => {
+            if (currentPath !== basePath) {
+              setCurrentPath(pt.dirname(currentPath))
+            }
+          }}
+          disabled={currentPath === basePath}
+        >
+          <i className="fa fa-arrow-left" />{' '}
+          Back
+        </Button>
+
+        <Button
+          extraClassNames="m-l-sm"
+          onClick={() => {
+            this.setState({ toggleDeleteModal: !this.state.toggleDeleteModal })
+          }}
+        >
+          <i className="fa fa-times m-r-sm" />
+          Delete
+        </Button>
+
+        <Button
+          extraClassNames="m-l-sm"
+          onClick={() => {
+            if (!modalOpen) openModal()
+            else closeModal()
+          }}
+        >
+          Run Task
+          {modalOpen &&
+            <i className="fa fa-caret-down m-l-sm" />
           }
-        }}
-        disabled={currentPath === basePath}
-      >
-        <i className="fa fa-arrow-left" />{' '}
-        Back
-      </Button>
+          {!modalOpen &&
+            <i className="fa fa-caret-right m-l-sm" />
+          }
+        </Button>
 
-      <Button
-        extraClassNames="m-l-sm"
-        onClick={rmSelected}
-      >
-        <i className="fa fa-times m-r-sm" />
-        Delete
-      </Button>
-
-      <Button
-        extraClassNames="m-l-sm"
-        onClick={() => {
-          if (!modalOpen) openModal()
-          else closeModal()
-        }}
-      >
-        Run Task
-        {modalOpen &&
-          <i className="fa fa-caret-down m-l-sm" />
-        }
-        {!modalOpen &&
-          <i className="fa fa-caret-right m-l-sm" />
-        }
-      </Button>
-    </div>
-  )
+        <DeleteModal
+          show={this.state.toggleDeleteModal}
+          onHide={() => {
+            this.setState({ toggleDeleteModal: !this.state.toggleDeleteModal })
+          }}
+          onConfirmDelete={() => {
+            this.setState({ toggleDeleteModal: !this.state.toggleDeleteModal })
+            rmSelected()
+          }}
+        />
+      </div>
+    )
+  }
 }
 
-FileSystemActionBar.propTypes = {
-  currentPath: PropTypes.string.isRequired,
-  basePath: PropTypes.string.isRequired,
-  setCurrentPath: PropTypes.func.isRequired,
-  rmSelected: PropTypes.func.isRequired,
-  modalOpen: PropTypes.bool.isRequired,
-  openModal: PropTypes.func.isRequired,
-  closeModal: PropTypes.func.isRequired
-}
+export default { FileSystemActionBar }

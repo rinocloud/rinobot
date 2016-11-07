@@ -78,6 +78,9 @@ const processFile = (opts) => {
     pluginsDir,
     apiToken,
     config,
+    matlabRoot = null,
+    pythonRoot = null,
+    rRoot = null,
     forceRerun = false
    } = opts
 
@@ -88,7 +91,9 @@ const processFile = (opts) => {
     baseDir,
     config,
     forceRerun,
-
+    matlabRoot,
+    pythonRoot,
+    rRoot,
     onTaskStart: (task) => {
       taskStart(index, task)
     },

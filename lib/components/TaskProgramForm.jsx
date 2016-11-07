@@ -17,6 +17,7 @@ export const TaskProgramForm = (props) => {
           onChangeArgs('default', paths[0])
         }}
         disabled={isDisabled}
+        properties={['openFile']}
       >
         Select {programName === 'Rscript' ? 'R' : programName} file
 

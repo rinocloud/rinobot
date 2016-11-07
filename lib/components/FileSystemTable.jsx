@@ -15,13 +15,7 @@ export const FileSystemTable = (props) => {
   } = props
 
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
+    <div className="m-t">
       <Selection
         onSelectionChange={(keys) => {
           const paths = _.map(keys, key => key.replace('tr-path-', ''))
@@ -39,7 +33,7 @@ export const FileSystemTable = (props) => {
           />
         )}
       </Selection>
-    </table>
+    </div>
   )
 }
 

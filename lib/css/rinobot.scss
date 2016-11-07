@@ -123,7 +123,7 @@ table:focus{
   left: 0;
   width: $sidebar-width;
   background-color: $primary-color;
-  padding-top: 40px;
+  padding: 40px 0px;
 }
 
 .sidebar .list-group-item{
@@ -210,7 +210,7 @@ table:focus{
 }
 
 .plugins .btn-primary{
-  background-color: #7E86A0;
+  background-color: #5cca59;
   color: white;
   border: 1px solid #7E86A0;
 }
@@ -439,11 +439,6 @@ span.block-title{
   background-color: #fafafa;
 }
 
-.row-task {
-  margin-left: 0px;
-  padding-left: 15px;
-}
-
 .sf_wrapper_task {
   padding: 0px;
   float: left;
@@ -455,8 +450,14 @@ span.block-title{
 $grey-line-color: rgba(100,100,100,0.2);
 
 .row-task{
+  padding-left: 15px;
   margin-left: 50px;
   border-left: 1px solid $grey-line-color;
+}
+
+.row-task-faux{
+  padding-left: 15px;
+  margin-left: 50px;
 }
 
 .grey_horz_task {
@@ -544,6 +545,12 @@ $grey-line-color: rgba(100,100,100,0.2);
   background-color: $panel-heading-color;
 }
 
+.config .panel-body .btn-primary{
+  background-color: #61e45e;
+  color: white;
+  border-color: rgba(144, 133, 133, 0.58);
+}
+
 .config .form-filematch input, .config .form-filematch input:focus{
   outline: none;
   border-color: $panel-border-color;
@@ -581,6 +588,10 @@ $grey-line-color: rgba(100,100,100,0.2);
 
 .select-parent .Select-control{
   height: 50px;
+}
+
+.active {
+  background-color: #e6e6e6;
 }
 
 .table > tbody > tr.active > td{
@@ -635,9 +646,18 @@ label.option{
   padding-right: 10px;
 }
 
-.btn-noOutline:focus, .btn-noOutline.focus{
+.btn, .btn:focus, .btn:visited, .btn:hover, .btn:active{
   outline: none;
 }
+
+button, button:focus, button:visited, button:hover, button:active{
+  outline: none;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus{
+  outline: none;
+}
+
 
 .copy-input {
   height: 36px;
@@ -645,4 +665,22 @@ label.option{
   outline: none;
   border-width: 1px;
   border-color: #eee;
+}
+
+.fs-row{
+  padding: 10px 0px;
+  margin: 0px 5px;
+  border-top: 1px solid rgba(162, 162, 162, 0.2);
+}
+
+.fs-row:first-child{
+  border-top: none;
+}
+
+pre.item-log{
+  font-size: 0.8em;
+  border: none;
+  background-color: inherit;
+  padding: 0;
+  margin: 0;
 }

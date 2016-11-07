@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react'
 export const Button = (props) => {
   const {
     onClick,
-    className = 'btn btn-sm btn-default',
+    className = 'btn btn-sm btn-default ignore-react-onclickoutside',
     extraClassNames = '',
     children,
     disabled = false

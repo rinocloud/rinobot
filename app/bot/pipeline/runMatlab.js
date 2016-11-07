@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+import pt from 'path'
 
 export default (opts) => {
   const cwd = opts.cwd
@@ -10,7 +11,7 @@ export default (opts) => {
   const onLog = opts.onLog
   const onComplete = opts.onComplete
 
-  const matlabCode = `filepath='${filepath}';run('${codePath}');exit;`
+  const matlabCode = `try;filepath='${filepath}';run('${codePath}');catch e;disp(e);end;exit;quit;`
 
   const tokens = [
     '-nodisplay',
@@ -20,7 +21,10 @@ export default (opts) => {
     matlabCode
   ]
 
-  const child = spawn('matlab', tokens, { cwd })
+  const matlabPath = opts.root ?
+    pt.join(opts.root, 'bin', 'matlab') : 'matlab'
+
+  const child = spawn(matlabPath, tokens, { cwd })
 
   child.on('error', (error) => {
     child.error = true
@@ -33,6 +37,8 @@ export default (opts) => {
 
   child.on('close', (code) => {
     if (child.hasOwnProperty('error')) return
+
+    onLog('[Rinbot]: Matlab has exited.')
 
     if (code !== 0) {
       return onError(

@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+import pt from 'path'
 
 export default (opts) => {
   const codePath = opts.codePath
@@ -10,7 +11,11 @@ export default (opts) => {
   const onComplete = opts.onComplete
 
   const args = [codePath, locals.filepath]
-  const child = spawn('Rscript', args, { cwd })
+
+  const rPath = opts.root ?
+    pt.join(opts.root, 'Rscript') : 'Rscript'
+
+  const child = spawn(rPath, args, { cwd })
 
   child.on('error', (error) => {
     child.error = true
