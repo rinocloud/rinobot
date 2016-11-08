@@ -11,12 +11,13 @@ export default (opts) => {
   const onLog = opts.onLog
   const onComplete = opts.onComplete
 
-  const matlabCode = `try;filepath='${filepath}';run('${codePath}');catch e;disp(e);end;exit;quit;`
+  const matlabCode = `try;filepath='${filepath}';run('${codePath}');catch e;disp(e.message);end;exit;quit;`
 
   const tokens = [
     '-nodisplay',
     '-nosplash',
     '-nodesktop',
+    '-noFigureWindows',
     '-r',
     matlabCode
   ]

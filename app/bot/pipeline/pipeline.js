@@ -105,36 +105,40 @@ const createTaskQueue = (pipeline, opts, callback) => {
 
 
 const createPipeline = (opts) => {
-  const createdFilePath = pt.join(opts.baseDir, '.rino', 'created.json')
-  const pipelines = opts.config.pipelines
+  try {
+    const createdFilePath = pt.join(opts.baseDir, '.rino', 'created.json')
+    const pipelines = opts.config.pipelines
 
-  readCreated(createdFilePath, (err, createdList) => {
-    _.map(pipelines, (pipeline) => {
-      if (
-        createdList &&
-        createdList.includes(opts.filepath) &&
-        pipeline.incoming_only
-      ) {
-        return
-      }
+    readCreated(createdFilePath, (err, createdList) => {
+      _.map(pipelines, (pipeline) => {
+        if (
+          createdList &&
+          createdList.includes(opts.filepath) &&
+          pipeline.incoming_only
+        ) {
+          return
+        }
 
-      if (!isMatch(pipeline.filematch, pt.basename(opts.filepath))) {
-        /* TODO: return proper onTaskIgnore */
-        return
-      }
+        if (!opts.forceRerun && (!isMatch(pipeline.filematch, pt.basename(opts.filepath)))) {
+          /* TODO: return proper onTaskIgnore */
+          return
+        }
 
-      createTaskQueue(pipeline, opts, (taskList) => {
-        queue.push(taskList, (_continue) => {
-          if (_.isError(_continue) || _continue === false) {
-            console.log('queue error - killing queue')
-            const drain = queue.drain
-            queue.kill()
-            drain(_continue)
-          }
+        createTaskQueue(pipeline, opts, (taskList) => {
+          queue.push(taskList, (_continue) => {
+            if (_.isError(_continue) || _continue === false) {
+              console.log('queue error - killing queue')
+              const drain = queue.drain
+              queue.kill()
+              drain(_continue)
+            }
+          })
         })
       })
     })
-  })
+  } catch (e) {
+    opts.onError(e)
+  }
 }
 
 

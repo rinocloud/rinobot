@@ -69,7 +69,7 @@ export class FileSystemTableItem extends React.Component {
           {item.type === 'file' &&
             <a
               href="#"
-              onClick={(e) => {
+              onDoubleClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 shell.openItem(item.path)

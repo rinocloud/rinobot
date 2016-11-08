@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import pt from 'path'
 import { Button } from '../components/Button'
 import { DeleteModal } from '../components/DeleteModal'
+import { LoadPipeline } from '../components/LoadPipeline'
 
 
 class FileSystemActionBar extends React.Component {
@@ -13,7 +14,9 @@ class FileSystemActionBar extends React.Component {
     rmSelected: PropTypes.func.isRequired,
     modalOpen: PropTypes.bool.isRequired,
     openModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired
+    closeModal: PropTypes.func.isRequired,
+    pipelines: PropTypes.object.isRequired,
+    onSelectPipeline: PropTypes.func.isRequired,
   }
 
 
@@ -30,7 +33,9 @@ class FileSystemActionBar extends React.Component {
       rmSelected,
       modalOpen,
       openModal,
-      closeModal
+      closeModal,
+      pipelines,
+      onSelectPipeline
     } = this.props
 
     return (
@@ -84,6 +89,7 @@ class FileSystemActionBar extends React.Component {
             rmSelected()
           }}
         />
+
       </div>
     )
   }

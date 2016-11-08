@@ -2,7 +2,7 @@
 @import './libs/toolkit-startup.css';
 @import './libs/application-startup.css';
 @import './libs/rinocloud-icons.css';
-@import './vendor/react-select-plus.css';
+@import './vendor/react-select-plus';
 @import './vendor/react-toggle';
 @import './vendor/react-notification-system';
 @import 'variables';
@@ -222,7 +222,7 @@ table:focus{
 .btn-add-folder {
   background-color: $primary-color;
   color: white;
-  font-size: 1.4em;
+  font-size: 1em;
   border: 1px solid $primary-color;
   padding: 10px;
 }
@@ -546,7 +546,7 @@ $grey-line-color: rgba(100,100,100,0.2);
 }
 
 .config .panel-body .btn-primary{
-  background-color: #61e45e;
+  background-color: #5cb85c;
   color: white;
   border-color: rgba(144, 133, 133, 0.58);
 }

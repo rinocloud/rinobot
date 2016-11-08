@@ -3,14 +3,16 @@ import onClickOutside from 'react-onclickoutside'
 import { connect } from 'react-redux'
 
 import * as fsActions from '../actions/fs'
+import * as pipelinesActions from '../actions/pipelines'
 import * as pipelineFormActions from '../actions/pipelineForm'
+
+import { FileSystemActionBar } from '../components/FileSystemActionBar'
+import { PipelineActionBar } from '../components/PipelineActionBar'
 import { ChooseFolderBlock } from '../components/ChooseFolderBlock'
 import { FileSystemHeading } from '../components/FileSystemHeading'
-import { FileSystemActionBar } from '../components/FileSystemActionBar'
-import { PipelineForm } from '../components/PipelineForm'
-import { Button } from '../components/Button'
 import { FileSystemTable } from '../components/FileSystemTable'
-
+import { PipelineForm } from '../components/PipelineForm'
+import { LoadPipeline } from '../components/LoadPipeline'
 
 class FileSystem extends React.Component {
   static propTypes = {
@@ -18,6 +20,7 @@ class FileSystem extends React.Component {
     pipelineForm: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     plugins: PropTypes.object.isRequired,
+    pipelines: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -47,7 +50,7 @@ class FileSystem extends React.Component {
   }
 
   render() {
-    const { dispatch, fs, pipelineForm, plugins } = this.props
+    const { dispatch, fs, pipelineForm, plugins, pipelines } = this.props
 
     return (
       <div>
@@ -55,7 +58,6 @@ class FileSystem extends React.Component {
           <ChooseFolderBlock
             onChooseFolder={(paths) => {
               dispatch(fsActions.setBasePath(paths[0]))
-              dispatch(pipelineFormActions.addPipeline())
             }}
           />
         }
@@ -70,7 +72,6 @@ class FileSystem extends React.Component {
                 }}
                 onChooseFolder={(paths) => {
                   dispatch(fsActions.setBasePath(paths[0]))
-                  dispatch(pipelineFormActions.addPipeline())
                 }}
               />
 
@@ -87,62 +88,79 @@ class FileSystem extends React.Component {
                   rmSelected={() => {
                     dispatch(fsActions.rmSelected())
                   }}
+                  pipelines={pipelines}
+                  onSelectPipeline={(pipeline) => {
+                    console.log(pipeline)
+                  }}
                 />
 
-                {this.state.modalOpen &&
-                  <div className="row">
-                    <div className="col-sm-12 m-t">
-                      <PipelineForm
-                        filematchVisible={false}
-                        pipeline={pipelineForm.pipelines[0]}
-                        installedPlugins={plugins.installed}
-                        registry={plugins.registry}
-                        onChangeMatch={(newFileMatch) =>
-                          dispatch(pipelineFormActions
-                            .changePipelineFilematch({ index: 0, newFileMatch }))}
-                        onChangeTaskName={(taskIndex, name) =>
-                          dispatch(pipelineFormActions
-                            .changePipelineTaskName({ index: 0, taskIndex, name }))}
-                        onChangeTaskArgs={(taskIndex, argName, argValue) =>
-                          dispatch(pipelineFormActions
-                            .changePipelineTaskArgs({ index: 0, taskIndex, argName, argValue }))}
-                        onChangeTaskKeep={(taskIndex, args) =>
-                          dispatch(pipelineFormActions
-                            .changePipelineTaskKeep({ index: 0, taskIndex, args }))}
-                        onChangeTaskFlow={(taskIndex, args) =>
-                          dispatch(pipelineFormActions
-                            .changePipelineTaskFlow({ index: 0, taskIndex, args }))}
-                        onChangeIncomingOnly={args =>
-                          dispatch(pipelineFormActions
-                            .changePipelineIncomingOnly({ index: 0, args }))}
-                        onAddTask={() =>
-                          dispatch(pipelineFormActions
-                            .addPipelineTask({ index: 0 }))}
-                        onRemoveTask={(taskIndex) =>
-                          dispatch(pipelineFormActions
-                            .removePipelineTask({ index: 0, taskIndex }))}
-                        onRemove={() =>
-                          dispatch(pipelineFormActions
-                            .removePipeline({ index: 0 }))}
-                      />
-                    </div>
-                  </div>
-                }
-                {this.state.modalOpen &&
-                  <div className="row row-task-faux">
-                    <div className="col-sm-10">
-                      <Button
-                        extraClassNames="btn-primary pull-right"
-                        onClick={() => {
+                <div className="row">
+                  <div className="col-sm-12">
+
+                    {this.state.modalOpen &&
+                      <div className="row row-task-faux">
+                        <div className="col-sm-3 col-sm-offset-7 m-t">
+                          <LoadPipeline
+                            pipelines={pipelines}
+                            onSelect={(pipeline) => {
+                              dispatch(pipelineFormActions.setForm(pipeline))
+                            }}
+                          />
+                        </div>
+                      </div>
+                    }
+
+                    {this.state.modalOpen &&
+                      <div className="row">
+                        <div className="col-sm-12 m-t-sm">
+                          <PipelineForm
+                            filematchVisible={false}
+                            pipeline={pipelineForm.pipelines[0]}
+                            installedPlugins={plugins.installed}
+                            registry={plugins.registry}
+                            onChangeMatch={(newFileMatch) =>
+                              dispatch(pipelineFormActions
+                                .changePipelineFilematch({ index: 0, newFileMatch }))}
+                            onChangeTaskName={(taskIndex, name) =>
+                              dispatch(pipelineFormActions
+                                .changePipelineTaskName({ index: 0, taskIndex, name }))}
+                            onChangeTaskArgs={(taskIndex, argName, argValue) =>
+                              dispatch(pipelineFormActions
+                                .changePipelineTaskArgs({ index: 0, taskIndex, argName, argValue }))}
+                            onChangeTaskKeep={(taskIndex, args) =>
+                              dispatch(pipelineFormActions
+                                .changePipelineTaskKeep({ index: 0, taskIndex, args }))}
+                            onChangeTaskFlow={(taskIndex, args) =>
+                              dispatch(pipelineFormActions
+                                .changePipelineTaskFlow({ index: 0, taskIndex, args }))}
+                            onChangeIncomingOnly={args =>
+                              dispatch(pipelineFormActions
+                                .changePipelineIncomingOnly({ index: 0, args }))}
+                            onAddTask={() =>
+                              dispatch(pipelineFormActions
+                                .addPipelineTask({ index: 0 }))}
+                            onRemoveTask={(taskIndex) =>
+                              dispatch(pipelineFormActions
+                                .removePipelineTask({ index: 0, taskIndex }))}
+                            onRemove={() =>
+                              dispatch(pipelineFormActions
+                                .removePipeline({ index: 0 }))}
+                          />
+                        </div>
+                      </div>
+                    }
+                    {this.state.modalOpen &&
+                      <PipelineActionBar
+                        onClickRun={() => {
                           dispatch(fsActions.processSelected())
                         }}
-                      >
-                        Run
-                      </Button>
-                    </div>
+                        onSavePipeline={(name) => {
+                          dispatch(pipelinesActions.addPipeline(name))
+                        }}
+                      />
+                    }
                   </div>
-                }
-
+                </div>
                 <div className="row">
                   <div className="col-sm-12">
                     {fs.items &&
@@ -180,9 +198,10 @@ class FileSystem extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  fs: state.fs,
   pipelineForm: state.pipelineForm,
+  pipelines: state.pipelines,
   plugins: state.plugins,
+  fs: state.fs,
 })
 
 export default connect(mapStateToProps)(onClickOutside(FileSystem))

@@ -14,10 +14,10 @@ export const ChooseFolderBlock = (props) => {
 
         <ChooseFolderButton
           onChooseFolder={onChooseFolder}
-          extraClassNames="btn-add-folder m-t-sm"
+          extraClassNames="btn-add-folder m-t-sm btn-sm"
         >
           <i className="fa fa-plus"></i>
-          <span>Add a folder to get started</span>
+          <span>Choose a folder to get started</span>
         </ChooseFolderButton>
 
       </div>

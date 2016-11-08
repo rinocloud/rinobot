@@ -16,7 +16,7 @@ export const Sidebar = (props) => {
       <div className="wrapper">
         <ul className="list-group">
           <li className="list-group-item list-group-item-heading">
-            <h6><strong>Rinobot</strong></h6>
+            <h6><strong>Rinocloud Desktop</strong></h6>
           </li>
 
           <Link

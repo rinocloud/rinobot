@@ -39,7 +39,7 @@ class PipelineForm extends React.Component {
      } = this.props
 
     return (
-      <div className="row config m-b">
+      <div className="row config">
         <div className="col-xs-12">
 
           <FileMatchForm
