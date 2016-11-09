@@ -205,14 +205,18 @@ table:focus{
   * Plugins
 */
 
-.plugins a{
+.plugin a{
   color: #7E86A0;
 }
 
-.plugins .btn-primary{
+.plugin .btn-primary{
   background-color: #5cca59;
   color: white;
   border: 1px solid #7E86A0;
+}
+
+.plugin{
+  padding: 5px;
 }
 
 /*
@@ -658,6 +662,9 @@ button, button:focus, button:visited, button:hover, button:active{
   outline: none;
 }
 
+a:focus, a:active:focus, a.active:focus, a.focus, a:active.focus, a.active.focus{
+  outline: none;
+}
 
 .copy-input {
   height: 36px;

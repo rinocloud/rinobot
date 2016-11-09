@@ -126,42 +126,43 @@ class Plugins extends React.Component {
                   </div>
                 </div>
                 <div className="panel-body">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th>Plugin</th>
-                        <th>Description</th>
-                        <th>Downloads last month</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {_.map(filteredRegistry, (el, i) => {
-                      return (
-                        <Plugin
-                          key={`plugin${i}`}
-                          plugin={el}
-                          version={
-                            (el.isInstalled && _.find(plugins.installed, { name: el.name })) &&
-                            _.find(plugins.installed, { name: el.name }).version
-                          }
-                          install={(el, index) => {
-                            dispatch(pluginsActions.install(el, index))
-                          }}
-                          uninstall={(el, index) => {
-                            dispatch(pluginsActions.uninstall(el, index))
-                          }}
-                          update={(el, index) => {
-                            dispatch(pluginsActions.update(el, index))
-                          }}
+                  <div className="row">
+                    <div className="col-sm-1">
 
-                        />
-                      )
-                    }
-                    )}
+                    </div>
+                    <div className="col-sm-7">
+                      Name
+                    </div>
+                    <div className="col-sm-2">
+                      Version
+                    </div>
+                    <div className="col-sm-2">
+                      30 day downloads
+                    </div>
+                  </div>
+                  {_.map(filteredRegistry, (el, i) => {
+                    return (
+                      <Plugin
+                        key={`plugin${i}`}
+                        plugin={el}
+                        version={
+                          (el.isInstalled && _.find(plugins.installed, { name: el.name })) &&
+                          _.find(plugins.installed, { name: el.name }).version
+                        }
+                        install={(el, index) => {
+                          dispatch(pluginsActions.install(el, index))
+                        }}
+                        uninstall={(el, index) => {
+                          dispatch(pluginsActions.uninstall(el, index))
+                        }}
+                        update={(el, index) => {
+                          dispatch(pluginsActions.update(el, index))
+                        }}
 
-                    </tbody>
-                  </table>
+                      />
+                    )
+                  }
+                  )}
                 </div>
               </div>
             </div>
