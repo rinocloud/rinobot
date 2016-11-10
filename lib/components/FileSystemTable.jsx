@@ -93,15 +93,15 @@ class FileSystemTable extends React.Component {
             onDragSelect(paths)
           }}
         >
-        {_.map(sortedItemsTable, (item, index) =>
-          <FileSystemTableItem
-            key={`tr-path-${index}`}
-            item={item}
-            onClick={onClick}
-            onSelect={onSelect}
-            onCtrlSelect={onCtrlSelect}
-            onShiftSelect={onShiftSelect}
-          />
+          {_.map(sortedItemsTable, (item, index) =>
+            <FileSystemTableItem
+              key={`tr-path-${index}`}
+              item={item}
+              onClick={onClick}
+              onSelect={onSelect}
+              onCtrlSelect={onCtrlSelect}
+              onShiftSelect={onShiftSelect}
+            />
           )}
         </Selection>
       </table>

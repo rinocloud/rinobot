@@ -61,7 +61,6 @@ export const Sidebar = (props) => {
             <i className="fa fa-external-link fa-small"></i>{'  '}
             <span>Logout {auth.username}</span>
           </a>
-
           <Link
             to="/settings"
             className={
