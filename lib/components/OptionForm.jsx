@@ -151,7 +151,6 @@ class OptionForm extends React.Component {
                 )
             }
 
-            console.log(value)
 
             if ((type === 'int' || type === 'float') && required) {
               return (
@@ -205,7 +204,6 @@ class OptionForm extends React.Component {
               return (
                 <div
                   className="config-checkbox col-xs-2"
-                  style={{ color: '#d9534f', fontSize: '1em' }}
                   style={
                     value === '' ?
                       { color: '#d9534f', fontSize: '1em' }
