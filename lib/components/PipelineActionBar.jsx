@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { PipelineSaveButton } from '../components/PipelineSaveButton'
+import { Prompt } from '../components/Prompt'
 import { Button } from '../components/Button'
 
 export const PipelineActionBar = (props) => {
@@ -11,7 +11,13 @@ export const PipelineActionBar = (props) => {
         <Button onClick={onClickRun} extraClassNames="btn-primary pull-right">
           Run
         </Button>
-        <PipelineSaveButton onSubmit={onSavePipeline} />
+        <Prompt
+          onSubmit={onSavePipeline}
+          extraClassNames="pull-right m-r-sm"
+          placeholder="Name for task list..."
+        >
+          Save
+        </Prompt>
       </div>
     </div>
   )

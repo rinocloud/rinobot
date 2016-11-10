@@ -8052,6 +8052,8 @@ module.exports =
 	    titleBarStyle: 'hidden'
 	  });
 	
+	  win.maximize();
+	
 	  win.loadURL('file://' + __dirname + '/app.html');
 	
 	  (0, _menu2.default)(app, win);
@@ -8189,7 +8191,7 @@ module.exports =
 	module.exports = {
 		"name": "rinobotapp",
 		"productName": "Rinobot",
-		"version": "0.1.0",
+		"version": "0.1.1",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",
 		"description": "Automate data tasks",
@@ -8220,6 +8222,7 @@ module.exports =
 			"superagent-promise-plugin": "^3.2.0",
 			"superagent-queue": "0.0.3",
 			"swig": "^1.4.2",
+			"trash": "^4.0.0",
 			"uid2": "0.0.3",
 			"watchr": "^2.6.0"
 		},
@@ -30411,6 +30414,9 @@ module.exports =
 	  });
 	  rpc.on('unwatch all', function (args) {
 	    return forkRpc.emit('unwatch all', args);
+	  });
+	  rpc.on('process file', function (args) {
+	    return forkRpc.emit('process file', args);
 	  });
 	
 	  forkRpc.on('ready', function () {

@@ -44,7 +44,7 @@ export const Sidebar = (props) => {
             className="list-group-item"
             onClick={(e) => {
               e.preventDefault()
-              shell.openExternal('http://docs.rinocloud.com/rinobot/')
+              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/installation.html')
             }}
           >
             <i className="fa fa-external-link fa-small"></i>{'  '}

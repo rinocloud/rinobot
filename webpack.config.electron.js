@@ -42,6 +42,7 @@ export default {
     'chokidar',
     'npmi',
     'raven',
+    'trash',
     'font-awesome',
     'source-map-support'
   ]

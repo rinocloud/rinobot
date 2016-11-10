@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react'
-import { Modal } from 'react-bootstrap'
+import Modal, { Body, Footer } from 'react-bootstrap/lib/Modal'
 import { Button } from './Button'
 
-export class PipelineSaveButton extends React.Component {
+class Prompt extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
+    extraClassNames: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -41,23 +44,29 @@ export class PipelineSaveButton extends React.Component {
 
   render() {
     const { show, name } = this.state
-    const { onSubmit } = this.props
+    const {
+      onSubmit,
+      children,
+      extraClassNames = '',
+      placeholder = ''
+    } = this.props
 
     return (
-      <div>
+      <span>
         <Modal bsSize="small" show={show} onHide={this.onHide} className="text-center">
-          <Modal.Body>
+          <Body>
             <form onSubmit={this.onSubmitForm}>
               <input
+                ref={input => input && input.focus()}
                 name="name"
                 onChange={this.onChangeInput}
-                placeholder="Name for task process"
+                placeholder={placeholder}
                 className="form-control"
               />
             </form>
 
-          </Modal.Body>
-          <Modal.Footer>
+          </Body>
+          <Footer>
             <Button
               extraClassNames="btn-default btn-xs pull-left"
               onClick={() => {
@@ -73,18 +82,18 @@ export class PipelineSaveButton extends React.Component {
                 if (name) onSubmit(name)
               }}
             >
-              Save
+              Submit
             </Button>
-          </Modal.Footer>
+          </Footer>
         </Modal>
 
-        <Button onClick={this.onShow} extraClassNames="pull-right m-r-sm">
-          Save
+        <Button onClick={this.onShow} extraClassNames={extraClassNames}>
+          {children}
         </Button>
-      </div>
+      </span>
     )
   }
 }
 
 
-export default { PipelineSaveButton }
+export default { Prompt }

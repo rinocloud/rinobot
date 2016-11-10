@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
+import Modal, { Header } from 'react-bootstrap/lib/Modal'
+import deleteImg from '../css/delete.png'
 
-export class DeleteModal extends React.Component {
+class DeleteModal extends React.Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
     onConfirmDelete: PropTypes.func.isRequired,
@@ -19,13 +21,13 @@ export class DeleteModal extends React.Component {
           onHide={onHide}
           className="text-center"
         >
-          <Modal.Header closeButton>
+          <Header closeButton>
             <img
               alt="Nice robot for deletion"
-              src="../delete.jpg"
+              src={deleteImg}
               style={{ width: '60%' }}
             />
-          </Modal.Header>
+          </Header>
           <Button
             className="btn-default m-t m-b m-r"
             onClick={(e) => {

@@ -76,7 +76,11 @@ const config = {
   node: {
     __filename: true,
     __dirname: true
-  }
+  },
+  externals: [
+    'trash',
+  ]
+
 }
 
 export default config

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import pt from 'path'
 import { Button } from '../components/Button'
+import { Prompt } from '../components/Prompt'
 import { DeleteModal } from '../components/DeleteModal'
-import { LoadPipeline } from '../components/LoadPipeline'
 
 
 class FileSystemActionBar extends React.Component {
@@ -15,10 +15,8 @@ class FileSystemActionBar extends React.Component {
     modalOpen: PropTypes.bool.isRequired,
     openModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
-    pipelines: PropTypes.object.isRequired,
-    onSelectPipeline: PropTypes.func.isRequired,
+    onNewSnippet: PropTypes.func.isRequired,
   }
-
 
   constructor(props) {
     super(props)
@@ -34,8 +32,7 @@ class FileSystemActionBar extends React.Component {
       modalOpen,
       openModal,
       closeModal,
-      pipelines,
-      onSelectPipeline
+      onNewSnippet
     } = this.props
 
     return (
@@ -62,6 +59,14 @@ class FileSystemActionBar extends React.Component {
           <i className="fa fa-times m-r-sm" />
           Delete
         </Button>
+
+        <Prompt
+          onSubmit={onNewSnippet}
+          extraClassNames="m-l-sm"
+          placeholder="Snippet name..."
+        >
+          New python snippet
+        </Prompt>
 
         <Button
           extraClassNames="m-l-sm"

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import { shell } from 'electron'
 import ReactMarkdown from 'react-markdown'
-import { Modal, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
+import Modal, { Header, Title, Body, Footer } from 'react-bootstrap/lib/Modal'
 import moment from 'moment'
 
 class Plugin extends React.Component {
@@ -29,7 +30,6 @@ class Plugin extends React.Component {
     this.setState({ showModal: true })
   }
 
-
   closeModal() {
     this.setState({ showModal: false })
   }
@@ -41,8 +41,8 @@ class Plugin extends React.Component {
       <div className="row plugin">
 
         <Modal show={this.state.showModal} onHide={this.closeModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>
+          <Header closeButton>
+            <Title>
               <div className="row">
                 <div className="col-sm-11">
                   {plugin.name.replace('rinobot-plugin-', '')}{'  '}
@@ -60,20 +60,20 @@ class Plugin extends React.Component {
                   </a>
                 </div>
               </div>
-            </Modal.Title>
-          </Modal.Header>
+            </Title>
+          </Header>
 
-          <Modal.Body>
+          <Body>
             <ReactMarkdown source={plugin.readme} />
-          </Modal.Body>
+          </Body>
 
-          <Modal.Footer>
+          <Footer>
             <Button
               onClick={this.closeModal}
             >
               Close
             </Button>
-          </Modal.Footer>
+          </Footer>
         </Modal>
 
         <div className="col-sm-1">

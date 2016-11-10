@@ -88,9 +88,9 @@ class FileSystem extends React.Component {
                   rmSelected={() => {
                     dispatch(fsActions.rmSelected())
                   }}
-                  pipelines={pipelines}
-                  onSelectPipeline={(pipeline) => {
-                    console.log(pipeline)
+                  onNewSnippet={(name) => {
+                    dispatch(fsActions.newSnippet(name))
+                    this.openModal()
                   }}
                 />
 
