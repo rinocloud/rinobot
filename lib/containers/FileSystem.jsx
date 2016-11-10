@@ -184,6 +184,9 @@ class FileSystem extends React.Component {
                         onClick={(path) => {
                           dispatch(fsActions.setCurrentPath(path))
                         }}
+                        onSelectSortBy={(sortedBy) => {
+                          dispatch(fsActions.setSortedBy(sortedBy))
+                        }}
                       />
                     }
                   </div>

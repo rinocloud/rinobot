@@ -555,6 +555,17 @@ $grey-line-color: rgba(100,100,100,0.2);
   border-color: rgba(144, 133, 133, 0.58);
 }
 
+.config .panel-body .btn-link{
+  background-color: inherit;
+}
+
+.config .panel-body .btn-link:hover,
+.config .panel-body .btn-link:visited,
+.config .panel-body .btn-link:focus {
+  text-decoration: none;
+}
+
+
 .config .form-filematch input, .config .form-filematch input:focus{
   outline: none;
   border-color: $panel-border-color;
@@ -608,7 +619,7 @@ $grey-line-color: rgba(100,100,100,0.2);
   font-size: 0.8em;
 }
 
-li, tr {
+.fs-table div {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;

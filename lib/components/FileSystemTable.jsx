@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
-import pt from 'path'
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Selection } from './utils/Selection'
 import { FileSystemTableItem } from './FileSystemTableItem'
@@ -15,14 +14,16 @@ class FileSystemTable extends React.Component {
     onCtrlSelect: PropTypes.func.isRequired,
     onShiftSelect: PropTypes.func.isRequired,
     onDragSelect: PropTypes.func.isRequired,
-  }
-  constructor(props) {
-    super(props)
-    this.state = { sortedBy: 'Filetype' }
+    onSelectSortBy: PropTypes.func.isRequired,
   }
 
-  sortByFiletype() {
-    this.setState({ sortedBy: 'Filetype' })
+  constructor(props) {
+    super(props)
+    this.state = { sortedBy: 'Type' }
+  }
+
+  sortByType() {
+    this.setState({ sortedBy: 'Type' })
   }
 
   sortByName() {
@@ -37,65 +38,50 @@ class FileSystemTable extends React.Component {
       onCtrlSelect,
       onShiftSelect,
       onDragSelect,
+      onSelectSortBy
     } = this.props
 
-    const itemsArray = _.map(items)
-    const sortedItemsTable = _.sortBy(itemsArray, [(item) => {
-      if (this.state.sortedBy === 'Filetype') {
-        return pt.extname(item.name)
-      }
-      if (this.state.sortedBy === 'Name') {
-        return item.name
-      }
-    }])
-
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th>
-              <ButtonToolbar>
-                <DropdownButton
-                  bsSize="small"
-                  title={<span>
-                    <small>Sort By</small> <strong><u>{this.state.sortedBy}</u></strong>
-                  </span>}
-                  id="dropdown-size-extra-small"
-                >
-                  <MenuItem
-                    eventKey="1"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.sortByFiletype()
-                    }}
-                  >
-                    Filetype
-                  </MenuItem>
-                  <MenuItem
-                    eventKey="2"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      this.sortByName()
-                    }}
-                  >
-                  Name
-                  </MenuItem>
-                  <MenuItem eventKey="3">Others</MenuItem>
-                </DropdownButton>
-              </ButtonToolbar>
-            </th>
-            <th></th>
-          </tr>
-        </thead>
+      <div className="fs-table">
+        <ButtonToolbar className="m-l-0 m-t m-b">
+          <DropdownButton
+            bsSize="xs"
+            bsStyle="link"
+            title={`Sort by ${this.state.sortedBy}`}
+            id="dropdown-basic"
+          >
+            <MenuItem
+              eventKey="1"
+              onClick={(e) => {
+                e.preventDefault()
+                this.sortByType()
+                onSelectSortBy('Type')
+              }}
+            >
+              Type
+            </MenuItem>
+            <MenuItem
+              eventKey="2"
+              onClick={(e) => {
+                e.preventDefault()
+                this.sortByName()
+                onSelectSortBy('Name')
+              }}
+            >
+            Name
+            </MenuItem>
+          </DropdownButton>
+        </ButtonToolbar>
+
         <Selection
           onSelectionChange={(keys) => {
             const paths = _.map(keys, key => key.replace('tr-path-', ''))
             onDragSelect(paths)
           }}
         >
-          {_.map(sortedItemsTable, (item, index) =>
+          {_.map(items, (item, key) =>
             <FileSystemTableItem
-              key={`tr-path-${index}`}
+              key={`tr-path-${key}`}
               item={item}
               onClick={onClick}
               onSelect={onSelect}
@@ -104,7 +90,7 @@ class FileSystemTable extends React.Component {
             />
           )}
         </Selection>
-      </table>
+      </div>
     )
   }
 }
