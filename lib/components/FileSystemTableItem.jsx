@@ -17,6 +17,8 @@ export class FileSystemTableItem extends React.Component {
   constructor(props) {
     super(props)
     this.onClickTr = this.onClickTr.bind(this)
+
+    this.state = { logOpen: false }
   }
 
   onClickTr(e, item) {
@@ -38,17 +40,19 @@ export class FileSystemTableItem extends React.Component {
     } = this.props
 
     return (
-      <tr
-        className={`${item.selected ? 'active' : ''}`}
+      <div
+        className={`row fs-row ${item.selected && 'active'}`}
         onClick={(e) => {
           this.onClickTr(e, item)
         }}
       >
-        <td className="col-sm-10">
+        <div className="col-sm-8">
           <FileIcon
             filename={item.name}
             type={item.type}
+            state={item.state}
           />
+
           {item.type === 'folder' &&
             <a
               href="#"
@@ -61,10 +65,11 @@ export class FileSystemTableItem extends React.Component {
               {item.name}/
             </a>
           }
+
           {item.type === 'file' &&
             <a
               href="#"
-              onClick={(e) => {
+              onDoubleClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 shell.openItem(item.path)
@@ -73,21 +78,44 @@ export class FileSystemTableItem extends React.Component {
               {item.name}
             </a>
           }
-        </td>
 
-        <td className="col-sm-2">
+          {item.log && this.state.logOpen &&
+            <pre className="item-log">
+              {item.log}
+            </pre>
+          }
+        </div>
+
+        <div className="col-sm-4">
           <a
             href="#"
-            className="btn btn-xs"
+            className="btn btn-xs pull-right"
             onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
               shell.showItemInFolder(item.path)
             }}
           >
             Show in {isOSX ? 'Finder' : 'Explorer'}
           </a>
-        </td>
-      </tr>
+
+          {item.log &&
+            <a
+              href="#"
+              className="btn btn-xs m-r-sm pull-right"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                this.setState({ logOpen: !this.state.logOpen })
+              }}
+            >
+              {this.state.logOpen && <i className="fa fa-caret-down m-r-sm" />}
+              {!this.state.logOpen && <i className="fa fa-caret-right m-r-sm" />}
+              Show output
+            </a>
+          }
+        </div>
+      </div>
     )
   }
 }

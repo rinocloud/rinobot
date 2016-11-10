@@ -16,13 +16,13 @@ export class TaskNameForm extends React.Component {
       {
         label: 'Default',
         options: [
-          { label: 'rinocloud upload', value: 'upload' },
-          { label: 'copy', value: 'copy' },
-          { label: 'move', value: 'move' },
+          // { label: 'rinocloud upload', value: 'upload' },
+          // { label: 'copy', value: 'copy' },
+          // { label: 'move', value: 'move' },
           { label: 'matlab', value: 'matlab' },
           { label: 'python', value: 'python' },
           { label: 'Rscript', value: 'Rscript' },
-          { label: 'custom', value: 'custom' },
+          // { label: 'custom', value: 'custom' },
         ]
       },
       {

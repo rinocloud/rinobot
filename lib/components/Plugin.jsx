@@ -38,12 +38,9 @@ class Plugin extends React.Component {
     const { plugin, version } = this.props
 
     return (
-      <tr className="m-a-sm">
+      <div className="row plugin">
 
-        <Modal
-          show={this.state.showModal}
-          onHide={this.closeModal}
-        >
+        <Modal show={this.state.showModal} onHide={this.closeModal}>
           <Modal.Header closeButton>
             <Modal.Title>
               <div className="row">
@@ -79,7 +76,7 @@ class Plugin extends React.Component {
           </Modal.Footer>
         </Modal>
 
-        <td style={{ minWidth: '80px' }}>
+        <div className="col-sm-1">
           {!plugin.isInstalled &&
             <a
               href="#"
@@ -120,19 +117,33 @@ class Plugin extends React.Component {
               {!plugin.isInstalling && `Update to v${plugin.version}`}
             </a>
           }
-        </td>
+        </div>
 
-        <td>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              this.openModal()
-            }}
-          >
-            {plugin.name.replace('rinobot-plugin-', '')}
-          </a>
-          <br />
+        <div className="col-sm-7">
+          <div className="row">
+            <div className="col-sm-12">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.openModal()
+                }}
+              >
+                {plugin.name.replace('rinobot-plugin-', '')}
+              </a>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-sm-12">
+              {plugin.description}
+            </div>
+          </div>
+
+
+        </div>
+
+        <div className="col-sm-2">
           <small className="text-muted">
             {plugin.isInstalled ?
               <span>
@@ -140,18 +151,14 @@ class Plugin extends React.Component {
               </span>
               :
               <span>
-                v{plugin.version}
-                {' '} updated by {plugin && plugin.author} {' '}
-                {moment(plugin.modified).fromNow()}
+                v{plugin.version} {' '} updated {moment(plugin.modified).fromNow()}
               </span>
             }
           </small>
-        </td>
+        </div>
 
-        <td>{plugin.description}</td>
-
-        <td className="text-muted">{plugin.downloads}</td>
-      </tr>
+        <div className="col-sm-2 text-muted">{plugin.downloads}</div>
+      </div>
     )
   }
 }

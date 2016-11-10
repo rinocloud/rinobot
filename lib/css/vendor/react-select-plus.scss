@@ -14,7 +14,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.Select.is-disabled > .Select-control {
+.Select.is-disabled  > .Select-control {
   background-color: #f9f9f9;
 }
 .Select.is-disabled > .Select-control:hover {
@@ -231,7 +231,7 @@
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   margin-top: -1px;
-  max-height: 200px;
+  max-height: 400px;
   position: absolute;
   top: 100%;
   width: 100%;
@@ -239,7 +239,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .Select-menu {
-  max-height: 198px;
+  max-height: 398px;
   overflow-y: auto;
 }
 .Select-option-group-label {

@@ -5,7 +5,6 @@ import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Selection } from './utils/Selection'
 import { FileSystemTableItem } from './FileSystemTableItem'
 
-
 class FileSystemTable extends React.Component {
 
   static propTypes = {

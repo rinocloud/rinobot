@@ -18,6 +18,7 @@ export const TaskProgramForm = (props) => {
           onChangeArgs('default', paths[0])
         }}
         disabled={isDisabled}
+        properties={['openFile']}
       >
         Select {programName === 'Rscript' ? 'R' : programName} file
 
@@ -47,7 +48,7 @@ export const TaskProgramForm = (props) => {
         >More about <u>{programName}</u> here <i className="fa fa-external-link" />
         </a>
       }
-      {programName === 'Rscript' &&
+    {programName === 'Rscript' &&
       <a
         href="#"
         className="pull-right"
@@ -57,7 +58,7 @@ export const TaskProgramForm = (props) => {
         }}
       >More about <u>{programName}</u> here <i className="fa fa-external-link" />
       </a>
-      }
+    }
     </span>
   )
 }

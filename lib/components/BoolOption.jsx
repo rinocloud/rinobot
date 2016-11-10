@@ -14,10 +14,9 @@ export const BoolOption = (props) => {
       <input
         type="checkbox"
         onChange={(e) => {
-          e.preventDefault()
           onChange(e.target.checked)
         }}
-        defaultChecked={value}
+        checked={value}
       />
     </label>
   )
