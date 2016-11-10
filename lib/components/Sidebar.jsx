@@ -47,10 +47,9 @@ export const Sidebar = (props) => {
               shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/installation.html')
             }}
           >
-            <i className="fa fa-external-link fa-small"></i>{'  '}
+            <i className="fa fa fa-book"></i>{'  '}
             <span>Documentation</span>
           </a>
-
           <a
             href="#"
             className="list-group-item"
@@ -62,7 +61,6 @@ export const Sidebar = (props) => {
             <i className="fa fa-external-link fa-small"></i>{'  '}
             <span>Logout {auth.username}</span>
           </a>
-
           <Link
             to="/settings"
             className={

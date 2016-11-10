@@ -22,6 +22,7 @@ export const TaskOptionFormItem = (props) => {
 
   const selectBoxOptions = _.map(allowed, item => ({ label: item, value: item }))
 
+
   if (type === 'string' && allowed.length > 0) {
     return (
       <SelectOption

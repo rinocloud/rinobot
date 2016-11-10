@@ -36,7 +36,7 @@ export const TaskFolderForm = (props) => {
           style={{ height: '36px', borderRadius: '4px' }}
           type="text"
           value={value}
-          className="form-control copy-input"
+          className="copy-input"
           onChange={(e) => {
             e.preventDefault()
             onChangeArgs('default', e.target.value)
