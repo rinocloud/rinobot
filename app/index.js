@@ -8190,7 +8190,7 @@ module.exports =
 
 	module.exports = {
 		"name": "rinobotapp",
-		"productName": "Rinobot",
+		"productName": "Rinocloud Desktop",
 		"version": "0.1.1",
 		"author": "rinocloud",
 		"repository": "rinocloud/rinobot",

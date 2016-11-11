@@ -57,7 +57,7 @@ class FileSystem extends React.Component {
         {!fs.basePath &&
           <ChooseFolderBlock
             onChooseFolder={(paths) => {
-              dispatch(fsActions.setBasePath(paths[0]))
+              dispatch(fsActions.clickSetBasePath(paths[0]))
             }}
           />
         }
@@ -71,7 +71,7 @@ class FileSystem extends React.Component {
                   dispatch(fsActions.setCurrentPath(path))
                 }}
                 onChooseFolder={(paths) => {
-                  dispatch(fsActions.setBasePath(paths[0]))
+                  dispatch(fsActions.clickSetBasePath(paths[0]))
                 }}
               />
 
