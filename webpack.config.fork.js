@@ -1,6 +1,5 @@
 import webpack from 'webpack'
 import nodeExternals from 'webpack-node-externals'
-import DashboardPlugin from 'webpack-dashboard/plugin'
 
 const nodeEnv = process.env.NODE_ENV || 'development'
 const isProd = nodeEnv === 'production'
@@ -13,11 +12,6 @@ const plugins = [
   new webpack.DefinePlugin({ 'global.GENTLY': false }),
   new webpack.DefinePlugin({ FormData: false }),
 ]
-
-if (!isProd) {
-  plugins.push(new DashboardPlugin())
-}
-
 
 export default {
   target: 'node',
