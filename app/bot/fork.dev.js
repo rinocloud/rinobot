@@ -97,26 +97,21 @@ const processFile = (opts) => {
     onTaskStart: (task) => {
       taskStart(index, task)
     },
-
     onTaskLog: (task, log) => {
       taskLog(index, task, log)
     },
-
     onTaskComplete: (task) => {
       taskComplete(index, task)
       finishedFile(index, filepath)
     },
-
     onTaskIgnore: (task) => {
       taskIgnore(index, task)
       finishedFile(index, filepath)
     },
-
     onTaskError: (task, error) => {
       taskError(index, task, error)
       finishedFile(index, filepath)
     },
-
     onError: (error) => {
       unexpectedError(index, error)
       finishedFile(index, filepath)
@@ -253,4 +248,10 @@ forkRpc.emit('ready')
 forkRpc.on('unwatch', unwatch)
 forkRpc.on('unwatch all', unwatchAll)
 forkRpc.on('watch', watch)
-forkRpc.on('process file', processFile)
+forkRpc.on('process file', (args) => {
+  try {
+    processFile(args)
+  } catch (e) {
+    unexpectedError(e)
+  }
+})

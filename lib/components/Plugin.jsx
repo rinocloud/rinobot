@@ -76,7 +76,7 @@ class Plugin extends React.Component {
           </Footer>
         </Modal>
 
-        <div className="col-sm-1">
+        <div className="col-sm-2">
           {!plugin.isInstalled &&
             <a
               href="#"
@@ -94,7 +94,7 @@ class Plugin extends React.Component {
           {plugin.isInstalled &&
             <a
               href="#"
-              className="btn btn-xs btn-default"
+              className="btn btn-xs btn-default m-r-sm"
               onClick={(e) => {
                 e.preventDefault()
                 this.props.uninstall(plugin, plugin.index)
@@ -119,7 +119,7 @@ class Plugin extends React.Component {
           }
         </div>
 
-        <div className="col-sm-7">
+        <div className="col-sm-5">
           <div className="row">
             <div className="col-sm-12">
               <a

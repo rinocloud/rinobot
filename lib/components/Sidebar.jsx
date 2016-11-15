@@ -72,6 +72,19 @@ export const Sidebar = (props) => {
             <i className="fa fa-cogs"></i>{'  '}
             <span>Settings</span>
           </Link>
+
+          <a
+            href="#"
+            className="list-group-item m-t"
+            onClick={(e) => {
+              e.preventDefault()
+              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/getting_started.html')
+            }}
+          >
+            <i className="fa fa fa-book"></i>{'  '}
+            <span>Getting started</span>
+          </a>
+
         </ul>
       </div>
       <div>

@@ -49,7 +49,11 @@ export const mergeHistory = (historyFilePath, targetFilepath, obj, cb) => {
       if (err && err.code === 'ENOENT') {
         history = {}
       } else {
-        history = JSON.parse(data)
+        try {
+          history = JSON.parse(data)
+        } catch (e) {
+          history = {}
+        }
       }
 
       if (_.has(history, targetFilepath)) {
@@ -87,7 +91,13 @@ export const readHistory = (historyFilePath, targetFilepath, cb) => {
   fs.readFile(historyFilePath, 'utf8', (err, data) => {
     if (err && err.code !== 'ENOENT') return cb(err, null)
     if (err && err.code === 'ENOENT') return cb(null, null)
-    const history = JSON.parse(data)
+
+    let history = null
+    try {
+      history = JSON.parse(data)
+    } catch (e) {
+      return cb(err, null)
+    }
 
     if (!history) return cb(null, null)
 
@@ -133,7 +143,13 @@ export const readCreated = (createdFilePath, cb) => {
   fs.readFile(createdFilePath, 'utf8', (err, data) => {
     if (err && err.code !== 'ENOENT') return cb(err, null)
     if (err && err.code === 'ENOENT') return cb(null, null)
-    const createdList = JSON.parse(data)
+
+    let createdList = null
+    try {
+      createdList = JSON.parse(data)
+    } catch (e) {
+      return cb(err, null)
+    }
 
     if (!createdList) return cb(null, null)
 

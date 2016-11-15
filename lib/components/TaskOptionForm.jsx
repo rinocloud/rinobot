@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import _ from 'lodash'
 import { TaskOptionFormItem } from './TaskOptionFormItem'
-import { TaskPopover } from './TaskPopover'
 
 class TaskOptionForm extends React.Component {
   static propTypes = {
@@ -47,8 +46,6 @@ class TaskOptionForm extends React.Component {
               </div>
             )
           })}
-        <TaskPopover
-          currentPlugin={currentPlugin} />
       </div>
     )
   }

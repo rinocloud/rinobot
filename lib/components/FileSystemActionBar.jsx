@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
 import pt from 'path'
-import { Button } from '../components/Button'
-import { Prompt } from '../components/Prompt'
-import { DeleteModal } from '../components/DeleteModal'
-
+import { Button } from './Button'
+import { Prompt } from './Prompt'
+import { DeleteModal } from './DeleteModal'
+import { SnippetPopover } from './SnippetPopover'
 
 class FileSystemActionBar extends React.Component {
 
@@ -66,7 +66,10 @@ class FileSystemActionBar extends React.Component {
           placeholder="Snippet name..."
         >
           New python snippet
+          <SnippetPopover />
         </Prompt>
+
+
 
         <Button
           extraClassNames="m-l-sm"

@@ -7,7 +7,7 @@ import { TaskProgramForm } from './TaskProgramForm'
 import { TaskKeepFileForm } from './TaskKeepFileForm'
 import { UploadArgForm } from './UploadArgForm'
 import { TaskOptionForm } from './TaskOptionForm'
-
+import { TaskPopover } from './TaskPopover'
 
 export const TaskForm = (props) => {
   const {
@@ -31,7 +31,7 @@ export const TaskForm = (props) => {
     <div className="row">
       <div className="col-xs-12">
         <div className="row task-name-row">
-          <div className="col-xs-10 m-b-sm">
+          <div className={`${commandIsPlugin ? 'col-xs-9' : 'col-xs-10'} m-b-sm`}>
             <TaskNameForm
               commandIsChosen={name || ''}
               installedPlugins={installedPlugins}
@@ -40,6 +40,13 @@ export const TaskForm = (props) => {
               isDisabled={isDisabled}
             />
           </div>
+
+          {commandIsPlugin &&
+            <div className="col-xs-1">
+              <TaskPopover currentPlugin={currentPlugin} />
+            </div>
+          }
+
           <div className="col-xs-1">
             {commandIsChosen && commandIsPlugin &&
               <TaskKeepFileForm

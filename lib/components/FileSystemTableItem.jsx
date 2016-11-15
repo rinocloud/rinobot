@@ -3,6 +3,14 @@ import { shell } from 'electron'
 import { FileIcon } from './FileIcon'
 const isOSX = process.platform === 'darwin'
 
+const formatBytes = (bytes, decimals) => {
+  if (bytes === 0) return '0 Byte'
+  const k = 1000; // or 1024 for binary
+  const dm = decimals + 1 || 3;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
 
 export class FileSystemTableItem extends React.Component {
 
@@ -46,7 +54,7 @@ export class FileSystemTableItem extends React.Component {
           this.onClickTr(e, item)
         }}
       >
-        <div className="col-sm-8">
+        <div className="col-sm-10">
           <FileIcon
             filename={item.name}
             type={item.type}
@@ -86,7 +94,12 @@ export class FileSystemTableItem extends React.Component {
           }
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-sm-1">
+          {formatBytes(item.size)}
+        </div>
+
+
+        <div className="col-sm-1">
           <a
             href="#"
             className="btn btn-xs pull-right"
