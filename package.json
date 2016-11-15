@@ -11,7 +11,7 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "dev": "concurrently --kill-others \"npm run dev:hot-server\" \"npm run dev:fork\"",
-    "dev:hot-server": "node -r babel-register server.js",
+    "dev:hot-server": "node -r babel-register ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --inline",
     "dev:fork": "cross-env NODE_ENV=development node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.fork.js --progress --watch",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register -r babel-polyfill ./app/index.dev",
     "start": "cross-env NODE_ENV=production electron ./app",

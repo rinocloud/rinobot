@@ -8,12 +8,12 @@ export const Breadcrumbs = (props) => {
   // This is where we turn the path into a list of folders to display
   // as clickable links
   if (path) {
-    breadcrumbs = _.reduce(path.split(pt.sep), (collector, name) => {
-      const prev = collector[collector.length - 1] ? collector[collector.length - 1].path : '/'
+    breadcrumbs = _.reduce(pt.normalize(path).split(pt.sep), (collector, name) => {
+      const prev = collector[collector.length - 1] ? collector[collector.length - 1].path : null
 
       collector.push({
         name,
-        path: pt.join(prev, name),
+        path: prev ? pt.join(prev, name) : name,
       })
 
       return collector
@@ -21,7 +21,7 @@ export const Breadcrumbs = (props) => {
 
     // we remove the first few links to make the breadcrumbs pretty
     // we dont need the entire absolute path from the root drive
-    const spliceLength = basePath ? basePath.split(pt.sep).length - 1 : 1
+    const spliceLength = basePath ? pt.normalize(basePath).split(pt.sep).length - 1 : 1
     breadcrumbs = breadcrumbs.splice(spliceLength)
   }
 
