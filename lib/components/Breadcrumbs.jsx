@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import pt from 'path'
 import _ from 'lodash'
+const isOSX = process.platform === 'darwin'
 
 export const Breadcrumbs = (props) => {
   const { path, basePath = false, onClick } = props
@@ -9,7 +10,9 @@ export const Breadcrumbs = (props) => {
   // as clickable links
   if (path) {
     breadcrumbs = _.reduce(pt.normalize(path).split(pt.sep), (collector, name) => {
-      const prev = collector[collector.length - 1] ? collector[collector.length - 1].path : null
+      const prev = collector[collector.length - 1] ? collector[collector.length - 1].path : (
+        isOSX ? '/' : null
+      )
 
       collector.push({
         name,
