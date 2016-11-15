@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import { connect } from 'react-redux'
+import pt from 'path'
 
 import * as fsActions from '../actions/fs'
 import * as pipelinesActions from '../actions/pipelines'
@@ -34,6 +35,19 @@ class FileSystem extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(fsActions.hydrate())
+
+    window.addEventListener('keydown', (event) => {
+      const { fs } = this.props
+      if (event.keyCode === 8) {
+        if (fs.currentPath !== fs.basePath) {
+          dispatch(fsActions.setCurrentPath(pt.dirname(fs.currentPath)))
+        }
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keypress')
   }
 
   handleClickOutside() {

@@ -21,7 +21,7 @@ class Notifications extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!_.isEqual(newProps.notification, this.props.notification)) {
+    if (newProps.notification.message) {
       this.notificationSystem.addNotification(newProps.notification)
     }
   }
