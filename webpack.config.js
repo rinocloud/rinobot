@@ -7,37 +7,35 @@ const isProd = nodeEnv === 'production'
 
 const plugins = [
   new webpack.DefinePlugin({ 'global.GENTLY': false }),
+  new webpack.BannerPlugin(
+    'require("source-map-support").install()\n//# sourceMappingURL=./bundle.map',
+    { raw: true, entryOnly: false }
+  ),
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.DefinePlugin({
     __DEV__: isProd,
-    'process.env': {
-      NODE_ENV: JSON.stringify(nodeEnv)
-    }
+    'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
   })
 ]
 
 if (!isProd) {
-  plugins.push(new webpack.HotModuleReplacementPlugin())
   plugins.push(new webpack.IgnorePlugin(/^(buffertools)$/))
   plugins.push(new webpack.NoErrorsPlugin())
 }
 
 const config = {
-  devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
+  devtool: 'inline-source-map',
   devServer: {
-    stats: 'errors-only',
+    stats: { chunks: false },
+    inline: true,
+    hot: true
   },
-  entry: isProd ? './lib/index' :
-  [
-    'webpack-hot-middleware/client?path=http://localhost:3000/__webpack_hmr',
-    './lib/index'
-  ],
-
+  entry: './lib/index',
   output: {
     path: path.join(__dirname, 'app', 'dist'),
     filename: 'bundle.js',
     libraryTarget: 'commonjs2',
-    publicPath: isProd ? null : 'http://localhost:3000/dist/',
+    publicPath: isProd ? null : 'http://localhost:8080/dist/',
     sourceMapFilename: 'bundle.map.js'
   },
   module: {

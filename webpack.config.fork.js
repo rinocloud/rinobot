@@ -6,7 +6,7 @@ const isProd = nodeEnv === 'production'
 
 const plugins = [
   new webpack.BannerPlugin(
-    'require("source-map-support").install()',
+    'require("source-map-support").install()\n//# sourceMappingURL=./fork.map',
     { raw: true, entryOnly: false }
   ),
   new webpack.DefinePlugin({ 'global.GENTLY': false }),
@@ -15,7 +15,7 @@ const plugins = [
 
 export default {
   target: 'node',
-  devtool: isProd ? 'source-map' : 'cheap-eval-source-map',
+  devtool: 'source-map',
   devServer: {
     stats: { chunks: false }
   },

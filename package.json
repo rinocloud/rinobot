@@ -111,6 +111,7 @@
     "webpack": "^1.13.1",
     "webpack-dashboard": "^0.2.0",
     "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.16.2",
     "webpack-hot-middleware": "^2.12.1",
     "webpack-node-externals": "^1.2.0"
   },

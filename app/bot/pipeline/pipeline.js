@@ -42,9 +42,9 @@ const createTaskQueue = (pipeline, opts, callback) => {
           return setTimeout(() => { subFinished(false) })
         }
         opts.onTaskComplete(task)
-        if (task.outputFilename) {
-          const outputFile = pt.join(pt.dirname(task.filepath), task.outputFilename)
-          outputFiles.push(outputFile)
+        if (task.outputFilenames) {
+          const taskOutputFiles = _.map(task.outputFilename, name => pt.join(pt.dirname(task.filepath, name))) // eslint-disable-line
+          outputFiles.push(taskOutputFiles)
           setTimeout(() => { subFinished(true) })
         } else {
           setTimeout(() => { subFinished(false) })
