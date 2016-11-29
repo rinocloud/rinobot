@@ -24,7 +24,7 @@ if (!isProd) {
 }
 
 const config = {
-  devtool: 'inline-source-map',
+  devtool: isProd ? 'inline-source-map' : 'cheap-eval-source-map',
   devServer: {
     stats: { chunks: false },
     inline: true,

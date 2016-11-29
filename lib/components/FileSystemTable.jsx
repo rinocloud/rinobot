@@ -15,6 +15,8 @@ class FileSystemTable extends React.Component {
     onShiftSelect: PropTypes.func.isRequired,
     onDragSelect: PropTypes.func.isRequired,
     onSelectSortBy: PropTypes.func.isRequired,
+    onClickAddMetadata: PropTypes.func.isRequired,
+    onClickNotebook: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -38,7 +40,9 @@ class FileSystemTable extends React.Component {
       onCtrlSelect,
       onShiftSelect,
       onDragSelect,
-      onSelectSortBy
+      onSelectSortBy,
+      onClickAddMetadata,
+      onClickNotebook
     } = this.props
 
     return (
@@ -87,6 +91,8 @@ class FileSystemTable extends React.Component {
               onSelect={onSelect}
               onCtrlSelect={onCtrlSelect}
               onShiftSelect={onShiftSelect}
+              onClickAddMetadata={onClickAddMetadata}
+              onClickNotebook={onClickNotebook}
             />
           )}
         </Selection>

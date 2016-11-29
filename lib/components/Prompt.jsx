@@ -6,6 +6,7 @@ class Prompt extends React.Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
+    title: PropTypes.string,
     extraClassNames: PropTypes.string.isRequired,
     placeholder: PropTypes.string.isRequired,
   }
@@ -48,13 +49,15 @@ class Prompt extends React.Component {
       onSubmit,
       children,
       extraClassNames = '',
-      placeholder = ''
+      placeholder = '',
+      title = null
     } = this.props
 
     return (
       <span>
-        <Modal bsSize="small" show={show} onHide={this.onHide} className="text-center">
+        <Modal bsSize="small" show={show} onHide={this.onHide} className="text-cente">
           <Body>
+            <p>{title}</p>
             <form onSubmit={this.onSubmitForm}>
               <input
                 ref={input => input && input.focus()}
@@ -64,14 +67,11 @@ class Prompt extends React.Component {
                 className="form-control"
               />
             </form>
-
           </Body>
           <Footer>
             <Button
               extraClassNames="btn-default btn-xs pull-left"
-              onClick={() => {
-                this.onHide()
-              }}
+              onClick={this.onHide}
             >
               Cancel
             </Button>

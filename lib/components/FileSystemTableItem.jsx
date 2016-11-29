@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { shell } from 'electron'
+import pt from 'path'
 import { FileIcon } from './FileIcon'
 const isOSX = process.platform === 'darwin'
 
@@ -20,13 +21,20 @@ export class FileSystemTableItem extends React.Component {
     onCtrlSelect: PropTypes.func.isRequired,
     onShiftSelect: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
+    onClickAddMetadata: PropTypes.func.isRequired,
+    onClickNotebook: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
     this.onClickTr = this.onClickTr.bind(this)
-
     this.state = { logOpen: false }
+  }
+
+  onDoubleClick(e, item) {
+    e.preventDefault()
+    e.stopPropagation()
+    shell.openItem(item.path)
   }
 
   onClickTr(e, item) {
@@ -45,6 +53,8 @@ export class FileSystemTableItem extends React.Component {
     const {
       item,
       onClick,
+      onClickAddMetadata,
+      onClickNotebook
     } = this.props
 
     return (
@@ -54,7 +64,19 @@ export class FileSystemTableItem extends React.Component {
           this.onClickTr(e, item)
         }}
       >
-        <div className="col-sm-10">
+        <a
+          href="#"
+          className="btn btn-table-item p-a-sm ignore-react-onclickoutside"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onClickAddMetadata(item.path)
+          }}
+        >
+          <i className="fa fa-tag" />
+        </a>
+
+        <div className="col-sm-5 p-a-sm">
           <FileIcon
             filename={item.name}
             type={item.type}
@@ -77,11 +99,7 @@ export class FileSystemTableItem extends React.Component {
           {item.type === 'file' &&
             <a
               href="#"
-              onDoubleClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                shell.openItem(item.path)
-              }}
+              onDoubleClick={(e) => this.onDoubleClick(e, item)}
             >
               {item.name}
             </a>
@@ -94,15 +112,14 @@ export class FileSystemTableItem extends React.Component {
           }
         </div>
 
-        <div className="col-sm-1">
+        <div className="col-sm-2 p-a-sm">
           {formatBytes(item.size)}
         </div>
 
-
-        <div className="col-sm-1">
+        <div className="col-sm-4 p-a-sm">
           <a
             href="#"
-            className="btn btn-xs pull-right"
+            className="btn btn-xs pull-right m-l-sm"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -112,22 +129,39 @@ export class FileSystemTableItem extends React.Component {
             Show in {isOSX ? 'Finder' : 'Explorer'}
           </a>
 
-          {item.log &&
+          {/*
+          {pt.extname(item.path) === '.md' &&
             <a
               href="#"
               className="btn btn-xs m-r-sm pull-right"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                this.setState({ logOpen: !this.state.logOpen })
-              }}
+              onClick={() => onClickNotebook(item.path)}
             >
-              {this.state.logOpen && <i className="fa fa-caret-down m-r-sm" />}
-              {!this.state.logOpen && <i className="fa fa-caret-right m-r-sm" />}
-              Show output
+              Open notebook
             </a>
           }
+          */}
+
         </div>
+
+
+          {item.log &&
+            <div className="col-sm-3 p-a-sm">
+              <a
+                href="#"
+                className="btn btn-xs m-r-sm pull-right"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  this.setState({ logOpen: !this.state.logOpen })
+                }}
+              >
+                {this.state.logOpen && <i className="fa fa-caret-down m-r-sm" />}
+                {!this.state.logOpen && <i className="fa fa-caret-right m-r-sm" />}
+                Show output
+              </a>
+            </div>
+          }
+
       </div>
     )
   }

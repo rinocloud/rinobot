@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react'
 import onClickOutside from 'react-onclickoutside'
+import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import pt from 'path'
 
 import * as fsActions from '../actions/fs'
+import * as metadataActions from '../actions/metadata'
+import * as notebookActions from '../actions/notebook'
 import * as pipelinesActions from '../actions/pipelines'
 import * as pipelineFormActions from '../actions/pipelineForm'
 
@@ -12,12 +15,14 @@ import { PipelineActionBar } from '../components/PipelineActionBar'
 import { ChooseFolderBlock } from '../components/ChooseFolderBlock'
 import { FileSystemHeading } from '../components/FileSystemHeading'
 import { FileSystemTable } from '../components/FileSystemTable'
+import { MetadataShelf } from '../components/MetadataShelf'
 import { PipelineForm } from '../components/PipelineForm'
 import { LoadPipeline } from '../components/LoadPipeline'
 
 class FileSystem extends React.Component {
   static propTypes = {
     fs: PropTypes.object.isRequired,
+    metadata: PropTypes.object.isRequired,
     pipelineForm: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     plugins: PropTypes.object.isRequired,
@@ -35,11 +40,13 @@ class FileSystem extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props
     dispatch(fsActions.hydrate())
+    dispatch(metadataActions.hydrateTemplates())
 
     window.addEventListener('keydown', (event) => {
       const { fs } = this.props
       if (event.keyCode === 8) {
         if (fs.currentPath !== fs.basePath) {
+          console.log(fs.currentPath, pt.dirname(fs.currentPath))
           dispatch(fsActions.setCurrentPath(pt.dirname(fs.currentPath)))
         }
       }
@@ -64,7 +71,7 @@ class FileSystem extends React.Component {
   }
 
   render() {
-    const { dispatch, fs, pipelineForm, plugins, pipelines } = this.props
+    const { dispatch, fs, metadata, pipelineForm, plugins, pipelines } = this.props
 
     return (
       <div>
@@ -75,6 +82,23 @@ class FileSystem extends React.Component {
             }}
           />
         }
+
+        {metadata.shelfOpen &&
+          <MetadataShelf
+            files={metadata.files}
+            templates={metadata.templates}
+            onSave={(initialCommonMetadataObj, newCommonMetadataObj, diff) => {
+              dispatch(metadataActions.diffAndSave(initialCommonMetadataObj, newCommonMetadataObj, diff))
+            }}
+            onClose={() => {
+              dispatch(metadataActions.reset())
+            }}
+            onSaveTemplate={(name, template) => {
+              dispatch(metadataActions.addTemplate(name, template))
+            }}
+          />
+        }
+
         {fs.basePath &&
           <div className="main config">
             <div className="panel panel-primary">
@@ -105,6 +129,16 @@ class FileSystem extends React.Component {
                   onNewSnippet={(name) => {
                     dispatch(fsActions.newSnippet(name))
                     this.openModal()
+                  }}
+                  onNewNotebook={(name) => {
+                    dispatch(notebookActions.newNotebook(name, fs.currentPath))
+                    dispatch(push('/notebook'))
+                  }}
+                  onMultipleMetadata={() => {
+                    dispatch(metadataActions.reset())
+                    dispatch(metadataActions.setFiles())
+                    dispatch(metadataActions.openShelf())
+                    dispatch(metadataActions.loadMetadata())
                   }}
                 />
 
@@ -181,15 +215,19 @@ class FileSystem extends React.Component {
                       <FileSystemTable
                         items={fs.items}
                         onSelect={(path) => {
+                          dispatch(metadataActions.reset())
                           dispatch(fsActions.itemSingleSelect(path))
                         }}
                         onCtrlSelect={(path) => {
+                          dispatch(metadataActions.reset())
                           dispatch(fsActions.itemCtrlSelect(path))
                         }}
                         onShiftSelect={(path) => {
+                          dispatch(metadataActions.reset())
                           dispatch(fsActions.itemShiftSelect(path))
                         }}
                         onDragSelect={(paths) => {
+                          dispatch(metadataActions.reset())
                           dispatch(fsActions.itemDragSelect(paths))
                         }}
                         onUnselectAll={() => {
@@ -200,6 +238,17 @@ class FileSystem extends React.Component {
                         }}
                         onSelectSortBy={(sortedBy) => {
                           dispatch(fsActions.setSortedBy(sortedBy))
+                        }}
+                        onClickAddMetadata={(path) => {
+                          dispatch(fsActions.itemSingleSelect(path))
+                          dispatch(metadataActions.reset())
+                          dispatch(metadataActions.setFile(path))
+                          dispatch(metadataActions.openShelf())
+                          dispatch(metadataActions.loadMetadata())
+                        }}
+                        onClickNotebook={(path) => {
+                          dispatch(notebookActions.setFile(path))
+                          dispatch(push('/notebook'))
                         }}
                       />
                     }
@@ -218,6 +267,7 @@ const mapStateToProps = (state) => ({
   pipelineForm: state.pipelineForm,
   pipelines: state.pipelines,
   plugins: state.plugins,
+  metadata: state.metadata,
   fs: state.fs,
 })
 

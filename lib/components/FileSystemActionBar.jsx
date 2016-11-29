@@ -3,7 +3,7 @@ import pt from 'path'
 import { Button } from './Button'
 import { Prompt } from './Prompt'
 import { DeleteModal } from './DeleteModal'
-import { SnippetPopover } from './SnippetPopover'
+import { Popover } from './Popover'
 
 class FileSystemActionBar extends React.Component {
 
@@ -16,6 +16,8 @@ class FileSystemActionBar extends React.Component {
     openModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     onNewSnippet: PropTypes.func.isRequired,
+    onNewNotebook: PropTypes.func.isRequired,
+    onMultipleMetadata: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -32,7 +34,9 @@ class FileSystemActionBar extends React.Component {
       modalOpen,
       openModal,
       closeModal,
-      onNewSnippet
+      onNewSnippet,
+      onNewNotebook,
+      onMultipleMetadata
     } = this.props
 
     return (
@@ -46,8 +50,7 @@ class FileSystemActionBar extends React.Component {
           }}
           disabled={currentPath === basePath}
         >
-          <i className="fa fa-arrow-left" />{' '}
-          Back
+          <i className="fa fa-arrow-left" />
         </Button>
 
         <Button
@@ -56,20 +59,41 @@ class FileSystemActionBar extends React.Component {
             this.setState({ toggleDeleteModal: !this.state.toggleDeleteModal })
           }}
         >
-          <i className="fa fa-times m-r-sm" />
-          Delete
+          <i className="fa fa-trash" />
         </Button>
+
+        <Popover
+          text={'Edit the metadata of multiple files at once.'}
+        >
+          <Button
+            extraClassNames="m-l-sm"
+            onClick={onMultipleMetadata}
+          >
+            <i className="fa fa-tags" />
+          </Button>
+        </Popover>
 
         <Prompt
           onSubmit={onNewSnippet}
           extraClassNames="m-l-sm"
           placeholder="Snippet name..."
         >
-          New python snippet
-          <SnippetPopover />
+          Python snippet
+          <Popover
+            text={`Open a new python file in the current
+                   folder where you can quickly build some code to process files.`}
+          />
         </Prompt>
 
-
+        {/*
+        <Prompt
+          onSubmit={onNewNotebook}
+          extraClassNames="m-l-sm"
+          placeholder="Notebook name..."
+        >
+          New notebook
+        </Prompt>
+        */}
 
         <Button
           extraClassNames="m-l-sm"
