@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { shell } from 'electron'
-import pt from 'path'
 import { FileIcon } from './FileIcon'
 const isOSX = process.platform === 'darwin'
 
@@ -17,11 +16,13 @@ export class FileSystemTableItem extends React.Component {
 
   static propTypes = {
     item: PropTypes.object.isRequired,
+    shelfOpen: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
     onCtrlSelect: PropTypes.func.isRequired,
     onShiftSelect: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
-    onClickAddMetadata: PropTypes.func.isRequired,
+    onClickOpenMetadata: PropTypes.func.isRequired,
+    onClickCloseMetadata: PropTypes.func.isRequired,
     onClickNotebook: PropTypes.func.isRequired,
   }
 
@@ -52,9 +53,10 @@ export class FileSystemTableItem extends React.Component {
   render() {
     const {
       item,
+      shelfOpen,
       onClick,
-      onClickAddMetadata,
-      onClickNotebook
+      onClickOpenMetadata,
+      onClickCloseMetadata,
     } = this.props
 
     return (
@@ -64,25 +66,50 @@ export class FileSystemTableItem extends React.Component {
           this.onClickTr(e, item)
         }}
       >
-        <a
-          href="#"
-          className="btn btn-table-item p-a-sm ignore-react-onclickoutside"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onClickAddMetadata(item.path)
-          }}
-        >
-          <i className="fa fa-tag" />
-        </a>
+        {item.type === 'file' &&
+          <span>
+            {shelfOpen && item.selected ?
+              <a
+                href="#"
+                className="btn btn-table-item p-a-sm ignore-react-onclickoutside"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onClickCloseMetadata()
+                }}
+              >
+                <i className="fa fa-tags" />
+              </a>
+            :
+              <a
+                href="#"
+                className="btn btn-table-item p-a-sm ignore-react-onclickoutside"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onClickOpenMetadata(item.path)
+                }}
+              >
+                <i className="fa fa-tag" style={{ color: 'purple' }} />
+              </a>
+            }
+          </span>
+        }
+        {item.type === 'folder' &&
+          <a
+            href="#"
+            className="btn btn-table-item p-a-sm ignore-react-onclickoutside"
+            style={{ height: '38px' }}
+          >
 
+          </a>
+        }
         <div className="col-sm-5 p-a-sm">
           <FileIcon
             filename={item.name}
             type={item.type}
             state={item.state}
           />
-
           {item.type === 'folder' &&
             <a
               href="#"
@@ -92,7 +119,7 @@ export class FileSystemTableItem extends React.Component {
                 onClick(item.path)
               }}
             >
-              {item.name}/
+              {item.name}
             </a>
           }
 
@@ -142,7 +169,6 @@ export class FileSystemTableItem extends React.Component {
           */}
 
         </div>
-
 
           {item.log &&
             <div className="col-sm-3 p-a-sm">

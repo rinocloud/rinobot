@@ -39,28 +39,6 @@ export const Sidebar = (props) => {
             <span>Install Plugin</span>
           </Link>
 
-          <a
-            href="#"
-            className="list-group-item"
-            onClick={(e) => {
-              e.preventDefault()
-              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/installation.html')
-            }}
-          >
-            <i className="fa fa fa-book"></i>{'  '}
-            <span>Documentation</span>
-          </a>
-          <a
-            href="#"
-            className="list-group-item"
-            onClick={(e) => {
-              e.preventDefault()
-              logout()
-            }}
-          >
-            <i className="fa fa-external-link fa-small"></i>{'  '}
-            <span>Logout {auth.username}</span>
-          </a>
           <Link
             to="/settings"
             className={
@@ -78,13 +56,34 @@ export const Sidebar = (props) => {
             className="list-group-item m-t"
             onClick={(e) => {
               e.preventDefault()
-              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/getting_started.html')
+              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/installation.html')
             }}
           >
             <i className="fa fa fa-book"></i>{'  '}
+            <span>Documentation</span>
+          </a>
+          <a
+            href="#"
+            className="list-group-item"
+            onClick={(e) => {
+              e.preventDefault()
+              shell.openExternal('https://docs.rinocloud.com/rinocloud-desktop/getting_started.html')
+            }}
+          >
+            <i className="fa fa-play-circle"></i>{'  '}
             <span>Getting started</span>
           </a>
-
+          <a
+            href="#"
+            className="list-group-item"
+            onClick={(e) => {
+              e.preventDefault()
+              logout()
+            }}
+          >
+            <i className="fa fa-external-link fa-small"></i>{'  '}
+            <span>Logout {auth.username}</span>
+          </a>
         </ul>
       </div>
       <div>

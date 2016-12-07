@@ -28,7 +28,7 @@ class MetadataShelf extends React.Component {
     onSave: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     onSaveTemplate: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
   }
 
   prepareMetadata() {
@@ -46,14 +46,13 @@ class MetadataShelf extends React.Component {
         }
       }, {})
     }, {})
-
     return initialMetadataObject
   }
 
   prepareTitle() {
     const { files } = this.props
 
-    let filePathTitle = 'multiple files'
+    let filePathTitle = 'Multiple Files'
     if (_.keys(files).length === 1) {
       filePathTitle = _.toPairs(files)[0][0]
     }
@@ -67,7 +66,8 @@ class MetadataShelf extends React.Component {
       onClose,
       onSaveTemplate,
       templates,
-      dispatch
+      dispatch,
+      // eslint-disable-line
     } = this.props
 
     const filePathTitle = this.prepareTitle()
@@ -82,27 +82,38 @@ class MetadataShelf extends React.Component {
       onSave(initialMetadataObject, newMetadataObject, diff)
     }
 
+
     const onSubmitTemplatePrompt = (name) => {
       const formState = metadataArrayToObject(this._form.values.metadataArray)
       onSaveTemplate(name, formState)
     }
 
+    let initialMetadata = metadataObjectToArray(initialMetadataObject)
+    if (initialMetadata.length === 0) {
+      initialMetadata = [{ key: '', value: '' }, { key: '', value: '' }]
+    }
+
+
     return (
       <div className="metadata-shelf config">
         <div className="panel panel-primary">
-          <div className="panel-heading">
+          <div className="panel-heading ">
             <Button
               onClick={onClose}
-              extraClassNames="btn btn-xs btn-default m-r"
+              extraClassNames="btn btn-xs btn-default m-r pull-right"
             >
               <i className="fa fa-remove" />
             </Button>
-            Edit metadata for {pt.basename(filePathTitle)}
+            <i className="fa fa-tag" /> {pt.basename(filePathTitle)}
           </div>
-
           <div className="panel-body">
             <div className="row">
-              <div className="col-sm-3 col-sm-offset-7 m-b-sm">
+              <MetadataForm
+                onSubmit={onSubmit}
+                ref={(c) => { this._form = c }}
+                initialValues={{ metadataArray: initialMetadata }}
+              />
+              <div className="col-sm-3 col-sm-offset-7">
                 <LoadMetadataTemplate
                   key={`temp-${filePathTitle}`}
                   templates={templates}
@@ -119,14 +130,8 @@ class MetadataShelf extends React.Component {
 
               </div>
             </div>
-            <MetadataForm
-              onSubmit={onSubmit}
-              ref={(c) => { this._form = c }}
-              initialValues={{ metadataArray: metadataObjectToArray(initialMetadataObject) }}
-            />
-
             <div className="row">
-              <div className="col-sm-6 col-sm-offset-4" style={{ marginTop: '-32px' }}>
+              <div className="col-sm-6 col-sm-offset-4 m-t">
                 <Prompt
                   onSubmit={onSubmitTemplatePrompt}
                   title="This will save the current metadata form as a template to be used later"

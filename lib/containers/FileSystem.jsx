@@ -46,7 +46,6 @@ class FileSystem extends React.Component {
       const { fs } = this.props
       if (event.keyCode === 8) {
         if (fs.currentPath !== fs.basePath) {
-          console.log(fs.currentPath, pt.dirname(fs.currentPath))
           dispatch(fsActions.setCurrentPath(pt.dirname(fs.currentPath)))
         }
       }
@@ -214,6 +213,7 @@ class FileSystem extends React.Component {
                     {fs.items &&
                       <FileSystemTable
                         items={fs.items}
+                        shelfOpen={metadata.shelfOpen}
                         onSelect={(path) => {
                           dispatch(metadataActions.reset())
                           dispatch(fsActions.itemSingleSelect(path))
@@ -239,12 +239,16 @@ class FileSystem extends React.Component {
                         onSelectSortBy={(sortedBy) => {
                           dispatch(fsActions.setSortedBy(sortedBy))
                         }}
-                        onClickAddMetadata={(path) => {
-                          dispatch(fsActions.itemSingleSelect(path))
+                        onClickOpenMetadata={(path) => {
                           dispatch(metadataActions.reset())
+                          dispatch(fsActions.itemSingleSelect(path))
                           dispatch(metadataActions.setFile(path))
                           dispatch(metadataActions.openShelf())
                           dispatch(metadataActions.loadMetadata())
+                        }}
+                        onClickCloseMetadata={() => {
+                          dispatch(metadataActions.reset())
+                          dispatch(metadataActions.closeShelf())
                         }}
                         onClickNotebook={(path) => {
                           dispatch(notebookActions.setFile(path))

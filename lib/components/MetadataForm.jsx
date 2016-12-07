@@ -23,6 +23,7 @@ renderField.propTypes = {
 const renderMetadataField = (props) => {
   const { fields, meta: { dirty, touched, error } } = props
 
+
   return (
     <div>
       {fields.map((member, index) =>
@@ -35,6 +36,7 @@ const renderMetadataField = (props) => {
           </div>
           <div className="col-sm-2">
             <a
+              className="btn-red"
               href="#"
               type="button"
               onClick={(e) => {
@@ -42,7 +44,7 @@ const renderMetadataField = (props) => {
                 fields.remove(index)
               }}
             >
-              [x]
+              <i className="fa fa-times" />
             </a>
           </div>
         </div>
@@ -51,10 +53,13 @@ const renderMetadataField = (props) => {
       <button type="button" className="btn btn-default" onClick={() => fields.push({})}>
         <i className="fa fa-plus" />
       </button>
-
-      {dirty &&
+      {dirty ?
         <button type="submit" className="btn btn-default m-l-sm">
           <i className="fa fa-save" />
+        </button>
+        :
+        <button type="submit" className="btn btn-default m-l-sm">
+          <i className="fa fa-save" style={{ color: 'green' }} />
         </button>
       }
       {touched && error && <span>{error}</span>}

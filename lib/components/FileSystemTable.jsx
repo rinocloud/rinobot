@@ -8,6 +8,7 @@ class FileSystemTable extends React.Component {
 
   static propTypes = {
     items: PropTypes.object.isRequired,
+    shelfOpen: PropTypes.bool,
     onSelect: PropTypes.func.isRequired,
     onUnselectAll: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
@@ -15,7 +16,8 @@ class FileSystemTable extends React.Component {
     onShiftSelect: PropTypes.func.isRequired,
     onDragSelect: PropTypes.func.isRequired,
     onSelectSortBy: PropTypes.func.isRequired,
-    onClickAddMetadata: PropTypes.func.isRequired,
+    onClickOpenMetadata: PropTypes.func.isRequired,
+    onClickCloseMetadata: PropTypes.func.isRequired,
     onClickNotebook: PropTypes.func.isRequired
   }
 
@@ -35,13 +37,15 @@ class FileSystemTable extends React.Component {
   render() {
     const {
       items,
+      shelfOpen,
       onClick,
       onSelect,
       onCtrlSelect,
       onShiftSelect,
       onDragSelect,
       onSelectSortBy,
-      onClickAddMetadata,
+      onClickOpenMetadata,
+      onClickCloseMetadata,
       onClickNotebook
     } = this.props
 
@@ -87,11 +91,13 @@ class FileSystemTable extends React.Component {
             <FileSystemTableItem
               key={`tr-path-${key}`}
               item={item}
+              shelfOpen={shelfOpen}
               onClick={onClick}
               onSelect={onSelect}
               onCtrlSelect={onCtrlSelect}
               onShiftSelect={onShiftSelect}
-              onClickAddMetadata={onClickAddMetadata}
+              onClickOpenMetadata={onClickOpenMetadata}
+              onClickCloseMetadata={onClickCloseMetadata}
               onClickNotebook={onClickNotebook}
             />
           )}

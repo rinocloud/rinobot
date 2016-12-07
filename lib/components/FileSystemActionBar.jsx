@@ -35,8 +35,8 @@ class FileSystemActionBar extends React.Component {
       openModal,
       closeModal,
       onNewSnippet,
-      onNewNotebook,
-      onMultipleMetadata
+      onMultipleMetadata,
+      // onNewNotebook,
     } = this.props
 
     return (

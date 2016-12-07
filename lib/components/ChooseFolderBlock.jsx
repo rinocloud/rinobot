@@ -9,9 +9,8 @@ export const ChooseFolderBlock = (props) => {
       <div className="text-center" style={{ height: '500px' }}>
 
         <h2 className="block-title m-t-lg" style={{ height: '20%' }}>
-          Rinobot is here to <i className="fa fa-bolt" />supercharge your data!
+          Rinocloud <i className="fa fa-bolt" />supercharges your data!
         </h2>
-
         <ChooseFolderButton
           onChooseFolder={onChooseFolder}
           extraClassNames="btn-add-folder m-t-sm btn-sm"

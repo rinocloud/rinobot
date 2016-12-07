@@ -209,6 +209,7 @@ table:focus{
   margin-right: 3px;
 }
 
+
 /*
   * Plugins
 */
@@ -514,6 +515,20 @@ $grey-line-color: rgba(100,100,100,0.2);
 .btn-add-task:visited {
   color:  $primary-color;
 }
+.btn-red {
+  color: #999;
+  font-size: 1em;
+  position: relative;
+}
+
+.btn-red i{
+  font-size: 1.1em;
+}
+.btn-red:hover,
+.btn-red:focus,
+.btn-red:visited {
+  color: red;
+}
 
 .row-flow{
   margin-left: -70px;
@@ -529,6 +544,9 @@ $grey-line-color: rgba(100,100,100,0.2);
   border-bottom-right-radius: 3px;
   border-right: 1px solid #bdc7d2;
 }
+
+
+//  panel
 
 .config .panel-body{
   padding-bottom: 35px;
@@ -760,4 +778,22 @@ pre.item-log{
 
 .p-a-sm{
   padding: 8px;
+}
+
+//  Login structure
+
+.loginPossition{
+  margin-top: 120px;
+  border-radius: 4px;
+  width: 800px;
+  margin-left: 300px;
+
+}
+.loginPicture{
+  border-radius: 4px;
+  width: 300px;
+  height: 300px;
+  padding: 10px;
+  border-radius:50%;
+  opacity: 0.5;
 }
